@@ -1,12 +1,12 @@
 Package: happign
-Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Easy use of APIS from the National Institute of Geographic and Forestry Information (IGN, France)
+Version: 0.0.0.9000
+Authors@R: 
+    person("Paul", "Carteron", , "carteronpaul@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-6942-6662"))
+Description: This package allows to download open-source data from IGN. This package also contains some pre-analyses, generally related to forestry, using the basic functions of this package.
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
