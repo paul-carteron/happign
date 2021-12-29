@@ -4,11 +4,13 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Paul", "Carteron", , "carteronpaul@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6942-6662"))
+Maintainer: Paul Carteron <carteronpaul@gmail.com>
 Description: This package allows to download open-source data from IGN. This package also contains some pre-analyses, generally related to forestry, using the basic functions of this package.
 License: GPL (>= 3)
 URL: https://github.com/paul-carteron
 BugReports: https://github.com/paul-carteron/happign/issues
 Encoding: UTF-8
+NeedsCompilation: no
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
