@@ -5,8 +5,7 @@
 
 <!-- badges: start -->
 
-[![Codecov test
-coverage](https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg)](https://codecov.io/gh/paul-carteron/happign?branch=main)
+[![R-CMD-check](https://github.com/paul-carteron/happign/workflows/R-CMD-check/badge.svg)](https://github.com/paul-carteron/happign/actions)
 <!-- badges: end -->
 
 The goal of happign is to …

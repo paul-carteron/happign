@@ -1,11 +1,11 @@
 Package: happign
-Title: Easy use of APIS from the National Institute of Geographic and Forestry Information (France)
+Title: Easy Use of Application Programming Interface from the French National Institute of Geographic and Forestry Information
 Version: 0.0.1
 Authors@R: 
-    c(person("Paul", "Carteron", "carteronpaul@gmail.com", role = c("aut", "cre"),
+    c(person("Paul", "Carteron", , "carteronpaul@gmail.com", role = c("aut", "cre"),
     comment = c(ORCID = "0000-0002-6942-6662")))
 Maintainer: Paul Carteron <carteronpaul@gmail.com>
-Description: allows you to download open-source data from IGN. This package also contains some pre-analyses, generally related to forestry, using the basic functions of this package.
+Description: Allows you to download open-source data from the National Institute of Geographic and Forestry Information. This package also contains some analyses, generally related to forestry, using the basic functions of this package.
 License: GPL (>= 3)
 URL: https://github.com/paul-carteron
 BugReports: https://github.com/paul-carteron/happign/issues
