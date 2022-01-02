@@ -1,4 +1,4 @@
-#' hello
+#' Title
 #'
 #' @return Pouet
 #' @export
