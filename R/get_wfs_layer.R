@@ -10,6 +10,7 @@
 #' @importFrom sf st_bbox st_transform st_make_valid st_read st_as_sf
 #' @importFrom httr modify_url GET content status_code stop_for_status
 #' @importFrom dplyr select
+#' @importFrom magrittr `%>%`
 
 get_wfs_layer = function(shape, apikey = "cartovecto", layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route"){
 
@@ -20,7 +21,7 @@ get_wfs_layer = function(shape, apikey = "cartovecto", layer_name = "BDCARTO_BDD
       res = st_read(format_url(apikey, layer_name, shape, startindex = 1000*startindex), quiet = TRUE)
    }
 
-   shape = st_make_valid(shape) |>
+   shape = st_make_valid(shape) %>%
       st_transform(4326)
 
    resp = GET(format_url(apikey, layer_name, shape, startindex = 0))
@@ -37,10 +38,10 @@ get_wfs_layer = function(shape, apikey = "cartovecto", layer_name = "BDCARTO_BDD
                    nb_request = nb_request,
                    apikey = apikey,
                    layer_name = layer_name,
-                   shape = shape) |>
-      as.data.frame() |>
-      st_as_sf() |>
-      st_make_valid() |>
+                   shape = shape) %>%
+      as.data.frame() %>%
+      st_as_sf() %>%
+      st_make_valid() %>%
       select(-bbox)
 }
 

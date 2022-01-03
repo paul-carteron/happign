@@ -24,6 +24,7 @@ Suggests:
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Imports: 
+    magrittr,
     dplyr,
     httr,
     sf
