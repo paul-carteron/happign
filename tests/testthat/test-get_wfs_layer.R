@@ -1,3 +1,4 @@
+library(webmockr)
 library(httr)
 library(sf)
 
@@ -44,10 +45,26 @@ test_that("format_url return good url", {
    expect_type(format_url(apikey, layer_name, shape, startindex), "character")
 
 })
-test_that("get_wfs_layer error", {
-   shape = st_polygon(list(matrix(c(0,0,10,0,10,10,0,10,0,0),ncol=2, byrow=TRUE)))
-   shape = st_sfc(shape)
-   st_crs(shape) <- st_crs(4326)
-   expect_error(get_wfs_layer(shape))
+test_that("get_wfs_layer API is valid", {
+   # example shape for testing
+   shape = st_polygon(list(matrix(c(-4.373,-4.373,-4.372,-4.372,-4.373,47.798,47.799,47.799,47.798,47.798), ncol = 2)))
+   shape = st_sfc(shape, crs = st_crs(4326))
+   use_cassette("get_wfs_layer", {
+      layer <- get_wfs_layer(shape, apikey = "cartovecto", layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route")
+   })
+   expect_s3_class(layer, "sf")
 })
+test_that("get_wfs_layer errors when the API doesn't behave", {
+   # example shape for testing
+   shape = st_polygon(list(matrix(c(-4.373,-4.373,-4.372,-4.372,-4.373,47.798,47.799,47.799,47.798,47.798), ncol = 2)))
+   shape = st_sfc(shape, crs = st_crs(4326))
+   enable()
+   stub <- stub_request("get",
+                                  "https://wxs.ign.fr/cartovecto/geoportail/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=json&srsName=EPSG%3A4326&typeName=BDCARTO_BDD_WLD_WGS84G%3Atroncon_route&bbox=-4.373%2C47.798%2C-4.372%2C47.799%2Cepsg%3A4326&startindex=0")
+   to_return(stub, status = 503)
+   expect_error(get_wfs_layer(shape), regexp = "Check layer_name", fixed = TRUE)
+   disable()
+})
+
+
 

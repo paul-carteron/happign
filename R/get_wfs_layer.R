@@ -25,9 +25,7 @@ get_wfs_layer = function(shape, apikey = "cartovecto", layer_name = "BDCARTO_BDD
 
    resp = GET(format_url(apikey, layer_name, shape, startindex = 0))
 
-   if (status_code(resp) == 403){
-      stop_for_status(resp, task = paste0("find ressource. Check layer_name at https://geoservices.ign.fr/services-web-experts-",apikey))
-   }
+   stop_for_status(resp, task = paste0("find ressource. Check layer_name at https://geoservices.ign.fr/services-web-experts-",apikey))
 
    nb_features = content(resp)$numberMatched
    if (nb_features == 0){stop("Ressource doesn't exist. Check the shape, it's probably out of France")}

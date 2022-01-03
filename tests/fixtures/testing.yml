@@ -1,0 +1,29 @@
+http_interactions:
+- request:
+    method: head
+    uri: https://httpbin.org/get
+    body:
+      encoding: ''
+      string: ''
+    headers:
+      User-Agent: libcurl/7.64.1 r-curl/4.3.2 crul/1.2.0
+  response:
+    status:
+      status_code: '200'
+      message: OK
+      explanation: Request fulfilled, document follows
+    headers:
+      status: HTTP/1.1 200 OK
+      date: Mon, 03 Jan 2022 16:33:51 GMT
+      content-type: application/json
+      content-length: '324'
+      connection: keep-alive
+      server: gunicorn/19.9.0
+      access-control-allow-origin: '*'
+      access-control-allow-credentials: 'true'
+    body:
+      encoding: UTF-8
+      file: no
+      string: ''
+  recorded_at: 2022-01-03 16:33:53 GMT
+  recorded_with: vcr/1.0.2, webmockr/0.8.0
