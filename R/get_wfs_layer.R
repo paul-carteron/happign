@@ -30,7 +30,6 @@ get_wfs_layer = function(shape, apikey = "cartovecto", layer_name = "BDCARTO_BDD
 
    nb_features = content(resp)$numberMatched
    if (nb_features == 0){stop("Ressource doesn't exist. Check the shape, it's probably out of France")}
-
    nb_request = nb_features %/% 1000
 
    result = lapply(X = 0:nb_request,
