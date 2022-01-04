@@ -5,8 +5,15 @@
 
 <!-- badges: start -->
 
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/happign)](https://cran.r-project.org/package=happign)
 [![R-CMD-check](https://github.com/paul-carteron/happign/workflows/R-CMD-check/badge.svg)](https://github.com/paul-carteron/happign/actions)
 [![codecov](https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg?token=4QOH124P2K)](https://codecov.io/gh/paul-carteron/happign)
+[![Project Status: Concept – Minimal or no implementation has been done
+yet, or the repository is only intended to be a limited example, demo,
+or
+proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
+\[![license](https://img.shields.io/badge/license-GPL--3-blue.svg)\](<https://www.gnu.org/licenses/gpl-3.0.en.html>
+[![Last-changedate](https://img.shields.io/badge/last%20change-2022--01--04-yellowgreen.svg)](/commits/master)”
 <!-- badges: end -->
 
 The goal of happign is to …
