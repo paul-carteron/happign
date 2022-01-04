@@ -13,10 +13,16 @@ get_wfs_layer(
 \arguments{
 \item{shape}{Object of class sf. Needs to be located in France}
 
-\item{apikey}{API key from get_apikey() (or directly from the website https://geoservices.ign.fr/services-web-experts)}
+\item{apikey}{API key from get_apikey() (or directly from the website
+https://geoservices.ign.fr/services-web-experts)}
 
-\item{layer_name}{Name of the layer from get_layers_metadata(apikey, "wfs) (or directly from the website https://geoservices.ign.fr/services-web-experts-addAPIkey}
+\item{layer_name}{Name of the layer from get_layers_metadata(apikey, "wfs)
+(or directly from the website :
+https://geoservices.ign.fr/services-web-experts-addAPIkey)}
 }
 \description{
-Directly download a layer from the French National Institute of Geographic and Forestry. To do that, it need a location giving by a shapfile, an apikey thanks to get_apikey and the name of layer thanks to get_layer_metadata,
+Directly download a layer from the French National Institute of
+Geographic and Forestry. To do that, it need a location giving by
+a shapfile, an apikey thanks to get_apikey and the name of layer
+thanks to get_layer_metadata.
 }
