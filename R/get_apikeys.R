@@ -6,9 +6,9 @@
 #' @export
 #'
 #' @examples
-#' get_apikeys[1]
-get_apikeys <- function(){
-   apikeys = c(
+#' get_apikeys()[1]
+get_apikeys <- function() {
+   apikeys <- c(
       "administratif",
       "adresse",
       "agriculture",

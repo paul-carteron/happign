@@ -27,4 +27,7 @@ Imports:
     magrittr,
     dplyr,
     httr,
-    sf
+    sf,
+    stringr,
+    tidyr,
+    xml2

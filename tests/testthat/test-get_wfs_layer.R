@@ -1,6 +1,5 @@
-library(webmockr)
-library(httr)
 library(sf)
+library(webmockr)
 
 test_that("format_bbox return expected format", {
    # Test for errors
@@ -46,25 +45,29 @@ test_that("format_url return good url", {
    expect_type(format_url(apikey, layer_name, shape, startindex), "character")
 
 })
-test_that("get_wfs_layer API is valid", {
-   # example shape for testing
-   shape <- st_polygon(list(matrix(c(-4.373, -4.373,
-                                     -4.372, -4.372,
-                                     -4.373, 47.798,
-                                     47.799, 47.799,
-                                     47.798, 47.798),
-                                   ncol = 2)))
-   shape <- st_sfc(shape, crs = st_crs(4326))
 
-   layer_name <- "BDCARTO_BDD_WLD_WGS84G:troncon_route"
-   apikey <- "cartovecto"
-   use_cassette("get_wfs_layer", {
-      layer <- get_wfs_layer(shape = shape,
-                             apikey = apikey,
-                             layer_name = layer_name)
+vcr::use_cassette("get_wfs_layer", {
+   test_that("get_wfs_layer", {
+      # example shape for testing
+      shape <- st_polygon(list(matrix(c(-4.373, -4.373,
+                                        -4.372, -4.372,
+                                        -4.373, 47.798,
+                                        47.799, 47.799,
+                                        47.798, 47.798),
+                                      ncol = 2)))
+      shape <- st_sfc(shape, crs = st_crs(4326))
+
+      layer_name <- "BDCARTO_BDD_WLD_WGS84G:troncon_route"
+      apikey <- "cartovecto"
+
+         layer <- get_wfs_layer(shape = shape,
+                                apikey = apikey,
+                                layer_name = layer_name)
+
+      expect_s3_class(layer, "sf")
+      })
    })
-   expect_s3_class(layer, "sf")
-})
+
 test_that("get_wfs_layer errors when the API doesn't behave", {
    # example shape for testing
    shape <- st_polygon(list(matrix(c(-4.373, -4.373,

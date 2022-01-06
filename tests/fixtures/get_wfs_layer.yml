@@ -14,7 +14,7 @@ http_interactions:
       reason: OK
       message: 'Success: (200) OK'
     headers:
-      date: Mon, 03 Jan 2022 16:25:26 GMT
+      date: Thu, 06 Jan 2022 09:01:54 GMT
       content-type: application/json;charset=UTF-8
       transfer-encoding: chunked
       x-frame-options: SAMEORIGIN
@@ -24,7 +24,6 @@ http_interactions:
       access-control-allow-methods: GET, POST
       access-control-max-age: '43200'
       access-control-allow-origin: '*'
-      age: '163'
     body:
       encoding: UTF-8
       file: no
@@ -38,6 +37,6 @@ http_interactions:
         cyclable","nb_chausse":"1 chaussée","nb_voies":"1 voie","etat":"Revêtu","acces":"Libre","pos_sol":"Au
         sol","res_vert":"Non","sens":"Double sens","nb_voies_m":"Sans objet","nb_voies_d":"Sans
         objet","toponyme":null,"usage":"Logique et cartographique","date":"2021-05-07","num_route":null,"class_adm":"Sans
-        objet","gest_route":null,"bbox":[-4.37455976,47.79846814,-4.37135131,47.8116031]}}],"totalFeatures":3,"numberMatched":3,"numberReturned":3,"timeStamp":"2022-01-03T16:25:25.278Z","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[-4.37455976,47.79842021,-4.37078903,47.8116031]}'
-  recorded_at: 2022-01-03 16:28:10 GMT
+        objet","gest_route":null,"bbox":[-4.37455976,47.79846814,-4.37135131,47.8116031]}}],"totalFeatures":3,"numberMatched":3,"numberReturned":3,"timeStamp":"2022-01-06T09:01:52.856Z","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[-4.37455976,47.79842021,-4.37078903,47.8116031]}'
+  recorded_at: 2022-01-06 09:01:54 GMT
   recorded_with: vcr/1.0.2, webmockr/0.8.0

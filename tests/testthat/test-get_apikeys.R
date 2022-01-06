@@ -1,5 +1,5 @@
 test_that("apikeys return good keys", {
-   apikeys = c(
+   apikeys <- c(
       "administratif",
       "adresse",
       "agriculture",

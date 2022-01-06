@@ -11,5 +11,5 @@ All apikeys are manually extract from this table provided by IGN :
 https://geoservices.ign.fr/documentation/services/tableau_ressources
 }
 \examples{
-get_apikeys[1]
+get_apikeys()[1]
 }
