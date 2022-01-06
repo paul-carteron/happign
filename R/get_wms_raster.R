@@ -41,14 +41,8 @@ get_wms_raster <- function(shape,
                                   HEIGHT = width_height,
                                   CRS = "EPSG:4326",
                                   BBOX = format_bbox_wms(shape)))
-   tmp <- tempfile()
-   download.file(url = url,
-                 method = "auto",
-                 mode = "wb",
-                 destfile = tmp)
-
-   res <- rast(tmp)
-   unlink(tmp)
+   url_rgdal_option = paste0("/vsicurl_streaming/",url)
+   res = rast(url_rgdal_option)
    crs(res) <- "epsg:4326"
    return(res)
 }
