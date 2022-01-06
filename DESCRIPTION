@@ -30,4 +30,5 @@ Imports:
     sf,
     stringr,
     tidyr,
-    xml2
+    xml2,
+    terra

@@ -8,7 +8,7 @@
 #' @param shape Object of class sf. Needs to be located in France
 #' @param apikey API key from get_apikey() (or directly from the website
 #' https://geoservices.ign.fr/services-web-experts)
-#' @param layer_name Name of the layer from get_layers_metadata(apikey, "wfs)
+#' @param layer_name Name of the layer from get_layers_metadata(apikey, "wfs")
 #' (or directly from the website :
 #' https://geoservices.ign.fr/services-web-experts-addAPIkey)
 #' @export
@@ -64,7 +64,7 @@ get_wfs_layer <- function(shape,
     select(-bbox)
 }
 
-format_bbox <- function(shape = NULL) {
+format_bbox_wfs <- function(shape = NULL) {
   bbox <- st_bbox(shape)
   paste(bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"], "epsg:4326",
         sep = ",")
@@ -80,7 +80,7 @@ format_url <- function(apikey = NULL, layer_name = NULL,
       outputFormat = "json",
       srsName = "EPSG:4326",
       typeName = layer_name,
-      bbox = format_bbox(st_transform(shape, 4326)),
+      bbox = format_bbox_wfs(st_transform(shape, 4326)),
       startindex = startindex
     )
   )

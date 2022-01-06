@@ -16,7 +16,7 @@ get_wfs_layer(
 \item{apikey}{API key from get_apikey() (or directly from the website
 https://geoservices.ign.fr/services-web-experts)}
 
-\item{layer_name}{Name of the layer from get_layers_metadata(apikey, "wfs)
+\item{layer_name}{Name of the layer from get_layers_metadata(apikey, "wfs")
 (or directly from the website :
 https://geoservices.ign.fr/services-web-experts-addAPIkey)}
 }
