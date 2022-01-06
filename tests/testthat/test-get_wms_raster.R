@@ -26,25 +26,3 @@ test_that("format_bbox_wms", {
                 "(\\d*\\.\\d*+,)*",
                 perl = TRUE)
 })
-
-test_that("get_wms_layer", {
-   # example shape for testing
-   shape <- st_polygon(list(matrix(c(-4.373, -4.373,
-                                     -4.372, -4.372,
-                                     -4.373, 47.798,
-                                     47.799, 47.799,
-                                     47.798, 47.798),
-                                   ncol = 2)))
-   shape <- st_sfc(shape, crs = st_crs(4326))
-
-   layer_name <- "ELEVATION.ELEVATIONGRIDCOVERAGE"
-   apikey <- "altimetrie"
-
-   layer <- get_wms_raster(shape = shape,
-                          apikey = apikey,
-                          layer_name = layer_name,
-                          width_height = 500)
-
-   expect_equal(dim(layer)[1:2], c(500, 500))
-   expect_s4_class(layer, "SpatRaster")
-})
