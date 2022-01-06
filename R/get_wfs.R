@@ -18,9 +18,9 @@
 #' @importFrom dplyr select
 #' @importFrom magrittr `%>%`
 
-get_wfs_layer <- function(shape,
-                          apikey = "cartovecto",
-                          layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route") {
+get_wfs <- function(shape,
+                    apikey = "cartovecto",
+                    layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route") {
   bbox <- NULL
 
   lapply_function <- function(startindex, nb_request, apikey,

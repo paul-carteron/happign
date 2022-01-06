@@ -46,8 +46,8 @@ test_that("format_url return good url", {
 
 })
 
-vcr::use_cassette("get_wfs_layer", {
-   test_that("get_wfs_layer", {
+vcr::use_cassette("get_wfs", {
+   test_that("get_wfs", {
       # example shape for testing
       shape <- st_polygon(list(matrix(c(-4.373, -4.373,
                                         -4.372, -4.372,
@@ -59,7 +59,7 @@ vcr::use_cassette("get_wfs_layer", {
 
       layer_name <- "BDCARTO_BDD_WLD_WGS84G:troncon_route"
       apikey <- "cartovecto"
-      layer <- get_wfs_layer(shape = shape,
+      layer <- get_wfs(shape = shape,
                                 apikey = apikey,
                                 layer_name = layer_name)
 
@@ -67,7 +67,7 @@ vcr::use_cassette("get_wfs_layer", {
       })
    })
 
-test_that("get_wfs_layer errors when the API doesn't behave", {
+test_that("get_wfs errors when the API doesn't behave", {
    # example shape for testing
    shape <- st_polygon(list(matrix(c(-4.373, -4.373,
                                      -4.372, -4.372,
@@ -89,6 +89,6 @@ test_that("get_wfs_layer errors when the API doesn't behave", {
    stub <- stub_request("get",
                        url)
    to_return(stub, status = 503)
-   expect_error(get_wfs_layer(shape), regexp = "Check layer_name", fixed = TRUE)
+   expect_error(get_wfs(shape), regexp = "Check layer_name", fixed = TRUE)
    disable()
 })
