@@ -16,20 +16,53 @@ get_layers_metadata(apikey, data_type)
 \method{get_layers_metadata}{wms}(apikey, data_type)
 }
 \arguments{
-\item{apikey}{Apikey from get_apikeys()}
+\item{apikey}{API key from \code{get_apikeys()} or directly
+from the \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{data_type}{Should be "wfs" or "wms}
+\item{data_type}{Should be \code{"wfs"} or \code{"wms"}. See details for more
+information about these two Webservice formats.}
 }
 \value{
-data.frame with all useful metadata
+data.frame with name of layer, abstract and crs
 }
 \description{
 Metadata are retrieved using the IGN APIs. The execution time can
 be long depending on the size of the metadata associated with
-the apikey and the overload of the IGN servers.
+the API key and the overload of the IGN servers.
+}
+\details{
+\itemize{
+\item WFS is a standard protocol defined by the OGC (Open Geospatial Consortium)
+and recognized by an ISO standard. The reference document is available
+on the \href{https://www.ogc.org/standards/wfs}{OGC website}. The Geoportal
+WFS service implements version 2.0 of this protocol. The WFS service
+of the Geoportal givesccess to objects from different IGN databases:
+BD TOPO®, BD CARTO®, BD ADRESSE®, BD FORET® or PARCELLAIRE EXPRESS (PCI).
+\item WMS is a standard protocol defined by the OGC
+(Open Geospatial Consortium) and recognized by an ISO standard.
+The reference document is available on the
+\href{https://www.ogc.org/standards/wms}{OGC website}.
+\item For futher more detail, check \href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc}{IGN documentation page}
+}
 }
 \examples{
 \dontrun{
-get_layers_metadata("administratif", "wms")
+
+apikey <- get_apikeys()[4]
+metadata_table <- get_layers_metadata(apikey, "wms")
+all_layer_name <- metadata_table$name
+abstract_of_MNT <- metadata_table[1,3]
+crs_of_MNT <- unlist(metadata_table[1,4])
+
+# data.frame with every metadata
+list_metadata = lapply(X = get_apikeys(),
+                       FUN = get_layers_metadata,
+                       data_type = "wfs")
+
+all_metadata = dplyr::bind_rows(test)
 }
+#'
+}
+\seealso{
+\code{\link[=get_apikeys]{get_apikeys()}}
 }

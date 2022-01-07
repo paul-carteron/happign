@@ -1,23 +1,71 @@
 #' Download WFS layer
 #'
-#' Directly download a layer from the French National Institute of
-#' Geographic and Forestry. To do that, it need a location giving by
-#' a shapfile, an apikey thanks to get_apikey and the name of layer
-#' thanks to get_layer_metadata.
+#' Directly download a shapefile layer from the French National Institute
+#' of Geographic and Forestry. To do that, it need a location giving by
+#' a shapefile, an apikey and the name of layer. You can find those
+#' information from
+#' [IGN website](https://geoservices.ign.fr/services-web-expert)
 #'
-#' @param shape Object of class sf. Needs to be located in France
-#' @param apikey API key from get_apikey() (or directly from the website
-#' https://geoservices.ign.fr/services-web-experts)
-#' @param layer_name Name of the layer from get_layers_metadata(apikey, "wfs")
-#' (or directly from the website :
-#' https://geoservices.ign.fr/services-web-experts-addAPIkey)
+#' @usage
+#' get_wfs(shape,
+#'         apikey,
+#'         layer_name)
+#'
+#' @param shape Object of class `sf`. Needs to be located in
+#' France.
+#' @param apikey API key from `get_apikeys()` or directly
+#' from [IGN website](https://geoservices.ign.fr/services-web-experts)
+#' @param layer_name Name of the layer from `get_layers_metadata(apikey, "wfs")`
+#' or directly from
+#' [IGN website](https://geoservices.ign.fr/services-web-experts)
 #' @export
 #'
 #' @importFrom sf st_bbox st_transform st_make_valid st_read st_as_sf
 #' @importFrom httr modify_url GET content status_code stop_for_status
 #' @importFrom dplyr select
 #' @importFrom magrittr `%>%`
-
+#'
+#' @seealso
+#' [get_apikeys()], [get_layers_metadata()]
+#'
+#' @examples
+#' \dontrun{
+#' library(sf)
+#' library(tmap)
+#'
+#' # Get the borders of best town in France --------------------
+#'
+#' apikey <- get_apikeys()[1]
+#' metadata_table <- get_layers_metadata(apikey, "wfs")
+#' layer_name <- metadata_table[32,2]
+#'
+#' # One point from the best town in France
+#' shape <- st_point(c(-4.373937, 47.79859))
+#' shape <- st_sfc(shape, crs = st_crs(4326))
+#'
+#' # Download borders
+#' borders <- get_wfs(shape, apikey, layer_name)
+#'
+#' # Verif
+#' tmap_mode("view") # easy interactive map
+#' qtm(borders, fill = NULL, borders = "firebrick") # easy map
+#'
+#' # Get forest_area of the best town in France ----------------
+#' forest_area <- get_wfs(shape = borders,
+#'                        apikey = get_apikeys()[10],
+#'                        layer_name = get_layers_metadata(apikey, "wfs")[2,2])
+#'
+#' # Verif
+#' qtm(forest_area, fill = "essence")
+#'
+#' # Get roads of the best town in France ----------------------
+#' roads <- get_wfs(shape = borders,
+#'                  apikey = "cartovecto",
+#'                  layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route")
+#'
+#' # Verif
+#' qtm(roads)
+#' }
 get_wfs <- function(shape,
                     apikey = "cartovecto",
                     layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route") {
@@ -39,7 +87,7 @@ get_wfs <- function(shape,
 
   stop_for_status(resp,
                   task = paste0("find ressource. Check layer_name ",
-                                "at https://geoservices.ign.fr/,",
+                                "at https://geoservices.ign.fr/",
                                 "services-web-experts-",
                                 apikey))
 

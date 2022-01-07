@@ -4,14 +4,13 @@ test_that("apikeys return good keys", {
       "adresse",
       "agriculture",
       "altimetrie",
-      "calcul",
       "cartes",
       "cartovecto",
       "clc",
       "economie",
       "environnement",
       "geodesie",
-      "l93",
+      "lambert93",
       "ortho",
       "orthohisto",
       "parcellaire",
@@ -21,5 +20,5 @@ test_that("apikeys return good keys", {
       "transports"
    )
   expect_equal(get_apikeys(), apikeys)
-  expect_equal(length(get_apikeys()), 19)
+  expect_equal(length(get_apikeys()), 18)
 })

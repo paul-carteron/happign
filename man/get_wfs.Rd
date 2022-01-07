@@ -4,25 +4,67 @@
 \alias{get_wfs}
 \title{Download WFS layer}
 \usage{
-get_wfs(
-  shape,
-  apikey = "cartovecto",
-  layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route"
-)
+get_wfs(shape,
+        apikey,
+        layer_name)
 }
 \arguments{
-\item{shape}{Object of class sf. Needs to be located in France}
+\item{shape}{Object of class \code{sf}. Needs to be located in
+France.}
 
-\item{apikey}{API key from get_apikey() (or directly from the website
-https://geoservices.ign.fr/services-web-experts)}
+\item{apikey}{API key from \code{get_apikeys()} or directly
+from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{layer_name}{Name of the layer from get_layers_metadata(apikey, "wfs")
-(or directly from the website :
-https://geoservices.ign.fr/services-web-experts-addAPIkey)}
+\item{layer_name}{Name of the layer from \code{get_layers_metadata(apikey, "wfs")}
+or directly from
+\href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 }
 \description{
-Directly download a layer from the French National Institute of
-Geographic and Forestry. To do that, it need a location giving by
-a shapfile, an apikey thanks to get_apikey and the name of layer
-thanks to get_layer_metadata.
+Directly download a shapefile layer from the French National Institute
+of Geographic and Forestry. To do that, it need a location giving by
+a shapefile, an apikey and the name of layer. You can find those
+information from
+\href{https://geoservices.ign.fr/services-web-expert}{IGN website}
+}
+\examples{
+\dontrun{
+library(sf)
+library(tmap)
+
+# Get the borders of best town in France --------------------
+
+apikey <- get_apikeys()[1]
+metadata_table <- get_layers_metadata(apikey, "wfs")
+layer_name <- metadata_table[32,2]
+
+# One point from the best town in France
+shape <- st_point(c(-4.373937, 47.79859))
+shape <- st_sfc(shape, crs = st_crs(4326))
+
+# Download borders
+borders <- get_wfs(shape, apikey, layer_name)
+
+# Verif
+tmap_mode("view") # easy interactive map
+qtm(borders, fill = NULL, borders = "firebrick") # easy map
+
+# Get forest_area of the best town in France ----------------
+forest_area <- get_wfs(shape = borders,
+                       apikey = get_apikeys()[10],
+                       layer_name = get_layers_metadata(apikey, "wfs")[2,2])
+
+# Verif
+qtm(forest_area, fill = "essence")
+
+# Get roads of the best town in France ----------------------
+roads <- get_wfs(shape = borders,
+                 apikey = "cartovecto",
+                 layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route")
+
+# Verif
+qtm(roads)
+}
+}
+\seealso{
+\code{\link[=get_apikeys]{get_apikeys()}}, \code{\link[=get_layers_metadata]{get_layers_metadata()}}
 }

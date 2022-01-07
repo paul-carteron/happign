@@ -4,31 +4,58 @@
 \alias{get_wms_raster}
 \title{Download WMS raster layer}
 \usage{
-get_wms_raster(
-  shape,
-  apikey = "altimetrie",
-  layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
-  width_height = 500
-)
+get_wms_raster(shape,
+               apikey,
+               layer_name,
+               width_height = 500)
 }
 \arguments{
-\item{shape}{Object of class sf. Needs to be located in France.}
+\item{shape}{Object of class \code{sf}. Needs to be located in
+France.}
 
-\item{apikey}{API key from get_apikey() (or directly from the website
-https://geoservices.ign.fr/services-web-experts)}
+\item{apikey}{API key from \code{get_apikeys()} or directly
+from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{layer_name}{Name of the layer from get_layers_metadata(apikey, "wms")
-(or directly from the website :
-https://geoservices.ign.fr/services-web-experts-addAPIkey)}
+\item{layer_name}{Name of the layer from \code{get_layers_metadata(apikey, "wms")}
+or directly from
+\href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{width_height}{dim of the raster in pixel}
-}
-\value{
-Spat
+\item{width_height}{Dim of the raster in pixel}
 }
 \description{
 Directly download a raster layer from the French National Institute
 of Geographic and Forestry. To do that, it need a location giving by
-a shapefile, an apikey thanks to get_apikeys() and the name of layer
-thanks to get_layer_metadata().
+a shapefile, an apikey and the name of layer. You can find those
+information from
+\href{https://geoservices.ign.fr/services-web-expert}{IGN website}
+}
+\examples{
+\dontrun{
+library(sf)
+library(terra)
+
+apikey <- get_apikeys()[4]
+
+metadata_table <- get_layers_metadata(apikey, "wms")
+layer_name <- metadata_table[1,2]
+
+# shape from the best town in France
+shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
+                                 -4.375615, 47.79738,
+                                 -4.375147, 47.79683,
+                                 -4.373898, 47.79790,
+                                 -4.373937, 47.79859),
+                                 ncol = 2, byrow = TRUE)))
+shape <- st_sfc(shape, crs = st_crs(4326))
+
+# Downloading digital elevation model from IGN
+MNT <- get_wms_raster(shape, apikey, layer_name)
+
+# Verif
+plot(MNT)
+plot(shape, col = NA, add = TRUE)
+}
+}
+\seealso{
+\code{\link[=get_apikeys]{get_apikeys()}}, \code{\link[=get_layers_metadata]{get_layers_metadata()}}
 }

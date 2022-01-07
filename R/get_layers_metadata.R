@@ -2,13 +2,50 @@
 #'
 #' Metadata are retrieved using the IGN APIs. The execution time can
 #' be long depending on the size of the metadata associated with
-#' the apikey and the overload of the IGN servers.
+#' the API key and the overload of the IGN servers.
 #'
-#' @param apikey Apikey from get_apikeys()
-#' @param data_type Should be "wfs" or "wms
+#' @param apikey API key from `get_apikeys()` or directly
+#' from the [IGN website](https://geoservices.ign.fr/services-web-experts)
+#' @param data_type Should be `"wfs"` or `"wms"`. See details for more
+#' information about these two Webservice formats.
 #'
-#' @return data.frame with all useful metadata
+#' @details
+#' * WFS is a standard protocol defined by the OGC (Open Geospatial Consortium)
+#' and recognized by an ISO standard. The reference document is available
+#' on the [OGC website](https://www.ogc.org/standards/wfs). The Geoportal
+#' WFS service implements version 2.0 of this protocol. The WFS service
+#' of the Geoportal givesccess to objects from different IGN databases:
+#' BD TOPO®, BD CARTO®, BD ADRESSE®, BD FORET® or PARCELLAIRE EXPRESS (PCI).
+#'
+#' * WMS is a standard protocol defined by the OGC
+#' (Open Geospatial Consortium) and recognized by an ISO standard.
+#' The reference document is available on the
+#' [OGC website](https://www.ogc.org/standards/wms).
+#'
+#' * For futher more detail, check [IGN documentation page](https://geoservices.ign.fr/documentation/services/api-et-services-ogc)
+#'
+#' @seealso
+#' [get_apikeys()]
+#'
+#' @examples
+#' \dontrun{
+#'
+#' apikey <- get_apikeys()[4]
+#' metadata_table <- get_layers_metadata(apikey, "wms")
+#' all_layer_name <- metadata_table$name
+#' abstract_of_MNT <- metadata_table[1,3]
+#' crs_of_MNT <- unlist(metadata_table[1,4])
+#'
+#' # data.frame with every metadata
+#' list_metadata = lapply(X = get_apikeys(),
+#'                        FUN = get_layers_metadata,
+#'                        data_type = "wfs")
+#'
+#' all_metadata = dplyr::bind_rows(test)
+#' }
+#'#'
 #' @name get_layers_metadata
+#' @return data.frame with name of layer, abstract and crs
 #' @export
 #'
 #' @importFrom dplyr mutate select rename_all
@@ -17,10 +54,6 @@
 #' xml_name xml_text
 #' @importFrom stringr str_remove
 #'
-#' @examples
-#' \dontrun{
-#' get_layers_metadata("administratif", "wms")
-#' }
 get_layers_metadata <- function(apikey, data_type) {
    UseMethod("get_layers_metadata")
 }
