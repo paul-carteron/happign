@@ -82,11 +82,11 @@ get_wms_raster <- function(shape,
    # - terra::rast(url_rgdal_option) :
    #         -> faster but you can't convert itto stars after
    # - read_stars(url_rgdal_option, normalize_path = FALSE) :
-   #         -> 2.46 times slower but you can cuse tmap
+   #         -> 2.46 times slower but you can use tmap
 
    url_rgdal_option <- paste0("/vsicurl_streaming/", url)
-
    res <- read_stars(url_rgdal_option, normalize_path = FALSE)
+
    return(res)
 }
 
