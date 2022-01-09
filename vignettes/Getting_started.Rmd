@@ -1,0 +1,33 @@
+---
+title: "Getting started with happign"
+author: "Paul Carteron"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting_started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(happign)
+```
+
+# Context
+
+Since January 1, 2021, the French National Institute for Geographic and Forestry Information (IGN) has made its public data on French topography, infrastructure, and terrain freely available. The opening of IGN data under the Etalab 2.0 open license means free access and use for all. No reproduction or distribution rights to pay. Only data including third party rights or protected by copyright (maps and SCANs) are not concerned by this opening. IGN paper maps also remain subject to a fee.
+ 
+Among the important data that are now open, we can mention the BD TOPO (3D modeling of the territory and its infrastructures), the BD ORTHO (departmental orthophotography), the BD Forêt and the RGE Alti (meshed digital terrain model that describes the French relief). This represents 100th of terabytes of data. 
+
+To facilitate access to this data, IGN has implemented a set of APIs based on OGC standards. In other words, it is possible with correctly formatted URLs to access IGN data. In spite of a well supplied documentation, the use of APIs remains complex to set up. The happign package has been created to facilitate this, so let's get started.
+
+
+
+

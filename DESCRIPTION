@@ -31,4 +31,5 @@ Imports:
     stringr,
     tidyr,
     xml2,
-    terra
+    terra,
+    stars

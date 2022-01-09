@@ -26,7 +26,7 @@
 #' @importFrom sf st_make_valid st_transform
 #' @importFrom httr modify_url
 #' @importFrom magrittr `%>%`
-#' @importFrom terra rast crs `crs<-`
+#' @importFrom stars read_stars
 #' @importFrom utils download.file
 #'
 #' @seealso
@@ -78,9 +78,15 @@ get_wms_raster <- function(shape,
                                   CRS = "EPSG:4326",
                                   BBOX = format_bbox_wms(shape)))
 
+   # Two options :
+   # - terra::rast(url_rgdal_option) :
+   #         -> faster but you can't convert itto stars after
+   # - read_stars(url_rgdal_option, normalize_path = FALSE) :
+   #         -> 2.46 times slower but you can cuse tmap
+
    url_rgdal_option <- paste0("/vsicurl_streaming/", url)
-   res <-  rast(url_rgdal_option)
-   crs(res) <- "epsg:4326"
+
+   res <- read_stars(url_rgdal_option, normalize_path = FALSE)
    return(res)
 }
 
