@@ -35,7 +35,7 @@
 #' @examples
 #' \dontrun{
 #' library(sf)
-#' library(terra)
+#' library(stars)
 #'
 #' apikey <- get_apikeys()[4]
 #'
