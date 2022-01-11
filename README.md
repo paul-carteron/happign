@@ -14,6 +14,8 @@ or
 proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
 [![license](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Last-changedate](https://img.shields.io/badge/last%20change-2022--01--06-yellowgreen.svg)](/commits/master)
+[![Codecov test
+coverage](https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg)](https://app.codecov.io/gh/paul-carteron/happign?branch=main)
 <!-- badges: end -->
 
 The goal of happign is to …
