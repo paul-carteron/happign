@@ -17,9 +17,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, include=FALSE}
-library(httptest)
 library(happign)
-start_vignette("Getting started with happign")
 ```
 
 # Context
@@ -81,8 +79,4 @@ get_layers_metadata(apikey = key, data_type = "wfs")
 
 ```
 
-
-```{r, include=FALSE}
-end_vignette()
-```
 

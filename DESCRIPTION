@@ -20,8 +20,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     vcr (>= 0.6.0),
-    webmockr,
-    httptest
+    webmockr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Imports: 
