@@ -16,18 +16,73 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r, include=FALSE}
+library(httptest)
 library(happign)
+start_vignette("Getting started with happign")
 ```
 
 # Context
 
-Since January 1, 2021, the French National Institute for Geographic and Forestry Information (IGN) has made its public data on French topography, infrastructure, and terrain freely available. The opening of IGN data under the Etalab 2.0 open license means free access and use for all. No reproduction or distribution rights to pay. Only data including third party rights or protected by copyright (maps and SCANs) are not concerned by this opening. IGN paper maps also remain subject to a fee.
- 
+Since January 1, 2021, the French National Institute for Geographic and Forestry Information (IGN) has made its public data on French topography, infrastructure, and terrain freely available. The opening of IGN data under the Etalab 2.0 open license means free access and use for all.
+
 Among the important data that are now open, we can mention the BD TOPO (3D modeling of the territory and its infrastructures), the BD ORTHO (departmental orthophotography), the BD Forêt and the RGE Alti (meshed digital terrain model that describes the French relief). This represents 100th of terabytes of data. 
 
-To facilitate access to this data, IGN has implemented a set of APIs based on OGC standards. In other words, it is possible with correctly formatted URLs to access IGN data. In spite of a well supplied documentation, the use of APIs remains complex to set up. The happign package has been created to facilitate this, so let's get started.
+To facilitate access to this data, IGN has implemented a set of APIs based on OGC standards. In other words, it is possible with correctly formatted URLs to access IGN data. In spite of a well supplied documentation, the use of APIs remains complex to set up. The `happign` package has been created to facilitate this, so let's get started.
+
+# Load happign Library
+
+You can install the released version of happign from [CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("happign")
+```
+
+And the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("paul-carteron/happign")
+```
+
+We can load the `happign` package, and some additional packages we will need while we are here.
+
+``` r
+library(happign)
+library(tmap)
+```
+
+# The WFS, WMS service
+
+The WMS service allows downloading data in raster format (.tiff) and the WFS service allows downloading data in shape format (.shp). For more information on these services the reference documents are available [here](https://www.ogc.org/standards/wms) for WMS and [here](https://www.ogc.org/standards/wfs). for WFS
+
+To download data you need :
+ * Its layer name ;
+ * The API key corresponding to the layer ;
+ * Your area of interest in .shp format
+
+The layer name and API key can be directly retrieved on the [IGN website in the expert web services](https://geoservices.ign.fr/services-web-experts). I recommend at this point to go and have a look.
+
+For example, if I take the first category "Administratif", I see that the API key is "administratif" and the first layer name in WFS format is "ADMINEXPRESS-COG.LATEST:arrondissement"
+
+With `happign`, there is no need to go through the website.
+
+All api keys are available by running the function `get_apikeys()`.
+```{r echo=TRUE}
+get_apikeys()
+```
+
+After choosing the API key containing our resource, the `get_layers_metadata()` function allows to access the information about the layers (name, summary, coordinates). 
+Rq: this function can be a bit slow because it connects directly to the website so that the information is up to date.
+
+```{r}
+key = get_apikeys()[6]
+get_layers_metadata(apikey = key, data_type = "wfs")
+
+```
 
 
-
+```{r, include=FALSE}
+end_vignette()
+```
 
