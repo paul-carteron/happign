@@ -93,8 +93,8 @@ get_wfs <- function(shape,
 
   nb_features <- content(resp)$numberMatched
   if (nb_features == 0) {
-    stop(paste("Ressource doesn't exist. Check the shape,",
-               "it's probably out of France"))
+    stop(paste("Resource does not exist. Eventually, check",
+               "that Shape is in France"))
   }
   nb_request <- nb_features %/% 1000
 
