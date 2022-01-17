@@ -7,7 +7,6 @@
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/happign)](https://cran.r-project.org/package=happign)
 [![R-CMD-check](https://github.com/paul-carteron/happign/workflows/R-CMD-check/badge.svg)](https://github.com/paul-carteron/happign/actions)
-[![codecov](https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg?token=4QOH124P2K)](https://app.codecov.io/gh/paul-carteron/happign)
 [![Project Status: Concept – Minimal or no implementation has been done
 yet, or the repository is only intended to be a limited example, demo,
 or
