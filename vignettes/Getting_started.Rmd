@@ -156,7 +156,8 @@ DEM_layer_name = layers_metadata[2,"name"]
 
 MNT = get_wms_raster(shape = penmarch_borders,
                      apikey = apikey,
-                     layer_name = DEM_layer_name)
+                     layer_name = DEM_layer_name,
+                     resolution = 25)
 MNT[MNT<0] <- NA # remove negative values in case of singularity 
 names(MNT) <- "Elevation [m]" # Rename raster ie the title legend
 

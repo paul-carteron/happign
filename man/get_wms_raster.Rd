@@ -7,7 +7,7 @@
 get_wms_raster(shape,
                apikey,
                layer_name,
-               width_height = 500)
+               resolution = NULL)
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
@@ -20,7 +20,7 @@ from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{width_height}{Dim of the raster in pixel}
+\item{resolution}{Cell size in meter. WMS are limited to 2048x2048 pixels. See detail for more information about resolution.}
 }
 \description{
 Directly download a raster layer from the French National Institute
@@ -28,6 +28,12 @@ of Geographic and Forestry. To do that, it need a location giving by
 a shapefile, an apikey and the name of layer. You can find those
 information from
 \href{https://geoservices.ign.fr/services-web-expert}{IGN website}
+}
+\details{
+\itemize{
+\item If the resolution is too hight, the maximum is automatically set by dividing heigth and width of the shape's bbox by 2048 (the maximum number of pixel)
+\item Setting the \code{resolution} parameter higher than the base resolution of the layer multiplies the number of pixels without increasing the precision. For example, the download of the BD Alti layer from IGN will be optimal for a resolution of 25m. Look at \link[=https://geoservices.ign.fr/documentation/donnees/alti/bdalti]{documentation} for more precision on layer's resolution.
+}
 }
 \examples{
 \dontrun{
@@ -49,7 +55,7 @@ shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
 shape <- st_sfc(shape, crs = st_crs(4326))
 
 # Downloading digital elevation model from IGN
-MNT <- get_wms_raster(shape, apikey, layer_name)
+MNT <- get_wms_raster(shape, apikey, layer_name, resolution = 25)
 
 # Verif
 plot(MNT)

@@ -26,3 +26,18 @@ test_that("format_bbox_wms", {
                 "(\\d*\\.\\d*+,)*",
                 perl = TRUE)
 })
+
+test_that("width_height", {
+   shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
+                                     -4.375615, 47.79738,
+                                     -4.375147, 47.79683,
+                                     -4.373898, 47.79790,
+                                     -4.373937, 47.79859),
+                                   ncol = 2, byrow = TRUE)))
+   shape <- st_sfc(shape, crs = st_crs(4326))
+
+   expect_equal(suppressMessages(width_height(shape)), c(2048, 2048))
+   expect_equal(suppressMessages(width_height(shape, resolution = 5)),
+                c(40, 26))
+   expect_type(suppressMessages(width_height(shape)), "double")
+})
