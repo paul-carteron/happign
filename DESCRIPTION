@@ -1,35 +1,40 @@
 Package: happign
-Title: Easy Use of Application Programming Interface from the French National Institute of Geographic and Forestry Information
-Version: 0.0.1
+Title: Easy Use of Application Programming Interface from the French
+    National Institute of Geographic and Forestry Information
+Version: 0.1.0
 Authors@R: 
-    c(person("Paul", "Carteron", , "carteronpaul@gmail.com", role = c("aut", "cre"),
-    comment = c(ORCID = "0000-0002-6942-6662")))
+    person("Paul", "Carteron", , "carteronpaul@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-6942-6662"))
 Maintainer: Paul Carteron <carteronpaul@gmail.com>
-Description: Allows you to download open-source data from the National Institute of Geographic and Forestry Information. This package also contains some analyses, generally related to forestry, using the basic functions of this package.
+Description: Allows you to download open-source data from the National
+    Institute of Geographic and Forestry Information. This package also
+    contains some analyses, generally related to forestry, using the basic
+    functions of this package.
 License: GPL (>= 3)
 URL: https://github.com/paul-carteron
 BugReports: https://github.com/paul-carteron/happign/issues
-Encoding: UTF-8
-NeedsCompilation: no
-LazyData: true
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+Imports: 
+    dplyr,
+    httr,
+    magrittr,
+    sf,
+    stars,
+    stringr,
+    tidyr,
+    xml2
 Suggests: 
     covr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
+    tmap,
     vcr (>= 0.6.0),
-    webmockr,
-    tmap
-VignetteBuilder: knitr
+    webmockr
+VignetteBuilder: 
+    knitr
 Config/testthat/edition: 3
-Imports: 
-    magrittr,
-    dplyr,
-    httr,
-    sf,
-    stringr,
-    tidyr,
-    xml2,
-    stars
+Encoding: UTF-8
+LazyData: true
+NeedsCompilation: no
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2

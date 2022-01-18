@@ -24,7 +24,7 @@ Directly download a shapefile layer from the French National Institute
 of Geographic and Forestry. To do that, it need a location giving by
 a shapefile, an apikey and the name of layer. You can find those
 information from
-\href{https://geoservices.ign.fr/services-web-expert}{IGN website}
+\href{https://geoservices.ign.fr/services-web-experts}{IGN website}
 }
 \examples{
 \dontrun{

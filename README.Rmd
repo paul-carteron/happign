@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg)](https://app.codecov.io/gh/paul-carteron/happign?branch=main)
 <!-- badges: end -->
 
-The goal of happign is to ...
+The goal of happign is to facilitate the use of Application Programming Interface from the French National Institute of Geographic and Forestry Information.
 
 ## Installation
 
@@ -40,27 +40,17 @@ And the development version from [GitHub](https://github.com/) with:
 # install.packages("devtools")
 devtools::install_github("paul-carteron/happign")
 ```
-## Example
 
-This is a basic example which shows you how to solve a common problem:
+## Basic use
 
-```{r example}
-library(happign)
-## basic example code
+Please check package vignette "Getting_started" for basic use of `happign`
+``` r
+browseVignettes("happign")
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+## Problems and Issues
 
-```{r cars}
-summary(cars)
-```
+* Please report any issues or bugs you may encounter on the [dedicated page on github](https://github.com/paul-carteron/happign/issues).
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+## System Requirements
+`happign` requires [`R`](https://cran.r-project.org) v >= 4.1.0.

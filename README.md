@@ -17,7 +17,9 @@ proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https:
 coverage](https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg)](https://app.codecov.io/gh/paul-carteron/happign?branch=main)
 <!-- badges: end -->
 
-The goal of happign is to …
+The goal of happign is to facilitate the use of Application Programming
+Interface from the French National Institute of Geographic and Forestry
+Information.
 
 ## Installation
 
@@ -35,38 +37,20 @@ And the development version from [GitHub](https://github.com/) with:
 devtools::install_github("paul-carteron/happign")
 ```
 
-## Example
+## Basic use
 
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(happign)
-## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+Please check package vignette “Getting_started” for basic use of
+`happign`
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+browseVignettes("happign")
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/master/examples>.
+## Problems and Issues
 
-You can also embed plots, for example:
+-   Please report any issues or bugs you may encounter on the [dedicated
+    page on github](https://github.com/paul-carteron/happign/issues).
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+## System Requirements
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+`happign` requires [`R`](https://cran.r-project.org) v \>= 4.1.0.

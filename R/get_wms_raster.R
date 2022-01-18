@@ -23,8 +23,8 @@
 #' See detail for more information about resolution.
 #'
 #' @details
-#' * If the resolution is too hight, the maximum is automatically set by
-#' dividing heigth and width of the shape's bbox by 2048
+#' * If the resolution is too high, the maximum is automatically set by
+#' dividing height and width of the shape's bbox by 2048
 #' (the maximum number of pixel)
 #' * Setting the `resolution` parameter higher than the base resolution
 #' of the layer multiplies the number of pixels without increasing

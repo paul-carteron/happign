@@ -34,15 +34,15 @@ the API key and the overload of the IGN servers.
 \itemize{
 \item WFS is a standard protocol defined by the OGC (Open Geospatial Consortium)
 and recognized by an ISO standard. The reference document is available
-on the \href{https://www.ogc.org/standards/wfs}{OGC website}. The Geoportal
+on the \href{https://www.ogc.org/standards/wfs}{OGC website}. The Geoportail
 WFS service implements version 2.0 of this protocol. The WFS service
-of the Geoportal givesccess to objects from different IGN databases:
+of the Geoportal gives access to objects from different IGN databases:
 BD TOPO®, BD CARTO®, BD ADRESSE®, BD FORET® or PARCELLAIRE EXPRESS (PCI).
 \item WMS is a standard protocol defined by the OGC
 (Open Geospatial Consortium) and recognized by an ISO standard.
 The reference document is available on the
 \href{https://www.ogc.org/standards/wms}{OGC website}.
-\item For futher more detail, check \href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc}{IGN documentation page}
+\item For further more detail, check \href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc}{IGN documentation page}
 }
 }
 \examples{

@@ -12,9 +12,9 @@
 #' @details
 #' * WFS is a standard protocol defined by the OGC (Open Geospatial Consortium)
 #' and recognized by an ISO standard. The reference document is available
-#' on the [OGC website](https://www.ogc.org/standards/wfs). The Geoportal
+#' on the [OGC website](https://www.ogc.org/standards/wfs). The Geoportail
 #' WFS service implements version 2.0 of this protocol. The WFS service
-#' of the Geoportal givesccess to objects from different IGN databases:
+#' of the Geoportal gives access to objects from different IGN databases:
 #' BD TOPO®, BD CARTO®, BD ADRESSE®, BD FORET® or PARCELLAIRE EXPRESS (PCI).
 #'
 #' * WMS is a standard protocol defined by the OGC
@@ -22,7 +22,7 @@
 #' The reference document is available on the
 #' [OGC website](https://www.ogc.org/standards/wms).
 #'
-#' * For futher more detail, check [IGN documentation page](https://geoservices.ign.fr/documentation/services/api-et-services-ogc)
+#' * For further more detail, check [IGN documentation page](https://geoservices.ign.fr/documentation/services/api-et-services-ogc)
 #'
 #' @seealso
 #' [get_apikeys()]

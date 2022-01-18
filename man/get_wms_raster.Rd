@@ -28,12 +28,12 @@ Directly download a raster layer from the French National Institute
 of Geographic and Forestry. To do that, it need a location giving by
 a shapefile, an apikey and the name of layer. You can find those
 information from
-\href{https://geoservices.ign.fr/services-web-expert}{IGN website}
+\href{https://geoservices.ign.fr/services-web-experts}{IGN website}
 }
 \details{
 \itemize{
-\item If the resolution is too hight, the maximum is automatically set by
-dividing heigth and width of the shape's bbox by 2048
+\item If the resolution is too high, the maximum is automatically set by
+dividing height and width of the shape's bbox by 2048
 (the maximum number of pixel)
 \item Setting the \code{resolution} parameter higher than the base resolution
 of the layer multiplies the number of pixels without increasing
