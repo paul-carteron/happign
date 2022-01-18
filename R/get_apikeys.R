@@ -4,7 +4,7 @@
 #' [table](https://geoservices.ign.fr/documentation/services/tableau_ressources)
 #' provided by IGN.
 #'
-#' @name get_apikeys()
+#' @name get_apikeys
 #' @return character
 #' @export
 #'

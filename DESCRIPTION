@@ -11,7 +11,8 @@ Description: Allows you to download open-source data from the National
     contains some analyses, generally related to forestry, using the basic
     functions of this package.
 License: GPL (>= 3)
-URL: https://github.com/paul-carteron
+URL: https://github.com/paul-carteron,
+    https://paul-carteron.github.io/happign/
 BugReports: https://github.com/paul-carteron/happign/issues
 Imports: 
     dplyr,
