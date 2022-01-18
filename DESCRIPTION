@@ -7,9 +7,7 @@ Authors@R:
            comment = c(ORCID = "0000-0002-6942-6662"))
 Maintainer: Paul Carteron <carteronpaul@gmail.com>
 Description: Allows you to download open-source data from the National
-    Institute of Geographic and Forestry Information. This package also
-    contains some analyses, generally related to forestry, using the basic
-    functions of this package.
+    Institute of Geographic and Forestry Information.
 License: GPL (>= 3)
 URL: https://github.com/paul-carteron,
     https://paul-carteron.github.io/happign/
