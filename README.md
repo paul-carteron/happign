@@ -7,12 +7,7 @@
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/happign)](https://cran.r-project.org/package=happign)
 [![R-CMD-check](https://github.com/paul-carteron/happign/workflows/R-CMD-check/badge.svg)](https://github.com/paul-carteron/happign/actions)
-[![Project Status: Concept – Minimal or no implementation has been done
-yet, or the repository is only intended to be a limited example, demo,
-or
-proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
 [![license](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2022--01--06-yellowgreen.svg)](/commits/master)
 [![Codecov test
 coverage](https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg)](https://app.codecov.io/gh/paul-carteron/happign?branch=main)
 <!-- badges: end -->
@@ -40,7 +35,8 @@ devtools::install_github("paul-carteron/happign")
 ## Basic use
 
 Please check package vignette “Getting_started” for basic use of
-`happign`
+`happign` or articles on the
+[website](https://paul-carteron.github.io/happign/articles/Getting_started.html)
 
 ``` r
 browseVignettes("happign")
