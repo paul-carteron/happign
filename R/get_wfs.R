@@ -4,7 +4,7 @@
 #' of Geographic and Forestry. To do that, it need a location giving by
 #' a shapefile, an apikey and the name of layer. You can find those
 #' information from
-#' [IGN website](https://geoservices.ign.fr/services-web-expert)
+#' [IGN website](https://geoservices.ign.fr/services-web-experts)
 #'
 #' @usage
 #' get_wfs(shape,

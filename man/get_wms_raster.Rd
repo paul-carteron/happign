@@ -20,7 +20,8 @@ from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{resolution}{Cell size in meter. WMS are limited to 2048x2048 pixels. See detail for more information about resolution.}
+\item{resolution}{Cell size in meter. WMS are limited to 2048x2048 pixels.
+See detail for more information about resolution.}
 }
 \description{
 Directly download a raster layer from the French National Institute
@@ -31,8 +32,15 @@ information from
 }
 \details{
 \itemize{
-\item If the resolution is too hight, the maximum is automatically set by dividing heigth and width of the shape's bbox by 2048 (the maximum number of pixel)
-\item Setting the \code{resolution} parameter higher than the base resolution of the layer multiplies the number of pixels without increasing the precision. For example, the download of the BD Alti layer from IGN will be optimal for a resolution of 25m. Look at \link[=https://geoservices.ign.fr/documentation/donnees/alti/bdalti]{documentation} for more precision on layer's resolution.
+\item If the resolution is too hight, the maximum is automatically set by
+dividing heigth and width of the shape's bbox by 2048
+(the maximum number of pixel)
+\item Setting the \code{resolution} parameter higher than the base resolution
+of the layer multiplies the number of pixels without increasing
+the precision. For example, the download of the BD Alti layer from
+IGN will be optimal for a resolution of 25m. Look at
+\href{https://geoservices.ign.fr/documentation/donnees/alti/bdalti}{IGN documentation}
+for more precision on layer's resolution.
 }
 }
 \examples{
