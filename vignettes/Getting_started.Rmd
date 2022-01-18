@@ -4,7 +4,7 @@ author: "Paul Carteron"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting_started}
+  %\VignetteIndexEntry{Getting started with happign}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
   fig.height = 4,
   fig.width = 6
 )
+options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
 ```{r, include=FALSE}
