@@ -52,11 +52,12 @@ for more precision on layer's resolution.
 \dontrun{
 library(sf)
 library(stars)
+library(tmap)
 
 apikey <- get_apikeys()[4]
 
 metadata_table <- get_layers_metadata(apikey, "wms")
-layer_name <- metadata_table[1,2]
+layer_name <- metadata_table[2,2]
 
 # shape from the best town in France
 shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
@@ -68,11 +69,13 @@ shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
 shape <- st_sfc(shape, crs = st_crs(4326))
 
 # Downloading digital elevation model from IGN
-MNT <- get_wms_raster(shape, apikey, layer_name, resolution = 25)
+mnt <- get_wms_raster(shape, apikey, layer_name, resolution = 1)
+mnt[mnt < 0] <- NA # remove negative values in case of singularity
+names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
 
 # Verif
-plot(MNT)
-plot(shape, col = NA, add = TRUE)
+qtm(mnt)+
+qtm(shape, fill = NULL, borders.lwd = 3)
 }
 }
 \seealso{

@@ -54,14 +54,15 @@ all_layer_name <- metadata_table$name
 abstract_of_MNT <- metadata_table[1,3]
 crs_of_MNT <- unlist(metadata_table[1,4])
 
-# data.frame with every metadata
+# list with every wfs metadata
 list_metadata = lapply(X = get_apikeys(),
                        FUN = get_layers_metadata,
                        data_type = "wfs")
 
-all_metadata = dplyr::bind_rows(test)
+# Convert list to one single data.frame
+all_metadata = dplyr::bind_rows(list_metadata)
 }
-#'
+
 }
 \seealso{
 \code{\link[=get_apikeys]{get_apikeys()}}
