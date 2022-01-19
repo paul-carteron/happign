@@ -88,6 +88,10 @@ or directly from
 <a href="https://geoservices.ign.fr/services-web-experts" class="external-link">IGN website</a></p></dd>
 </dl></div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p><code>get_wfs</code>return an object of class <code>sf</code></p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="get_apikeys.html">get_apikeys()</a></code>, <code><a href="get_layers_metadata.html">get_layers_metadata()</a></code></p></div>
     </div>
@@ -117,8 +121,8 @@ or directly from
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Get forest_area of the best town in France ----------------</span></span>
 <span class="r-in"><span class="va">forest_area</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span>shape <span class="op">=</span> <span class="va">borders</span>,</span>
-<span class="r-in">                       apikey <span class="op">=</span> <span class="fu"><a href="get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span>,</span>
-<span class="r-in">                       layer_name <span class="op">=</span> <span class="fu"><a href="get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="va">apikey</span>, <span class="st">"wfs"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-in">                       apikey <span class="op">=</span> <span class="fu"><a href="get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">9</span><span class="op">]</span>,</span>
+<span class="r-in">                       layer_name <span class="op">=</span> <span class="fu"><a href="get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="fu"><a href="get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">9</span><span class="op">]</span>, <span class="st">"wfs"</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Verif</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">forest_area</span>, fill <span class="op">=</span> <span class="st">"essence"</span><span class="op">)</span></span>
