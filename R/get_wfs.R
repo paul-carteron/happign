@@ -18,6 +18,10 @@
 #' @param layer_name Name of the layer from `get_layers_metadata(apikey, "wfs")`
 #' or directly from
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
+#'
+#' @return
+#' `get_wfs`return an object of class `sf`
+#'
 #' @export
 #'
 #' @importFrom sf st_bbox st_transform st_make_valid st_read st_as_sf
@@ -52,8 +56,8 @@
 #'
 #' # Get forest_area of the best town in France ----------------
 #' forest_area <- get_wfs(shape = borders,
-#'                        apikey = get_apikeys()[10],
-#'                        layer_name = get_layers_metadata(apikey, "wfs")[2,2])
+#'                        apikey = get_apikeys()[9],
+#'                        layer_name = get_layers_metadata(get_apikeys()[9], "wfs")[2,2])
 #'
 #' # Verif
 #' qtm(forest_area, fill = "essence")
@@ -111,12 +115,24 @@ get_wfs <- function(shape,
     st_make_valid() %>%
     select(-bbox)
 }
-
+#'
+#' format bbox to wfs url format
+#' @param shape zone of interest of class sf
+#' @noRd
+#'
 format_bbox_wfs <- function(shape = NULL) {
   bbox <- st_bbox(shape)
   paste(bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"], "epsg:4326",
         sep = ",")
 }
+#'
+#' format url for request
+#' @param apikey API key from IGN web service
+#' @param layer_name Name of the layer from get_layer_metadata
+#' @param shape Zone of interest
+#' @param startindex Control number of feature (1 corresopnd to 0->1000)
+#' @noRd
+#'
 format_url <- function(apikey = NULL, layer_name = NULL,
                        shape = NULL, startindex = NULL) {
   url <- modify_url("https://wxs.ign.fr",

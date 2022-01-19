@@ -19,6 +19,9 @@ from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 }
+\value{
+\code{get_wfs}return an object of class \code{sf}
+}
 \description{
 Directly download a shapefile layer from the French National Institute
 of Geographic and Forestry. To do that, it need a location giving by
@@ -50,8 +53,8 @@ qtm(borders, fill = NULL, borders = "firebrick") # easy map
 
 # Get forest_area of the best town in France ----------------
 forest_area <- get_wfs(shape = borders,
-                       apikey = get_apikeys()[10],
-                       layer_name = get_layers_metadata(apikey, "wfs")[2,2])
+                       apikey = get_apikeys()[9],
+                       layer_name = get_layers_metadata(get_apikeys()[9], "wfs")[2,2])
 
 # Verif
 qtm(forest_area, fill = "essence")

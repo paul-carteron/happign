@@ -111,7 +111,11 @@ get_layers_metadata.wms <- function(apikey, data_type) {
    res
 
 }
-
+#' Constructor for class data_type
+#' @param apikey API key from IGN web service
+#' @param data_type "wfs" or "wms"
+#' @noRd
+#'
 constructor <- function(apikey, data_type) {
    if (!is.character(apikey)) stop("apikey must be character")
    if (!is.character(data_type)) stop("data_type must be character")
@@ -122,7 +126,10 @@ constructor <- function(apikey, data_type) {
    }
    structure(list(apikey), class = data_type)
 }
-
+#' Convert xml to data.frame
+#' @param xml_nodeset Response from httr::GET request
+#' @noRd
+#'
 xml_to_df <- function(xml_nodeset, ...) {
 
    nodenames <- xml_name(xml_children(xml_nodeset))

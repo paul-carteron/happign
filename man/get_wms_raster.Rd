@@ -23,6 +23,11 @@ or directly from
 \item{resolution}{Cell size in meter. WMS are limited to 2048x2048 pixels.
 See detail for more information about resolution.}
 }
+\value{
+\code{get_wms_raster} return an object of class \code{stars}. Depending on the layer,
+this can be a simple raster (2 dimensions and 1 attribute) or an RGB
+raster (3 dimensions and 1 attribute).
+}
 \description{
 Directly download a raster layer from the French National Institute
 of Geographic and Forestry. To do that, it need a location giving by

@@ -22,6 +22,11 @@
 #' @param resolution Cell size in meter. WMS are limited to 2048x2048 pixels.
 #' See detail for more information about resolution.
 #'
+#' @return
+#' `get_wms_raster` return an object of class `stars`. Depending on the layer,
+#' this can be a simple raster (2 dimensions and 1 attribute) or an RGB
+#' raster (3 dimensions and 1 attribute).
+#'
 #' @details
 #' * If the resolution is too high, the maximum is automatically set by
 #' dividing height and width of the shape's bbox by 2048
@@ -103,12 +108,21 @@ get_wms_raster <- function(shape,
 
    return(res)
 }
-
+#'
+#' format bbox to wms url format
+#' @param shape zone of interest of class sf
+#' @noRd
+#'
 format_bbox_wms <- function(shape = NULL) {
    bbox <- st_bbox(shape)
    paste(bbox["ymin"], bbox["xmin"], bbox["ymax"], bbox["xmax"], sep = ",")
 }
-
+#'
+#' Do all calculation to find optimal - or not - cell_size from bbox
+#' @param shape zone of interest of class sf
+#' @param resolution cell_size in meter
+#' @noRd
+#'
 width_height <- function(shape, resolution = NULL) {
 
    bbox <- st_bbox(shape)
