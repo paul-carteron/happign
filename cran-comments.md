@@ -16,4 +16,4 @@ For a CRAN submission we recommend that you fix all NOTEs, WARNINGs and ERRORs.
   Found the following files/directories:
     'lastMiKTeXException'
 
-0 errors √ | 0 warnings √ | 2 notes x
+0 errors √ | 0 warnings √ | 1 notes x

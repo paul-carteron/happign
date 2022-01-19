@@ -14,7 +14,7 @@
 #' and recognized by an ISO standard. The reference document is available
 #' on the [OGC website](https://www.ogc.org/standards/wfs). The Geoportail
 #' WFS service implements version 2.0 of this protocol. The WFS service
-#' of the Geoportal gives access to objects from different IGN databases:
+#' of Geoportail gives access to objects from different IGN databases:
 #' BD TOPO®, BD CARTO®, BD ADRESSE®, BD FORET® or PARCELLAIRE EXPRESS (PCI).
 #'
 #' * WMS is a standard protocol defined by the OGC
