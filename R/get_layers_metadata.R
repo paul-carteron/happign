@@ -106,7 +106,7 @@ get_layers_metadata.wms <- function(apikey, data_type) {
       xml_find_all("d1:Layer")
 
    res <- suppressWarnings(xml_to_df(items, values_fn = list)) %>%
-      select("KeywordList", "Name", "Abstract", "CRS") %>%
+      select("KeywordList", "Name", "Abstract") %>%
       rename_all(tolower) %>%
       unnest(1:3)
    res
