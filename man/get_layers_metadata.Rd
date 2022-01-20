@@ -36,7 +36,7 @@ the API key and the overload of the IGN servers.
 and recognized by an ISO standard. The reference document is available
 on the \href{https://www.ogc.org/standards/wfs}{OGC website}. The Geoportail
 WFS service implements version 2.0 of this protocol. The WFS service
-of the Geoportal gives access to objects from different IGN databases:
+of Geoportail gives access to objects from different IGN databases:
 BD TOPO®, BD CARTO®, BD ADRESSE®, BD FORET® or PARCELLAIRE EXPRESS (PCI).
 \item WMS is a standard protocol defined by the OGC
 (Open Geospatial Consortium) and recognized by an ISO standard.
