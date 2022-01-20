@@ -1,7 +1,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://wxs.ign.fr/cartovecto/geoportail/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&outputFormat=json&srsName=EPSG%3A4326&typeName=BDCARTO_BDD_WLD_WGS84G%3Atroncon_route&bbox=-4.373%2C47.798%2C-4.372%2C47.799%2Cepsg%3A4326&startindex=0
+    uri: https://wxs.ign.fr/cartovecto/geoportail/wfs?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json&srsName=EPSG%3A4326&typeName=BDCARTO_BDD_WLD_WGS84G%3Atroncon_route&bbox=-4.373%2C47.798%2C-4.372%2C47.799%2Cepsg%3A4326&startindex=0
     body:
       encoding: ''
       string: ''
@@ -14,7 +14,7 @@ http_interactions:
       reason: OK
       message: 'Success: (200) OK'
     headers:
-      date: Thu, 06 Jan 2022 09:01:54 GMT
+      date: Thu, 20 Jan 2022 14:31:25 GMT
       content-type: application/json;charset=UTF-8
       transfer-encoding: chunked
       x-frame-options: SAMEORIGIN
@@ -24,6 +24,7 @@ http_interactions:
       access-control-allow-methods: GET, POST
       access-control-max-age: '43200'
       access-control-allow-origin: '*'
+      age: '42'
     body:
       encoding: UTF-8
       file: no
@@ -37,6 +38,6 @@ http_interactions:
         cyclable","nb_chausse":"1 chaussée","nb_voies":"1 voie","etat":"Revêtu","acces":"Libre","pos_sol":"Au
         sol","res_vert":"Non","sens":"Double sens","nb_voies_m":"Sans objet","nb_voies_d":"Sans
         objet","toponyme":null,"usage":"Logique et cartographique","date":"2021-05-07","num_route":null,"class_adm":"Sans
-        objet","gest_route":null,"bbox":[-4.37455976,47.79846814,-4.37135131,47.8116031]}}],"totalFeatures":3,"numberMatched":3,"numberReturned":3,"timeStamp":"2022-01-06T09:01:52.856Z","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[-4.37455976,47.79842021,-4.37078903,47.8116031]}'
-  recorded_at: 2022-01-06 09:01:54 GMT
+        objet","gest_route":null,"bbox":[-4.37455976,47.79846814,-4.37135131,47.8116031]}}],"totalFeatures":3,"numberMatched":3,"numberReturned":3,"timeStamp":"2022-01-20T14:31:24.733Z","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[-4.37455976,47.79842021,-4.37078903,47.8116031]}'
+  recorded_at: 2022-01-20 14:32:10 GMT
   recorded_with: vcr/1.0.2, webmockr/0.8.0

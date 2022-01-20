@@ -77,9 +77,9 @@ test_that("get_wfs errors when the API doesn't behave", {
                                    ncol = 2)))
    shape <- st_sfc(shape, crs = st_crs(4326))
    url <- paste0("https://wxs.ign.fr/cartovecto/geoportail/wfs?",
-                 "SERVICE=WFS&",
-                 "VERSION=2.0.0&",
-                 "REQUEST=GetFeature&",
+                 "service=WFS&",
+                 "version=2.0.0&",
+                 "request=GetFeature&",
                  "outputFormat=json&",
                  "srsName=EPSG%3A4326&",
                  "typeName=BDCARTO_BDD_WLD_WGS84G%3Atroncon_route&",
@@ -89,6 +89,6 @@ test_that("get_wfs errors when the API doesn't behave", {
    stub <- stub_request("get",
                        url)
    to_return(stub, status = 503)
-   expect_error(get_wfs(shape), regexp = "Check layer_name", fixed = TRUE)
+   expect_error(get_wfs(shape), regexp = "layer_name", fixed = TRUE)
    disable()
 })
