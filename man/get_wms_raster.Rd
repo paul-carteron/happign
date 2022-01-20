@@ -7,7 +7,10 @@
 get_wms_raster(shape,
                apikey,
                layer_name,
-               resolution = NULL)
+               resolution = 10,
+               version = "1.3.0",
+               format = "image/geotiff",
+               styles = "")
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
@@ -22,6 +25,15 @@ or directly from
 
 \item{resolution}{Cell size in meter. WMS are limited to 2048x2048 pixels.
 See detail for more information about resolution.}
+
+\item{version}{The version of the service used. Set to latest version
+by default. See detail for more information about \code{version}.}
+
+\item{format}{The output format - type-mime - of the image file. Set
+to geotiff by default. See detail for more information about \code{format}.}
+
+\item{styles}{The rendering style of the layers. Set to "" by default.
+See detail for more information about \code{styles}.}
 }
 \value{
 \code{get_wms_raster} return an object of class \code{stars}. Depending on the layer,
@@ -43,9 +55,9 @@ dividing height and width of the shape's bbox by 2048
 \item Setting the \code{resolution} parameter higher than the base resolution
 of the layer multiplies the number of pixels without increasing
 the precision. For example, the download of the BD Alti layer from
-IGN will be optimal for a resolution of 25m. Look at
-\href{https://geoservices.ign.fr/documentation/donnees/alti/bdalti}{IGN documentation}
-for more precision on layer's resolution.
+IGN will be optimal for a resolution of 25m.
+\item \code{version}, \code{format} and \code{styles} parameters are detailed on
+\href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc}{IGN documentation}
 }
 }
 \examples{

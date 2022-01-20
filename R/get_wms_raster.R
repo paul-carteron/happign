@@ -10,7 +10,10 @@
 #' get_wms_raster(shape,
 #'                apikey,
 #'                layer_name,
-#'                resolution = NULL)
+#'                resolution = 10,
+#'                version = "1.3.0",
+#'                format = "image/geotiff",
+#'                styles = "")
 #'
 #' @param shape Object of class `sf`. Needs to be located in
 #' France.
@@ -21,6 +24,12 @@
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
 #' @param resolution Cell size in meter. WMS are limited to 2048x2048 pixels.
 #' See detail for more information about resolution.
+#' @param version The version of the service used. Set to latest version
+#' by default. See detail for more information about `version`.
+#' @param format The output format - type-mime - of the image file. Set
+#' to geotiff by default. See detail for more information about `format`.
+#' @param styles The rendering style of the layers. Set to "" by default.
+#'  See detail for more information about `styles`.
 #'
 #' @return
 #' `get_wms_raster` return an object of class `stars`. Depending on the layer,
@@ -34,9 +43,9 @@
 #' * Setting the `resolution` parameter higher than the base resolution
 #' of the layer multiplies the number of pixels without increasing
 #' the precision. For example, the download of the BD Alti layer from
-#' IGN will be optimal for a resolution of 25m. Look at
-#' [IGN documentation](https://geoservices.ign.fr/documentation/donnees/alti/bdalti)
-#' for more precision on layer's resolution.
+#' IGN will be optimal for a resolution of 25m.
+#' * `version`, `format` and `styles` parameters are detailed on
+#' [IGN documentation](https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc)
 #'
 #' @export
 #'
@@ -81,7 +90,10 @@
 get_wms_raster <- function(shape,
                            apikey = "altimetrie",
                            layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
-                           resolution = NULL) {
+                           resolution = 10,
+                           version = "1.3.0",
+                           format = "image/geotiff",
+                           styles = "") {
 
    shape <- st_make_valid(shape) %>%
       st_transform(4326)
@@ -90,24 +102,34 @@ get_wms_raster <- function(shape,
 
    url <- modify_url("https://wxs.ign.fr",
                      path = paste0(apikey, "/geoportail/r/wms"),
-                     query = list(VERSION = "1.3.0",
-                                  REQUEST = "GetMap",
-                                  FORMAT = "image/geotiff",
-                                  LAYERS = layer_name,
-                                  STYLES = "",
-                                  WIDTH = width_height[1],
-                                  HEIGHT = width_height[2],
-                                  CRS = "EPSG:4326",
-                                  BBOX = format_bbox_wms(shape)))
+                     query = list(version = version,
+                                  request = "GetMap",
+                                  format = format,
+                                  layers = layer_name,
+                                  styles = styles,
+                                  width = width_height[1],
+                                  height = width_height[2],
+                                  crs = "EPSG:4326",
+                                  bbox = format_bbox_wms(shape)))
 
    # Two options :
    # - terra::rast(url_rgdal_option) :
-   #         -> faster but you can't convert itto stars after
+   #         -> faster but you can't convert it to stars after
    # - read_stars(url_rgdal_option, normalize_path = FALSE) :
    #         -> 2.46 times slower but you can use tmap
 
    url_rgdal_option <- paste0("/vsicurl_streaming/", url)
-   res <- read_stars(url_rgdal_option, normalize_path = FALSE)
+   res <- try(read_stars(url_rgdal_option, normalize_path = FALSE),
+              silent = TRUE)
+
+   if (grepl("Error", as.character(res), fixed = TRUE)){
+      stop("\n   1. Please check that ", layer_name,
+           " exists at shape location\n",
+           "   2. If yes, rgal does not support this resource. ",
+           "Please copy the url below in your browser to ",
+           "manually download the resource : \n",
+           url)
+   }
 
    return(res)
 }
