@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+# happign <a href="https://paul-carteron.github.io/happign/"><img src="man/figures/logo.png" align="right" height="139" /></a>
+
 # happign - IGN API for R
 
 <!-- badges: start -->
