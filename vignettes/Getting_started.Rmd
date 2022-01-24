@@ -24,39 +24,15 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 library(happign)
 ```
 
-# Context
-
-Since January 1, 2021, the French National Institute for Geographic and Forestry Information (IGN) has made its public data on French topography, infrastructure, and terrain freely available. The opening of IGN data under the Etalab 2.0 open license means free access and use for all.
-
-Among the important data that are now open, we can mention the BD TOPO (3D modeling of the territory and its infrastructures), the BD ORTHO (departmental orthophotography), the BD Forêt and the RGE Alti (meshed digital terrain model that describes the French relief). This represents 100 terabytes of data. 
-
-To facilitate access to this data, IGN has implemented a set of APIs based on OGC standards. In other words, it is possible with correctly formatted URLs to access IGN data. In spite of a well supplied documentation, the use of APIs remains complex to set up. The `happign` package has been created to facilitate this, so let's get started.
-
-# Load happign Library
-
-You can install the released version of happign from [CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("happign")
-```
-
-And the development version from [GitHub](https://github.com/) with:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("paul-carteron/happign")
-```
+# Before starting
 
 We can load the `happign` package, and some additional packages we will need while we are here.
-
-
 
 ```{r message = FALSE, warning = FALSE}
 library(happign)
 library(sf)
 library(tmap)
 ```
-
 
 # The WFS, WMS service
 
