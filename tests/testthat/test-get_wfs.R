@@ -46,8 +46,8 @@ test_that("format_url return good url", {
 
 })
 
-vcr::use_cassette("get_wfs", {
-   test_that("get_wfs", {
+test_that("get_wfs", {
+      skip_on_cran()
       # example shape for testing
       shape <- st_polygon(list(matrix(c(-4.373, -4.373,
                                         -4.372, -4.372,
@@ -59,13 +59,13 @@ vcr::use_cassette("get_wfs", {
 
       layer_name <- "BDCARTO_BDD_WLD_WGS84G:troncon_route"
       apikey <- "cartovecto"
-      layer <- get_wfs(shape = shape,
-                                apikey = apikey,
-                                layer_name = layer_name)
-
+      vcr::use_cassette("get_wfs", {
+         layer <- get_wfs(shape = shape,
+                          apikey = apikey,
+                          layer_name = layer_name)
+         })
       expect_s3_class(layer, "sf")
       })
-   })
 
 test_that("get_wfs errors when the API doesn't behave", {
    # example shape for testing
