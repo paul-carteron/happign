@@ -90,24 +90,10 @@
     
     
 <div class="section level2">
-<h2 id="context">Context<a class="anchor" aria-label="anchor" href="#context"></a>
+<h2 id="before-starting">Before starting<a class="anchor" aria-label="anchor" href="#before-starting"></a>
 </h2>
-<p>Since January 1, 2021, the French National Institute for Geographic and Forestry Information (IGN) has made its public data on French topography, infrastructure, and terrain freely available. The opening of IGN data under the Etalab 2.0 open license means free access and use for all.</p>
-<p>Among the important data that are now open, we can mention the BD TOPO (3D modeling of the territory and its infrastructures), the BD ORTHO (departmental orthophotography), the BD Forêt and the RGE Alti (meshed digital terrain model that describes the French relief). This represents 100 terabytes of data.</p>
-<p>To facilitate access to this data, IGN has implemented a set of APIs based on OGC standards. In other words, it is possible with correctly formatted URLs to access IGN data. In spite of a well supplied documentation, the use of APIs remains complex to set up. The <code>happign</code> package has been created to facilitate this, so let’s get started.</p>
-</div>
-<div class="section level2">
-<h2 id="load-happign-library">Load happign Library<a class="anchor" aria-label="anchor" href="#load-happign-library"></a>
-</h2>
-<p>You can install the released version of happign from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"happign"</span><span class="op">)</span></code></pre></div>
-<p>And the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"paul-carteron/happign"</span><span class="op">)</span></code></pre></div>
 <p>We can load the <code>happign</code> package, and some additional packages we will need while we are here.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-carteron" class="external-link">happign</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mtennekes/tmap" class="external-link">tmap</a></span><span class="op">)</span></code></pre></div>
@@ -130,7 +116,7 @@
 <p>The layer name and API key can be directly retrieved on the <a href="https://geoservices.ign.fr/services-web-experts" class="external-link">IGN website in the expert web services</a> (I recommend you at this point to go and have a look).</p>
 <p>For example, if I take the first category “Administratif”, I see that the API key is “administratif” and the first layer name in WFS format is “ADMINEXPRESS-COG.LATEST:arrondissement”</p>
 <p>With <code>happign</code>, there is no need to go through the website because all api keys are available by running the function <code><a href="../reference/get_apikeys.html">get_apikeys()</a></code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "administratif" "adresse"       "agriculture"   "altimetrie"   </span>
 <span class="co">#&gt;  [5] "cartes"        "cartovecto"    "clc"           "economie"     </span>
@@ -143,7 +129,7 @@
 <li><em>This function can be a bit slow because it connects directly to the website so that the information is up to date.</em></li>
 <li><em>The returned data correspond to the <strong>intersection with the shape bbox</strong>. This is highlighted by the “all” figure below</em></li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">apikey</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>
 <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>apikey <span class="op">=</span> <span class="va">apikey</span>, data_type <span class="op">=</span> <span class="st">"wfs"</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 36 × 4</span></span>
@@ -169,7 +155,7 @@
 </h3>
 <p>For the example we will look at the beautiful town of Penmarch in France and we are going to get these borders.</p>
 <p>The <code><a href="../reference/get_wfs.html">get_wfs()</a></code> function connects to WFS service of the IGN that contain borders of the communes. It is also necessary to take a point inside penmarch so that the function detects all the shape that intersect this point.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penmarch_point</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4.370</span>, <span class="fl">47.800</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>
 <span class="va">penmarch_borders</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch_point</span>,
                             apikey <span class="op">=</span> <span class="st">"administratif"</span>,
@@ -190,7 +176,7 @@
 <p><img src="Getting_started_files/figure-html/unnamed-chunk-6-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>It’s as simple as that! Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many road junctions there are in Penmarch?</p>
 <p><em>Spoiler : there are 220 of them</em></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dikes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch_borders</span>,
                  apikey <span class="op">=</span> <span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">6</span><span class="op">]</span>,
                  layer_name <span class="op">=</span> <span class="st">"BDCARTO_BDD_WLD_WGS84G:noeud_routier"</span><span class="op">)</span>
@@ -217,7 +203,7 @@
 <li><em>The raster is not loaded into R’s memory. It is an on-the-fly sequential reading of files from network, without downloading the whole file first. In other words, it is quite possible to access the DEM of an entire region. The counterpart is the connection time which is about 30s;</em></li>
 <li><em>Raster from <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> are stars object from the <code>stars</code> package. To learn more about conversion between other raster type in R go <a href="https://geocompr.github.io/post/2021/spatial-classes-conversion/" class="external-link">check this out</a>.</em></li>
 </ul>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">apikey</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>
 <span class="va">layers_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="st">"altimetrie"</span>, <span class="st">"wms"</span><span class="op">)</span>
 <span class="va">dem_layer_name</span> <span class="op">&lt;-</span> <span class="va">layers_metadata</span><span class="op">[</span><span class="fl">2</span>, <span class="st">"name"</span><span class="op">]</span>
