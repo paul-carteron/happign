@@ -96,9 +96,13 @@ get_wfs <- function(shape,
                                 apikey))
 
   nb_features <- content(resp)$numberMatched
-  if (nb_features == 0) {
-    stop(paste("Layer is empty or shape is out of France."))
+
+  if(nb_features == 0){
+     stop("Your search returned zero results. There is no features for ",
+          layer_name,
+          " inside your shape")
   }
+
   nb_request <- nb_features %/% 1000
 
   result <- lapply(
