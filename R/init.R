@@ -3,7 +3,7 @@
 #'
 #' @export
 #'
-.onAttach <- function(libname, pkgname){
+.onAttach <- function(libname, pkgname) {
 
    # check Internet connection
    if (!curl::has_internet()) {
@@ -14,5 +14,7 @@
    # check that iNat can be reached
    if (httr::http_error(base_url)) { # TRUE: 400 or above
       packageStartupMessage("IGN web service API is unavailable.")
+   }else{
+      packageStartupMessage("IGN web service API is available.")
    }
 }

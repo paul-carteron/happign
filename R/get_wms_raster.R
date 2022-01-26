@@ -122,7 +122,7 @@ get_wms_raster <- function(shape,
    res <- try(read_stars(url_rgdal_option, normalize_path = FALSE),
               silent = TRUE)
 
-   if (grepl("Error", as.character(res), fixed = TRUE)){
+   if (grepl("Error", as.character(res), fixed = TRUE)) {
       stop("\n   1. Please check that ", layer_name,
            " exists at shape location\n",
            "   2. If yes, rgal does not support this resource. ",

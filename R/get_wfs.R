@@ -97,7 +97,7 @@ get_wfs <- function(shape,
 
   nb_features <- content(resp)$numberMatched
 
-  if(nb_features == 0){
+  if (nb_features == 0) {
      stop("Your search returned zero results. There is no features for ",
           layer_name,
           " inside your shape")
