@@ -14,23 +14,17 @@ URL: https://github.com/paul-carteron,
     https://paul-carteron.github.io/happign/
 BugReports: https://github.com/paul-carteron/happign/issues
 Imports: 
-    cli,
     curl,
     dplyr,
-    glue,
     httr,
-    lifecycle,
     magrittr,
-    rlang,
     sf,
     stars,
     stringr,
     tidyr,
-    withr,
     xml2
 Suggests: 
     covr,
-    knitr,
     rmarkdown,
     testthat (>= 3.0.0),
     tmap,

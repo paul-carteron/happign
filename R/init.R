@@ -1,4 +1,4 @@
-#' @importFrom httr http_error
+#' @importFrom httr http_error set_config config reset_config
 #' @importFrom curl has_internet
 #'
 #' @export
@@ -12,7 +12,7 @@
    base_url <- "http://geoservices.ign.fr/"
 
    # check that IGN web service can be reached
-   if (http_error(base_url)) { # TRUE: 400 or above
+   if (http_error(GET(base_url, config(ssl_verifypeer=0)))) { # TRUE: 400 or above
       packageStartupMessage("IGN web service API is unavailable.\n",
                             "It may be due to a site crash ",
                             "or an update of the IGN data. More information at ",
@@ -20,4 +20,6 @@
    }else{
       packageStartupMessage("IGN web service API is available.")
    }
+
+   reset_config()
 }
