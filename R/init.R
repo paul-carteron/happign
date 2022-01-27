@@ -1,10 +1,14 @@
 #' @importFrom httr http_error
+#' @importFrom curl has_internet
 #'
 #' @export
 #'
 .onAttach <- function(libname, pkgname) {
 
-   packageStartupMessage("test")
+   if (!has_internet()){
+      stop("No internet connection.")
+   }
+
    # base_url <- "http://geoservices.ign.fr/"
    # # check that IGN web service can be reached
    # if (http_error(base_url)) { # TRUE: 400 or above
