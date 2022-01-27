@@ -21,8 +21,7 @@ Imports:
     stars,
     stringr,
     tidyr,
-    xml2,
-    curl
+    xml2
 Suggests: 
     covr,
     knitr,
