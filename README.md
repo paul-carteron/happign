@@ -7,11 +7,16 @@
 
 <!-- badges: start -->
 
-[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/happign)](https://cran.r-project.org/package=happign)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/happign)](https://CRAN.R-project.org/package=happign)
+[![CRAN
+checks](https://cranchecks.info/badges/summary/happign)](https://cran.r-project.org/web/checks/check_results_happign.html)
 [![R-CMD-check](https://github.com/paul-carteron/happign/workflows/R-CMD-check/badge.svg)](https://github.com/paul-carteron/happign/actions)
 [![license](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Codecov test
 coverage](https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg)](https://app.codecov.io/gh/paul-carteron/happign?branch=main)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 The goal of happign is to facilitate the use of Application Programming
