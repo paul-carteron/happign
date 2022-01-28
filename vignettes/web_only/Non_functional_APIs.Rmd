@@ -14,10 +14,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r include=FALSE}
 library(happign)
+library(purrr)
+library(dplyr)
+library(httr)
+library(xml2)
 library(DT)
-library(magrittr)
 ```
 
 # Context
@@ -27,18 +30,55 @@ To ensure a viable service, the APIs accessible with happign are regularly teste
 
 # WFS
 
-API with HTTP error 400 : Bad Request
+```{r include=FALSE}
+# ---- function ----
+format_url <- function(apikey = NULL, layer_name = NULL) {
+   url <- modify_url("https://wxs.ign.fr",
+                     path = paste0(apikey, "/geoportail/wfs"),
+                     query = list(
+                        SERVICE = "WFS",
+                        VERSION = "2.0.0",
+                        REQUEST = "GetFeature",
+                        outputFormat = "json",
+                        srsName = "EPSG:4326",
+                        typeName = layer_name,
+                        bbox = "-4.375615,47.79683,-4.373898,47.79859,epsg:4326"
+                     )
+   )
+   return(url)
+}
 
+# ---- WFS ----
+start_time <- Sys.time()
+
+all_metadata = get_apikeys() %>% 
+   set_names() %>% 
+   map_df(.f = ~ get_layers_metadata(., "wfs"), .id = "apikey") %>% 
+   mutate(url = pmap_chr(., ~ format_url(..1, ..3))) %>% 
+   mutate(status_code = pmap_chr(., ~ status_code(GET(..6))))
+
+end_time <- Sys.time()
+time <- end_time - start_time
+
+errors <- all_metadata %>% 
+   filter(status_code != "200") %>% 
+   mutate(error = pmap_chr(., ~ as.character(xml_child(content(GET(..6)), 1))))
+
+```
+
+Testing all **`r nrow(all_metadata)`** WFS ressources took **`r as.numeric(round(time,2))`** mins.
+
+There is **`r nrow(errors)`** request that return an HTTP error 400 (Bad Request) of WFS service. Details of bad urls and errors they return are displayed below :
 
 ```{r echo=FALSE}
-bad_request_wfs = data.frame(
-   apikey = c("adresse", "adresse", "environnement", "environnement", "parcellaire", 
-"transports", "transports", "transports"),
-   layer_name = c("ADRESSE-PREMIUM.LIEN.HEXA:lien_adresse_hexa","ADRESSE-PREMIUM.LIEN.IRIS:lien_adresse_iris", "MESURES_COMPENSATOIRES:emprises_lineaires", "MESURES_COMPENSATOIRES:emprises_ponctuelles", "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:borne_parcelle", "SECUROUT.TE:n_te_prescription", "SECUROUT.TE:n_te_rel_franpres", "SECUROUT.TE:n_te_rel_tronpres"
-))
+errors_plot <- errors %>% 
+   select(-c("keywords", "abstract", "defaultcrs", "status_code"))
 
+DT::datatable(errors_plot,
+              options = list(pageLength = 10,
+                             scrollX = '400px'),
+              filter = 'top')
 
-DT::datatable(bad_request_wfs)
 ```
 
 <br/>
