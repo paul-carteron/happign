@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">happign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Getting_started.html">Getting started with happign</a>
-    <a class="dropdown-item" href="../articles/Non_functional_APIs.html">Non-functional APIs</a>
+    <a class="dropdown-item" href="../articles/web_only/Non_functional_APIs.html">Non-functional APIs</a>
   </div>
 </li>
 <li class="nav-item">
@@ -81,7 +81,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Getting started with happign</h1>
                         <h4 data-toc-skip class="author">Paul Carteron</h4>
             
-            <h4 data-toc-skip class="date">2022-01-24</h4>
+            <h4 data-toc-skip class="date">2022-01-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/paul-carteron/happign/blob/HEAD/vignettes/Getting_started.Rmd" class="external-link"><code>vignettes/Getting_started.Rmd</code></a></small>
       <div class="d-none name"><code>Getting_started.Rmd</code></div>
@@ -133,18 +133,18 @@
 <code class="sourceCode R"><span class="va">apikey</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>
 <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>apikey <span class="op">=</span> <span class="va">apikey</span>, data_type <span class="op">=</span> <span class="st">"wfs"</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 36 × 4</span></span>
-<span class="co">#&gt;    keywords               name                              abstract  defaultcrs</span>
-<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:ar… édition … EPSG::4326</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:ar… édition … EPSG::4326</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:ca… édition … EPSG::4326</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:ch… édition … EPSG::4326</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:ch… édition … EPSG::4326</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:ch… édition … EPSG::4326</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:co… édition … EPSG::4326</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:co… édition … EPSG::4326</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:co… édition … EPSG::4326</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:de… édition … EPSG::4326</span>
+<span class="co">#&gt;    keywords               name                               abstract defaultcrs</span>
+<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:arr… édition… EPSG::4326</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:arr… édition… EPSG::4326</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:can… édition… EPSG::4326</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:chf… édition… EPSG::4326</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:chf… édition… EPSG::4326</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:chf… édition… EPSG::4326</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:col… édition… EPSG::4326</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:com… édition… EPSG::4326</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:com… édition… EPSG::4326</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Unités administratives ADMINEXPRESS-COG-CARTO.LATEST:dep… édition… EPSG::4326</span>
 <span class="co">#&gt; <span style="color: #949494;"># … with 26 more rows</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -214,6 +214,8 @@
                       resolution <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>
 <span class="co">#&gt; x cell_size : 24.873 [m]</span>
 <span class="co">#&gt; y cell_size : 24.937 [m]</span>
+<span class="co">#&gt; Warning in CPL_read_gdal(as.character(x), as.character(options),</span>
+<span class="co">#&gt; as.character(driver), : GDAL Error 3: Cannot read 32559 bytes</span>
 <span class="va">mnt</span><span class="op">[</span><span class="va">mnt</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co"># remove negative values in case of singularity</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Elevation [m]"</span> <span class="co"># Rename raster ie the title legend</span>
 
