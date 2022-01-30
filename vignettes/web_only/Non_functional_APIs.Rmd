@@ -66,7 +66,7 @@ errors <- all_metadata %>%
 
 ```
 
-Testing all **`r nrow(all_metadata)`** WFS ressources took **`r as.numeric(round(time,2))`** mins.
+Testing all **`r nrow(all_metadata)`** WFS ressources took **`r round(as.numeric(time, units="mins"),2)`** mins.
 
 There is **`r nrow(errors)`** request that return an HTTP error 400 (Bad Request) of WFS service. Details of bad urls and errors they return are displayed below :
 
@@ -148,7 +148,7 @@ http_time <- end_time_http - start_time_http
 
 ## http error
 
-Testing all **`r nrow(ressources_to_test)`** WMS ressources for http errors took **`r as.numeric(round(http_time,2))`** mins.
+Testing all **`r nrow(ressources_to_test)`** WMS ressources for http errors took **`r round(as.numeric(http_time, units="mins"),2)`** mins.
 
 There is **`r nrow(http_errors)`** request that return an HTTP error of WFS service. Details of bad urls and errors they return are displayed below :
 
@@ -165,16 +165,16 @@ DT::datatable(http_errors,
 
 Some API can't be read but GDAL. You can directly copy URL from the error in a browser to manually download data.
 
-Testing all **`r nrow(ressources_to_test)`** WFS ressources took **`r as.numeric(round(vsi_time,2))`** mins.
+Testing all **`r nrow(ressources_to_test)`** WFS ressources took **`r round(as.numeric(vsi_time, units="mins"),2)`** mins.
 
-There are **`r length(no_ressources)` ** categories that have no WMS raster resources : **`cat(no_ressources, sep  =", ")` **.
+There are **`r length(no_ressources)` ** categories that have no WMS raster resources : **`r `cat(no_ressources, sep  =", ")` **.
 
 There are **`r nrow(vsi_testing)`** ressources that can't be read by `happign` for the moment. Details of them are displayed below :
 
 ```{r echo=FALSE}
 
 DT::datatable(vsi_testing,
-              options = list(pageLength = 10,
+              options = list(pageLength = 5,
                              scrollX = '400px'),
               filter = 'top')
 
