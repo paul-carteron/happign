@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   Getting_started: Getting_started.html
   Non_functional_APIs: web_only/Non_functional_APIs.html
-last_built: 2022-01-30T14:16Z
+last_built: 2022-01-30T14:49Z
 urls:
   reference: https://paul-carteron.github.io/happign/reference
   article: https://paul-carteron.github.io/happign/articles
