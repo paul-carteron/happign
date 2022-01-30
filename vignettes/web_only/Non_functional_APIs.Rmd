@@ -138,7 +138,7 @@ start_time_http = Sys.time()
 http_testing <- ressources_to_test %>% 
    mutate(status_code = pmap_chr(., ~ status_code(GET(..3))))
 
-errors <- http_testing %>%
+http_errors <- http_testing %>%
    filter(status_code != "200") %>%
    mutate(error = pmap_chr(., ~ as.character(xml_child(content(GET(..6)), 1))))
 
@@ -154,7 +154,7 @@ There is **`r nrow(http_errors)`** request that return an HTTP error of WFS serv
 
 ```{r echo=FALSE}
 
-DT::datatable(errors,
+DT::datatable(http_errors,
               options = list(pageLength = 10,
                              scrollX = '400px'),
               filter = 'top')
@@ -173,16 +173,9 @@ There are **`r nrow(vsi_testing)`** ressources that can't be read by `happign` f
 
 ```{r echo=FALSE}
 
-DT::datatable(errors_plot,
+DT::datatable(vsi_testing,
               options = list(pageLength = 10,
                              scrollX = '400px'),
               filter = 'top')
 
-```
-
-
-DT::datatable(errors_plot,
-              options = list(pageLength = 10,
-                             scrollX = '400px'),
-              filter = 'top')
 ```
