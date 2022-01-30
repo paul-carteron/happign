@@ -51,17 +51,17 @@ format_url <- function(apikey = NULL, layer_name = NULL) {
 # ---- WFS ----
 start_time <- Sys.time()
 
-all_metadata = get_apikeys() %>% 
-   set_names() %>% 
-   map_df(.f = ~ get_layers_metadata(., "wfs"), .id = "apikey") %>% 
-   mutate(url = pmap_chr(., ~ format_url(..1, ..3))) %>% 
+all_metadata = get_apikeys() %>%
+   set_names() %>%
+   map_df(.f = ~ get_layers_metadata(., "wfs"), .id = "apikey") %>%
+   mutate(url = pmap_chr(., ~ format_url(..1, ..3))) %>%
    mutate(status_code = pmap_chr(., ~ status_code(GET(..6))))
 
 end_time <- Sys.time()
 time <- end_time - start_time
 
-errors <- all_metadata %>% 
-   filter(status_code != "200") %>% 
+errors <- all_metadata %>%
+   filter(status_code != "200") %>%
    mutate(error = pmap_chr(., ~ as.character(xml_child(content(GET(..6)), 1))))
 
 ```
@@ -71,11 +71,11 @@ Testing all **`r nrow(all_metadata)`** WFS ressources took **`r as.numeric(round
 There is **`r nrow(errors)`** request that return an HTTP error 400 (Bad Request) of WFS service. Details of bad urls and errors they return are displayed below :
 
 ```{r echo=FALSE}
-errors_plot <- errors %>% 
-   select(-c("keywords", "abstract", "defaultcrs", "status_code"))
+errors_plot <- errors %>%
+   select("apikey", "name", "url", "error")
 
 DT::datatable(errors_plot,
-              options = list(pageLength = 10,
+              options = list(pageLength = 5,
                              scrollX = '400px'),
               filter = 'top')
 
@@ -85,114 +85,104 @@ DT::datatable(errors_plot,
 
 # WMS raster
 
-Some API can't be read but GDAL. You can directly put URL from the error inside browser to manually download data.
+```{r include=FALSE}
+# ---- function ----
+format_wms_url <- function(apikey = NULL, layer_name = NULL) {
+   url <- modify_url("https://wxs.ign.fr",
+                     path = paste0(apikey, "/geoportail/r/wms"),
+                     query = list(version = "1.3.0",
+                                  request = "GetMap",
+                                  format = "image/geotiff",
+                                  layers = layer_name,
+                                  styles = "",
+                                  width = "20",
+                                  height = "13",
+                                  crs = "EPSG:4326",
+                                  bbox = "47.79683,-4.375615,47.79859,-4.373898"))
+   return(url)
+}
 
+# ---- WFS ----
+all_metadata <- get_apikeys() %>%
+   set_names() %>%
+   map(.f = ~ get_layers_metadata(., "wms"), .id = "apikey") 
+
+no_ressources <-  all_metadata %>% 
+   keep(~ dim(.)[1] == 0) %>% 
+   names()
+
+ressources_to_test <- all_metadata %>% 
+   keep(~ dim(.)[1] != 0) %>%
+   map(~ as.list(.x[[2]])) %>% 
+   map(~ flatten_chr(.x)) %>% 
+   map_df(~ as.data.frame(.x), .id = "apikey") %>% 
+   rename("layer_name" = ".x") %>% 
+   mutate(url = pmap_chr(., ~ format_wms_url(..1, ..2)))
+
+# readable with vsi_handles
+start_time_vsi <- Sys.time()
+
+vsi_testing <- ressources_to_test %>% 
+   mutate(resp = pmap_chr(., ~ try(
+      names(read_stars(paste0("/vsicurl/",..3),
+                       normalize_path = FALSE))))) %>% 
+   filter(substr(resp, 1, 5) == "Error") %>% 
+   select(1:2)
+
+end_time_vsi <- Sys.time()
+vsi_time <- end_time_vsi - start_time_vsi
+
+# http error 
+start_time_http = Sys.time()
+
+http_testing <- ressources_to_test %>% 
+   mutate(status_code = pmap_chr(., ~ status_code(GET(..3))))
+
+errors <- http_testing %>%
+   filter(status_code != "200") %>%
+   mutate(error = pmap_chr(., ~ as.character(xml_child(content(GET(..6)), 1))))
+
+end_time_http <- Sys.time()
+http_time <- end_time_http - start_time_http
+```
+
+## http error
+
+Testing all **`r nrow(ressources_to_test)`** WMS ressources for http errors took **`r as.numeric(round(http_time,2))`** mins.
+
+There is **`r nrow(http_errors)`** request that return an HTTP error of WFS service. Details of bad urls and errors they return are displayed below :
 
 ```{r echo=FALSE}
-rgdal_pb_wms = data.frame(
-   apikey = c(rep("economie",21),
-              "lambert93",
-              rep("orthohisto",40),
-              rep("satellite",22),
-              rep("transport", 11)),
-   layer_name = c(
-      "DREAL.ZONAGE_PINEL",
-      "INSEE.FILOSOFI.LOGEMENTS.SURFACE.MOYENNE.SECRET",
-      "INSEE.FILOSOFI.NIVEAU.DE.VIE.SECRET",
-      "INSEE.FILOSOFI.PART.ENFANTS.0.17.ANS.SECRET",
-      "INSEE.FILOSOFI.PART.FAMILLES.MONOPARENTALES.SECRET",
-      "INSEE.FILOSOFI.PART.INDIVIDUS.25.39.ANS.SECRET",
-      "INSEE.FILOSOFI.PART.INDIVIDUS.40.54.ANS.SECRET",
-      "INSEE.FILOSOFI.PART.INDIVIDUS.55.64.ANS.SECRET",
-      "INSEE.FILOSOFI.PART.LOGEMENTS.APRES.1990.SECRET",
-      "INSEE.FILOSOFI.PART.LOGEMENTS.AVANT.1945.SECRET",
-      "INSEE.FILOSOFI.PART.LOGEMENTS.COLLECTIFS.SECRET",
-      "INSEE.FILOSOFI.PART.LOGEMENTS.CONSTRUITS.1945.1970.SECRET",
-      "INSEE.FILOSOFI.PART.LOGEMENTS.CONSTRUITS.1970.1990.SECRET",
-      "INSEE.FILOSOFI.PART.LOGEMENTS.SOCIAUX.SECRET",
-      "INSEE.FILOSOFI.PART.MENAGES.1.PERSONNE.SECRET",
-      "INSEE.FILOSOFI.PART.MENAGES.5.PERSONNES.OUPLUS.SECRET",
-      "INSEE.FILOSOFI.PART.MENAGES.MAISON.SECRET",
-      "INSEE.FILOSOFI.PART.MENAGES.PAUVRES.SECRET",
-      "INSEE.FILOSOFI.PART.MENAGES.PROPRIETAIRES.SECRET",
-      "INSEE.FILOSOFI.PART.PLUS.65.ANS.SECRET",
-      "INSEE.FILOSOFI.POPULATION",
-      "SCANEM40_PYR_PNG_FXX_LAMB93",
-      "ORTHOIMAGERY.ORTHOPHOTOS.1950-1965",
-      "ORTHOIMAGERY.ORTHOPHOTOS.1980-1995",
-      "ORTHOIMAGERY.ORTHOPHOTOS.IRC-EXPRESS.2018",
-      "ORTHOIMAGERY.ORTHOPHOTOS.IRC-EXPRESS.2019",
-      "ORTHOIMAGERY.ORTHOPHOTOS.IRC-EXPRESS.2020",
-      "ORTHOIMAGERY.ORTHOPHOTOS.IRC.2012",
-      "ORTHOIMAGERY.ORTHOPHOTOS.IRC.2013",
-      "ORTHOIMAGERY.ORTHOPHOTOS.IRC.2014",
-      "ORTHOIMAGERY.ORTHOPHOTOS.IRC.2015",
-      "ORTHOIMAGERY.ORTHOPHOTOS.IRC.2016",
-      "ORTHOIMAGERY.ORTHOPHOTOS.IRC.2017",
-      "ORTHOIMAGERY.ORTHOPHOTOS.ORTHO-ASP_PAC2020",
-      "ORTHOIMAGERY.ORTHOPHOTOS.ORTHO-EXPRESS.2017",
-      "ORTHOIMAGERY.ORTHOPHOTOS.ORTHO-EXPRESS.2019",
-      "ORTHOIMAGERY.ORTHOPHOTOS.ORTHO-EXPRESS.2020",
-      "ORTHOIMAGERY.ORTHOPHOTOS.SOCLE-ASP.2018",
-      "ORTHOIMAGERY.ORTHOPHOTOS.URGENCE.ALEX",
-      "ORTHOIMAGERY.ORTHOPHOTOS2000",
-      "ORTHOIMAGERY.ORTHOPHOTOS2000-2005",
-      "ORTHOIMAGERY.ORTHOPHOTOS2001",
-      "ORTHOIMAGERY.ORTHOPHOTOS2002",
-      "ORTHOIMAGERY.ORTHOPHOTOS2003",
-      "ORTHOIMAGERY.ORTHOPHOTOS2004",
-      "ORTHOIMAGERY.ORTHOPHOTOS2005",
-      "ORTHOIMAGERY.ORTHOPHOTOS2006",
-      "ORTHOIMAGERY.ORTHOPHOTOS2006-2010",
-      "ORTHOIMAGERY.ORTHOPHOTOS2007",
-      "ORTHOIMAGERY.ORTHOPHOTOS2008",
-      "ORTHOIMAGERY.ORTHOPHOTOS2009",
-      "ORTHOIMAGERY.ORTHOPHOTOS2010",
-      "ORTHOIMAGERY.ORTHOPHOTOS2011",
-      "ORTHOIMAGERY.ORTHOPHOTOS2011-2015",
-      "ORTHOIMAGERY.ORTHOPHOTOS2012",
-      "ORTHOIMAGERY.ORTHOPHOTOS2013",
-      "ORTHOIMAGERY.ORTHOPHOTOS2014",
-      "ORTHOIMAGERY.ORTHOPHOTOS2015",
-      "ORTHOIMAGERY.ORTHOPHOTOS2016",
-      "ORTHOIMAGERY.ORTHOPHOTOS2017",
-      "ORTHOIMAGERY.ORTHOPHOTOS2018",
-      "ORTHOIMAGERY.ORTHOPHOTOS2019",
-      "ORTHO-SAT-RAPIDEYE-2011_PYR-JPEG_WLD_WM_20160801",
-      "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2012",
-      "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2013",
-      "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2014",
-      "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2015",
-      "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2016",
-      "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2017",
-      "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2018",
-      "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2019",
-      "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2020",
-      "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2021",
-      "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2022",
-      "ORTHOIMAGERY.ORTHO-SAT.RAPIDEYE.2010",
-      "ORTHOIMAGERY.ORTHO-SAT.SPOT.2013",
-      "ORTHOIMAGERY.ORTHO-SAT.SPOT.2014",
-      "ORTHOIMAGERY.ORTHO-SAT.SPOT.2015",
-      "ORTHOIMAGERY.ORTHO-SAT.SPOT.2016",
-      "ORTHOIMAGERY.ORTHO-SAT.SPOT.2017",
-      "ORTHOIMAGERY.ORTHO-SAT.SPOT.2018",
-      "ORTHOIMAGERY.ORTHO-SAT.SPOT.2019",
-      "ORTHOIMAGERY.ORTHO-SAT.SPOT.2020",
-      "ORTHOIMAGERY.ORTHO-SAT.SPOT.2021",
-      "SECUROUTE.TE.1TE",
-      "SECUROUTE.TE.2TE48",
-      "SECUROUTE.TE.ALL",
-      "SECUROUTE.TE.OA",
-      "SECUROUTE.TE.PN",
-      "SECUROUTE.TE.PND",
-      "SECUROUTE.TE.TE120",
-      "SECUROUTE.TE.TE72",
-      "SECUROUTE.TE.TE94",
-      "TRANSPORTNETWORKS.ROADS.DIRECTION",
-      "TRANSPORTS.DRONES.RESTRICTIONS"
-   )
-)
 
-DT::datatable(rgdal_pb_wms)
+DT::datatable(errors,
+              options = list(pageLength = 10,
+                             scrollX = '400px'),
+              filter = 'top')
+
+```
+
+## Unreadable ressources by `happign`
+
+Some API can't be read but GDAL. You can directly copy URL from the error in a browser to manually download data.
+
+Testing all **`r nrow(ressources_to_test)`** WFS ressources took **`r as.numeric(round(vsi_time,2))`** mins.
+
+There are **`r length(no_ressources)` ** categories that have no WMS raster resources : **`cat(no_ressources, sep  =", ")` **.
+
+There are **`r nrow(vsi_testing)`** ressources that can't be read by `happign` for the moment. Details of them are displayed below :
+
+```{r echo=FALSE}
+
+DT::datatable(errors_plot,
+              options = list(pageLength = 10,
+                             scrollX = '400px'),
+              filter = 'top')
+
+```
+
+
+DT::datatable(errors_plot,
+              options = list(pageLength = 10,
+                             scrollX = '400px'),
+              filter = 'top')
 ```

@@ -118,7 +118,7 @@ get_wms_raster <- function(shape,
    # - read_stars(url_rgdal_option, normalize_path = FALSE) :
    #         -> 2.46 times slower but you can use tmap
 
-   url_rgdal_option <- paste0("/vsicurl_streaming/", url)
+   url_rgdal_option <- paste0("/vsicurl/", url)
    res <- try(read_stars(url_rgdal_option, normalize_path = FALSE),
               silent = TRUE)
 

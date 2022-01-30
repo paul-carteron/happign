@@ -20,10 +20,6 @@ knitr::opts_chunk$set(
 options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
-```{r, include=FALSE}
-library(happign)
-```
-
 # Before starting
 
 We can load the `happign` package, and some additional packages we will need while we are here.
