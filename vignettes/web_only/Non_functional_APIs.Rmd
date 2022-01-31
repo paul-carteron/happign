@@ -25,7 +25,7 @@ library(DT)
 ```
 
 # Context
-To ensure a viable service, the APIs accessible with happign are tested for errors every 12:00 AM on sonday. If you also detect non-viable APIs, please describe your problem [here](https://github.com/paul-carteron/happign/issues).
+To ensure a viable service, the APIs accessible with happign are tested for errors every 12:00 AM on sunday. If you also detect non-viable APIs, please describe your problem [here](https://github.com/paul-carteron/happign/issues).
 
 <br/>
 
@@ -37,9 +37,9 @@ format_url <- function(apikey = NULL, layer_name = NULL) {
    url <- modify_url("https://wxs.ign.fr",
                      path = paste0(apikey, "/geoportail/wfs"),
                      query = list(
-                        SERVICE = "WFS",
-                        VERSION = "2.0.0",
-                        REQUEST = "GetFeature",
+                        service = "WFS",
+                        version = "2.0.0",
+                        request = "GetFeature",
                         outputFormat = "json",
                         srsName = "EPSG:4326",
                         typeName = layer_name,
