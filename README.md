@@ -49,8 +49,9 @@ package has been created to facilitate this.
 
 ### Rights of use for IGN data
 
-The data on the site are free and available in open license according to
-the principle of the [Etalab 2.0
+Data from [IGN geoservice
+website](https://geoservices.ign.fr/presentation) are free and available
+in open license according to the principle of the [Etalab 2.0
 license](https://www.etalab.gouv.fr/licence-ouverte-open-licence) since
 January 1, 2021. The data on the site are free and available in open
 license according to the principle of the Etalab 2.0 license since
@@ -81,7 +82,7 @@ devtools::install_github("paul-carteron/happign")
 
 -   Package vignettes :
     [first](https://paul-carteron.github.io/happign/articles/Getting_started.html),
-    [second](https://paul-carteron.github.io/happign/articles/Non_functional_APIs.html)
+    [second](https://paul-carteron.github.io/happign/articles/web_only/Non_functional_APIs.html)
 
 ### Future features
 
