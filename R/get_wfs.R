@@ -9,7 +9,8 @@
 #' @usage
 #' get_wfs(shape,
 #'         apikey,
-#'         layer_name)
+#'         layer_name,
+#'         filename = NULL)
 #'
 #' @param shape Object of class `sf`. Needs to be located in
 #' France.
@@ -18,13 +19,14 @@
 #' @param layer_name Name of the layer from `get_layers_metadata(apikey, "wfs")`
 #' or directly from
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
+#' @param filename File name to save shape on disk as ".shp".
 #'
 #' @return
 #' `get_wfs`return an object of class `sf`
 #'
 #' @export
 #'
-#' @importFrom sf st_bbox st_transform st_make_valid st_read st_as_sf
+#' @importFrom sf st_bbox st_transform st_make_valid st_read st_as_sf st_write
 #' @importFrom httr modify_url GET content status_code stop_for_status
 #' @importFrom dplyr select
 #' @importFrom magrittr `%>%`
@@ -72,7 +74,8 @@
 #' }
 get_wfs <- function(shape,
                     apikey = "cartovecto",
-                    layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route") {
+                    layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route",
+                    filename = NULL) {
   bbox <- NULL
 
   lapply_function <- function(startindex, nb_request, apikey,
@@ -117,6 +120,14 @@ get_wfs <- function(shape,
     st_as_sf() %>%
     st_make_valid() %>%
     select(-bbox)
+
+  if (!is.null(filename)){
+     st_write(result, file.path(paste0(filename,".shp")))
+     message("The shape is saved at : ", file.path(getwd(),
+                                                   paste0(filename,".shp")))
+  }
+
+  return(result)
 }
 #'
 #' format bbox to wfs url format

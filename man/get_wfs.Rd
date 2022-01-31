@@ -6,7 +6,8 @@
 \usage{
 get_wfs(shape,
         apikey,
-        layer_name)
+        layer_name,
+        filename = NULL)
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
@@ -18,6 +19,8 @@ from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 \item{layer_name}{Name of the layer from \code{get_layers_metadata(apikey, "wfs")}
 or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
+
+\item{filename}{File name to save shape on disk as ".shp".}
 }
 \value{
 \code{get_wfs}return an object of class \code{sf}
