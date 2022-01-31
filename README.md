@@ -47,6 +47,20 @@ formatted URLs, to access IGN data. In spite of a well supplied
 documentation, the use of APIs remains complex to set up. The `happign`
 package has been created to facilitate this.
 
+### Rights of use for IGN data
+
+The data on the site are free and available in open license according to
+the principle of the [Etalab 2.0
+license](https://www.etalab.gouv.fr/licence-ouverte-open-licence) since
+January 1, 2021. The data on the site are free and available in open
+license according to the principle of the Etalab 2.0 license since
+January 1, 2021. Other data complete the IGN’s open data policy since
+June 1st, 2021. SCAN 25®, SCAN 100® and SCAN OACI data are free to
+download or stream, but any professional or individual wishing to
+develop a commercial paper or digital offer for the general public will
+have to pay a fee according to the [General Conditions of
+Use](https://geoservices.ign.fr/cgu-licences).
+
 ### Installation
 
 You can install the released version of happign from
