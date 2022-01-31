@@ -1,18 +1,16 @@
 ## R CMD check results
 
--- happign 0.1.1: NOTE
+-- happign 0.1.2: NOTE
 
-  Build ID:   happign_0.1.1.tar.gz-67bcba7ee8f441648a9745edae0c8c70
+  Build ID:   happign_0.1.2.tar.gz-d188e9392b6c42b59715793c9b082b28
   Platform:   Windows Server 2022, R-devel, 64 bit
-  Submitted:  38m 25.1s ago
-  Build time: 7m 41s
+  Submitted:  40m 27s ago
+  Build time: 7m 6.9s
 
 > checking CRAN incoming feasibility ... NOTE
   Maintainer: 'Paul Carteron <carteronpaul@gmail.com>'
   
-  Possibly misspelled words in DESCRIPTION:
-    WFS (10:28)
-    WMS (10:48)
+  Days since last update: 4
 
 > checking for detritus in the temp directory ... NOTE
   Found the following files/directories:
@@ -20,21 +18,25 @@
 
 0 errors √ | 0 warnings √ | 2 notes x
 
--- happign 0.1.1: NOTE
+-- happign 0.1.2: NOTE
 
-  Build ID:   happign_0.1.1.tar.gz-a94e04948a2f486d91ec91d953d79b17
+  Build ID:   happign_0.1.2.tar.gz-5274db91d11542e4ba00128904ea3fd2
   Platform:   Ubuntu Linux 20.04.1 LTS, R-release, GCC
-  Submitted:  38m 25.2s ago
-  Build time: 36m 8.4s
+  Submitted:  40m 27s ago
+  Build time: 36m 19.7s
 
 > checking CRAN incoming feasibility ... NOTE
   Maintainer: ‘Paul Carteron <carteronpaul@gmail.com>’
   
-  Possibly mis-spelled words in DESCRIPTION:
-    WFS (10:28)
-    WMS (10:48)
+  Days since last update: 4
   
   Found the following (possibly) invalid URLs:
+    URL: https://geoservices.ign.fr/cgu-licences
+      From: README.md
+      Status: Error
+      Message: libcurl error code 60:
+        	SSL certificate problem: unable to get local issuer certificate
+        	(Status without verification: OK)
     URL: https://geoservices.ign.fr/documentation/services/api-et-services-ogc
       From: man/get_layers_metadata.Rd
       Status: Error
@@ -49,6 +51,12 @@
         	(Status without verification: OK)
     URL: https://geoservices.ign.fr/documentation/services/tableau_ressources
       From: man/get_apikeys.Rd
+      Status: Error
+      Message: libcurl error code 60:
+        	SSL certificate problem: unable to get local issuer certificate
+        	(Status without verification: OK)
+    URL: https://geoservices.ign.fr/presentation
+      From: README.md
       Status: Error
       Message: libcurl error code 60:
         	SSL certificate problem: unable to get local issuer certificate
@@ -72,21 +80,25 @@
 
 0 errors √ | 0 warnings √ | 1 note x
 
--- happign 0.1.1: NOTE
+-- happign 0.1.2: NOTE
 
-  Build ID:   happign_0.1.1.tar.gz-ce0ce0b856754c16a2c10a8aa54f1871
+  Build ID:   happign_0.1.2.tar.gz-30886fc026104090b00fc1843c9c00a0
   Platform:   Fedora Linux, R-devel, clang, gfortran
-  Submitted:  38m 25.2s ago
-  Build time: 37m 27.2s
+  Submitted:  40m 27s ago
+  Build time: 37m 13.1s
 
 > checking CRAN incoming feasibility ... NOTE
   Maintainer: ‘Paul Carteron <carteronpaul@gmail.com>’
   
-  Possibly misspelled words in DESCRIPTION:
-    WFS (10:28)
-    WMS (10:48)
+  Days since last update: 4
   
   Found the following (possibly) invalid URLs:
+    URL: https://geoservices.ign.fr/cgu-licences
+      From: README.md
+      Status: Error
+      Message: libcurl error code 60:
+        	SSL certificate problem: unable to get local issuer certificate
+        	(Status without verification: OK)
     URL: https://geoservices.ign.fr/documentation/services/api-et-services-ogc
       From: man/get_layers_metadata.Rd
       Status: Error
@@ -101,6 +113,12 @@
         	(Status without verification: OK)
     URL: https://geoservices.ign.fr/documentation/services/tableau_ressources
       From: man/get_apikeys.Rd
+      Status: Error
+      Message: libcurl error code 60:
+        	SSL certificate problem: unable to get local issuer certificate
+        	(Status without verification: OK)
+    URL: https://geoservices.ign.fr/presentation
+      From: README.md
       Status: Error
       Message: libcurl error code 60:
         	SSL certificate problem: unable to get local issuer certificate
