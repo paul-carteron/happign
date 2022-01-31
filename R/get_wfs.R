@@ -90,7 +90,7 @@ get_wfs <- function(shape,
   resp <- GET(format_url(apikey, layer_name, shape, startindex = 0))
 
   stop_for_status(resp,
-                  task = paste0("find ressource. Check layer_name ",
+                  task = paste0("find resource. Check layer_name ",
                                 "at https://geoservices.ign.fr/",
                                 "services-web-experts-",
                                 apikey))

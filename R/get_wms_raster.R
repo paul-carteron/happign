@@ -11,6 +11,7 @@
 #'                apikey,
 #'                layer_name,
 #'                resolution = 10,
+#'                filename = NULL,
 #'                version = "1.3.0",
 #'                format = "image/geotiff",
 #'                styles = "")
@@ -24,6 +25,9 @@
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
 #' @param resolution Cell size in meter. WMS are limited to 2048x2048 pixels.
 #' See detail for more information about resolution.
+#' @param filename File name to create on disk. If `filename` is NULL, the layer
+#'  is not downloaded but a virtual connection is established. This allows to
+#'  work with large areas without overloading the memory
 #' @param version The version of the service used. Set to latest version
 #' by default. See detail for more information about `version`.
 #' @param format The output format - type-mime - of the image file. Set
@@ -86,11 +90,12 @@
 #' # Verif
 #' qtm(mnt)+
 #' qtm(shape, fill = NULL, borders.lwd = 3)
-#' }
+#'}
 get_wms_raster <- function(shape,
                            apikey = "altimetrie",
                            layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
                            resolution = 10,
+                           filename = NULL,
                            version = "1.3.0",
                            format = "image/geotiff",
                            styles = "") {
@@ -112,25 +117,38 @@ get_wms_raster <- function(shape,
                                   crs = "EPSG:4326",
                                   bbox = format_bbox_wms(shape)))
 
-   # Two options :
-   # - terra::rast(url_rgdal_option) :
-   #         -> faster but you can't convert it to stars after
-   # - read_stars(url_rgdal_option, normalize_path = FALSE) :
-   #         -> 2.46 times slower but you can use tmap
+   if (is.null(filename)) {
+      url_rgdal_option <- paste0("/vsicurl/", url)
+      res <- try(read_stars(url_rgdal_option, normalize_path = FALSE),
+                 silent = TRUE)
 
-   url_rgdal_option <- paste0("/vsicurl/", url)
-   res <- try(read_stars(url_rgdal_option, normalize_path = FALSE),
-              silent = TRUE)
+      if (grepl("Error", as.character(res), fixed = TRUE)) {
+         stop("\n   1. Please check that ", layer_name,
+              " exists at shape location\n",
+              "   2. If yes, rgal does not support this resource. ",
+              "To overcome this, you must save the resource ,",
+              "by using the filename argument.: \n")
+      }
+   }else{
 
-   if (grepl("Error", as.character(res), fixed = TRUE)) {
-      stop("\n   1. Please check that ", layer_name,
-           " exists at shape location\n",
-           "   2. If yes, rgal does not support this resource. ",
-           "Please copy the url below in your browser to ",
-           "manually download the resource : \n",
-           url)
+      filename <- paste0(filename,
+                           switch(
+                              format,
+                              "image/jpeg" = ".jpg",
+                              "image/png" = ".png",
+                              "image/tiff" = ".tif",
+                              "image/geotiff" = ".tif",
+                              stop("Bad format, please check ",
+                                   "`?get_wms_raster()`")
+                           ))
+
+      download.file(url = url,
+                    method = "auto",
+                    mode = "wb",
+                    destfile = filename)
+   message("The layer is saved at : ", file.path(getwd(), filename))
+      res <- read_stars(filename)
    }
-
    return(res)
 }
 #'

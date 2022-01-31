@@ -1,3 +1,10 @@
+test_that("error when bad format",{
+   shape <- st_sfc(sf::st_point(1:3), crs = sf::st_crs(4326))
+   expect_error(get_wms_raster(shape,
+                               format = "bad_format",
+                               filename = "bad_filename"))
+})
+
 test_that("format_bbox_wms", {
    expect_error(format_bbox_wms())
 

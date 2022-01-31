@@ -21,7 +21,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 The goal of happign is to facilitate the use of Application Programming
 Interface from the French National Institute of Geographic and Forestry
-Information to retrieve their free ressources. `happign` allow
+Information to retrieve their free resources. `happign` allow
 downloading of :
 
 -   Shapefile via use of WFS service

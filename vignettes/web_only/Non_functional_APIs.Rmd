@@ -52,7 +52,7 @@ format_url <- function(apikey = NULL, layer_name = NULL) {
 # ---- WFS ----
 start_time <- Sys.time()
 
-all_metadata = get_apikeys()[2] %>%
+all_metadata = get_apikeys() %>%
    set_names() %>%
    map_df(.f = ~ get_layers_metadata(., "wfs"), .id = "apikey") %>%
    mutate(url = pmap_chr(., ~ format_url(..1, ..3))) %>%
@@ -67,7 +67,7 @@ errors <- all_metadata %>%
 
 ```
 
-Testing all **`r nrow(all_metadata)`** WFS ressources took **`r round(as.numeric(time, units="mins"),2)`** mins.
+Testing all **`r nrow(all_metadata)`** WFS resources took **`r round(as.numeric(time, units="mins"),2)`** mins.
 
 There is **`r nrow(errors)`** request that return an HTTP error 400 (Bad Request) of WFS service. Details of bad urls and errors they return are displayed below :
 
@@ -108,11 +108,11 @@ all_metadata <- get_apikeys()[] %>%
    set_names() %>%
    map(.f = ~ get_layers_metadata(., "wms"), .id = "apikey") 
 
-no_ressources <- all_metadata %>% 
+no_resources <- all_metadata %>% 
    keep(~ dim(.)[1] == 0) %>% 
    names()
 
-ressources_to_test <- all_metadata %>% 
+resources_to_test <- all_metadata %>% 
    keep(~ dim(.)[1] != 0) %>%
    map(~ as.list(.x[[2]])) %>% 
    map(~ flatten_chr(.x)) %>% 
@@ -123,7 +123,7 @@ ressources_to_test <- all_metadata %>%
 # readable with vsi_handles
 start_time_vsi <- Sys.time()
 
-vsi_testing <- ressources_to_test %>% 
+vsi_testing <- resources_to_test %>% 
    mutate(resp = pmap_chr(., ~ try(
       names(read_stars(paste0("/vsicurl/",..3),
                        normalize_path = FALSE)))))
@@ -137,7 +137,7 @@ vsi_time <- end_time_vsi - start_time_vsi
 # http error 
 start_time_http = Sys.time()
 
-http_testing <- ressources_to_test %>% 
+http_testing <- resources_to_test %>% 
    mutate(status_code = pmap_chr(., ~ status_code(GET(..3))))
 
 http_errors <- http_testing %>%
@@ -150,7 +150,7 @@ http_time <- end_time_http - start_time_http
 
 ## http error
 
-Testing all **`r nrow(ressources_to_test)`** WMS ressources for http errors took **`r round(as.numeric(http_time, units="mins"),2)`** mins.
+Testing all **`r nrow(resources_to_test)`** WMS resources for http errors took **`r round(as.numeric(http_time, units="mins"),2)`** mins.
 
 There is **`r nrow(http_errors)`** request that return an HTTP error of WFS service. Details of bad urls and errors they return are displayed below :
 
@@ -163,15 +163,15 @@ DT::datatable(http_errors,
 
 ```
 
-## Unreadable ressources by `happign`
+## Unreadable layer by `happign`
 
-Some API can't be read but GDAL. You can directly copy URL from the error in a browser to manually download data.
+For some API, no connection can be established by GDAL because of how resources are formatted on the IGN database. This also means that the `get_wms_raster` function can't connect to the layer. To avoid this problem you just have to **set a name for the `filename` argument** (for example : `get_wms_layer(shape, "satellite", "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2017", filename = "best_layer_name_ever")`). When a file name is set, the layer is directly download on disk, so be careful with area of your shape.
 
-Testing all **`r nrow(ressources_to_test)`** WFS ressources took **`r round(as.numeric(vsi_time, units="mins"),2)`** mins.
+Testing all **`r nrow(resources_to_test)`** WFS resources took **`r round(as.numeric(vsi_time, units="mins"),2)`** mins.
 
-There are **`r length(no_ressources)` ** categories that have no WMS raster resources : **`r paste0(no_ressources, collapse  =", ")` **.
+There are **`r length(no_resources)` ** categories that have no WMS raster resources : **`r paste0(no_resources, collapse  =", ")` **.
 
-There are **`r nrow(vsi_error)`** ressources that can't be read by `happign` for the moment. Details of them are displayed below :
+There are **`r nrow(vsi_error)`** resources that can't be read by `happign` for the moment. Details of them are displayed below :
 
 ```{r plot_wms_vsi_error, echo=FALSE}
 

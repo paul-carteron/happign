@@ -8,6 +8,7 @@ get_wms_raster(shape,
                apikey,
                layer_name,
                resolution = 10,
+               filename = NULL,
                version = "1.3.0",
                format = "image/geotiff",
                styles = "")
@@ -25,6 +26,10 @@ or directly from
 
 \item{resolution}{Cell size in meter. WMS are limited to 2048x2048 pixels.
 See detail for more information about resolution.}
+
+\item{filename}{File name to create on disk. If \code{filename} is NULL, the layer
+is not downloaded but a virtual connection is established. This allows to
+work with large areas without overloading the memory}
 
 \item{version}{The version of the service used. Set to latest version
 by default. See detail for more information about \code{version}.}
