@@ -81,7 +81,6 @@ get_layers_metadata.wfs <- function(apikey, data_type) {
    abstract <- defaultcrs <- NULL
 
    res <- xml_to_df(items) %>%
-      select("Keywords", "Name", "Abstract", "DefaultCRS") %>%
       rename_all(tolower) %>%
       mutate(abstract = gsub("<.*?>", "", abstract),
              defaultcrs = str_remove(defaultcrs, "urn:ogc:def:crs:"))

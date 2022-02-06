@@ -28,7 +28,7 @@
 #'
 #' @importFrom sf st_bbox st_transform st_make_valid st_read st_as_sf st_write
 #' @importFrom httr modify_url GET content status_code stop_for_status
-#' @importFrom dplyr select
+#' @importFrom dplyr select bind_rows
 #' @importFrom magrittr `%>%`
 #'
 #' @seealso
@@ -116,7 +116,7 @@ get_wfs <- function(shape,
     layer_name = layer_name,
     shape = shape
   ) %>%
-    as.data.frame() %>%
+    bind_rows() %>%
     st_as_sf() %>%
     st_make_valid() %>%
     select(-bbox)
