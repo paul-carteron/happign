@@ -20,7 +20,6 @@ Imports:
     magrittr,
     sf,
     stars,
-    stringr,
     tidyr,
     xml2
 Suggests: 

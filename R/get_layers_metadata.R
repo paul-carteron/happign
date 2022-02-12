@@ -50,10 +50,9 @@
 #' @export
 #'
 #' @importFrom dplyr mutate select rename_all
-#' @importFrom tidyr pivot_wider unnest
+#' @importFrom tidyr pivot_wider
 #' @importFrom xml2 read_xml xml_child xml_children xml_find_all
 #' xml_name xml_text
-#' @importFrom stringr str_remove
 #'
 get_layers_metadata <- function(apikey, data_type) {
    UseMethod("get_layers_metadata")
@@ -82,8 +81,7 @@ get_layers_metadata.wfs <- function(apikey, data_type) {
 
    res <- xml_to_df(items) %>%
       rename_all(tolower) %>%
-      mutate(abstract = gsub("<.*?>", "", abstract),
-             defaultcrs = str_remove(defaultcrs, "urn:ogc:def:crs:"))
+      mutate(defaultcrs = gsub(".*?([0-9]+).*", "\\1", defaultcrs))
 
    res
 

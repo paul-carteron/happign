@@ -56,14 +56,14 @@ all_metadata = get_apikeys() %>%
    set_names() %>%
    map_df(.f = ~ get_layers_metadata(., "wfs"), .id = "apikey") %>%
    mutate(url = pmap_chr(., ~ format_url(..1, ..3))) %>%
-   mutate(status_code = pmap_chr(., ~ status_code(GET(..6))))
+   mutate(status_code = pmap_chr(., ~ status_code(GET(..10))))
 
 end_time <- Sys.time()
 time <- end_time - start_time
 
 errors <- all_metadata %>%
    filter(status_code != "200") %>%
-   mutate(error = pmap_chr(., ~ as.character(xml_child(content(GET(..6)), 1))))
+   mutate(error = pmap_chr(., ~ as.character(xml_child(content(GET(..10)), 1))))
 
 ```
 
@@ -106,7 +106,7 @@ format_wms_url <- function(apikey = NULL, layer_name = NULL) {
 # ---- WFS ----
 all_metadata <- get_apikeys()[] %>%
    set_names() %>%
-   map(.f = ~ get_layers_metadata(., "wms"), .id = "apikey") 
+   map(.f = ~ get_layers_metadata(., "wms"), .id = "apikey")
 
 no_resources <- all_metadata %>% 
    keep(~ dim(.)[1] == 0) %>% 
