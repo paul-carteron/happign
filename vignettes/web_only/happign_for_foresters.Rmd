@@ -1,0 +1,246 @@
+---
+title: "happign for foresters"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{happign for foresters}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center",
+  fig.height = 4,
+  fig.width = 6
+)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(happign)
+library(sf)
+library(tmap); tmap_mode("view") # Set map to interactive
+library(dplyr)
+library(ggplot2)
+library(purrr)
+```
+
+## First choose a zone of interest
+
+For the example we will work with the Brocéliande forest. The starting point come from [google map](https://www.google.fr/maps/place/Penmarc'h/@47.8130608,-4.3753483) : you just have to select a random point inside the forest by using right click on map.
+
+```{r}
+point = st_sfc(st_point(c(-2.2872752260026816, 48.00393414838046 )), crs = 4326)
+tm_shape(point)+
+   tm_dots(size = 0.1)+
+   tm_basemap("OpenStreetMap")
+
+```
+
+## Extract commune borders
+
+Now that we have point, getting shape of commune is just a matter of finding the good layer name from IGN. The one we are after is called "ADMINEXPRESS-COG-CARTO.LATEST:commune" from the "Administrative" category. Then we use the `get_wfs()` function to download the shape.
+
+As you can see below, there are three communes close to our point as you can see below (tip : click on theinteractive map below to get population).
+
+```{r}
+apikey <- get_apikeys()[1]  # "administratif"
+layer_name <- "ADMINEXPRESS-COG-CARTO.LATEST:commune"
+
+# The layer_name I use come from `all_layers = get_layers_metadata(apikey, "wfs") that return all of them layer_name
+
+borders <- get_wfs(shape = point,
+                   apikey = apikey,
+                   layer_name = layer_name)
+
+tm_shape(borders)+
+   tm_polygons(lwd = 2,
+               col = "nom",
+               id = "nom",
+               popup.vars = "population")+
+   tm_basemap("OpenStreetMap")
+
+
+```
+
+## Downloading BD Forêt
+
+The first interesting layer for forester is the "BD Forêt" which is all vegetation type assigned to each area greater than or equal to 0.5 ha (5,000 m²). There is two layer for forest : the old one BD Forêt V1 and the new one BD Forêt V2.
+
+```{r warning=FALSE}
+apikey = get_apikeys()[9]  #"environement"
+layer_name = get_layers_metadata(apikey, "wfs")
+name_BDV1 = layer_name[1,2] #LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape
+name_BDV2 = layer_name[2,2] #LANDCOVER.FORESTINVENTORY.V2:bdforetv2
+
+BDV1 = get_wfs(borders, apikey, name_BDV1) %>% 
+   st_intersection(borders) # Layer is download for a bbox around the shape. An intersection is done to get forest only inside our zone of interest
+
+BDV2 = get_wfs(borders, apikey, name_BDV2) %>% 
+   st_intersection(borders)
+
+tm_shape(BDV1) +
+   tm_polygons(col = "libelle",
+               popup.vars = names(BDV1)[1:20],
+               legend.show = FALSE) +
+tm_shape(BDV2) +
+   tm_polygons(col = "tfv",
+               alpha = 0.5,
+               popup.vars = names(BDV2)[1:16],
+               legend.show = FALSE) +
+tm_shape(borders) +
+   tm_borders(lwd = 2) +
+   tm_basemap("OpenStreetMap")
+```
+
+With the map below, you can choose which BD Forêt you want to display. The BDV2 is obviously more precise. Many differences can be calculated, one is the area : BDV2 as `r sum(st_area(BDV2))-sum(st_area(BDV1))` more hectare described. 
+
+More calculations can be done as you can see below :
+
+```{r warning=FALSE}
+forest_type_BDV2 = BDV2 %>% 
+   mutate(area = as.numeric(st_area(geometry))) %>% 
+   st_drop_geometry() %>%
+   group_by(essence) %>% 
+   summarise(sum_area = sum(area)/10000)
+
+ggplot()+
+   geom_col(data = forest_type_BDV2,
+            aes(x = as.factor(essence),
+                y = sort(sum_area, decreasing = TRUE),
+                fill = as.factor(essence)))+
+   theme_bw()+
+   labs(title = "Surface couverte par essences [ha]",
+        y = "Surface [ha]",
+       fill = "Essence :")+
+   theme(axis.text.x = element_blank())
+
+   
+```
+
+## Detect protected area
+
+One information you really want when you work at forest management is if your zone of interest is inside protected area. The example code below is design to test automatically test every layer starting with "PROTECTED" so you're can be sure that you have all of them.
+
+So, for the Brocéliande forest we find :
+- 4 forest rescue point
+- 1 SIC ("Sites d’Importance Communautaire)
+- 15 Znieff 1 (blue on map)
+- 1 Znieff 2  (grey on map)
+
+Again, you can click on map, point and shape for more informations.
+
+```{r message=FALSE, warning=FALSE}
+apikey = "environnement"
+protected_area_names = get_layers_metadata(apikey, "wfs") %>% 
+   filter(grepl("^PROTECTED", name)) %>% 
+   pull(name)
+
+all_protected_area = map(.x = protected_area_names,
+                         .f = ~ try(get_wfs(borders, apikey, .x), silent = TRUE)) %>% 
+   set_names(protected_area_names) %>% 
+   discard(~ is.null(dim(.)))
+
+# Plot the result
+tm_shape(all_protected_area[[1]])+
+   tm_dots(group = "Point rencontre des secours en forêts", col = "red")+
+tm_shape(all_protected_area[[2]])+
+   tm_polygons(group = "SIC", alpha = 0.8)+
+tm_shape(all_protected_area[[4]])+
+   tm_polygons(group = "Znieff 2", alpha = 0.8)+
+tm_shape(all_protected_area[[3]], alpha = 0.8)+
+   tm_polygons(group = "Znieff 1", alpha = 0.8, col = "blue")+
+tm_shape(borders) +
+   tm_borders(lwd = 2) +
+   tm_basemap("OpenStreetMap")
+   
+```
+
+
+# MNS, MNT and MNH...
+
+It's always good to know a more about the terrain topologie. The ign offers a MNT and a MNS for download. As a reminder, the MNT corresponds to the surface of the ground and the MNS to the real surface (in our case, the trees). It is thus easy to find the height of the trees by subtracting the DTM from the MNS.
+
+```{r}
+layers_name = get_layers_metadata("altimetrie", "wms")
+MNT_name = layers_name[2,2] # ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES
+MNS_name = layers_name[3,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
+
+MNT = get_wms_raster(borders, "altimetrie", MNT_name, filename = "MNT")
+MNS = get_wms_raster(borders, "altimetrie", MNS_name, filename = "MNS")
+
+MNH = MNS - MNT
+MNH[MNH < 0] <- NA  # Remove negative value 
+MNH[MNH > 40] <- NA # Remove height more than 40m
+
+tm_shape(MNH)+
+   tm_raster()+
+tm_shape(borders)+
+   tm_borders()
+```
+
+
+# NDVI
+
+The code below present the calculation of the NDVI. All informations and palette come from this [website](https://www.usna.edu/Users/oceano/pguth/md_help/html/ndvi_colors.html)
+The value range of an NDVI is -1 to 1. It is (Near Infrared - Red) / (Near Infrared + Red) :
+
+ * Water has a low reflectance in red, but almost no NIR (near infrared) reflectance.  So the difference will be small and negative, and the sum will be small, and NDVI large and negative.
+ * Plants have a low reflectance in red, and a strong NIR reflectance.  So the difference will be large and positive, and the sum will be just about the same as the difference, so NDVI will be large and positive.
+
+Categories are somewhat arbitrary, and you can find various rules of thumb, such as:
+
+ * Negative values of NDVI (values approaching -1) correspond to water. Values close to zero (-0.1 to 0.1) generally correspond to barren areas of rock, sand, or snow. Low, positive values represent shrub and grassland (approximately 0.2 to 0.4), while high values indicate temperate and tropical rainforests (values approaching 1).
+ * Very low values of NDVI (0.1 and below) correspond to water, barren areas of rock, sand, or snow. Moderate values represent shrub and grassland (0.2 to 0.3), while high values indicate temperate and tropical rainforests (0.6 to 0.8).
+
+
+```{r}
+IRC = get_wms_raster(shape = borders,
+                    apikey = "ortho",
+                    layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC",
+                    filename = "IRC")
+
+infrared = IRC %>% slice(band, 1)
+red = IRC %>% slice(band, 2)
+
+NDVI = (infrared-red)/(infrared+red)
+   
+breaks_NDVI = c(-1,-0.2,-0.1,0,0.025 ,0.05,0.075,0.1,0.125,0.15,0.175,0.2 ,0.25 ,0.3 ,0.35,0.4,0.45,0.5,0.55,0.6,1)
+   
+palette_NDVI =  c("#BFBFBF","#DBDBDB","#FFFFE0","#FFFACC","#EDE8B5","#DED99C","#CCC782","#BDB86B","#B0C261","#A3CC59","#91BF52","#80B347","#70A340","#619636","#4F8A2E","#407D24","#306E1C","#216112","#0F540A","#004500")
+
+tm_shape(NDVI)+
+   tm_raster(stretch.palette = F,
+             breaks = breaks_NDVI,
+             palette = palette_NDVI,
+             colorNA = "red")
+   
+```
+
+## Last but not least... BD Topo
+
+```{r}
+cour_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:cours_d_eau") %>% 
+   st_intersection(st_buffer(borders,100))
+detail_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:detail_hydrographique") %>% 
+   st_intersection(st_buffer(borders,100))
+plan_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:plan_d_eau")  %>% 
+   st_intersection(st_buffer(borders,100))
+
+# More precise than plan_eau but there no information of name because it's detected by satellite
+surf_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:surface_hydrographique") %>% 
+   st_intersection(st_buffer(borders,100))
+
+tm_shape(cour_eau)+
+   tm_lines(col = "blue")+
+tm_shape(detail_hydro)+
+   tm_dots(col = "red")+
+tm_shape(plan_eau)+
+   tm_polygons(col = "skyblue")+
+tm_shape(surf_hydro)+
+   tm_polygons("steelblue")+
+tm_shape(borders)+
+   tm_borders()
+```
+

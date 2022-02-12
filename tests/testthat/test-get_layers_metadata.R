@@ -32,7 +32,8 @@ test_that("get_layers_metada_wfs", {
       res <- get_layers_metadata(apikey, data_type)
    })
 
-   expect_equal(dim(res), c(1, 4))
+   expect_equal(dim(res), c(1, 7))
    expect_equal(names(res),
-                c("keywords", "name", "abstract", "defaultcrs"))
+                c("itemindex", "name", "title", "abstract",
+                  "keywords", "defaultcrs", "wgs84boundingbox"))
 })

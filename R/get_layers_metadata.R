@@ -107,6 +107,7 @@ get_layers_metadata.wms <- function(apikey, data_type) {
    res <- suppressWarnings(xml_to_df(items, values_fn = list)) %>%
       rename_all(tolower) %>%
       as.data.frame()
+
    res
 
 }
