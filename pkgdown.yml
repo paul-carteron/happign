@@ -3,8 +3,9 @@ pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   Getting_started: Getting_started.html
+  happign_for_foresters: web_only/happign_for_foresters.html
   Non_functional_APIs: web_only/Non_functional_APIs.html
-last_built: 2022-01-31T20:42Z
+last_built: 2022-02-13T09:28Z
 urls:
   reference: https://paul-carteron.github.io/happign/reference
   article: https://paul-carteron.github.io/happign/articles
