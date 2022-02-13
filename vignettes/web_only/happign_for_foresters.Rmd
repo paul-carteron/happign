@@ -158,7 +158,7 @@ tm_shape(borders) +
 ```
 
 
-# MNS, MNT and MNH...
+## MNS, MNT and MNH...
 
 It's always good to know a more about the terrain topologie. The ign offers a MNT and a MNS for download. As a reminder, the MNT corresponds to the surface of the ground and the MNS to the real surface (in our case, the trees). It is thus easy to find the height of the trees by subtracting the DTM from the MNS.
 
@@ -177,11 +177,12 @@ MNH[MNH > 40] <- NA # Remove height more than 40m
 tm_shape(MNH)+
    tm_raster()+
 tm_shape(borders)+
-   tm_borders()
+   tm_borders(lwd = 2)+
+   tm_basemap("OpenStreetMap")
 ```
 
 
-# NDVI
+## NDVI
 
 The code below present the calculation of the NDVI. All informations and palette come from this [website](https://www.usna.edu/Users/oceano/pguth/md_help/html/ndvi_colors.html)
 The value range of an NDVI is -1 to 1. It is (Near Infrared - Red) / (Near Infrared + Red) :
@@ -214,11 +215,28 @@ tm_shape(NDVI)+
    tm_raster(stretch.palette = F,
              breaks = breaks_NDVI,
              palette = palette_NDVI,
-             colorNA = "red")
+             colorNA = "red")+
+tm_shape(borders)+
+   tm_borders(lwd = 2)+
+   tm_basemap("OpenStreetMap")
    
 ```
 
 ## Last but not least... BD Topo
+
+BD topo from IGN covers in a coherent way all the geographical and administrative entities of the national territory. So you can find in it :
+
+- Administrative (boundaries and administrative units);
+- Addresses (mailing addresses) ;
+- Building (constructions) ;
+- Hydrography (water-related features) ;
+- Named places (place or locality with a toponym describing a natural space or inhabited place);
+- Land use (vegetation, foreshore, hedge);
+- Services and activities (utilities, energy storage and transportation, industrial sites);
+- Transportation (road, rail or air infrastructure, routes);
+- Regulated areas (most of the areas are subject to specific regulations).
+
+For the example below I choose to eownload all water-related data :
 
 ```{r}
 cour_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:cours_d_eau") %>% 
@@ -241,6 +259,7 @@ tm_shape(plan_eau)+
 tm_shape(surf_hydro)+
    tm_polygons("steelblue")+
 tm_shape(borders)+
-   tm_borders()
+   tm_borders(lwd = 2)+
+   tm_basemap("OpenStreetMap")
 ```
 
