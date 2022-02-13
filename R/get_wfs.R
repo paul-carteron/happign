@@ -121,10 +121,10 @@ get_wfs <- function(shape,
     st_make_valid() %>%
     select(-bbox)
 
-  if (!is.null(filename)){
-     st_write(result, file.path(paste0(filename,".shp")))
+  if (!is.null(filename)) {
+     st_write(result, file.path(paste0(filename, ".shp")))
      message("The shape is saved at : ", file.path(getwd(),
-                                                   paste0(filename,".shp")))
+                                                   paste0(filename, ".shp")))
   }
 
   return(result)

@@ -77,7 +77,7 @@ get_layers_metadata.wfs <- function(apikey, data_type) {
       xml_child("d1:FeatureTypeList") %>%
       xml_children()
 
-   abstract <- defaultcrs <- NULL
+   defaultcrs <- NULL
 
    res <- xml_to_df(items) %>%
       rename_all(tolower) %>%

@@ -1,4 +1,4 @@
-test_that("error when bad format",{
+test_that("error when bad format", {
    shape <- st_sfc(sf::st_point(1:3), crs = sf::st_crs(4326))
    expect_error(get_wms_raster(shape,
                                format = "bad_format",
