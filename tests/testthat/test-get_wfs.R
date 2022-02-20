@@ -1,29 +1,3 @@
-test_that("format_bbox return expected format", {
-   # Test for errors
-   expect_error(format_bbox_wfs())
-
-   # Test for point
-   point <- sf::st_point(1:3)
-   expect_match(format_bbox_wfs(point),
-                "(\\d*\\.\\d*+,)*+epsg:4326",
-                perl = TRUE)
-
-   # Test for multipoint
-   multipoint <- sf::st_multipoint(matrix(1:10, 5))
-   expect_match(format_bbox_wfs(multipoint),
-                "(\\d*\\.\\d*+,)*+epsg:4326",
-                perl = TRUE)
-
-   # Test for polygon
-   outer <- matrix(c(0, 0, 10, 0, 10, 10, 0, 10, 0, 0), ncol = 2,  byrow = TRUE)
-   hole1 <- matrix(c(1, 1, 1, 2, 2, 2, 2, 1, 1, 1), ncol = 2,  byrow = TRUE)
-   hole2 <- matrix(c(5, 5, 5, 6, 6, 6, 6, 5, 5, 5), ncol = 2,  byrow = TRUE)
-   pts <- list(outer, hole1, hole2)
-   polygon <- sf::st_polygon(pts)
-   expect_match(format_bbox_wfs(polygon),
-                "(\\d*\\.\\d*+,)*+epsg:4326",
-                perl = TRUE)
-})
 test_that("format_url return good url", {
    expect_error(format_url())
 

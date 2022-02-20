@@ -28,7 +28,7 @@
 #'
 #' @importFrom sf st_bbox st_transform st_make_valid st_read st_as_sf st_write
 #' @importFrom httr modify_url GET content status_code stop_for_status
-#' @importFrom dplyr select bind_rows
+#' @importFrom dplyr select
 #' @importFrom magrittr `%>%`
 #'
 #' @seealso
@@ -108,36 +108,27 @@ get_wfs <- function(shape,
 
   nb_request <- nb_features %/% 1000
 
-  result <- lapply(
+  all_roads_df <- lapply(
     X = 0:nb_request,
     FUN = lapply_function,
     nb_request = nb_request,
     apikey = apikey,
     layer_name = layer_name,
     shape = shape
-  ) %>%
-    bind_rows() %>%
+  )
+
+  roads <- do.call("rbind", all_roads_df) %>%
     st_as_sf() %>%
     st_make_valid() %>%
     select(-bbox)
 
   if (!is.null(filename)) {
-     st_write(result, file.path(paste0(filename, ".shp")))
+     st_write(roads, file.path(paste0(filename, ".shp")))
      message("The shape is saved at : ", file.path(getwd(),
                                                    paste0(filename, ".shp")))
   }
 
-  return(result)
-}
-#'
-#' format bbox to wfs url format
-#' @param shape zone of interest of class sf
-#' @noRd
-#'
-format_bbox_wfs <- function(shape = NULL) {
-  bbox <- st_bbox(shape)
-  paste(bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"], "epsg:4326",
-        sep = ",")
+  return(roads)
 }
 #'
 #' format url for request
@@ -149,6 +140,12 @@ format_bbox_wfs <- function(shape = NULL) {
 #'
 format_url <- function(apikey = NULL, layer_name = NULL,
                        shape = NULL, startindex = NULL) {
+
+   bbox <- st_bbox(st_transform(shape, 4326))
+   formated_bbox <- paste(bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"],
+                          "epsg:4326",
+                          sep = ",")
+
   url <- modify_url("https://wxs.ign.fr",
     path = paste0(apikey, "/geoportail/wfs"),
     query = list(
@@ -158,7 +155,7 @@ format_url <- function(apikey = NULL, layer_name = NULL,
       outputFormat = "json",
       srsName = "EPSG:4326",
       typeName = layer_name,
-      bbox = format_bbox_wfs(st_transform(shape, 4326)),
+      bbox = formated_bbox,
       startindex = startindex
     )
   )
