@@ -24,6 +24,9 @@
 #' @param holes Some areas are inaccessible. If `TRUE` they are highlighted
 #' @param crs System of coordinate
 #'
+#' @details
+#' Native API parameter can be find at [IGN documentation](https://geoservices.ign.fr/documentation/services/services-deprecies/isochrones-isodistances)
+#'
 #' @return
 #' `get_iso()` returned a polygon corresponding to all the points reachable
 #' in a defined time or distance
@@ -67,7 +70,7 @@ get_iso <- function(point,
 
    # Test for transport
    if (isFALSE(transport %in% c("Voiture", "Pieton"))){
-      stop("transport parameters must be \"Pieton\" or \"Voiture\"")
+      stop("transport parameter must be \"Pieton\" or \"Voiture\"")
    }
 
    point <- st_transform(point, 4326)
