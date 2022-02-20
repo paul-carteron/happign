@@ -43,6 +43,9 @@ in a defined time or distance
 \description{
 Create isochron or isodistance from IGN routing API
 }
+\details{
+Native API parameter can be find at \href{https://geoservices.ign.fr/documentation/services/services-deprecies/isochrones-isodistances}{IGN documentation}
+}
 \examples{
 \dontrun{
 library(sf)

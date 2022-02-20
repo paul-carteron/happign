@@ -1,0 +1,102 @@
+http_interactions:
+- request:
+    method: get
+    uri: https://wxs.ign.fr/calcul/isochrone/isochrone.json?location=2.8%2C%2049.4&graphName=Voiture&reverse=FALSE&smoothing=TRUE&holes=TRUE&srs=EPSG%3A4326&method=distance&distance=10
+    body:
+      encoding: ''
+      string: ''
+    headers:
+      Accept: application/json
+  response:
+    status:
+      status_code: 200
+      category: Success
+      reason: OK
+      message: 'Success: (200) OK'
+    headers:
+      date: Sun, 20 Feb 2022 20:20:31 GMT
+      content-type: application/json
+      transfer-encoding: chunked
+      wl-original-content-type: application/json
+      cache-control: public, max-age=1814400, must-revalidate
+      access-control-allow-methods: GET, POST
+      access-control-max-age: '43200'
+      access-control-allow-origin: '*'
+      age: '83'
+    body:
+      encoding: UTF-8
+      file: no
+      string: '{"message":null,"status":"OK","id":null,"location":"2.8,49.4","srs":"EPSG:4326","time":null,"distance":"10","wktGeometry":"POLYGON
+        ((2.799922 49.399941, 2.799898 49.399958, 2.799898 49.399962, 2.799901 49.399962,
+        2.799928 49.399943, 2.799928 49.399941, 2.799928 49.399939, 2.799925 49.399939,
+        2.799922 49.399941))"}'
+  recorded_at: 2022-02-20 20:22:03 GMT
+  recorded_with: vcr/1.0.2, webmockr/0.8.0
+- request:
+    method: get
+    uri: https://wxs.ign.fr/calcul/isochrone/isochrone.json?location=2.8%2C%2049.4&graphName=Voiture&reverse=FALSE&smoothing=TRUE&holes=TRUE&srs=EPSG%3A4326&method=time&time=10
+    body:
+      encoding: ''
+      string: ''
+    headers:
+      Accept: application/json
+  response:
+    status:
+      status_code: 200
+      category: Success
+      reason: OK
+      message: 'Success: (200) OK'
+    headers:
+      date: Sun, 20 Feb 2022 20:20:31 GMT
+      content-type: application/json
+      transfer-encoding: chunked
+      wl-original-content-type: application/json
+      cache-control: public, max-age=1814400, must-revalidate
+      access-control-allow-methods: GET, POST
+      access-control-max-age: '43200'
+      access-control-allow-origin: '*'
+      age: '83'
+    body:
+      encoding: UTF-8
+      file: no
+      string: '{"message":null,"status":"OK","id":null,"location":"2.8,49.4","srs":"EPSG:4326","time":"10","distance":null,"wktGeometry":"POLYGON
+        ((2.799835 49.399333, 2.799835 49.399427, 2.799835 49.399521, 2.799835 49.399897,
+        2.799414 49.400085, 2.798992 49.400367, 2.798992 49.400461, 2.799133 49.400461,
+        2.799273 49.400461, 2.799835 49.400179, 2.800116 49.399991, 2.800256 49.399709,
+        2.800256 49.399615, 2.800256 49.399521, 2.799975 49.399239, 2.799694 49.399239,
+        2.799835 49.399333))"}'
+  recorded_at: 2022-02-20 20:22:03 GMT
+  recorded_with: vcr/1.0.2, webmockr/0.8.0
+- request:
+    method: get
+    uri: https://wxs.ign.fr/calcul/isochrone/isochrone.json?location=2.8%2C%2049.4&graphName=Pieton&reverse=FALSE&smoothing=TRUE&holes=TRUE&srs=EPSG%3A4326&method=time&time=10
+    body:
+      encoding: ''
+      string: ''
+    headers:
+      Accept: application/json
+  response:
+    status:
+      status_code: 200
+      category: Success
+      reason: OK
+      message: 'Success: (200) OK'
+    headers:
+      date: Sun, 20 Feb 2022 20:20:31 GMT
+      content-type: application/json
+      transfer-encoding: chunked
+      wl-original-content-type: application/json
+      cache-control: public, max-age=1814400, must-revalidate
+      access-control-allow-methods: GET, POST
+      access-control-max-age: '43200'
+      access-control-allow-origin: '*'
+      age: '82'
+    body:
+      encoding: UTF-8
+      file: no
+      string: '{"message":null,"status":"OK","id":null,"location":"2.8,49.4","srs":"EPSG:4326","time":"10","distance":null,"wktGeometry":"POLYGON
+        ((2.799958 49.3999, 2.799834 49.399988, 2.799834 49.40001, 2.79985 49.40001,
+        2.799989 49.399911, 2.799989 49.3999, 2.799989 49.399889, 2.799974 49.399889,
+        2.799958 49.3999))"}'
+  recorded_at: 2022-02-20 20:22:03 GMT
+  recorded_with: vcr/1.0.2, webmockr/0.8.0

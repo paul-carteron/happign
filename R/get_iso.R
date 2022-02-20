@@ -33,7 +33,7 @@
 #'
 #' @export
 #'
-#' @importFrom sf st_as_sfc st_coordinates st_crs st_transform
+#' @importFrom sf st_as_sfc st_sf st_coordinates st_crs st_transform
 #' @importFrom httr accept_json content GET http_type modify_url
 #'
 #' @examples
@@ -96,6 +96,10 @@ get_iso <- function(point,
       stop("API did not return json", call. = FALSE)
    }
 
-   res <- content(resp)$wktGeometry %>%
-      st_as_sfc(res, crs = st_crs(crs))
+   routing <- content(resp)$wktGeometry %>%
+      st_as_sfc(crs = st_crs(crs)) %>%
+      st_sf()
+
+   return(routing)
+
 }

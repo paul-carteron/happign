@@ -27,6 +27,10 @@ downloading of :
 -   Shapefile via use of WFS service
 -   Raster via use of WMS raster service
 
+and calculation of :
+
+-   isochrone and isodistance
+
 ### Context
 
 Since January 1, 2021, the French National Institute for Geographic and
@@ -52,7 +56,7 @@ package has been created to facilitate this.
 Data from [IGN geoservice
 website](https://geoservices.ign.fr/presentation) are free and available
 in open license according to the principle of the [Etalab 2.0
-license](https://www.etalab.gouv.fr/licence-ouverte-open-licence) since
+license](https://www.etalab.gouv.fr/licence-ouverte-open-licence/) since
 January 1, 2021. Other data complete the IGN’s open data policy since
 June 1st, 2021. SCAN 25®, SCAN 100® and SCAN OACI data are free to
 download or stream, but any professional or individual wishing to
@@ -98,7 +102,6 @@ IGN offers other services. Their implementation in R is under
 development :
 
 -   Calculation of isochron and isodistance
--   Routing calculation
 -   REST API Carto compatible with the OpenAPI specification (easy and
     quick downloading for WFS)
 

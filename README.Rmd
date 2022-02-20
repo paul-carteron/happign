@@ -31,6 +31,10 @@ The goal of happign is to facilitate the use of Application Programming Interfac
 * Shapefile via use of WFS service
 * Raster via use of WMS raster service
 
+and calculation of :
+
+* isochrone and isodistance
+
 ### Context
 
 Since January 1, 2021, the French National Institute for Geographic and Forestry Information (IGN) has made its public data on French topography, infrastructure, and terrain freely available. The opening of IGN data under the Etalab 2.0 open license means free access and use for all.
@@ -41,7 +45,7 @@ To facilitate access to this data, IGN has implemented a set of APIs based on OG
 
 ### Rights of use for IGN data
 
-Data from [IGN geoservice website](https://geoservices.ign.fr/presentation) are free and available in open license according to the principle of the [Etalab 2.0 license](https://www.etalab.gouv.fr/licence-ouverte-open-licence) since January 1, 2021. Other data complete the IGN's open data policy since June 1st, 2021. SCAN 25®, SCAN 100® and SCAN OACI data are free to download or stream, but any professional or individual wishing to develop a commercial paper or digital offer for the general public will have to pay a fee according to the [General Conditions of Use](https://geoservices.ign.fr/cgu-licences).
+Data from [IGN geoservice website](https://geoservices.ign.fr/presentation) are free and available in open license according to the principle of the [Etalab 2.0 license](https://www.etalab.gouv.fr/licence-ouverte-open-licence/) since January 1, 2021. Other data complete the IGN's open data policy since June 1st, 2021. SCAN 25®, SCAN 100® and SCAN OACI data are free to download or stream, but any professional or individual wishing to develop a commercial paper or digital offer for the general public will have to pay a fee according to the [General Conditions of Use](https://geoservices.ign.fr/cgu-licences).
 
 ### Installation
 
@@ -71,7 +75,6 @@ Package vignettes :
 IGN offers other services. Their implementation in R is under development :
 
 * Calculation of isochron and isodistance
-* Routing calculation
 * REST API Carto compatible with the OpenAPI specification (easy and quick downloading for WFS)
 
 
