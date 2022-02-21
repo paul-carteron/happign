@@ -1,3 +1,4 @@
 * text=auto*
 * text=auto
 tests/fixtures/**/* -diff
+docs/* linguist-generated=false
