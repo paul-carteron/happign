@@ -41,7 +41,8 @@
 #' library(sf)
 #' library(tmap); tmap_mode("view")
 #'
-#' point <- st_sfc(st_point(c(-4.340329361590764, 47.81236909325107)), crs = 4326)
+#' point <- st_sfc(st_point(c(-4.340329361590764, 47.81236909325107)),
+#'                 crs = 4326)
 #' isodistance <- get_iso(point, distance = 1000, transport = "Pieton")
 #'
 #' qtm(isodistance)+
@@ -61,11 +62,11 @@ get_iso <- function(point,
    if (is.null(distance) & is.null(time)){
       stop("time or distance parameter must be supplied")
    }else if (is.null(distance)) {
-      add_to_query = list(method = "time", time = time)
+      add_to_query <- list(method = "time", time = time)
    }else if (is.null(time)){
-      add_to_query = list(method = "distance", distance = distance)
+      add_to_query <- list(method = "distance", distance = distance)
    }else{
-      add_to_query = list(method = "time", time = time)
+      add_to_query <- list(method = "time", time = time)
    }
 
    # Test for transport

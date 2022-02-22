@@ -42,7 +42,7 @@ tm_shape(point)+
 
 Now that we have point, getting shape of commune is just a matter of finding the good layer name from IGN. The one we are after is called "ADMINEXPRESS-COG-CARTO.LATEST:commune" from the "Administrative" category. Then we use the `get_wfs()` function to download the shape.
 
-As you can see below, there are three communes close to our point as you can see below (tip : click on theinteractive map below to get population).
+As you can see below, there are three communes close to our point as you can see below (tip : click on the interactive map below to get population).
 
 ```{r}
 apikey <- get_apikeys()[1]  # "administratif"
