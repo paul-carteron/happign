@@ -3,9 +3,10 @@ pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   Getting_started: Getting_started.html
+  SCAN_25_SCAN_100_SCAN_OACI: SCAN_25_SCAN_100_SCAN_OACI.html
   happign_for_foresters: web_only/happign_for_foresters.html
   Non_functional_APIs: web_only/Non_functional_APIs.html
-last_built: 2022-02-22T19:33Z
+last_built: 2022-02-27T14:03Z
 urls:
   reference: https://paul-carteron.github.io/happign/reference
   article: https://paul-carteron.github.io/happign/articles
