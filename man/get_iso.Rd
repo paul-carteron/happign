@@ -51,7 +51,8 @@ Native API parameter can be find at \href{https://geoservices.ign.fr/documentati
 library(sf)
 library(tmap); tmap_mode("view")
 
-point <- st_sfc(st_point(c(-4.340329361590764, 47.81236909325107)), crs = 4326)
+point <- st_sfc(st_point(c(-4.340329361590764, 47.81236909325107)),
+                crs = 4326)
 isodistance <- get_iso(point, distance = 1000, transport = "Pieton")
 
 qtm(isodistance)+
