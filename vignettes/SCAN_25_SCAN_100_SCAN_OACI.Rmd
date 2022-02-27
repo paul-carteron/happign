@@ -1,0 +1,62 @@
+---
+title: "SCAN 25, SCAN 100 et SCAN OACI"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SCAN 25, SCAN 100 et SCAN OACI}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(happign)
+```
+
+## Brief presentation
+
+Even if almost all IGN data are available to the general public, some layers are distributed within a stricter framework of use. The SCAN 25®, SCAN 100® and SCAN OACI (and associated online services) are distributed under license conditions that can be consulted [here](https://geoservices.ign.fr/cgu-licences#licence      .
+The final use in a professional or associative context is free without exception, according to the terms of this license.
+The final use for the general public is free of charge up to a certain threshold, then paying, according to the appropriate general [conditions](https://geoservices.ign.fr/cgu-licences#cgu). All infos can be found [here](https://geoservices.ign.fr/services-web-issus-des-scans-ign).
+
+## What are they ?
+
+- The SCAN 25® is a unique reference, recognized for its topographic richness, and offers an exemplary representation of the territory (1/25 000)
+
+- The SCAN 100® is a perfect compromise between a rather rich topographic representation and a global visualization of the territory (1/100 000
+
+- The SCAN OACI corresponds to the aeronautical reference maps in the field of civil aviation
+
+## How to use them with happign ?
+
+These layers are WMS raster, so you just have to use the `get_wms_raster()` function with a personal apikey. To do this, you need to create an account on the geoservice site and then request a key in the "My keys" section of your account. It should look like this : "abc12efghi34j5k678lmnopq" (obvisouly, this is a fake key).
+
+Then you choose the layer you want at the [Web services from IGN SCANs](https://geoservices.ign.fr/services-web-issus-des-scans-ign) and it's done !
+
+```{r eval=FALSE, include=TRUE}
+# Create or import a shape
+shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
+                                  -4.375615, 47.79738,
+                                  -4.375147, 47.79683,
+                                  -4.373937, 47.79859),
+                                ncol = 2, byrow = TRUE)))
+shape <- st_sfc(shape, crs = st_crs(4326))
+
+my_key <- "abc12efghi34j5k678lmnopq"
+scan25_name <- "SCAN25TOUR_PYR-JPEG_WLD_WM"
+
+scan25 <- get_wms_raster(shape,
+                         apikey = my_key,
+                         layer_name = scan25_name,
+                         resolution = NULL,   # To have full resolution
+                         filename = "SCAN25") # This ressource need to be downloaded on disk
+
+
+```
+
+
