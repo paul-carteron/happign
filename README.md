@@ -95,6 +95,9 @@ Package vignettes :
     foresters](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html)
     : happign can be used in many ways but here I focus on a forestry
     use.
+-   [SCAN 25, SCAN 100 et SCAN
+    OACI](https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html)
+    : How to download the only one Scan 25
 
 ### Future features
 

@@ -69,6 +69,7 @@ Package vignettes :
 - [Getting started with happign](https://paul-carteron.github.io/happign/articles/Getting_started.html) : A brief intro to happign world ;
 - [Non functionnal API](https://paul-carteron.github.io/happign/articles/web_only/Non_functional_APIs.html) : Every week all API from IGN website are tested to find if any link are working ;
 - [happign for foresters](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html) : happign can be used in many ways but here I focus on a forestry use.
+- [SCAN 25, SCAN 100 et SCAN OACI](https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html) : How to download the only one Scan 25
 
 ### Future features
 
