@@ -99,22 +99,24 @@ With the map below, you can choose which BD Forêt you want to display. The BDV2
 More calculations can be done as you can see below :
 
 ```{r warning=FALSE}
-forest_type_BDV2 = BDV2 %>% 
-   mutate(area = as.numeric(st_area(geometry))) %>% 
-   st_drop_geometry() %>%
-   group_by(essence) %>% 
-   summarise(sum_area = sum(area)/10000)
+forest_type_BDV2 = BDV2 %>%
+  mutate(area = as.numeric(st_area(geometry))) %>%
+  st_drop_geometry() %>%
+  group_by(essence) %>%
+  summarise(sum_area = sum(area)/10000) %>%
+  arrange(sum_area) %>%
+  mutate(essence = as.factor(essence))
 
 ggplot()+
-   geom_col(data = forest_type_BDV2,
-            aes(x = as.factor(essence),
-                y = sort(sum_area, decreasing = TRUE),
-                fill = as.factor(essence)))+
-   theme_bw()+
-   labs(title = "Surface couverte par essences [ha]",
-        y = "Surface [ha]",
+  geom_col(data = forest_type_BDV2,
+           aes(x = rev(reorder(essence, sum_area)),
+               y = sum_area,
+               fill = as.factor(essence)))+
+  theme_bw()+
+  labs(title = "Surface couverte par essences [ha]",
+       y = "Surface [ha]",
        fill = "Essence :")+
-   theme(axis.text.x = element_blank())
+  theme(axis.text.x = element_blank())
 
    
 ```
@@ -180,7 +182,6 @@ tm_shape(borders)+
    tm_borders(lwd = 2)+
    tm_basemap("OpenStreetMap")
 ```
-
 
 ## NDVI
 
@@ -263,3 +264,19 @@ tm_shape(borders)+
    tm_basemap("OpenStreetMap")
 ```
 
+## What about history ?
+
+The "Etat-major" map is a general map of France made, in its first version, in the 19th century. Here how to get it :
+
+```{r}
+etat_major <-  get_wms_raster(shape = borders,
+                            apikey = "cartes",
+                            layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
+                            filename = "etat_major")
+
+tm_shape(etat_major, raster.downsample = FALSE)+
+   tm_rgb()+
+tm_shape(borders)+
+   tm_borders(lwd = 3, col = "red")+
+   tm_basemap("OpenStreetMap")
+```
