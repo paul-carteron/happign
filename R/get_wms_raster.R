@@ -104,10 +104,12 @@ get_wms_raster <- function(shape,
    shape <- st_make_valid(shape) %>%
       st_transform(4326)
 
-   grid <- grid(shape, resolution)
+   grid <- grid(shape, resolution = resolution)
    all_bbox <- lapply(grid, format_bbox_wms)
-   width <- nb_pixel_bbox(grid[[1]])[1]
-   height <- nb_pixel_bbox(grid[[1]])[2]
+   width <- nb_pixel_bbox(grid[[1]], resolution = resolution)[1]
+   height <- nb_pixel_bbox(grid[[1]], resolution = resolution)[2]
+
+   qtm(grid) + qtm(shape)
 
    base_url <- modify_url("https://wxs.ign.fr",
                           path = paste0(apikey, "/geoportail/r/wms"),
