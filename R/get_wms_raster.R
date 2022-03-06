@@ -53,10 +53,10 @@
 #'
 #' @export
 #'
-#' @importFrom sf st_make_valid st_transform st_linestring st_length st_sfc
+#' @importFrom sf st_make_valid st_transform st_bbox st_length st_linestring st_sfc st_make_grid
 #' @importFrom httr modify_url
 #' @importFrom magrittr `%>%`
-#' @importFrom stars read_stars
+#' @importFrom stars read_stars write_stars
 #' @importFrom utils download.file
 #'
 #' @seealso
@@ -100,56 +100,68 @@ get_wms_raster <- function(shape,
                            format = "image/geotiff",
                            styles = "") {
 
+
    shape <- st_make_valid(shape) %>%
       st_transform(4326)
 
-   width_height <- width_height(shape, resolution)
+   grid <- grid(shape, resolution)
+   all_bbox <- lapply(grid, format_bbox_wms)
+   width <- nb_pixel_bbox(grid[[1]])[1]
+   height <- nb_pixel_bbox(grid[[1]])[2]
 
-   url <- modify_url("https://wxs.ign.fr",
-                     path = paste0(apikey, "/geoportail/r/wms"),
-                     query = list(version = version,
-                                  request = "GetMap",
-                                  format = format,
-                                  layers = layer_name,
-                                  styles = styles,
-                                  width = width_height[1],
-                                  height = width_height[2],
-                                  crs = "EPSG:4326",
-                                  bbox = format_bbox_wms(shape)))
+   base_url <- modify_url("https://wxs.ign.fr",
+                          path = paste0(apikey, "/geoportail/r/wms"),
+                          query = list(version = version,
+                                       request = "GetMap",
+                                       format = format,
+                                       layers = layer_name,
+                                       styles = styles,
+                                       width = width,
+                                       height = height,
+                                       crs = "EPSG:4326",
+                                       bbox = ""))
 
-   if (is.null(filename)) {
-      url_rgdal_option <- paste0("/vsicurl/", url)
-      res <- try(read_stars(url_rgdal_option, normalize_path = FALSE),
-                 silent = TRUE)
+   urls <- paste0(base_url, all_bbox)
 
-      if (grepl("Error", as.character(res), fixed = TRUE)) {
-         stop("\n   1. Please check that ", layer_name,
-              " exists at shape location\n",
-              "   2. If yes, rgal does not support this resource. ",
-              "To overcome this, you must save the resource ,",
-              "by using the filename argument.: \n")
-      }
+   ext <- switch(
+      format,
+      "image/jpeg" = ".jpg",
+      "image/png" = ".png",
+      "image/tiff" = ".tif",
+      "image/geotiff" = ".tif",
+      stop("Bad format, please check ",
+           "`?get_wms_raster()`")
+   )
+
+   clean_layer_name <- sub("[^[:alnum:]]", '_' , layer_name)
+
+   if (is.null(filename)){
+      filename <- paste0(clean_layer_name,ext)
    }else{
-
-      filename <- paste0(filename,
-                           switch(
-                              format,
-                              "image/jpeg" = ".jpg",
-                              "image/png" = ".png",
-                              "image/tiff" = ".tif",
-                              "image/geotiff" = ".tif",
-                              stop("Bad format, please check ",
-                                   "`?get_wms_raster()`")
-                           ))
-
-      download.file(url = url,
-                    method = "auto",
-                    mode = "wb",
-                    destfile = filename)
-   message("The layer is saved at : ", file.path(getwd(), filename))
-      res <- read_stars(filename)
+      filename <- paste0(filename,ext)
    }
-   return(res)
+
+   if (filename %in% list.files()){
+      raster_final <- read_stars(filename)
+   }else{
+      raster_list <- list()
+      for (i in seq_along(urls)){
+
+         filename_tile <- paste0("tile", i, "_", filename)
+
+         download.file(url = urls[i],
+                       method = "auto",
+                       mode = "wb",
+                       destfile  = filename_tile)
+         raster_list[[i]] <- read_stars(filename_tile)
+      }
+
+      raster_final <- do.call("st_mosaic", raster_list)
+      file.remove(paste0("tile", seq_along(urls), "_", filename))
+      write_stars(raster_final, filename)
+   }
+
+   return(raster_final)
 }
 #'
 #' format bbox to wms url format
@@ -161,37 +173,31 @@ format_bbox_wms <- function(shape = NULL) {
    paste(bbox["ymin"], bbox["xmin"], bbox["ymax"], bbox["xmax"], sep = ",")
 }
 #'
-#' Do all calculation to find optimal - or not - cell_size from bbox
+#' Calculate number of pixel needed from resolution ad bbox
 #' @param shape zone of interest of class sf
 #' @param resolution cell_size in meter
 #' @noRd
 #'
-width_height <- function(shape, resolution = NULL) {
-
+nb_pixel_bbox <- function(shape, resolution = 10){
    bbox <- st_bbox(shape)
-   width <- st_linestring(rbind(c(bbox[1], bbox[2]),
-                               c(bbox[1], bbox[4])))
    height <- st_linestring(rbind(c(bbox[1], bbox[2]),
+                                 c(bbox[1], bbox[4])))
+   width <- st_linestring(rbind(c(bbox[1], bbox[2]),
                                 c(bbox[3], bbox[2])))
-
    width_height <- st_length(st_sfc(list(width, height), crs = 4326))
-   names(width_height) <- c("width", "height")
-   nb_pixel <-  c(2048, 2048)
+   nb_pixel <- as.numeric(ceiling(width_height/resolution))
+   return(nb_pixel)
+}
+#' Create optimize grid according max width and height pixel of 2048 from bbox
+#' @param shape zone of interest of class sf
+#' @param resolution cell_size in meter
+#' @noRd
+#'
+grid <- function(shape, resolution = 10) {
 
-   if (!is.null(resolution)) {
-      nb_pixel <- as.numeric(ceiling(width_height / resolution))
-      nb_pixel <- ifelse(nb_pixel > 2048, 2048, nb_pixel)
-   }
+   nb_pixel_bbox <- nb_pixel_bbox(shape, resolution)
+   n_tiles <- as.numeric(ceiling(nb_pixel_bbox/2048))
+   grid <- st_make_grid(shape, n = n_tiles)
 
-   resolution <- width_height / nb_pixel
-
-   if (sum(nb_pixel == 2048) >= 1) {
-      message("The resolution is too high (or set to NULL) so the ",
-              "maximum resolution is used. Reducing the resolution ",
-              "allows to speed up calculations on raster.")
-   }
-
-   message(paste(c("x", "\ny"), "cell_size :", round(resolution, 3), "[m]"))
-
-   invisible(nb_pixel)
+   invisible(grid)
 }
