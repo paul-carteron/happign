@@ -1,5 +1,8 @@
 #' @importFrom httr http_error set_config config reset_config
 #' @importFrom curl has_internet
+#' @importFrom dplyr bind_rows
+#' @importFrom magrittr `%>%`
+#' @importFrom xml2 read_xml as_list xml_find_all
 #'
 #' @export
 #'
@@ -8,6 +11,18 @@
    if (!has_internet()) {
       stop("No internet connection.")
    }
+
+   # Last actu
+
+   doc <- read_xml("https://geoservices.ign.fr/actualites/rss.xml") %>%
+      xml_find_all("//item") %>%
+      as_list() %>%
+      bind_rows()
+
+   last_actu = paste0("Last news : ",
+                      unlist(doc[1,1]),
+                      " at ", substring(unlist(doc[1, 2]), 39, 48),
+                     " (", unlist(doc[1, 2]), ")")
 
    base_url <- "http://geoservices.ign.fr/"
 
@@ -19,7 +34,8 @@
                             "information at ",
                             "<https://geoservices.ign.fr/actualites>.")
    }else{
-      packageStartupMessage("IGN web service API is available.")
+      packageStartupMessage("IGN web service API is available.\n",
+                            last_actu)
    }
 
    reset_config()
