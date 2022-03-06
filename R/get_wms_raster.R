@@ -199,7 +199,10 @@ grid <- function(shape, resolution = 10) {
 
    nb_pixel_bbox <- nb_pixel_bbox(shape, resolution)
    n_tiles <- as.numeric(ceiling(nb_pixel_bbox/2048))
-   grid <- st_make_grid(shape, n = n_tiles)
+   grid <- st_make_grid(shape, n = n_tiles) %>%
+      st_as_sf() %>%
+      st_filter(shape, .predicate = st_intersects) %>%
+      st_as_sfc()
 
    invisible(grid)
 }
