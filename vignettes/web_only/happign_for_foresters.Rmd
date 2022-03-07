@@ -169,8 +169,10 @@ layers_name = get_layers_metadata("altimetrie", "wms")
 MNT_name = layers_name[2,2] # ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES
 MNS_name = layers_name[3,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
-MNT = get_wms_raster(borders, "altimetrie", MNT_name, filename = "MNT")
-MNS = get_wms_raster(borders, "altimetrie", MNS_name, filename = "MNS")
+MNT = get_wms_raster(borders, "altimetrie", resolution = 10, MNT_name, filename = "MNT")
+file.remove("MNT.tif") # I don't want to keep MNT on disk because this is vignette
+MNS = get_wms_raster(borders, "altimetrie",resolution = 10, MNS_name, filename = "MNS")
+file.remove("MNS.tif") # I don't want to keep MNS on disk because this is vignette
 
 MNH = MNS - MNT
 MNH[MNH < 0] <- NA  # Remove negative value 
@@ -200,8 +202,10 @@ Categories are somewhat arbitrary, and you can find various rules of thumb, such
 ```{r}
 IRC = get_wms_raster(shape = borders,
                     apikey = "ortho",
+                    resolution = 10,
                     layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC",
                     filename = "IRC")
+file.remove("IRC.tif") # I don't want to keep IRC on disk because this is vignette
 
 infrared = IRC %>% slice(band, 1)
 red = IRC %>% slice(band, 2)
@@ -271,8 +275,10 @@ The "Etat-major" map is a general map of France made, in its first version, in t
 ```{r}
 etat_major <-  get_wms_raster(shape = borders,
                             apikey = "cartes",
+                            resolution = 20, # You be more precise but it's already 4MB of data
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
                             filename = "etat_major")
+file.remove("etat_major.tif") # I don't want to keep etat_major on disk because this is vignette
 
 tm_shape(etat_major, raster.downsample = FALSE)+
    tm_rgb()+

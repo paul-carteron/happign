@@ -120,25 +120,11 @@ resources_to_test <- all_metadata %>%
    rename("layer_name" = ".x") %>% 
    mutate(url = pmap_chr(., ~ format_wms_url(..1, ..2)))
 
-# readable with vsi_handles
-start_time_vsi <- Sys.time()
-
-vsi_testing <- resources_to_test %>% 
-   mutate(resp = pmap_chr(., ~ try(
-      names(read_stars(paste0("/vsicurl/",..3),
-                       normalize_path = FALSE)))))
-vsi_error <- vsi_testing %>% 
-   filter(substr(resp, 1, 5) == "Error") %>% 
-   select(1:2)
-
-end_time_vsi <- Sys.time()
-vsi_time <- end_time_vsi - start_time_vsi
-
 # http error 
 start_time_http = Sys.time()
 
-http_testing <- resources_to_test %>%
-   mutate(status_code = pmap_chr(., ~ status_code(GET(..3))))
+http_testing <- resources_to_test %>% 
+   mutate(status_code = pmap_chr(., ~ status_code(GET(..3)))) 
 
 http_errors <- http_testing %>%
    filter(status_code != "200") %>%
@@ -157,25 +143,6 @@ There is **`r nrow(http_errors)`** request that return an HTTP error of WFS serv
 ```{r plot_wms_http_error, echo=FALSE}
 
 DT::datatable(http_errors,
-              options = list(pageLength = 10,
-                             scrollX = '400px'),
-              filter = 'top')
-
-```
-
-## Unreadable layer by `happign`
-
-For some API, no connection can be established by GDAL because of how resources are formatted on the IGN database. This also means that the `get_wms_raster` function can't connect to the layer. To avoid this problem you just have to **set a name for the `filename` argument** (for example : `get_wms_layer(shape, "satellite", "ORTHOIMAGERY.ORTHO-SAT.PLEIADES.2017", filename = "best_layer_name_ever")`). When a file name is set, the layer is directly download on disk, so be careful with area of your shape.
-
-Testing all **`r nrow(resources_to_test)`** WFS resources took **`r round(as.numeric(vsi_time, units="mins"),2)`** mins.
-
-There are **`r length(no_resources)` ** categories that have no WMS raster resources : **`r paste0(no_resources, collapse  =", ")` **.
-
-There are **`r nrow(vsi_error)`** resources that can't be read by `happign` for the moment. Details of them are displayed below :
-
-```{r plot_wms_vsi_error, echo=FALSE}
-
-DT::datatable(vsi_error,
               options = list(pageLength = 10,
                              scrollX = '400px'),
               filter = 'top')

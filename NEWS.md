@@ -1,3 +1,8 @@
+# happign 0.1.4
+
+* Fix resolution for `get_wms_raster`. Depending on shape and resolution, multiple tile are downloaded and combine to get the right resolution
+* New start up message based on RSS flux of IGN website to warn user if there issues (slowdown, shutdown) or news resources
+
 # happign 0.1.3
 
 * adding connection to isochrone and isodistance calculation of IGN with `get_iso()`

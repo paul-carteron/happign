@@ -14,15 +14,17 @@
 
    # Last actu
 
-   doc <- read_xml("https://geoservices.ign.fr/actualites/rss.xml") %>%
+   resp <- GET("http://geoservices.ign.fr/actualites/rss.xml", config(ssl_verifypeer = 0))
+
+   doc <- read_xml(resp) %>%
       xml_find_all("//item") %>%
       as_list() %>%
       bind_rows()
 
-   last_actu = paste0("Last news : ",
+   last_actu = paste0("Last news from IGN website : ",
                       unlist(doc[1,1]),
-                      " at ", substring(unlist(doc[1, 2]), 39, 48),
-                     " (", unlist(doc[1, 2]), ")")
+                      " on ", substring(unlist(doc[1, 2]), 39, 48),
+                     " (", unlist(doc[1, 2]), ")\n")
 
    base_url <- "http://geoservices.ign.fr/"
 
