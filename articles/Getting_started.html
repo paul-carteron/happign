@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">happign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -129,7 +129,7 @@
 <p><strong><em>Rq :</em></strong></p>
 <ul>
 <li><em>This function can be a bit slow because it connects directly to the website so that the information is up to date.</em></li>
-<li><em>The returned data correspond to the <strong>intersection with the shape bbox</strong>. This is highlighted by the “all” figure below</em></li>
+<li>*The returned data correspond to the intersection with the shape <strong>bbox</strong>.</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">apikey</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>
@@ -199,6 +199,7 @@
 <div class="section level3">
 <h3 id="wms-raster">WMS raster<a class="anchor" aria-label="anchor" href="#wms-raster"></a>
 </h3>
+<p>/! Code below isn’t evaluated because raster needs to be downloaded to disk. I can only recommend you to try it yourself.</p>
 <p>For raster, the process is the same but with the function <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code>. There’s plenty of elevation resources inside <a href="https://geoservices.ign.fr/services-web-experts-altimetrie" class="external-link">“altimetrie” category</a>. The basic one is the Digital Elevation Model (DEM or MNT in French).</p>
 <p><strong><em>Rq :</em></strong></p>
 <ul>
@@ -213,16 +214,15 @@
 <span class="va">mnt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wms_raster.html">get_wms_raster</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch_borders</span>,
                       apikey <span class="op">=</span> <span class="va">apikey</span>,
                       layer_name <span class="op">=</span> <span class="va">dem_layer_name</span>,
-                      resolution <span class="op">=</span> <span class="fl">25</span><span class="op">)</span>
-<span class="co">#&gt; x cell_size : 24.873 [m]</span>
-<span class="co">#&gt; y cell_size : 24.937 [m]</span>
+                      resolution <span class="op">=</span> <span class="fl">25</span>,
+                      filename <span class="op">=</span> <span class="st">"best_raster_name"</span><span class="op">)</span>
+
 <span class="va">mnt</span><span class="op">[</span><span class="va">mnt</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co"># remove negative values in case of singularity</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Elevation [m]"</span> <span class="co"># Rename raster ie the title legend</span>
 
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span> <span class="op">+</span>
    <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span>colorNA <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span>
    <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"DEM of Penmarch"</span>, frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<p><img src="Getting_started_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
