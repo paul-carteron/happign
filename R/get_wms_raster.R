@@ -53,7 +53,7 @@
 #' @importFrom sf st_make_valid st_transform st_bbox st_length st_linestring st_sfc st_make_grid st_filter st_intersects
 #' @importFrom httr modify_url
 #' @importFrom magrittr `%>%`
-#' @importFrom stars read_stars write_stars
+#' @importFrom stars read_stars write_stars st_mosaic
 #' @importFrom utils download.file
 #'
 #' @seealso
