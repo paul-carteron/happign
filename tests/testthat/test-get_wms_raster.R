@@ -31,17 +31,47 @@ test_that("format_bbox_wms", {
                 perl = TRUE)
 })
 
-test_that("width_height", {
+test_that("grid", {
    shape <- sf::st_polygon(list(matrix(c(-4.373937, 47.79859,
-                                     -4.375615, 47.79738,
-                                     -4.375147, 47.79683,
-                                     -4.373898, 47.79790,
-                                     -4.373937, 47.79859),
-                                   ncol = 2, byrow = TRUE)))
+                                         -4.375615, 47.79738,
+                                         -4.375147, 47.79683,
+                                         -4.373898, 47.79790,
+                                         -4.373937, 47.79859),
+                                       ncol = 2, byrow = TRUE)))
    shape <- sf::st_sfc(shape, crs = sf::st_crs(4326))
 
-   expect_equal(suppressMessages(width_height(shape)), c(2048, 2048))
-   expect_equal(suppressMessages(width_height(shape, resolution = 5)),
-                c(40, 26))
-   expect_type(suppressMessages(width_height(shape)), "double")
+   verif_matrix_res_10 <- matrix(c(-4.375615, 47.79683,
+                                   -4.373898, 47.79683,
+                                   -4.373898, 47.79859,
+                                   -4.375615, 47.79859,
+                                   -4.375615, 47.79683), ncol = 2, byrow = TRUE)
+
+   verif_matrix_res_20 <- matrix(c(-4.375615, 47.79683,
+                                   -4.373898, 47.79683,
+                                   -4.373898, 47.79859,
+                                   -4.375615, 47.79859,
+                                   -4.375615, 47.79683), ncol = 2, byrow = TRUE)
+
+   expect_equal(suppressMessages(grid(shape, resolution = 10)[[1]][[1]]),
+                verif_matrix_res_10)
+   expect_equal(length(grid(shape, resolution = 0.05)),
+                4)
+   expect_type(suppressMessages(grid(shape)), "list")
 })
+
+test_that("nb_pixel_bbox", {
+   shape <- sf::st_polygon(list(matrix(c(-4.373937, 47.79859,
+                                         -4.375615, 47.79738,
+                                         -4.375147, 47.79683,
+                                         -4.373898, 47.79790,
+                                         -4.373937, 47.79859),
+                                       ncol = 2, byrow = TRUE)))
+   shape <- sf::st_sfc(shape, crs = sf::st_crs(4326))
+
+   expect_equal(nb_pixel_bbox(shape), c(13,20))
+   expect_equal(nb_pixel_bbox(shape, resolution = 0.1), c(1283, 1958))
+   expect_type(nb_pixel_bbox(shape), "double")
+   expect_equal(length(nb_pixel_bbox(shape)), 2)
+})
+
+

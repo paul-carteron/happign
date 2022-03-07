@@ -8,10 +8,10 @@
 #'
 #' @usage
 #' get_wms_raster(shape,
-#'                apikey,
-#'                layer_name,
+#'                apikey = "altimetrie",
+#'                layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
 #'                resolution = 10,
-#'                filename = NULL,
+#'                filename = "raster_name",
 #'                version = "1.3.0",
 #'                format = "image/geotiff",
 #'                styles = "")
@@ -23,11 +23,11 @@
 #' @param layer_name Name of the layer from `get_layers_metadata(apikey, "wms")`
 #' or directly from
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
-#' @param resolution Cell size in meter. WMS are limited to 2048x2048 pixels.
-#' See detail for more information about resolution.
-#' @param filename File name to create on disk. If `filename` is NULL, the layer
-#'  is not downloaded but a virtual connection is established. This allows to
-#'  work with large areas without overloading the memory
+#' @param resolution Cell size in meter. WMS are limited to 2048x2048 pixels so
+#' depending of the shape and the resolution, correct number and size of tiles
+#' is calculated. See detail for more information about resolution.
+#' @param filename Name of raster download to disk. If raster with same name
+#' already exist in the current directory, it is directly imported into R
 #' @param version The version of the service used. Set to latest version
 #' by default. See detail for more information about `version`.
 #' @param format The output format - type-mime - of the image file. Set
@@ -41,9 +41,6 @@
 #' raster (3 dimensions and 1 attribute).
 #'
 #' @details
-#' * If the resolution is too high, the maximum is automatically set by
-#' dividing height and width of the shape's bbox by 2048
-#' (the maximum number of pixel)
 #' * Setting the `resolution` parameter higher than the base resolution
 #' of the layer multiplies the number of pixels without increasing
 #' the precision. For example, the download of the BD Alti layer from
@@ -53,7 +50,7 @@
 #'
 #' @export
 #'
-#' @importFrom sf st_make_valid st_transform st_bbox st_length st_linestring st_sfc st_make_grid
+#' @importFrom sf st_make_valid st_transform st_bbox st_length st_linestring st_sfc st_make_grid st_filter st_intersects
 #' @importFrom httr modify_url
 #' @importFrom magrittr `%>%`
 #' @importFrom stars read_stars write_stars
@@ -83,7 +80,7 @@
 #' shape <- st_sfc(shape, crs = st_crs(4326))
 #'
 #' # Downloading digital elevation model from IGN
-#' mnt <- get_wms_raster(shape, apikey, layer_name, resolution = 1)
+#' mnt <- get_wms_raster(shape, apikey, layer_name, resolution = 10, filename = "raster_name")
 #' mnt[mnt < 0] <- NA # remove negative values in case of singularity
 #' names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
 #'
@@ -95,7 +92,7 @@ get_wms_raster <- function(shape,
                            apikey = "altimetrie",
                            layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
                            resolution = 10,
-                           filename = NULL,
+                           filename = "raster_name",
                            version = "1.3.0",
                            format = "image/geotiff",
                            styles = "") {
@@ -108,8 +105,6 @@ get_wms_raster <- function(shape,
    all_bbox <- lapply(grid, format_bbox_wms)
    width <- nb_pixel_bbox(grid[[1]], resolution = resolution)[1]
    height <- nb_pixel_bbox(grid[[1]], resolution = resolution)[2]
-
-   qtm(grid) + qtm(shape)
 
    base_url <- modify_url("https://wxs.ign.fr",
                           path = paste0(apikey, "/geoportail/r/wms"),
@@ -195,7 +190,7 @@ nb_pixel_bbox <- function(shape, resolution = 10){
 #' @param resolution cell_size in meter
 #' @noRd
 #'
-grid <- function(shape, resolution = 10) {
+grid <- function(shape, resolution = 0.05) {
 
    nb_pixel_bbox <- nb_pixel_bbox(shape, resolution)
    n_tiles <- as.numeric(ceiling(nb_pixel_bbox/2048))
