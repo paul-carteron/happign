@@ -54,6 +54,7 @@
 #' @importFrom httr modify_url
 #' @importFrom magrittr `%>%`
 #' @importFrom stars read_stars write_stars st_mosaic
+#' @importFrom sf st_set_precision st_make_valid st_transform st_bbox st_linestring st_sfc st_set_precision st_make_grid st_as_sf st_filter st_as_sfc
 #' @importFrom utils download.file
 #'
 #' @seealso
@@ -191,6 +192,8 @@ nb_pixel_bbox <- function(shape, resolution = 10){
 #' @noRd
 #'
 grid <- function(shape, resolution = 0.05) {
+   # Fix S2 invalid object
+   shape <- st_make_valid(st_set_precision(shape, 1e6))
 
    nb_pixel_bbox <- nb_pixel_bbox(shape, resolution)
    n_tiles <- as.numeric(ceiling(nb_pixel_bbox/2048))
