@@ -145,6 +145,8 @@ get_wms_raster <- function(shape,
       raster_list <- list()
       for (i in seq_along(urls)){
 
+         cat(i,"/",length(urls), " downloaded\n", sep = "")
+
          filename_tile <- paste0("tile", i, "_", filename)
 
          download.file(url = urls[i],
