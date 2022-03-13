@@ -1,7 +1,8 @@
 # happign 0.1.4
 
-* Fix resolution for `get_wms_raster`. Depending on shape and resolution, multiple tile are downloaded and combine to get the right resolution
+* Fix resolution for `get_wms_raster()`. Depending on shape and resolution, multiple tile are downloaded and combine to get the right resolution
 * New start up message based on RSS flux of IGN website to warn user if there issues (slowdown, shutdown) or news resources
+*`get_wms_raster()` now fix S2 geometry problems
 
 # happign 0.1.3
 
@@ -24,4 +25,4 @@
 # happign 0.1.0
 
 * add interface for WFS, and WMS raster service with `get_wfs()` and `get_wms_raster()`
-* add `get_apikeys()` and `get_layers_metadata` to allow access to metadata from R 
+* add `get_apikeys()` and `get_layers_metadata()` to allow access to metadata from R 

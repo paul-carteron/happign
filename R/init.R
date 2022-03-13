@@ -22,7 +22,9 @@
       bind_rows()
 
    last_actu = paste0("Last news from IGN website : ",
+                      "\"",
                       unlist(doc[1,1]),
+                      "\"",
                       " on ", substring(unlist(doc[1, 2]), 39, 48),
                      " (", unlist(doc[1, 2]), ")\n")
 
