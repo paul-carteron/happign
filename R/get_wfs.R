@@ -108,7 +108,7 @@ get_wfs <- function(shape,
 
   nb_request <- nb_features %/% 1000
 
-  all_roads_df <- lapply(
+  list_features <- lapply(
     X = 0:nb_request,
     FUN = lapply_function,
     nb_request = nb_request,
@@ -117,18 +117,18 @@ get_wfs <- function(shape,
     shape = shape
   )
 
-  roads <- do.call("rbind", all_roads_df) %>%
+  features <- do.call("rbind", list_features) %>%
     st_as_sf() %>%
     st_make_valid() %>%
     select(-bbox)
 
   if (!is.null(filename)) {
-     st_write(roads, file.path(paste0(filename, ".shp")))
+     st_write(features, file.path(paste0(filename, ".shp")))
      message("The shape is saved at : ", file.path(getwd(),
                                                    paste0(filename, ".shp")))
   }
 
-  return(roads)
+  return(features)
 }
 #'
 #' format url for request
