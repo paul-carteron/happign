@@ -82,8 +82,9 @@ get_wfs <- function(shape,
                               layer_name, shape) {
     cat("Request ", startindex + 1, "/", nb_request + 1,
         " downloading...\n", sep = "")
-     res <- st_read(format_url(apikey, layer_name, shape,
-                               startindex = 1000 * startindex),
+     resp <- GET(format_url(apikey, layer_name, shape,
+                            startindex = 1000 * startindex))
+     res <- st_read(resp,
                     quiet = TRUE)
   }
 
