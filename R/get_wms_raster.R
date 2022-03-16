@@ -101,7 +101,8 @@ get_wms_raster <- function(shape,
                            version = "1.3.0",
                            format = "image/geotiff",
                            styles = "",
-                           url_protocole = "wininet") {
+                           method = "wininet",
+                           mode = "w") {
 
 
    shape <- st_make_valid(shape) %>%
