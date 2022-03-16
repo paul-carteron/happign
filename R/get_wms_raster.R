@@ -15,7 +15,7 @@
 #'                version = "1.3.0",
 #'                format = "image/geotiff",
 #'                styles = "",
-#'                url_protocole = "wininet)
+#'                url_protocole = "wininet")
 #'
 #' @param shape Object of class `sf`. Needs to be located in
 #' France.
