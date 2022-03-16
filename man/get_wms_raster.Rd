@@ -41,8 +41,6 @@ to geotiff by default. See detail for more information about \code{format}.}
 \item{styles}{The rendering style of the layers. Set to "" by default.
 See detail for more information about \code{styles}.}
 }
-\item{url_protocole}{pouet}
-}
 
 \value{
 \code{get_wms_raster} return an object of class \code{stars}. Depending on the layer,
