@@ -15,7 +15,8 @@
 #'                version = "1.3.0",
 #'                format = "image/geotiff",
 #'                styles = "",
-#'                url_protocole = "wininet")
+#'                method = "wininet",
+#'                mode = "w")
 #'
 #' @param shape Object of class `sf`. Needs to be located in
 #' France.
@@ -35,7 +36,8 @@
 #' to geotiff by default. See detail for more information about `format`.
 #' @param styles The rendering style of the layers. Set to "" by default.
 #'  See detail for more information about `styles`.
-#' @param url_protocole pouet
+#' @param method pouet
+#' @param mode pouet
 #'
 #' @return
 #' `get_wms_raster` return an object of class `stars`. Depending on the layer,
@@ -153,8 +155,8 @@ get_wms_raster <- function(shape,
          filename_tile <- paste0("tile", i, "_", filename)
 
          download.file(url = urls[i],
-                       method = url_protocole,
-                       mode = "wb",
+                       method = method,
+                       mode = mode,
                        destfile  = filename_tile)
          raster_list[[i]] <- read_stars(filename_tile)
       }
