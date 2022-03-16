@@ -11,7 +11,8 @@ get_wms_raster(shape,
                filename = "raster_name",
                version = "1.3.0",
                format = "image/geotiff",
-               styles = "")
+               styles = "",
+               url_protocole = "wininet")
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
@@ -40,6 +41,9 @@ to geotiff by default. See detail for more information about \code{format}.}
 \item{styles}{The rendering style of the layers. Set to "" by default.
 See detail for more information about \code{styles}.}
 }
+\item{url_protocole}{pouet}
+}
+
 \value{
 \code{get_wms_raster} return an object of class \code{stars}. Depending on the layer,
 this can be a simple raster (2 dimensions and 1 attribute) or an RGB
