@@ -16,7 +16,7 @@
 #'                format = "image/geotiff",
 #'                styles = "",
 #'                method = "auto",
-#'                mode = "w")
+#'                mode = "wb")
 #'
 #' @param shape Object of class `sf`. Needs to be located in
 #' France.
@@ -102,7 +102,7 @@ get_wms_raster <- function(shape,
                            format = "image/geotiff",
                            styles = "",
                            method = "auto",
-                           mode = "w") {
+                           mode = "wb") {
 
 
    shape <- st_make_valid(shape) %>%

@@ -28,10 +28,10 @@ library(purrr)
 
 ## First choose a zone of interest
 
-For the example we will work with the Brocéliande forest. The starting point come from [google map](https://www.google.fr/maps/place/Penmarc'h/@47.8130608,-4.3753483) : you just have to select a random point inside the forest by using right click on map.
+For the example we will work with the Gâvre forest. The starting point come from [google map](https://www.google.fr/maps) : you just have to select a random point inside the forest by using right click on map.
 
 ```{r}
-point = st_sfc(st_point(c(-2.2872752260026816, 48.00393414838046 )), crs = 4326)
+point = st_sfc(st_point(c(-1.7977020162748798, 47.52634370369097)), crs = 4326)
 tm_shape(point)+
    tm_dots(size = 0.1)+
    tm_basemap("OpenStreetMap")
@@ -42,7 +42,7 @@ tm_shape(point)+
 
 Now that we have point, getting shape of commune is just a matter of finding the good layer name from IGN. The one we are after is called "ADMINEXPRESS-COG-CARTO.LATEST:commune" from the "Administrative" category. Then we use the `get_wfs()` function to download the shape.
 
-As you can see below, there are three communes close to our point as you can see below (tip : click on the interactive map below to get population).
+As you can see below, there are three communes close to our point as you can see below (tip : click on the interactive map below to get population). For other example we will only select one of them.
 
 ```{r}
 apikey <- get_apikeys()[1]  # "administratif"
@@ -64,20 +64,50 @@ tm_shape(borders)+
 
 ```
 
+## Download cadastral parcel
+
+The cadastral parcel is the basis of any forest management, it is essential. With happign, it is easy to download it :
+
+```{r}
+# Select only commune to reduce downloading time for hight resolution raster
+borders <- borders %>% 
+   slice(1)
+
+apikey <- get_apikeys()[14] # "parcellaire"
+layer_name <- get_layers_metadata(apikey, "wfs")
+name_parcellaire_layer <- layer_name[15,2] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
+
+parcellaire <- get_wfs(shape = borders,
+                       apikey = apikey,
+                       layer_name = name_parcellaire_layer) %>% 
+   st_transform(st_crs(borders)) %>% 
+   st_intersection(borders)
+
+tm_shape(borders)+
+   tm_borders(col = "red", lwd = 2)+
+tm_shape(parcellaire)+
+   tm_polygons(alpha = 0)+
+   tm_basemap("OpenStreetMap")
+
+```
+
+
 ## Downloading BD Forêt
 
 The first interesting layer for forester is the "BD Forêt" which is all vegetation type assigned to each area greater than or equal to 0.5 ha (5,000 m²). There is two layer for forest : the old one BD Forêt V1 and the new one BD Forêt V2.
 
 ```{r warning=FALSE}
-apikey = get_apikeys()[9]  #"environement"
-layer_name = get_layers_metadata(apikey, "wfs")
-name_BDV1 = layer_name[1,2] #LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape
-name_BDV2 = layer_name[2,2] #LANDCOVER.FORESTINVENTORY.V2:bdforetv2
+apikey <- get_apikeys()[9]  #"environement"
+layer_name <- get_layers_metadata(apikey, "wfs")
+name_BDV1 <- layer_name[1,2] #LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape
+name_BDV2 <- layer_name[2,2] #LANDCOVER.FORESTINVENTORY.V2:bdforetv2
 
-BDV1 = get_wfs(borders, apikey, name_BDV1) %>% 
+BDV1 <- get_wfs(borders, apikey, name_BDV1) %>% 
+   st_transform(st_crs(borders)) %>% 
    st_intersection(borders) # Layer is download for a bbox around the shape. An intersection is done to get forest only inside our zone of interest
 
-BDV2 = get_wfs(borders, apikey, name_BDV2) %>% 
+BDV2 <- get_wfs(borders, apikey, name_BDV2) %>%
+   st_transform(st_crs(borders)) %>% 
    st_intersection(borders)
 
 tm_shape(BDV1) +
@@ -134,12 +164,12 @@ So, for the Brocéliande forest we find :
 Again, you can click on map, point and shape for more informations.
 
 ```{r message=FALSE, warning=FALSE}
-apikey = "environnement"
-protected_area_names = get_layers_metadata(apikey, "wfs") %>% 
+apikey <- "environnement"
+protected_area_names <- get_layers_metadata(apikey, "wfs") %>% 
    filter(grepl("^PROTECTED", name)) %>% 
    pull(name)
 
-all_protected_area = map(.x = protected_area_names,
+all_protected_area <- map(.x = protected_area_names,
                          .f = ~ try(get_wfs(borders, apikey, .x), silent = TRUE)) %>% 
    set_names(protected_area_names) %>% 
    discard(~ is.null(dim(.)))
@@ -165,16 +195,16 @@ tm_shape(borders) +
 It's always good to know a more about the terrain topologie. The ign offers a MNT and a MNS for download. As a reminder, the MNT corresponds to the surface of the ground and the MNS to the real surface (in our case, the trees). It is thus easy to find the height of the trees by subtracting the DTM from the MNS.
 
 ```{r}
-layers_name = get_layers_metadata("altimetrie", "wms")
-MNT_name = layers_name[2,2] # ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES
-MNS_name = layers_name[3,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
+layers_name <- get_layers_metadata("altimetrie", "wms")
+MNT_name <- layers_name[2,2] # ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES
+MNS_name <- layers_name[3,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
-MNT = get_wms_raster(borders, "altimetrie", resolution = 10, MNT_name, filename = "MNT")
+MNT <- get_wms_raster(borders, "altimetrie", resolution = 5, MNT_name, filename = "MNT")
 file.remove("MNT.tif") # I don't want to keep MNT on disk because this is vignette
-MNS = get_wms_raster(borders, "altimetrie",resolution = 10, MNS_name, filename = "MNS")
+MNS <- get_wms_raster(borders, "altimetrie",resolution = 5, MNS_name, filename = "MNS")
 file.remove("MNS.tif") # I don't want to keep MNS on disk because this is vignette
 
-MNH = MNS - MNT
+MNH <- MNS - MNT
 MNH[MNH < 0] <- NA  # Remove negative value 
 MNH[MNH > 40] <- NA # Remove height more than 40m
 
@@ -200,11 +230,16 @@ Categories are somewhat arbitrary, and you can find various rules of thumb, such
 
 
 ```{r}
-IRC = get_wms_raster(shape = borders,
-                    apikey = "ortho",
-                    resolution = 10,
-                    layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC",
-                    filename = "IRC")
+# To show the possibility of 20cm resolution for IRC, let's take only the biggest parcels
+biggest_parcels <- parcellaire %>% 
+   mutate(area = st_area(.)) %>% 
+   slice_max(area)
+
+IRC <- get_wms_raster(shape = biggest_parcels,
+                      apikey = "ortho",
+                      resolution = 0.2,
+                      layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC",
+                      filename = "IRC")
 file.remove("IRC.tif") # I don't want to keep IRC on disk because this is vignette
 
 infrared = IRC %>% slice(band, 1)
@@ -216,16 +251,37 @@ breaks_NDVI = c(-1,-0.2,-0.1,0,0.025 ,0.05,0.075,0.1,0.125,0.15,0.175,0.2 ,0.25 
    
 palette_NDVI =  c("#BFBFBF","#DBDBDB","#FFFFE0","#FFFACC","#EDE8B5","#DED99C","#CCC782","#BDB86B","#B0C261","#A3CC59","#91BF52","#80B347","#70A340","#619636","#4F8A2E","#407D24","#306E1C","#216112","#0F540A","#004500")
 
+tm_shape(borders)+
+   tm_borders(lwd = 2, col = "red")+
 tm_shape(NDVI)+
    tm_raster(stretch.palette = F,
              breaks = breaks_NDVI,
              palette = palette_NDVI,
              colorNA = "red")+
-tm_shape(borders)+
-   tm_borders(lwd = 2)+
+tm_shape(biggest_parcels)+
+   tm_borders(lwd = 2, col = "blue")+
    tm_basemap("OpenStreetMap")
    
 ```
+
+## The gloss index
+
+The gloss index represents the average of the image glosses. This index is therefore sensitive to the brightness of the soil, related to its moisture and the presence of salts on the surface. It characterizes especially the albedo (solar radiation that is reflected back to the atmosphere). The gloss index allows us to estimate whether the observed surface feature is light or dark.
+
+```{r}
+
+gloss_index <- sqrt(red^2 + infrared^2)
+
+tm_shape(borders)+
+   tm_borders(lwd = 2, col = "red")+
+tm_shape(gloss_index)+
+   tm_raster()+
+tm_shape(biggest_parcels)+
+   tm_borders(lwd = 2, col = "blue")+
+   tm_basemap("OpenStreetMap")
+
+```
+
 
 ## Last but not least... BD Topo
 
@@ -248,10 +304,8 @@ cour_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:cours_d_eau") %>%
    st_intersection(st_buffer(borders,100))
 detail_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:detail_hydrographique") %>% 
    st_intersection(st_buffer(borders,100))
-plan_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:plan_d_eau")  %>% 
-   st_intersection(st_buffer(borders,100))
 
-# More precise than plan_eau but there no information of name because it's detected by satellite
+# water detected by satellite
 surf_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:surface_hydrographique") %>% 
    st_intersection(st_buffer(borders,100))
 
@@ -259,8 +313,6 @@ tm_shape(cour_eau)+
    tm_lines(col = "blue")+
 tm_shape(detail_hydro)+
    tm_dots(col = "red")+
-tm_shape(plan_eau)+
-   tm_polygons(col = "skyblue")+
 tm_shape(surf_hydro)+
    tm_polygons("steelblue")+
 tm_shape(borders)+
@@ -275,7 +327,7 @@ The "Etat-major" map is a general map of France made, in its first version, in t
 ```{r}
 etat_major <-  get_wms_raster(shape = borders,
                             apikey = "cartes",
-                            resolution = 20, # You be more precise but it's already 4MB of data
+                            resolution = 2,
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
                             filename = "etat_major")
 file.remove("etat_major.tif") # I don't want to keep etat_major on disk because this is vignette

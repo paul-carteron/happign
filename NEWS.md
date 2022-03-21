@@ -3,6 +3,8 @@
 * Fix resolution for `get_wms_raster()`. Depending on shape and resolution, multiple tile are downloaded and combine to get the right resolution
 * New start up message based on RSS flux of IGN website to warn user if there issues (slowdown, shutdown) or news resources
 *`get_wms_raster()` now fix S2 geometry problems
+* adding `method` and `mode` argument of `download.file()` to have more freedom on the type of download with `get_wms_raster()`
+* Completion of the `happign_for_forester` vignette
 
 # happign 0.1.3
 

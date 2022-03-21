@@ -13,7 +13,7 @@ get_wms_raster(shape,
                format = "image/geotiff",
                styles = "",
                method = "auto",
-               mode = "w")
+               mode = "wb")
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
