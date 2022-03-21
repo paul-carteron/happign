@@ -15,7 +15,7 @@
 #'                version = "1.3.0",
 #'                format = "image/geotiff",
 #'                styles = "",
-#'                method = "wininet",
+#'                method = "auto",
 #'                mode = "w")
 #'
 #' @param shape Object of class `sf`. Needs to be located in
@@ -36,8 +36,8 @@
 #' to geotiff by default. See detail for more information about `format`.
 #' @param styles The rendering style of the layers. Set to "" by default.
 #'  See detail for more information about `styles`.
-#' @param method pouet
-#' @param mode pouet
+#' @param method Method to be used for downloading files. See [download.file()] for more detail.
+#' @param mode The mode with which to write the file. See [download.file()] for more detail.
 #'
 #' @return
 #' `get_wms_raster` return an object of class `stars`. Depending on the layer,
@@ -62,7 +62,7 @@
 #' @importFrom utils download.file
 #'
 #' @seealso
-#' [get_apikeys()], [get_layers_metadata()]
+#' [get_apikeys()], [get_layers_metadata()], [download.file()]
 #'
 #' @examples
 #' \dontrun{
@@ -101,7 +101,7 @@ get_wms_raster <- function(shape,
                            version = "1.3.0",
                            format = "image/geotiff",
                            styles = "",
-                           method = "wininet",
+                           method = "auto",
                            mode = "w") {
 
 

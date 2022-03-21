@@ -12,7 +12,8 @@ get_wms_raster(shape,
                version = "1.3.0",
                format = "image/geotiff",
                styles = "",
-               url_protocole = "wininet")
+               method = "auto",
+               mode = "w")
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
@@ -40,8 +41,11 @@ to geotiff by default. See detail for more information about \code{format}.}
 
 \item{styles}{The rendering style of the layers. Set to "" by default.
 See detail for more information about \code{styles}.}
-}
 
+\item{method}{Method to be used for downloading files. See \code{\link[=download.file]{download.file()}} for more detail.}
+
+\item{mode}{The mode with which to write the file. See \code{\link[=download.file]{download.file()}} for more detail.}
+}
 \value{
 \code{get_wms_raster} return an object of class \code{stars}. Depending on the layer,
 this can be a simple raster (2 dimensions and 1 attribute) or an RGB
@@ -95,5 +99,5 @@ qtm(shape, fill = NULL, borders.lwd = 3)
 }
 }
 \seealso{
-\code{\link[=get_apikeys]{get_apikeys()}}, \code{\link[=get_layers_metadata]{get_layers_metadata()}}
+\code{\link[=get_apikeys]{get_apikeys()}}, \code{\link[=get_layers_metadata]{get_layers_metadata()}}, \code{\link[=download.file]{download.file()}}
 }

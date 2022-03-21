@@ -14,7 +14,7 @@ http_interactions:
       reason: OK
       message: 'Success: (200) OK'
     headers:
-      date: Thu, 20 Jan 2022 14:31:25 GMT
+      date: Mon, 21 Mar 2022 18:54:08 GMT
       content-type: application/json;charset=UTF-8
       transfer-encoding: chunked
       x-frame-options: SAMEORIGIN
@@ -24,7 +24,6 @@ http_interactions:
       access-control-allow-methods: GET, POST
       access-control-max-age: '43200'
       access-control-allow-origin: '*'
-      age: '42'
     body:
       encoding: UTF-8
       file: no
@@ -38,6 +37,48 @@ http_interactions:
         cyclable","nb_chausse":"1 chaussée","nb_voies":"1 voie","etat":"Revêtu","acces":"Libre","pos_sol":"Au
         sol","res_vert":"Non","sens":"Double sens","nb_voies_m":"Sans objet","nb_voies_d":"Sans
         objet","toponyme":null,"usage":"Logique et cartographique","date":"2021-05-07","num_route":null,"class_adm":"Sans
-        objet","gest_route":null,"bbox":[-4.37455976,47.79846814,-4.37135131,47.8116031]}}],"totalFeatures":3,"numberMatched":3,"numberReturned":3,"timeStamp":"2022-01-20T14:31:24.733Z","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[-4.37455976,47.79842021,-4.37078903,47.8116031]}'
-  recorded_at: 2022-01-20 14:32:10 GMT
+        objet","gest_route":null,"bbox":[-4.37455976,47.79846814,-4.37135131,47.8116031]}}],"totalFeatures":3,"numberMatched":3,"numberReturned":3,"timeStamp":"2022-03-21T18:54:07.974Z","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[-4.37455976,47.79842021,-4.37078903,47.8116031]}'
+  recorded_at: 2022-03-21 18:54:16 GMT
+  recorded_with: vcr/1.0.2, webmockr/0.8.0
+- request:
+    method: get
+    uri: https://wxs.ign.fr/cartovecto/geoportail/wfs?service=WFS&version=2.0.0&request=GetFeature&outputFormat=json&srsName=EPSG%3A4326&typeName=BDCARTO_BDD_WLD_WGS84G%3Atroncon_route&bbox=-4.373%2C47.798%2C-4.372%2C47.799%2Cepsg%3A4326&startindex=0
+    body:
+      encoding: ''
+      string: ''
+    headers:
+      Accept: application/json, text/xml, application/xml, */*
+  response:
+    status:
+      status_code: 200
+      category: Success
+      reason: OK
+      message: 'Success: (200) OK'
+    headers:
+      date: Mon, 21 Mar 2022 18:54:08 GMT
+      content-type: application/json;charset=UTF-8
+      transfer-encoding: chunked
+      x-frame-options: SAMEORIGIN
+      content-disposition: inline; filename=features.json
+      wl-original-content-type: application/json;charset=UTF-8
+      cache-control: public, max-age=1814400, must-revalidate
+      access-control-allow-methods: GET, POST
+      access-control-max-age: '43200'
+      access-control-allow-origin: '*'
+      age: '0'
+    body:
+      encoding: UTF-8
+      file: no
+      string: '{"type":"FeatureCollection","features":[{"type":"Feature","id":"troncon_route.932749","geometry":{"type":"MultiLineString","coordinates":[[[-4.37238477,47.79857202],[-4.37189679,47.79842021],[-4.37156538,47.79843931],[-4.37098865,47.79865287],[-4.37078903,47.79866455]]]},"geometry_name":"the_geom","properties":{"id":"BDCTRORO0000000020553098","vocation":"Liaison
+        régionale","nb_chausse":"1 chaussée","nb_voies":"1 voie","etat":"Revêtu","acces":"Libre","pos_sol":"Au
+        sol","res_vert":"Non","sens":"Double sens","nb_voies_m":"Sans objet","nb_voies_d":"Sans
+        objet","toponyme":null,"usage":"Logique et cartographique","date":"2021-05-07","num_route":"D785","class_adm":"Départementale","gest_route":"29","bbox":[-4.37238477,47.79842021,-4.37078903,47.79866455]}},{"type":"Feature","id":"troncon_route.932753","geometry":{"type":"MultiLineString","coordinates":[[[-4.37356881,47.80335518],[-4.37354169,47.80292841],[-4.37352911,47.80229734],[-4.37352485,47.80121467],[-4.37355665,47.80094148],[-4.37351902,47.79958972],[-4.37326244,47.79915303],[-4.37288533,47.79881434],[-4.37238477,47.79857202]]]},"geometry_name":"the_geom","properties":{"id":"BDCTRORO0000000020553094","vocation":"Liaison
+        régionale","nb_chausse":"1 chaussée","nb_voies":"1 voie","etat":"Revêtu","acces":"Libre","pos_sol":"Au
+        sol","res_vert":"Non","sens":"Double sens","nb_voies_m":"Sans objet","nb_voies_d":"Sans
+        objet","toponyme":null,"usage":"Logique et cartographique","date":"2021-05-07","num_route":"D80","class_adm":"Départementale","gest_route":"29","bbox":[-4.37356881,47.79857202,-4.37238477,47.80335518]}},{"type":"Feature","id":"troncon_route.1597277","geometry":{"type":"MultiLineString","coordinates":[[[-4.37371597,47.79846814],[-4.37353103,47.79900049],[-4.37357996,47.79919808],[-4.37369024,47.79970186],[-4.37387768,47.79999828],[-4.37397407,47.80023807],[-4.37399391,47.80044835],[-4.37399391,47.80074756],[-4.37395243,47.80110543],[-4.37393639,47.80138577],[-4.37393603,47.80156658],[-4.37394149,47.80172171],[-4.37411068,47.80213771],[-4.37431865,47.8026299],[-4.37437897,47.80283219],[-4.37445421,47.80313208],[-4.37452047,47.80339637],[-4.37455976,47.80363073],[-4.37453586,47.80391246],[-4.37445009,47.80411584],[-4.3743349,47.80425237],[-4.37420154,47.8043548],[-4.37393361,47.80467634],[-4.37383587,47.80485155],[-4.3736528,47.80495349],[-4.3733244,47.80512969],[-4.37304572,47.80527744],[-4.3730123,47.80532656],[-4.37277293,47.80580539],[-4.37251894,47.80592808],[-4.37247423,47.80608909],[-4.37249092,47.80620917],[-4.37239653,47.80637964],[-4.37211811,47.80689618],[-4.37179519,47.80732424],[-4.37151515,47.80774235],[-4.37144977,47.80793811],[-4.37139661,47.80840519],[-4.37138981,47.80873285],[-4.37135131,47.80923787],[-4.37140232,47.80944076],[-4.37152738,47.80979987],[-4.37186095,47.81060685],[-4.3720699,47.81098056],[-4.37233146,47.81128858],[-4.37256171,47.8116031]]]},"geometry_name":"the_geom","properties":{"id":"BDCTRORO0000002006298383","vocation":"Piste
+        cyclable","nb_chausse":"1 chaussée","nb_voies":"1 voie","etat":"Revêtu","acces":"Libre","pos_sol":"Au
+        sol","res_vert":"Non","sens":"Double sens","nb_voies_m":"Sans objet","nb_voies_d":"Sans
+        objet","toponyme":null,"usage":"Logique et cartographique","date":"2021-05-07","num_route":null,"class_adm":"Sans
+        objet","gest_route":null,"bbox":[-4.37455976,47.79846814,-4.37135131,47.8116031]}}],"totalFeatures":3,"numberMatched":3,"numberReturned":3,"timeStamp":"2022-03-21T18:54:07.974Z","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[-4.37455976,47.79842021,-4.37078903,47.8116031]}'
+  recorded_at: 2022-03-21 18:54:16 GMT
   recorded_with: vcr/1.0.2, webmockr/0.8.0
