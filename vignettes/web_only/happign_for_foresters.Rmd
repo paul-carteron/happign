@@ -332,7 +332,7 @@ etat_major <-  get_wms_raster(shape = borders,
                             filename = "etat_major")
 file.remove("etat_major.tif") # I don't want to keep etat_major on disk because this is vignette
 
-tm_shape(etat_major, raster.downsample = FALSE)+
+tm_shape(etat_major)+
    tm_rgb()+
 tm_shape(borders)+
    tm_borders(lwd = 3, col = "red")+
