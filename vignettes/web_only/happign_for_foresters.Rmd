@@ -327,7 +327,7 @@ The "Etat-major" map is a general map of France made, in its first version, in t
 ```{r}
 etat_major <-  get_wms_raster(shape = borders,
                             apikey = "cartes",
-                            resolution = 2,
+                            resolution = 5,
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
                             filename = "etat_major")
 file.remove("etat_major.tif") # I don't want to keep etat_major on disk because this is vignette
