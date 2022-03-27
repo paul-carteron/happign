@@ -56,15 +56,17 @@ apicarto_get_cadastre <- function(x, section = NULL, numero = NULL){
    numero <- numero
 
    # When x is sf or sfc, convert to geojson string
-   if (grepl("sf", class(x)[1])){
+   if (class(x)[1] == "sf"){
       x <- st_transform(x, 4326)
       geom <- sfc_geojson(st_as_sfc(x))
+   }else if (grepl("sfc", class(x)[1])){
+      x <- st_transform(x, 4326)
+      geom <- sfc_geojson(x)
    }else if (is.character(x) & x %in% happign::code_insee){
       code_insee <- x
    }else {
       stop("Your code does not exist in the insee database. See <https://www.insee.fr/fr/information/2560452> to download the database")
    }
-
 
    url <- modify_url(
       "https://apicarto.ign.fr",
