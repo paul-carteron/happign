@@ -42,39 +42,59 @@
 #'    tm_borders()
 #'
 #' }
-apicarto_get_cadastre <- function(x, section = NULL, numero = NULL){
+#' @name get_apicarto_cadastre
+#' @export
+get_apicarto_cadastre <- function(x, section = NULL, numero = NULL) {
+   UseMethod("get_apicarto_cadastre")
+}
+#' @name get_apicarto_cadastre
+#' @export
+get_apicarto_cadastre.sf <- function(x, section = NULL, numero = NULL) {
+   x <- st_transform(x, 4326)
+   geojson_geom <- sfc_geojson(st_as_sfc(x))
 
-   # Avoid object different than sf, sfc, xharacter
-   if(!grepl("sf", class(x)[1]) & class(x)[1] != "character"){
-      stop("x should be an sf, sfc or a character object")
-   }
+   query_parameter = list(geom = geojson_geom,
+                          code_insee = NULL,
+                          section = section,
+                          numero = numero)
 
-   # Initialise API argument
-   code_insee <- NULL
-   geom <- NULL
-   section <- section
-   numero <- numero
+   download_cadastre(query_parameter)
+}
+#' @name get_apicarto_cadastre
+#' @export
+get_apicarto_cadastre.sfc <- function(x, section = NULL, numero = NULL) {
+   x <- st_transform(x, 4326)
+   geojson_geom <- sfc_geojson(x)
 
-   # When x is sf or sfc, convert to geojson string
-   if (class(x)[1] == "sf"){
-      x <- st_transform(x, 4326)
-      geom <- sfc_geojson(st_as_sfc(x))
-   }else if (grepl("sfc", class(x)[1])){
-      x <- st_transform(x, 4326)
-      geom <- sfc_geojson(x)
-   }else if (is.character(x) & x %in% happign::code_insee){
-      code_insee <- x
-   }else {
-      stop("Your code does not exist in the insee database. See <https://www.insee.fr/fr/information/2560452> to download the database")
-   }
+   query_parameter = list(geom = geojson_geom,
+                          code_insee = NULL,
+                          section = section,
+                          numero = numero)
 
+   download_cadastre(query_parameter)
+}
+#' @name get_apicarto_cadastre
+#' @export
+get_apicarto_cadastre.character <- function(x, section = NULL, numero = NULL) {
+
+   stopifnot("x is not a valid INSEE code (check insee database here : <https://www.insee.fr/fr/information/2560452>)" = x %in% happign::code_insee)
+
+   query_parameter = list(geom = NULL,
+                          code_insee = x,
+                          section = section,
+                          numero = numero)
+
+   download_cadastre(query_parameter)
+
+}
+#' Download cadastre event if there more than 1000 features
+#' @param query_parameter List with parameters for apicarto API
+#' @noRd
+download_cadastre <- function(query_parameter){
    url <- modify_url(
       "https://apicarto.ign.fr",
       path = "api/cadastre/parcelle",
-      query = list(code_insee = code_insee,
-                   geom = geom,
-                   section = section,
-                   numero = numero))
+      query = query_parameter)
 
    resp <- GET(url)
    nb_features <- content(resp)$totalFeatures
@@ -93,4 +113,6 @@ apicarto_get_cadastre <- function(x, section = NULL, numero = NULL){
       res <- read_sf(resp)
    }
 
+   return(res)
 }
+
