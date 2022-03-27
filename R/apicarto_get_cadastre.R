@@ -50,22 +50,18 @@ apicarto_get_cadastre <- function(x, section = NULL, numero = NULL){
    }
 
    # Initialise API argument
-   code_insee = NULL
-   geom = NULL
-   section = section
-   numero = numero
+   code_insee <- NULL
+   geom <- NULL
+   section <- section
+   numero <- numero
 
    # When x is sf or sfc, convert to geojson string
    if (grepl("sf", class(x)[1])){
-      x = st_transform(x, 4326)
-      geom = sfc_geojson(st_as_sfc(x))
-   }
-
-   # When x is character check with existing code
-
-   if (is.character(x) & x %in% happign::code_insee){
+      x <- st_transform(x, 4326)
+      geom <- sfc_geojson(st_as_sfc(x))
+   }else if (is.character(x) & x %in% happign::code_insee){
       code_insee <- x
-   }else{
+   }else {
       stop("Your code does not exist in the insee database. See <https://www.insee.fr/fr/information/2560452> to download the database")
    }
 
