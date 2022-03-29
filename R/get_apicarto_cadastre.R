@@ -100,7 +100,7 @@ download_cadastre <- function(query_parameter){
    nb_features <- content(resp)$totalFeatures
    nb_loop <- nb_features %/% 1000 + 1
 
-   bind_resp <- function(x){
+   bind_resp <- function(url, x){
       cat("Request ", x, "/", nb_loop,
           " downloading...\n", sep = "")
       read_sf(paste0(url, "&_start=", 1000 * (x - 1)),  quiet = TRUE)
@@ -108,11 +108,30 @@ download_cadastre <- function(query_parameter){
 
    if (nb_loop > 1){
       res <- map_df(.x = seq_len(nb_loop),
-                    .f = ~ bind_resp(.x))
+                    .f = ~ bind_resp(url, .x))
    } else {
       res <- read_sf(resp)
    }
 
    return(res)
 }
-
+#
+# code_insee = c("29158")
+# section = c("AX", "AB")
+# section = if(is.null(section)){list(NULL)}else{section}
+# numero = NULL
+# numero = ifelse(is.null(numero), list(NULL), numero)
+#
+# # vals <- c(x, section, numero)
+# # vals <- unique(vals)
+# # combn(vals, 3, simplify = FALSE)
+#
+# urls <- expand.grid(code_insee = code_insee, section = section, numero = numero) %>%
+#    rowwise() %>%
+#    mutate(url =  modify_url("https://apicarto.ign.fr",
+#                             path = "api/cadastre/parcelle",
+#                             query = list(code_insee = code_insee,
+#                                          section = section,
+#                                          umero = numero,
+#                                          geom = NULL))) %>%
+#    mutate(nb_loop = content(GET(url))$totalFeatures %/% 1000 + 1)

@@ -11,7 +11,7 @@
 #'                apikey = "altimetrie",
 #'                layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
 #'                resolution = 10,
-#'                filename = "raster_name",
+#'                filename = NULL,
 #'                version = "1.3.0",
 #'                format = "image/geotiff",
 #'                styles = "",
@@ -97,13 +97,12 @@ get_wms_raster <- function(shape,
                            apikey = "altimetrie",
                            layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
                            resolution = 10,
-                           filename = "raster_name",
+                           filename = NULL,
                            version = "1.3.0",
                            format = "image/geotiff",
                            styles = "",
                            method = "auto",
                            mode = "wb") {
-
 
    shape <- st_make_valid(shape) %>%
       st_transform(4326)
@@ -138,6 +137,7 @@ get_wms_raster <- function(shape,
    )
 
    clean_layer_name <- sub("[^[:alnum:]]", '_' , layer_name)
+   filename <- sub("[^[:alnum:]]", '_' , filename)
 
    if (is.null(filename)){
       filename <- paste0(clean_layer_name,ext)
@@ -164,11 +164,14 @@ get_wms_raster <- function(shape,
 
       raster_final <- do.call("st_mosaic", raster_list)
       file.remove(paste0("tile", seq_along(urls), "_", filename))
-      write_stars(raster_final, filename)
-   }
 
+      tryCatch({write_stars(raster_final, filename)},
+               error = function(x){stop("Please download the latest version of stars package with : `devtools::install_github(\"r-spatial/stars\") and devtretry`")})
+
+      }
    return(raster_final)
 }
+
 #'
 #' format bbox to wms url format
 #' @param shape zone of interest of class sf
