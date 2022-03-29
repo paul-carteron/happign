@@ -115,36 +115,36 @@ download_cadastre <- function(query_parameter){
 
    return(res)
 }
-
-code_insee = c("29158")
-section = NULL
-section = if(is.null(section)){list(NULL)}else{section}
-numero = NULL
-numero = ifelse(is.null(numero), list(NULL), numero)
-
-nb_loop <- expand.grid(code_insee = code_insee, section = section, numero = numero) %>%
-   rowwise() %>%
-   mutate(url =  modify_url("https://apicarto.ign.fr",
-                            path = "api/cadastre/parcelle",
-                            query = list(code_insee = code_insee,
-                                         section = section,
-                                         umero = numero,
-                                         geom = NULL))) %>%
-   mutate(nb_loop = content(GET(url))$totalFeatures %/% 1000 + 1)
-
-urls <- paste0(rep(nb_loop$url, nb_loop$nb_loop),
-              "&_start=",
-              unlist(lapply(nb_loop$nb_loop, function(x) seq(0, x-1)*1000)))
-
-bind_resp <- function(x, urls){
-   cat("Request ", x, "/", length(urls),
-       " downloading...\n", sep = "")
-   read_sf(urls[x],  quiet = TRUE)
-}
-
-
-res <- lapply(seq_along(urls), bind_resp, urls)
-test <- bind_rows(res)
-
-
-
+#
+# code_insee = c("29158")
+# section = NULL
+# section = if(is.null(section)){list(NULL)}else{section}
+# numero = NULL
+# numero = ifelse(is.null(numero), list(NULL), numero)
+#
+# nb_loop <- expand.grid(code_insee = code_insee, section = section, numero = numero) %>%
+#    rowwise() %>%
+#    mutate(url =  modify_url("https://apicarto.ign.fr",
+#                             path = "api/cadastre/parcelle",
+#                             query = list(code_insee = code_insee,
+#                                          section = section,
+#                                          umero = numero,
+#                                          geom = NULL))) %>%
+#    mutate(nb_loop = content(GET(url))$totalFeatures %/% 1000 + 1)
+#
+# urls <- paste0(rep(nb_loop$url, nb_loop$nb_loop),
+#               "&_start=",
+#               unlist(lapply(nb_loop$nb_loop, function(x) seq(0, x-1)*1000)))
+#
+# bind_resp <- function(x, urls){
+#    cat("Request ", x, "/", length(urls),
+#        " downloading...\n", sep = "")
+#    read_sf(urls[x],  quiet = TRUE)
+# }
+#
+#
+# res <- lapply(seq_along(urls), bind_resp, urls)
+# test <- bind_rows(res)
+#
+#
+#
