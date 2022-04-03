@@ -5,7 +5,7 @@
 *`get_wms_raster()` now fix S2 geometry problems
 * adding `method` and `mode` argument of `download.file()` to have more freedom on the type of download with `get_wms_raster()`
 * Completion of the `happign_for_forester` vignette
-* adding first `get_apicarto_*` function for cadastre
+* adding first `get_apicarto_*` vectorized function for cadastre
 
 # happign 0.1.3
 

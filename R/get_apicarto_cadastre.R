@@ -138,7 +138,7 @@ get_apicarto_cadastre.character <- function(x,
 download_cadastre = function(query_parameter){
 
    vectorized_query = lapply(query_parameter,
-                             \(x){if(is.null(x)){list(NULL)}else{x}})
+                             function(x){if(is.null(x)){list(NULL)}else{x}})
 
    urls <- expand.grid(vectorized_query) %>%
       rowwise() %>%
@@ -151,7 +151,7 @@ download_cadastre = function(query_parameter){
                                             code_abs = code_abs,
                                             source_ign = source_ign)))
 
-   nb_loop <- lapply(urls$url, \(x){content(GET(x))$totalFeatures %/% 1000 + 1})
+   nb_loop <- lapply(urls$url, function(x){content(GET(x))$totalFeatures %/% 1000 + 1})
 
    urls <- paste0(rep(urls$url, nb_loop),
                   "&_start=",
