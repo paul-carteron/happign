@@ -54,11 +54,10 @@
 #'
 #' @export
 #'
-#' @importFrom sf st_make_valid st_transform st_bbox st_length st_linestring st_sfc st_make_grid st_filter st_intersects
 #' @importFrom httr modify_url
 #' @importFrom magrittr `%>%`
 #' @importFrom stars read_stars write_stars st_mosaic
-#' @importFrom sf st_set_precision st_make_valid st_transform st_bbox st_linestring st_sfc st_set_precision st_make_grid st_as_sf st_filter st_as_sfc
+#' @importFrom sf st_as_sf st_as_sfc st_bbox st_filter st_length st_linestring st_make_grid st_make_valid st_set_precision st_sfc st_transform st_intersects
 #' @importFrom utils download.file
 #'
 #' @seealso

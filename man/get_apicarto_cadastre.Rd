@@ -7,13 +7,29 @@
 \alias{get_apicarto_cadastre.character}
 \title{Apicarto Cadastre}
 \usage{
-get_apicarto_cadastre(x, section = NULL, numero = NULL)
+\method{get_apicarto_cadastre}{sf}(
+  x,
+  section = NULL,
+  numero = NULL,
+  code_abs = NULL,
+  source_ign = "PCI"
+)
 
-\method{get_apicarto_cadastre}{sf}(x, section = NULL, numero = NULL)
+\method{get_apicarto_cadastre}{sfc}(
+  x,
+  section = NULL,
+  numero = NULL,
+  code_abs = NULL,
+  source_ign = "PCI"
+)
 
-\method{get_apicarto_cadastre}{sfc}(x, section = NULL, numero = NULL)
-
-\method{get_apicarto_cadastre}{character}(x, section = NULL, numero = NULL)
+\method{get_apicarto_cadastre}{character}(
+  x,
+  section = NULL,
+  numero = NULL,
+  code_abs = NULL,
+  source_ign = "PCI"
+)
 }
 \arguments{
 \item{x}{It can be a shape or a code :
@@ -26,12 +42,30 @@ object of class \code{sf} or \code{sfc}
 \item{section}{A \code{character} to filter the response on the cadastral section code entered (on 2 characters)}
 
 \item{numero}{A \code{character} to filter the answers on the entered parcel number (on 4 characters)}
+
+\item{code_abs}{A \code{character} to filter the answers on the code of absorbed commune.
+This prefix is useful to differentiate between communes that have merged}
+
+\item{source_ign}{Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
+The BD Parcellaire is a discontinued product. Its use is no longer
+recommended because it is no longer updated. The use of PCI Express is
+strongly recommended and will become mandatory. More information on the comparison
+of this two products can be found \href{https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf}{here}}
 }
 \value{
-\code{apicarto_get_cadastre}return an object of class \code{sf}
+\code{get_apicarto_cadastre}return an object of class \code{sf}
 }
 \description{
-Apicarto Cadastre
+Implementation of the cadastre module of the
+\href{https://apicarto.ign.fr/api/doc/cadastre}{IGN's apicarto}
+}
+\details{
+#' @usage
+get_apicarto_cadastre(x,
+section = NULL,
+numero = NULL,
+code_abs = NULL,
+source_ign = "PCI")
 }
 \examples{
 \dontrun{
@@ -47,8 +81,8 @@ shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
                                  ncol = 2, byrow = TRUE)))
 shape <- st_sfc(shape, crs = st_crs(4326))
 
-res <- apicarto_get_cadastre(shape)
-res2 <- apicarto_get_cadatre("29158")
+res <- get_apicarto_cadastre(shape)
+res2 <- get_apicarto_cadastre("29158", section = c("AX", "BR"))
 
 tm_shape(res)+
    tm_borders()

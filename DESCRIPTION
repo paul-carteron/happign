@@ -19,7 +19,6 @@ Imports:
     geojsonsf,
     httr,
     magrittr,
-    purrr,
     sf,
     stars,
     tidyr,

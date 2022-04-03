@@ -1,20 +1,37 @@
 #' Apicarto Cadastre
 #'
+#' Implementation of the cadastre module of the
+#'  [IGN's apicarto](https://apicarto.ign.fr/api/doc/cadastre)
+#'
+#' #' @usage
+#' get_apicarto_cadastre(x,
+#'                       section = NULL,
+#'                       numero = NULL,
+#'                       code_abs = NULL,
+#'                       source_ign = "PCI")
+#'
 #' @param x It can be a shape or a code :
 #' * Shape Then, all the cadastral parcels contained in it are downloaded. It should be an
 #' object of class `sf` or `sfc`
 #' * Code insee : filter the response on the INSEE code entered (must be a `character`)
 #' @param section A `character` to filter the response on the cadastral section code entered (on 2 characters)
 #' @param numero A `character` to filter the answers on the entered parcel number (on 4 characters)
+#' @param code_abs  A `character` to filter the answers on the code of absorbed commune.
+#' This prefix is useful to differentiate between communes that have merged
+#' @param source_ign Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
+#'  The BD Parcellaire is a discontinued product. Its use is no longer
+#'  recommended because it is no longer updated. The use of PCI Express is
+#'  strongly recommended and will become mandatory. More information on the comparison
+#'  of this two products can be found [here](https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf)
 #'
-#' @return `apicarto_get_cadastre`return an object of class `sf`
+#' @return `get_apicarto_cadastre`return an object of class `sf`
 #' @export
 #'
 #' @importFrom geojsonsf sfc_geojson
-#' @importFrom purrr map_df
 #' @importFrom sf st_as_sfc st_transform read_sf
 #' @importFrom httr content GET modify_url
-#'
+#' @importFrom dplyr bind_rows mutate rowwise
+#' @importFrom utils globalVariables
 #'
 #' @examples
 #' \dontrun{
@@ -30,8 +47,8 @@
 #'                                  ncol = 2, byrow = TRUE)))
 #' shape <- st_sfc(shape, crs = st_crs(4326))
 #'
-#' res <- apicarto_get_cadastre(shape)
-#' res2 <- apicarto_get_cadatre("29158")
+#' res <- get_apicarto_cadastre(shape)
+#' res2 <- get_apicarto_cadastre("29158", section = c("AX", "BR"))
 #'
 #' tm_shape(res)+
 #'    tm_borders()
@@ -44,45 +61,73 @@
 #' }
 #' @name get_apicarto_cadastre
 #' @export
-get_apicarto_cadastre <- function(x, section = NULL, numero = NULL) {
+#'
+globalVariables(c("code_insee", "section", "numero", "geom", "code_abs", "source_ign"))
+#'
+get_apicarto_cadastre <- function(x,
+                                  section = NULL,
+                                  numero = NULL,
+                                  code_abs = NULL,
+                                  source_ign = "PCI") {
    UseMethod("get_apicarto_cadastre")
 }
 #' @name get_apicarto_cadastre
 #' @export
-get_apicarto_cadastre.sf <- function(x, section = NULL, numero = NULL) {
+get_apicarto_cadastre.sf <- function(x,
+                                     section = NULL,
+                                     numero = NULL,
+                                     code_abs = NULL,
+                                     source_ign = "PCI") {
+   match.arg(source_ign, c("BDP", "PCI"))
    x <- st_transform(x, 4326)
    geojson_geom <- sfc_geojson(st_as_sfc(x))
 
    query_parameter = list(geom = geojson_geom,
                           code_insee = NULL,
                           section = section,
-                          numero = numero)
+                          numero = numero,
+                          code_abs = code_abs,
+                          souce_ign = source_ign)
 
    download_cadastre(query_parameter)
 }
 #' @name get_apicarto_cadastre
 #' @export
-get_apicarto_cadastre.sfc <- function(x, section = NULL, numero = NULL) {
+get_apicarto_cadastre.sfc <- function(x,
+                                      section = NULL,
+                                      numero = NULL,
+                                      code_abs = NULL,
+                                      source_ign = "PCI") {
+   match.arg(source_ign, c("BDP", "PCI"))
    x <- st_transform(x, 4326)
    geojson_geom <- sfc_geojson(x)
 
    query_parameter = list(geom = geojson_geom,
                           code_insee = NULL,
                           section = section,
-                          numero = numero)
+                          numero = numero,
+                          code_abs = code_abs,
+                          souce_ign = source_ign)
 
    download_cadastre(query_parameter)
 }
 #' @name get_apicarto_cadastre
 #' @export
-get_apicarto_cadastre.character <- function(x, section = NULL, numero = NULL) {
+get_apicarto_cadastre.character <- function(x,
+                                            section = NULL,
+                                            numero = NULL,
+                                            code_abs = NULL,
+                                            source_ign = "PCI") {
 
+   match.arg(source_ign, c("BDP", "PCI"))
    stopifnot("x is not a valid INSEE code (check insee database here : <https://www.insee.fr/fr/information/2560452>)" = x %in% happign::code_insee)
 
    query_parameter = list(geom = NULL,
                           code_insee = x,
                           section = section,
-                          numero = numero)
+                          numero = numero,
+                          code_abs = code_abs,
+                          source_ign = source_ign)
 
    download_cadastre(query_parameter)
 
@@ -90,61 +135,37 @@ get_apicarto_cadastre.character <- function(x, section = NULL, numero = NULL) {
 #' Download cadastre event if there more than 1000 features
 #' @param query_parameter List with parameters for apicarto API
 #' @noRd
-download_cadastre <- function(query_parameter){
-   url <- modify_url(
-      "https://apicarto.ign.fr",
-      path = "api/cadastre/parcelle",
-      query = query_parameter)
+download_cadastre = function(query_parameter){
 
-   resp <- GET(url)
-   nb_features <- content(resp)$totalFeatures
-   nb_loop <- nb_features %/% 1000 + 1
+   vectorized_query = lapply(query_parameter,
+                             \(x){if(is.null(x)){list(NULL)}else{x}})
 
-   bind_resp <- function(url, x){
-      cat("Request ", x, "/", nb_loop,
+   urls <- expand.grid(vectorized_query) %>%
+      rowwise() %>%
+      mutate(url =  modify_url("https://apicarto.ign.fr",
+                               path = "api/cadastre/parcelle",
+                               query = list(code_insee = code_insee,
+                                            section = section,
+                                            numero = numero,
+                                            geom = geom,
+                                            code_abs = code_abs,
+                                            source_ign = source_ign)))
+
+   nb_loop <- lapply(urls$url, \(x){content(GET(x))$totalFeatures %/% 1000 + 1})
+
+   urls <- paste0(rep(urls$url, nb_loop),
+                  "&_start=",
+                  unlist(lapply(nb_loop, function(x) seq(0, x-1) * 1000)))
+
+   bind_resp <- function(x, urls){
+      cat("Request ", x, "/", length(urls),
           " downloading...\n", sep = "")
-      read_sf(paste0(url, "&_start=", 1000 * (x - 1)),  quiet = TRUE)
+      read_sf(urls[x],  quiet = TRUE)
    }
 
-   if (nb_loop > 1){
-      res <- map_df(.x = seq_len(nb_loop),
-                    .f = ~ bind_resp(url, .x))
-   } else {
-      res <- read_sf(resp)
-   }
+   parcelles <- lapply(seq_along(urls), bind_resp, urls) %>%
+      bind_rows()
 
-   return(res)
+   return(parcelles)
+
 }
-#
-# code_insee = c("29158")
-# section = NULL
-# section = if(is.null(section)){list(NULL)}else{section}
-# numero = NULL
-# numero = ifelse(is.null(numero), list(NULL), numero)
-#
-# nb_loop <- expand.grid(code_insee = code_insee, section = section, numero = numero) %>%
-#    rowwise() %>%
-#    mutate(url =  modify_url("https://apicarto.ign.fr",
-#                             path = "api/cadastre/parcelle",
-#                             query = list(code_insee = code_insee,
-#                                          section = section,
-#                                          umero = numero,
-#                                          geom = NULL))) %>%
-#    mutate(nb_loop = content(GET(url))$totalFeatures %/% 1000 + 1)
-#
-# urls <- paste0(rep(nb_loop$url, nb_loop$nb_loop),
-#               "&_start=",
-#               unlist(lapply(nb_loop$nb_loop, function(x) seq(0, x-1)*1000)))
-#
-# bind_resp <- function(x, urls){
-#    cat("Request ", x, "/", length(urls),
-#        " downloading...\n", sep = "")
-#    read_sf(urls[x],  quiet = TRUE)
-# }
-#
-#
-# res <- lapply(seq_along(urls), bind_resp, urls)
-# test <- bind_rows(res)
-#
-#
-#
