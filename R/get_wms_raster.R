@@ -28,8 +28,9 @@
 #' @param resolution Cell size in meter. WMS are limited to 2048x2048 pixels so
 #' depending of the shape and the resolution, correct number and size of tiles
 #' is calculated. See detail for more information about resolution.
-#' @param filename Name of raster download to disk. If raster with same name
-#' already exist in the current directory, it is directly imported into R
+#' @param filename Name of raster download to disk. The resolution is automatically added
+#' to the filename. If raster with same name already exist in the current directory,
+#' it is directly imported into R
 #' @param version The version of the service used. Set to latest version
 #' by default. See detail for more information about `version`.
 #' @param format The output format - type-mime - of the image file. Set
@@ -139,9 +140,9 @@ get_wms_raster <- function(shape,
    filename <- sub("[^[:alnum:]]", '_' , filename)
 
    if (is.null(filename)){
-      filename <- paste0(clean_layer_name,ext)
+      filename <- paste0(clean_layer_name,"_",resolution, "m",ext)
    }else{
-      filename <- paste0(filename,ext)
+      filename <- paste0(filename,"_",resolution, "m",ext)
    }
 
    if (filename %in% list.files()){
@@ -163,9 +164,10 @@ get_wms_raster <- function(shape,
 
       raster_final <- do.call("st_mosaic", raster_list)
       file.remove(paste0("tile", seq_along(urls), "_", filename))
+      raster_final <- st_transform(raster_final, 4326)
 
       tryCatch({write_stars(raster_final, filename)},
-               error = function(x){stop("Please download the latest version of stars package with : `devtools::install_github(\"r-spatial/stars\") and devtretry`")})
+               error = function(x){stop("Please download the latest version of stars package with : `devtools::install_github(\"r-spatial/stars\") and retry`")})
 
       }
    return(raster_final)
@@ -186,7 +188,7 @@ format_bbox_wms <- function(shape = NULL) {
 #' @param resolution cell_size in meter
 #' @noRd
 #'
-nb_pixel_bbox <- function(shape, resolution = 10){
+nb_pixel_bbox <- function(shape, resolution){
    bbox <- st_bbox(shape)
    height <- st_linestring(rbind(c(bbox[1], bbox[2]),
                                  c(bbox[1], bbox[4])))
@@ -201,7 +203,7 @@ nb_pixel_bbox <- function(shape, resolution = 10){
 #' @param resolution cell_size in meter
 #' @noRd
 #'
-grid <- function(shape, resolution = 0.05) {
+grid <- function(shape, resolution = resolution) {
    # Fix S2 invalid object
    shape <- st_make_valid(st_set_precision(shape, 1e6))
 
