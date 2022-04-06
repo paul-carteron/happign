@@ -10,19 +10,23 @@
 #'                       code_abs = NULL,
 #'                       source_ign = "PCI")
 #'
-#' @param x It can be a shape or a code :
-#' * Shape Then, all the cadastral parcels contained in it are downloaded. It should be an
-#' object of class `sf` or `sfc`
-#' * Code insee : filter the response on the INSEE code entered (must be a `character`)
-#' @param section A `character` to filter the response on the cadastral section code entered (on 2 characters)
-#' @param numero A `character` to filter the answers on the entered parcel number (on 4 characters)
-#' @param code_abs  A `character` to filter the answers on the code of absorbed commune.
-#' This prefix is useful to differentiate between communes that have merged
+#' @param x It can be a shape or multiple insee code :
+#' * Shape : all the cadastral parcels contained in it are downloaded. It should be an
+#' object of class `sf` or `sfc`.
+#' * Code insee : filter the response on the INSEE code entered (must be a `character` or a vector
+#' of `character`)
+#' @param section A `character` or a vector of `character` to filter the response on the
+#' cadastral section code entered (on 2 characters)
+#' @param numero A `character` or a vector of `character` to filter the answers on the entered parcel
+#' number (on 4 characters)
+#' @param code_abs  A `character` or a vector of `character` to filter the answers on the code of
+#' absorbed commune. This prefix is useful to differentiate between communes that have merged
 #' @param source_ign Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
 #'  The BD Parcellaire is a discontinued product. Its use is no longer
 #'  recommended because it is no longer updated. The use of PCI Express is
 #'  strongly recommended and will become mandatory. More information on the comparison
-#'  of this two products can be found [here](https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf)
+#'  of this two products can be found
+#'  [here](https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf)
 #'
 #' @return `get_apicarto_cadastre`return an object of class `sf`
 #' @export
@@ -47,8 +51,8 @@
 #'                                  ncol = 2, byrow = TRUE)))
 #' shape <- st_sfc(shape, crs = st_crs(4326))
 #'
-#' res <- get_apicarto_cadastre(shape)
-#' res2 <- get_apicarto_cadastre("29158", section = c("AX", "BR"))
+#' PCI_shape <- get_apicarto_cadastre(shape, section = c("AX", "BR"))
+#' BDP_Code <- get_apicarto_cadastre("29158", section = c("AX", "BR"), source_ign = "BDP")
 #'
 #' tm_shape(res)+
 #'    tm_borders()
@@ -87,7 +91,7 @@ get_apicarto_cadastre.sf <- function(x,
                           section = section,
                           numero = numero,
                           code_abs = code_abs,
-                          souce_ign = source_ign)
+                          source_ign = source_ign)
 
    download_cadastre(query_parameter)
 }
@@ -107,7 +111,7 @@ get_apicarto_cadastre.sfc <- function(x,
                           section = section,
                           numero = numero,
                           code_abs = code_abs,
-                          souce_ign = source_ign)
+                          source_ign = source_ign)
 
    download_cadastre(query_parameter)
 }
