@@ -30,8 +30,9 @@ or directly from
 depending of the shape and the resolution, correct number and size of tiles
 is calculated. See detail for more information about resolution.}
 
-\item{filename}{Name of raster download to disk. If raster with same name
-already exist in the current directory, it is directly imported into R}
+\item{filename}{Name of raster download to disk. The resolution is automatically added
+to the filename. If raster with same name already exist in the current directory,
+it is directly imported into R}
 
 \item{version}{The version of the service used. Set to latest version
 by default. See detail for more information about \code{version}.}

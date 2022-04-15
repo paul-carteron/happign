@@ -56,7 +56,7 @@ test_that("grid", {
                 verif_matrix_res_10)
    expect_equal(length(grid(shape, resolution = 0.05)),
                 4)
-   expect_type(suppressMessages(grid(shape)), "list")
+   expect_type(suppressMessages(grid(shape, resolution = 10)), "list")
 })
 
 test_that("nb_pixel_bbox", {
@@ -68,10 +68,10 @@ test_that("nb_pixel_bbox", {
                                        ncol = 2, byrow = TRUE)))
    shape <- sf::st_sfc(shape, crs = sf::st_crs(4326))
 
-   expect_equal(nb_pixel_bbox(shape), c(13,20))
+   expect_equal(nb_pixel_bbox(shape, resolution = 10), c(13,20))
    expect_equal(nb_pixel_bbox(shape, resolution = 0.1), c(1283, 1958))
-   expect_type(nb_pixel_bbox(shape), "double")
-   expect_equal(length(nb_pixel_bbox(shape)), 2)
+   expect_type(nb_pixel_bbox(shape, resolution = 10), "double")
+   expect_equal(length(nb_pixel_bbox(shape, resolution = 10)), 2)
 })
 
 

@@ -203,7 +203,7 @@ nb_pixel_bbox <- function(shape, resolution){
 #' @param resolution cell_size in meter
 #' @noRd
 #'
-grid <- function(shape, resolution = resolution) {
+grid <- function(shape, resolution) {
    # Fix S2 invalid object
    shape <- st_make_valid(st_set_precision(shape, 1e6))
 

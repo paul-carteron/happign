@@ -31,7 +31,6 @@
 #' @return `get_apicarto_cadastre`return an object of class `sf`
 #' @export
 #'
-#' @importFrom geojsonsf sfc_geojson
 #' @importFrom sf st_as_sfc st_transform read_sf
 #' @importFrom httr content GET modify_url
 #' @importFrom dplyr bind_rows mutate rowwise
@@ -54,13 +53,13 @@
 #' PCI_shape <- get_apicarto_cadastre(shape, section = c("AX", "BR"))
 #' BDP_Code <- get_apicarto_cadastre("29158", section = c("AX", "BR"), source_ign = "BDP")
 #'
-#' tm_shape(res)+
-#'    tm_borders()
+#' tm_shape(PCI_shape)+
+#'    tm_borders()+
 #' tm_shape(shape)+
 #'    tm_borders(col = "red")
 #'
-#' tm_shape(res2)+
-#'    tm_borders()
+#' tm_shape(BDP_Code)+
+#'    tm_polygons(col = "section", border.col = "black")
 #'
 #' }
 #' @name get_apicarto_cadastre
@@ -84,7 +83,7 @@ get_apicarto_cadastre.sf <- function(x,
                                      source_ign = "PCI") {
    match.arg(source_ign, c("BDP", "PCI"))
    x <- st_transform(x, 4326)
-   geojson_geom <- sfc_geojson(st_as_sfc(x))
+   geojson_geom <- shp_to_geojson(x)
 
    query_parameter = list(geom = geojson_geom,
                           code_insee = NULL,
@@ -104,7 +103,7 @@ get_apicarto_cadastre.sfc <- function(x,
                                       source_ign = "PCI") {
    match.arg(source_ign, c("BDP", "PCI"))
    x <- st_transform(x, 4326)
-   geojson_geom <- sfc_geojson(x)
+   geojson_geom <- shp_to_geojson(x)
 
    query_parameter = list(geom = geojson_geom,
                           code_insee = NULL,
@@ -164,7 +163,8 @@ download_cadastre = function(query_parameter){
    bind_resp <- function(x, urls){
       cat("Request ", x, "/", length(urls),
           " downloading...\n", sep = "")
-      read_sf(urls[x],  quiet = TRUE)
+      resp <- GET(urls[x])
+      read_sf(resp,  quiet = TRUE)
    }
 
    parcelles <- lapply(seq_along(urls), bind_resp, urls) %>%

@@ -16,7 +16,6 @@ BugReports: https://github.com/paul-carteron/happign/issues
 Imports: 
     curl,
     dplyr,
-    geojsonsf,
     httr,
     magrittr,
     sf,

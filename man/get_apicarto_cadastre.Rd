@@ -32,25 +32,29 @@
 )
 }
 \arguments{
-\item{x}{It can be a shape or a code :
+\item{x}{It can be a shape or multiple insee code :
 \itemize{
-\item Shape Then, all the cadastral parcels contained in it are downloaded. It should be an
-object of class \code{sf} or \code{sfc}
-\item Code insee : filter the response on the INSEE code entered (must be a \code{character})
+\item Shape : all the cadastral parcels contained in it are downloaded. It should be an
+object of class \code{sf} or \code{sfc}.
+\item Code insee : filter the response on the INSEE code entered (must be a \code{character} or a vector
+of \code{character})
 }}
 
-\item{section}{A \code{character} to filter the response on the cadastral section code entered (on 2 characters)}
+\item{section}{A \code{character} or a vector of \code{character} to filter the response on the
+cadastral section code entered (on 2 characters)}
 
-\item{numero}{A \code{character} to filter the answers on the entered parcel number (on 4 characters)}
+\item{numero}{A \code{character} or a vector of \code{character} to filter the answers on the entered parcel
+number (on 4 characters)}
 
-\item{code_abs}{A \code{character} to filter the answers on the code of absorbed commune.
-This prefix is useful to differentiate between communes that have merged}
+\item{code_abs}{A \code{character} or a vector of \code{character} to filter the answers on the code of
+absorbed commune. This prefix is useful to differentiate between communes that have merged}
 
 \item{source_ign}{Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
 The BD Parcellaire is a discontinued product. Its use is no longer
 recommended because it is no longer updated. The use of PCI Express is
 strongly recommended and will become mandatory. More information on the comparison
-of this two products can be found \href{https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf}{here}}
+of this two products can be found
+\href{https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf}{here}}
 }
 \value{
 \code{get_apicarto_cadastre}return an object of class \code{sf}
@@ -81,16 +85,16 @@ shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
                                  ncol = 2, byrow = TRUE)))
 shape <- st_sfc(shape, crs = st_crs(4326))
 
-res <- get_apicarto_cadastre(shape)
-res2 <- get_apicarto_cadastre("29158", section = c("AX", "BR"))
+PCI_shape <- get_apicarto_cadastre(shape, section = c("AX", "BR"))
+BDP_Code <- get_apicarto_cadastre("29158", section = c("AX", "BR"), source_ign = "BDP")
 
-tm_shape(res)+
-   tm_borders()
+tm_shape(PCI_shape)+
+   tm_borders()+
 tm_shape(shape)+
    tm_borders(col = "red")
 
-tm_shape(res2)+
-   tm_borders()
+tm_shape(BDP_Code)+
+   tm_polygons(col = "section", border.col = "black")
 
 }
 }
