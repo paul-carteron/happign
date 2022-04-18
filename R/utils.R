@@ -8,6 +8,10 @@
 #'
 shp_to_geojson <- function(shape){
 
+   if (is.null(shape)){
+      return(NULL)
+   }
+
    # an sfc dimension is NULL compare to sf
    if (!is.null(dim(shape))){
       shape <- st_as_sfc(shape)
