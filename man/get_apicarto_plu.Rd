@@ -2,9 +2,11 @@
 % Please edit documentation in R/get_apicarto_gpu.R
 \name{get_apicarto_plu}
 \alias{get_apicarto_plu}
-\title{Apicarto module Géoportail de l'urbanisme}
+\title{Apicarto module Geoportail de l'urbanisme}
 \usage{
-TO DO
+get_apicarto_plu (x,
+                  ressource = "zone-urba",
+                  partition = NULL)
 }
 \arguments{
 \item{x}{An object of clas \code{sf} or \code{sfc}. If NULL, \code{partition} must be filled by partition of PLU.}
@@ -21,7 +23,7 @@ features intersecting \code{x} are downloaded.}
 A object of class \code{sf}
 }
 \description{
-TO DO DESCRIPTION
+Apicarto module Geoportail de l'urbanisme
 }
 \details{
 \itemize{
@@ -41,6 +43,36 @@ TO DO DESCRIPTION
 library(tmap)
 library(sf)
 point <- st_sfc(st_point(c(-0.4950188466302029, 45.428039987269926)), crs = 4326)
+
+# If you know the partition
+partition <- "DU_17345"
+poly <- get_apicarto_plu(x = NULL, ressource = "zone-urba", partition = partition)
+qtm(poly)+qtm(point, symbols.col = "red", symbols.size = 2)
+
+# If you don't know partition
+poly <- get_apicarto_plu(x = point, ressource = "zone-urba", partition = "auto")
+qtm(poly)+qtm(point, symbols.col = "red", symbols.size = 2)
+
+# If you wanna find partition
+document <- get_apicarto_plu(point, ressource = "document", partition = NULL)
+partition <- unique(document$partition)
+
+# If you want only intersection between you're shape and PLU
+poly <- get_apicarto_plu(point, ressource = "zone-urba", partition = NULL)
+qtm(poly)+qtm(point, symbols.col = "red", symbols.size = 2)
+
+# Get all prescription : /!\ prescription is different than zone-urba
+
+partition <- "DU_17345"
+ressources <- c("prescription-surf", "prescription-lin", "prescription-pct")
+res <- list()
+for (i in 1:3){
+    res_temp <- get_apicarto_plu(x, ressources[i], partition)
+    res[[i]] <- res_temp
 }
+
+
+}
+
 
 }
