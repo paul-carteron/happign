@@ -139,7 +139,7 @@ get_wms_raster <- function(shape,
    clean_layer_name <- sub("[^[:alnum:]]", '_' , layer_name)
    filename <- sub("[^[:alnum:]]", '_' , filename)
 
-   if (is.null(filename)){
+   if (length(filename) == 0){
       filename <- paste0(clean_layer_name,"_",resolution, "m",ext)
    }else{
       filename <- paste0(filename,"_",resolution, "m",ext)
