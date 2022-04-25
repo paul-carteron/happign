@@ -21,7 +21,7 @@
       as_list() %>%
       bind_rows()
 
-   last_actu = paste0("Last news from IGN website : ",
+   last_actu <- paste0("Last news from IGN website : ",
                       "\"",
                       unlist(doc[1,1]),
                       "\"",
