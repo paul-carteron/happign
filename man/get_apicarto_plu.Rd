@@ -15,9 +15,8 @@ get_apicarto_plu (x,
 "prescription-lin", "prescription-pct", "info-surf", "info-lin", "info-pct". See detail for more info.}
 
 \item{partition}{A character corresponding to PLU partition (can be retrieve using
-\code{get_apicarto_plu(x, "document", partition = NULL)}). If partition, is not known, it can be set to
-\code{"auto"}. In this case all PLU from the commune is downloaded. If it's set to NULL, only PLU
-features intersecting \code{x} are downloaded.}
+\code{get_apicarto_plu(x, "document", partition = NULL)}). If \code{partition} is explicitely set, all PLU
+features are returned and \code{geom} is override}
 }
 \value{
 A object of class \code{sf}
@@ -44,35 +43,27 @@ library(tmap)
 library(sf)
 point <- st_sfc(st_point(c(-0.4950188466302029, 45.428039987269926)), crs = 4326)
 
-# If you know the partition
+# If you know the partition (all PLU features are returned, geom is override)
 partition <- "DU_17345"
 poly <- get_apicarto_plu(x = NULL, ressource = "zone-urba", partition = partition)
 qtm(poly)+qtm(point, symbols.col = "red", symbols.size = 2)
 
-# If you don't know partition
-poly <- get_apicarto_plu(x = point, ressource = "zone-urba", partition = "auto")
+# If you don't know partition (only intersection between geom and PLU features is returned)
+poly <- get_apicarto_plu(x = point, ressource = "zone-urba", partition = NULL)
 qtm(poly)+qtm(point, symbols.col = "red", symbols.size = 2)
 
 # If you wanna find partition
 document <- get_apicarto_plu(point, ressource = "document", partition = NULL)
 partition <- unique(document$partition)
 
-# If you want only intersection between you're shape and PLU
-poly <- get_apicarto_plu(point, ressource = "zone-urba", partition = NULL)
-qtm(poly)+qtm(point, symbols.col = "red", symbols.size = 2)
-
 # Get all prescription : /!\ prescription is different than zone-urba
-
 partition <- "DU_17345"
 ressources <- c("prescription-surf", "prescription-lin", "prescription-pct")
-res <- list()
-for (i in 1:3){
-    res_temp <- get_apicarto_plu(x, ressources[i], partition)
-    res[[i]] <- res_temp
+
+# I recommend to use purrr package for loop
+library(purrr)
+all_prescription <- map(.x = ressources,
+                        .f = ~ get_apicarto_plu(point, .x, partition))
 }
-
-
-}
-
 
 }

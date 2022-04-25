@@ -57,8 +57,8 @@
 #'
 #' @importFrom httr modify_url
 #' @importFrom magrittr `%>%`
-#' @importFrom stars read_stars write_stars st_mosaic
-#' @importFrom sf st_as_sf st_as_sfc st_bbox st_filter st_length st_linestring st_make_grid st_make_valid st_set_precision st_sfc st_transform st_intersects
+#' @importFrom stars read_stars write_stars st_mosaic st_warp
+#' @importFrom sf st_as_sf st_as_sfc st_bbox st_filter st_length st_linestring st_make_grid st_make_valid st_set_precision st_sfc st_intersects
 #' @importFrom utils download.file
 #'
 #' @seealso
@@ -164,7 +164,8 @@ get_wms_raster <- function(shape,
 
       raster_final <- do.call("st_mosaic", raster_list)
       file.remove(paste0("tile", seq_along(urls), "_", filename))
-      raster_final <- st_transform(raster_final, 4326)
+      # cf ?st_transform, detail. st_transform convert lossless by into curvilinear grid with is not handle by terra
+      raster_final <- st_warp(raster_final, crs = st_crs(4326))
 
       tryCatch({write_stars(raster_final, filename)},
                error = function(x){stop("Please download the latest version of stars package with : `devtools::install_github(\"r-spatial/stars\") and retry`")})

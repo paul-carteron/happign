@@ -25,7 +25,7 @@
 #' @param crs System of coordinate
 #'
 #' @details
-#' Native API parameter can be find at [IGN documentation](https://geoservices.ign.fr/documentation/services/services-deprecies)
+#' Native API parameter can be find at IGN documentation.
 #'
 #' @return
 #' `get_iso()` returned a polygon corresponding to all the points reachable
