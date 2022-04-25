@@ -200,13 +200,13 @@ MNT_name <- layers_name[2,2] # ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES
 MNS_name <- layers_name[3,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
 MNT <- get_wms_raster(borders, "altimetrie", resolution = 5, MNT_name, filename = "MNT")
-file.remove("MNT.tif") # I don't want to keep MNT on disk because this is vignette
-MNS <- get_wms_raster(borders, "altimetrie",resolution = 5, MNS_name, filename = "MNS")
-file.remove("MNS.tif") # I don't want to keep MNS on disk because this is vignette
+file.remove("MNT_5m.tif") # I don't want to keep MNT on disk because this is vignette
+MNS <- get_wms_raster(borders, "altimetrie", resolution = 5, MNS_name, filename = "MNS")
+file.remove("MNS_5m.tif") # I don't want to keep MNS on disk because this is vignette
 
 MNH <- MNS - MNT
 MNH[MNH < 0] <- NA  # Remove negative value 
-MNH[MNH > 40] <- NA # Remove height more than 40m
+MNH[MNH > 50] <- NA # Remove height more than 40m
 
 tm_shape(MNH)+
    tm_raster()+
@@ -240,7 +240,7 @@ IRC <- get_wms_raster(shape = biggest_parcels,
                       resolution = 0.2,
                       layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC",
                       filename = "IRC")
-file.remove("IRC.tif") # I don't want to keep IRC on disk because this is vignette
+file.remove("IRC_0.2m.tif") # I don't want to keep IRC on disk because this is vignette
 
 infrared = IRC %>% slice(band, 1)
 red = IRC %>% slice(band, 2)
@@ -325,12 +325,12 @@ tm_shape(borders)+
 The "Etat-major" map is a general map of France made, in its first version, in the 19th century. Here how to get it :
 
 ```{r}
-etat_major <-  get_wms_raster(shape = borders,
+etat_major <- get_wms_raster(shape = borders,
                             apikey = "cartes",
                             resolution = 5,
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
                             filename = "etat_major")
-file.remove("etat_major.tif") # I don't want to keep etat_major on disk because this is vignette
+file.remove("etat_major_5m.tif") # I don't want to keep etat_major on disk because this is vignette
 
 tm_shape(etat_major)+
    tm_rgb()+
