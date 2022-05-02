@@ -3,7 +3,8 @@
 #' @usage
 #' get_apicarto_plu (x,
 #'                   ressource = "zone-urba",
-#'                   partition = NULL)
+#'                   partition = NULL,
+#'                   timeout = 10)
 #'
 #' @param x An object of clas `sf` or `sfc`. If NULL, `partition` must be filled by partition of PLU.
 #' @param ressource A character from this list : "document", "zone-urba", "secteur-cc", "prescription-surf",
@@ -11,6 +12,9 @@
 #' @param partition A character corresponding to PLU partition (can be retrieve using
 #' `get_apicarto_plu(x, "document", partition = NULL)`). If `partition` is explicitely set, all PLU
 #' features are returned and `geom` is override
+#' @param timeout Time to wait between two request. It's useful when `get_apicarto_plu()` is implemented
+#' inside dynamic document. If API doesn't work for some reasons, it will try again (3 times). Be careful,
+#' if you're download is longer than `timeout`, the download will not have time to complete
 #'
 #' @details
 #' * `"document'` :
@@ -25,7 +29,7 @@
 #'
 #' @importFrom checkmate assert assert_choice check_character check_class check_null
 #' @importFrom sf read_sf
-#' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request resp_body_json resp_body_string
+#' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request resp_body_json resp_body_string req_retry req_timeout
 #'
 #' @return A object of class `sf`
 #' @export
@@ -61,7 +65,8 @@
 #'
 get_apicarto_plu <- function(x,
                              ressource = "zone-urba",
-                             partition = NULL){
+                             partition = NULL,
+                             timeout = 10){
 
    # Test input values
    assert(check_class(x, "sf"),
@@ -81,7 +86,10 @@ get_apicarto_plu <- function(x,
    request <- request("https://apicarto.ign.fr/api/gpu") %>%
       req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
       req_url_path_append(ressource) %>%
-      req_url_query(partition = partition, geom = shp_to_geojson(x)) %>%
+      req_url_query(partition = partition,
+                    geom = shp_to_geojson(x)) %>%
+      req_retry(3) %>% # Nombre d'essai
+      req_timeout(timeout) %>% # Time to wait between two request. Be careful f download is too long. Test down with 1043 feature (partition = "DU_75056", ressources = "zone-urba), 10s looks ok
       req_perform() %>%
       resp_body_string() %>%
       read_sf()
