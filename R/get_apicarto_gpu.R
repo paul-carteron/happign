@@ -1,10 +1,10 @@
 #' Apicarto module Geoportail de l'urbanisme
 #'
 #' @usage
-#' get_apicarto_plu (x,
-#'                   ressource = "zone-urba",
-#'                   partition = NULL,
-#'                   timeout = 10)
+#' get_apicarto_plu(x,
+#'                  ressource = "zone-urba",
+#'                  partition = NULL,
+#'                  timeout = 10)
 #'
 #' @param x An object of clas `sf` or `sfc`. If NULL, `partition` must be filled by partition of PLU.
 #' @param ressource A character from this list : "document", "zone-urba", "secteur-cc", "prescription-surf",
@@ -72,7 +72,7 @@ get_apicarto_plu <- function(x,
    assert(check_class(x, "sf"),
           check_class(x, "sfc"),
           check_null(x))
-   assert(check_character(partition, pattern = "(?:DU|PSMW)_(?:[0-9]{5})$"),
+   assert(check_character(partition, pattern = "(?:DU|PSMW)_(?:[0-9])+$"),
           check_null(partition))
    assert_choice(ressource, c("document","zone-urba", "secteur-cc", "prescription-surf",
                                "prescription-lin", "prescription-pct",
