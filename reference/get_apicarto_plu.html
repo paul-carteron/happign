@@ -63,7 +63,8 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_apicarto_plu</span> <span class="op">(</span><span class="va">x</span>,
                   ressource <span class="op">=</span> <span class="st">"zone-urba"</span>,
-                  partition <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+                  partition <span class="op">=</span> <span class="cn">NULL</span>,
+                  timeout <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -77,6 +78,10 @@
 <dd><p>A character corresponding to PLU partition (can be retrieve using
 <code>get_apicarto_plu(x, "document", partition = NULL)</code>). If <code>partition</code> is explicitely set, all PLU
 features are returned and <code>geom</code> is override</p></dd>
+<dt>timeout</dt>
+<dd><p>Time to wait between two request. It's useful when <code>get_apicarto_plu()</code> is implemented
+inside dynamic document. If API doesn't work for some reasons, it will try again (3 times). Be careful,
+if you're download is longer than <code>timeout</code>, the download will not have time to complete</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
