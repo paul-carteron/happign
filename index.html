@@ -92,9 +92,9 @@
 <h1 id="happign---ign-api-for-r">happign - IGN API for R<a class="anchor" aria-label="anchor" href="#happign---ign-api-for-r"></a>
 </h1>
 <!-- badges: start -->
-<p>The goal of happign is to facilitate the use of Application Programming Interface from the French National Institute of Geographic and Forestry Information to retrieve their free resources. <code>happign</code> allow downloading of :</p>
+<p>The goal of happign is to facilitate the use of Web Services and API from the French National Institute of Geographic and Forestry Information to retrieve their free resources. <code>happign</code> allow downloading of :</p>
 <ul>
-<li>Shapefile via use of WFS service</li>
+<li>Shapefile via use of WFS service and APIcarto</li>
 <li>Raster via use of WMS raster service</li>
 </ul>
 <p>and calculation of :</p>
@@ -103,8 +103,7 @@
 <h3 id="context">Context<a class="anchor" aria-label="anchor" href="#context"></a>
 </h3>
 <p>Since January 1, 2021, the French National Institute for Geographic and Forestry Information (IGN) has made its public data on French topography, infrastructure, and terrain freely available. The opening of IGN data under the Etalab 2.0 open license means free access and use for all.</p>
-<p>Among the important data that are now open, we can mention the BD TOPO (3D modeling of the territory and its infrastructures), the BD ORTHO (departmental orthophotography), the BD Forêt and the RGE Alti (meshed digital terrain model that describes the French relief). This represents 100 terabytes of data.</p>
-<p>To facilitate access to this data, IGN has implemented a set of APIs based on OGC standards. In other words, it is possible, with correctly formatted URLs, to access IGN data. In spite of a well supplied documentation, the use of APIs remains complex to set up. The <code>happign</code> package has been created to facilitate this.</p>
+<p>To facilitate access to this data, IGN has implemented a set of APIs and Web services based on OGC standards. In other words, it is possible, with correctly formatted URLs, to access IGN data. In spite of a well supplied documentation, the use of APIs remains complex to set up. The <code>happign</code> package has been created to facilitate this.</p>
 </div>
 <div class="section level3">
 <h3 id="rights-of-use-for-ign-data">Rights of use for IGN data<a class="anchor" aria-label="anchor" href="#rights-of-use-for-ign-data"></a>
@@ -130,11 +129,13 @@
 <li>
 <a href="https://paul-carteron.github.io/happign/articles/Getting_started.html">Getting started with happign</a> : A brief intro to happign world ;</li>
 <li>
-<a href="https://paul-carteron.github.io/happign/articles/web_only/Non_functional_APIs.html">Non functionnal API</a> : Every week all API from IGN website are tested to find if any link are working ;</li>
+<a href="https://paul-carteron.github.io/happign/articles/web_only/Non_functional_APIs.html">Non functionnal API</a> : Every week all API from IGN website are tested to find link that doesn’t work ;</li>
 <li>
 <a href="https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html">happign for foresters</a> : happign can be used in many ways but here I focus on a forestry use.</li>
 <li>
-<a href="https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html">SCAN 25, SCAN 100 et SCAN OACI</a> : How to download the only one Scan 25</li>
+<a href="https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html">SCAN 25, SCAN 100 et SCAN OACI</a> : How to download the only Scan 25, Scan 100 and Scan OACI</li>
+<li>
+<a href="https://paul-carteron.github.io/happign/articles/web_only/resolution_for_raster.html">Resolution for raster</a> : IGN tiles are limited to 2064x2064 pixel. <code>happign</code> happign allows you to get around this limitation. The process is explained in this vignette.</li>
 </ul>
 </div>
 <div class="section level3">
@@ -143,7 +144,7 @@
 <p>IGN offers other services. Their implementation in R is under development :</p>
 <ul>
 <li>Calculation of isochron and isodistance</li>
-<li>REST API Carto compatible with the OpenAPI specification (easy and quick downloading for WFS)</li>
+<li>Implement all REST API Carto compatible with the OpenAPI specification (easy and quick downloading for WFS)</li>
 </ul>
 </div>
 <div class="section level3">
@@ -162,7 +163,7 @@
 <p>This project is - obviously - called happign, here’s why :</p>
 <ul>
 <li>“ign” for… IGN : the acronym of the institute ;</li>
-<li>“api” for… API : the tool used to retrieve the data;</li>
+<li>“api” for… API : the interface used to retrieve the data;</li>
 <li>and the addition of an “h” and a “p” for the pun with “happy”. Besides the fact that I love this kind of humor, the simplified use of APIs is a real source of happiness, trust me.</li>
 </ul>
 <p>Also, for the most attentive to details, you can see on the logo a green leaf stuck between the teeth of the charming smile. It is none other than the leaf from the IGN logo.</p>
@@ -218,7 +219,7 @@
 <li><a href="https://CRAN.R-project.org/package=happign" class="external-link"><img src="https://www.r-pkg.org/badges/version/happign" alt="CRAN status"></a></li>
 <li><a href="https://cran.r-project.org/web/checks/check_results_happign.html" class="external-link"><img src="https://cranchecks.info/badges/summary/happign" alt="CRAN checks"></a></li>
 <li><a href="https://github.com/paul-carteron/happign/actions" class="external-link"><img src="https://github.com/paul-carteron/happign/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://www.gnu.org/licenses/gpl-3.0.en.html" class="external-link"><img src="https://img.shields.io/badge/license-GPL--3-blue.svg" alt="license"></a></li>
+<li><a href="https://cran.r-project.org/package=happign" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/last-month/happign?color=green" alt="downloads"></a></li>
 <li><a href="https://app.codecov.io/gh/paul-carteron/happign?branch=main" class="external-link"><img src="https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 </ul>
