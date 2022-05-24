@@ -60,6 +60,7 @@
 #' @importFrom stars read_stars write_stars st_mosaic st_warp
 #' @importFrom sf st_as_sf st_as_sfc st_bbox st_filter st_length st_linestring st_make_grid st_make_valid st_set_precision st_sfc st_intersects
 #' @importFrom utils download.file
+#' @importFrom checkmate assert check_class assert_character assert_numeric check_character check_null
 #'
 #' @seealso
 #' [get_apikeys()], [get_layers_metadata()], [download.file()]
@@ -73,7 +74,7 @@
 #' apikey <- get_apikeys()[4]
 #'
 #' metadata_table <- get_layers_metadata(apikey, "wms")
-#' layer_name <- metadata_table[2,2]
+#' layer_name <- metadata_table[2,2][[1]]
 #'
 #' # shape from the best town in France
 #' shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
@@ -85,7 +86,7 @@
 #' shape <- st_sfc(shape, crs = st_crs(4326))
 #'
 #' # Downloading digital elevation model from IGN
-#' mnt <- get_wms_raster(shape, apikey, layer_name, resolution = 10, filename = "raster_name")
+#' mnt <- get_wms_raster(shape, apikey, layer_name, resolution = 25, filename = "raster_name")
 #' mnt[mnt < 0] <- NA # remove negative values in case of singularity
 #' names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
 #'
@@ -104,13 +105,26 @@ get_wms_raster <- function(shape,
                            method = "auto",
                            mode = "wb") {
 
+   # Check input class
+   assert(check_class(shape, "sf"),
+          check_class(shape, "sfc"))
+   assert_character(apikey)
+   assert_character(layer_name)
+   assert_numeric(resolution)
+   assert(check_character(filename),
+          check_null(filename))
+   assert_character(version)
+   assert_character(format)
+   assert_character(styles)
+   assert_character(method)
+   assert_character(mode)
+
    shape <- st_make_valid(shape) %>%
       st_transform(4326)
 
    grid <- grid(shape, resolution = resolution)
    all_bbox <- lapply(grid, format_bbox_wms)
-   width <- nb_pixel_bbox(grid[[1]], resolution = resolution)[1]
-   height <- nb_pixel_bbox(grid[[1]], resolution = resolution)[2]
+   width_height <- nb_pixel_bbox(grid[[1]], resolution = resolution)
 
    base_url <- modify_url("https://wxs.ign.fr",
                           path = paste0(apikey, "/geoportail/r/wms"),
@@ -119,11 +133,12 @@ get_wms_raster <- function(shape,
                                        format = format,
                                        layers = layer_name,
                                        styles = styles,
-                                       width = width,
-                                       height = height,
+                                       width = width_height[1],
+                                       height = width_height[2],
                                        crs = "EPSG:4326",
                                        bbox = ""))
 
+   # construct url and filename
    urls <- paste0(base_url, all_bbox)
 
    ext <- switch(
@@ -137,11 +152,13 @@ get_wms_raster <- function(shape,
    )
 
    clean_names <- paste0(gsub("[^[:alnum:]]", '_', c(layer_name, filename)),
-                         "_", resolution, "m", ext)
+                         "_",
+                         gsub("[^[:alnum:]]", '_',resolution),
+                         "m", ext)
 
    filename <- ifelse(is.null(filename), clean_names[1], clean_names[2])
 
-
+   # if raster_name already exist is directly load in R, else is download
    if (filename %in% list.files()){
       raster_final <- read_stars(filename)
       message(filename, " already exist at :\n", getwd(), "\nPlease change filename argument if you want to download it again.")
@@ -160,15 +177,18 @@ get_wms_raster <- function(shape,
          raster_list[[i]] <- read_stars(filename_tile)
       }
 
-      raster_final <- do.call("st_mosaic", raster_list)
+      # cf ?st_transform, detail. st_transform convert lossless by into curvilinear grid with is
+      # not handle by terra
+      raster_final <- lapply(X = raster_list,
+                     FUN = st_warp,
+                     crs =  st_crs(4326))
+
+      raster_final <- do.call("st_mosaic", raster_final)
+
+      write_stars(raster_final, filename)
       file.remove(paste0("tile", seq_along(urls), "_", filename))
-      # cf ?st_transform, detail. st_transform convert lossless by into curvilinear grid with is not handle by terra
-      raster_final <- st_warp(raster_final, crs = st_crs(4326))
+   }
 
-      tryCatch({write_stars(raster_final, filename)},
-               error = function(x){stop("Please download the latest version of stars package with : `devtools::install_github(\"r-spatial/stars\") and retry`")})
-
-      }
    return(raster_final)
 }
 

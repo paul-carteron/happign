@@ -4,10 +4,10 @@
 \alias{get_apicarto_plu}
 \title{Apicarto module Geoportail de l'urbanisme}
 \usage{
-get_apicarto_plu (x,
-                  ressource = "zone-urba",
-                  partition = NULL,
-                  timeout = 10)
+get_apicarto_plu(x,
+                 ressource = "zone-urba",
+                 partition = NULL,
+                 timeout = 10)
 }
 \arguments{
 \item{x}{An object of clas \code{sf} or \code{sfc}. If NULL, \code{partition} must be filled by partition of PLU.}

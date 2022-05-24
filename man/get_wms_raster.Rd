@@ -7,7 +7,7 @@
 get_wms_raster(shape,
                apikey = "altimetrie",
                layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
-               resolution = 10,
+               resolution = 25,
                filename = NULL,
                version = "1.3.0",
                format = "image/geotiff",
