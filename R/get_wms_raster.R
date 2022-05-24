@@ -184,14 +184,14 @@ get_wms_raster <- function(shape,
                      crs =  st_crs(4326))
 
       raster_final <- do.call("st_mosaic", raster_final)
+      file.remove(paste0("tile", seq_along(urls), "_", filename))
 
       write_stars(raster_final, filename)
-      file.remove(paste0("tile", seq_along(urls), "_", filename))
+
    }
 
    return(raster_final)
 }
-
 #'
 #' format bbox to wms url format
 #' @param shape zone of interest of class sf
