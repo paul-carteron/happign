@@ -10,7 +10,7 @@
 #' get_wms_raster(shape,
 #'                apikey = "altimetrie",
 #'                layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
-#'                resolution = 10,
+#'                resolution = 25,
 #'                filename = NULL,
 #'                version = "1.3.0",
 #'                format = "image/geotiff",
@@ -96,7 +96,7 @@
 get_wms_raster <- function(shape,
                            apikey = "altimetrie",
                            layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
-                           resolution = 10,
+                           resolution = 25,
                            filename = NULL,
                            version = "1.3.0",
                            format = "image/geotiff",
@@ -136,17 +136,15 @@ get_wms_raster <- function(shape,
            "`?get_wms_raster()`")
    )
 
-   clean_layer_name <- sub("[^[:alnum:]]", '_' , layer_name)
-   filename <- sub("[^[:alnum:]]", '_' , filename)
+   clean_names <- paste0(gsub("[^[:alnum:]]", '_', c(layer_name, filename)),
+                         "_", resolution, "m", ext)
 
-   if (length(filename) == 0){
-      filename <- paste0(clean_layer_name,"_",resolution, "m",ext)
-   }else{
-      filename <- paste0(filename,"_",resolution, "m",ext)
-   }
+   filename <- ifelse(is.null(filename), clean_names[1], clean_names[2])
+
 
    if (filename %in% list.files()){
       raster_final <- read_stars(filename)
+      message(filename, " already exist at :\n", getwd(), "\nPlease change filename argument if you want to download it again.")
    }else{
       raster_list <- list()
       for (i in seq_along(urls)){
