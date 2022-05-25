@@ -22,7 +22,7 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 
 # Before starting
 
-We can load the `happign` package, and some additional packages we will need while we are here.
+We can load the `happign` package, and some additional packages we will need.
 
 ```{r, message = FALSE, warning = FALSE}
 library(happign)
@@ -30,49 +30,53 @@ library(sf)
 library(tmap)
 ```
 
-# The WFS, WMS service
+# WFS and WMS service
 
 `happign` use two data type from IGN web service :
 
-*  WMS raster : data in raster format (.tiff)
+*  WMS raster : data in raster format which are images (.jpg, .png, .tif)
 *  WFS : data in shape format (.shp).
 
 More detailed information are available [here](https://www.ogc.org/standards/wms) for WMS and [here](https://www.ogc.org/standards/wfs) for WFS.
 
 To download data you need :
 
- * Its layer name ;
- * The API key corresponding to the layer ;
- * Your area of interest in .shp format
+* API key corresponding to the layer you want ;
+* The layer's name ;
+* A shape read by [`sf`](https://cran.r-project.org/web/packages/sf/index.html) package
 
-The layer name and API key can be directly retrieved on the [IGN website in the expert web services](https://geoservices.ign.fr/services-web-experts) (I recommend you at this point to go and have a look).
+## API keys
 
-For example, if I take the first category "Administratif", I see that the API key is "administratif" and the first layer name in WFS format is "ADMINEXPRESS-COG.LATEST:arrondissement"
+API keys can be directly retrieved on the [IGN website in the expert web services](https://geoservices.ign.fr/services-web-experts) (I recommend you at this point to go and have a look).
 
-With `happign`, there is no need to go through the website because all api keys are available by running the function `get_apikeys()`.
+For example, if I take the first category "Administratif", I see that the API key is "administratif".
+
+With `happign`, there is no need to go through the website because all 18 api keys can be retrieved by running the function `get_apikeys()` :
+
 ```{r, echo = TRUE}
 get_apikeys()
 ```
 
-After choosing the API key containing our resource, you can access all layer names with `get_layers_metadata()`.
+## Layer name
 
-__*Rq :*__
+As for API key, it is possible to find the names of available layers from the expert web services of the IGN. If I continue to explore the ["Administratif" category](https://geoservices.ign.fr/services-web-experts-administratif), the first layer name in **WFS format** is *"ADMINEXPRESS-COG.LATEST:arrondissement"*.
 
-* *This function can be a bit slow because it connects directly to the website so that the information is up to date.*
-* *The returned data correspond to the intersection with the shape __bbox__.
+Again, all layer's name and other metadata (abstract, style, keywords, defaultcrs, ...) can be accessed from R with the `get_layers_metadata()` function. This one connects directly to the IGN site which allows to have the last updated resources. It can be used for WMS and WFS :
 
 ```{r}
 apikey <- get_apikeys()[1]
 get_layers_metadata(apikey = apikey, data_type = "wfs")
+get_layers_metadata(apikey = apikey, data_type = "wms")
 
 ```
 
-# Downloading the data
-## WFS
+## Downloading the data
 
-For the example we will look at the beautiful town of Penmarch in France and we are going to get these borders.
+Now that we know how to get an API key and layer name, it only takes a few lines to get plethora of resources. For the example we will look at the beautiful town of Penmarch in France.
 
-The `get_wfs()` function connects to WFS service of the IGN that contain borders of the communes. It is also necessary to take a point inside penmarch so that the function detects all the shape that intersect this point.
+### WFS
+
+First, we are going to get borders of the town which is a shape resources so `get_wfs()` will be used. This function need a shape to work. A single point is take inside Penmarch so that the function detects all the shape that intersect this point :
 
 ```{r, eval=TRUE, include=TRUE}
 penmarch_point <- st_sfc(st_point(c(-4.370, 47.800)), crs = 4326)
@@ -96,16 +100,18 @@ tm_shape(penmarch_point) + # Point use to retrieve data
 It's as simple as that!
 Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many road junctions there are in Penmarch?
 
-*Spoiler : there are 220 of them*
+*Spoiler : there are 192 of them*
 
 ```{r, eval=TRUE, include=TRUE}
 dikes <- get_wfs(shape = penmarch_borders,
                  apikey = get_apikeys()[6],
                  layer_name = "BDCARTO_BDD_WLD_WGS84G:noeud_routier")
 
+dikes <- st_intersection(penmarch_borders, dikes)
+
 # Checking result
 tm_shape(penmarch_borders) + # Borders of penmarch
-   tm_polygons(alpha = 0, lwd = 2) +
+   tm_borders(lwd = 2) +
 tm_shape(dikes) + # Point use to retrieve data
    tm_dots(col = "red") +
    tm_add_legend(type = "symbol", label = "Road junction", col = "red") +
@@ -115,20 +121,14 @@ tm_shape(dikes) + # Point use to retrieve data
              frame = FALSE)
 ```
 
-## WMS raster
+### WMS raster
 
-/!\ Code below isn't evaluated because raster needs to be downloaded to disk. I can only recommend you to try it yourself.
+For raster, the process is the same but with the function `get_wms_raster()`. There's plenty of elevation resources inside ["altimetrie" category](https://geoservices.ign.fr/services-web-experts-altimetrie). A basic one is the Digital Elevation Model (DEM or MNT in French). Borders of Penmarch are used as shape for downloading the DEM.
 
-For raster, the process is the same but with the function `get_wms_raster()`. There's plenty of elevation resources inside ["altimetrie" category](https://geoservices.ign.fr/services-web-experts-altimetrie). The basic one is the Digital Elevation Model (DEM or MNT in French).
 
-__*Rq :*__
-
- * *The raster is not loaded into R's memory. It is an on-the-fly sequential reading of files from network, without downloading the whole file first. In other words, it is quite possible to access the DEM of an entire region. The counterpart is the connection time which is about 30s;*
- * *Raster from `get_wms_raster()` are stars object from the `stars` package. To learn more about conversion between other raster type in R go [check this out](https://geocompr.github.io/post/2021/spatial-classes-conversion/).*
-
-```{r, eval = FALSE, echo = TRUE}
+```{r, eval=TRUE, include=TRUE}
 apikey <- get_apikeys()[4]
-layers_metadata <- get_layers_metadata("altimetrie", "wms")
+layers_metadata <- get_layers_metadata(apikey, "wms")
 dem_layer_name <- layers_metadata[2, "name"]
 
 mnt <- get_wms_raster(shape = penmarch_borders,
@@ -136,12 +136,22 @@ mnt <- get_wms_raster(shape = penmarch_borders,
                       layer_name = dem_layer_name,
                       resolution = 25,
                       filename = "best_raster_name")
+file.remove("best_raster_name_25m.tif") # raster are download to disk but I don't want to keep it
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
 
 tm_shape(mnt) +
    tm_raster(colorNA = NULL) +
-   tm_layout(title = "DEM of Penmarch", frame = FALSE)
+tm_shape(penmarch_borders)+
+   tm_borders(lwd = 2)+
+tm_layout(main.title = "DEM of Penmarch",
+          main.title.position = "center",
+          legend.position = c("right", "bottom"),
+          legend.bg.color = "white", legend.bg.alpha = 0.7,
+          frame = FALSE)
 ```
 
+__*Rq :*__
+
+ * *Raster from `get_wms_raster()` are stars object from the `stars` package. To learn more about conversion between other raster type in R go [check this out](https://geocompr.github.io/post/2021/spatial-classes-conversion/).*

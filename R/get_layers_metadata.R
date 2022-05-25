@@ -49,10 +49,9 @@
 #' @return data.frame with name of layer, abstract and crs
 #' @export
 #'
-#' @importFrom dplyr mutate select rename_all
+#' @importFrom dplyr mutate select rename_all across
 #' @importFrom tidyr pivot_wider
-#' @importFrom xml2 read_xml xml_child xml_children xml_find_all
-#' xml_name xml_text
+#' @importFrom xml2 read_xml xml_child xml_children xml_find_all xml_name xml_text
 #'
 get_layers_metadata <- function(apikey, data_type) {
    UseMethod("get_layers_metadata")
@@ -81,9 +80,8 @@ get_layers_metadata.wfs <- function(apikey, data_type) {
 
    res <- xml_to_df(items) %>%
       rename_all(tolower) %>%
-      mutate(defaultcrs = gsub(".*?([0-9]+).*", "\\1", defaultcrs))
-
-   res
+      mutate(defaultcrs = gsub(".*?([0-9]+).*", "\\1", defaultcrs)) %>%
+      mutate(across(.fns = ~ as.character(.)))
 
 }
 
@@ -104,9 +102,8 @@ get_layers_metadata.wms <- function(apikey, data_type) {
 
    res <- suppressWarnings(xml_to_df(items, values_fn = list)) %>%
       rename_all(tolower) %>%
-      as.data.frame()
-
-   res
+      as.data.frame() %>%
+      mutate(across(.fns = ~ as.character(.)))
 
 }
 #' Constructor for class data_type
