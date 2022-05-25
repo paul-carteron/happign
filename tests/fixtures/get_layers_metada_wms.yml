@@ -14,7 +14,7 @@ http_interactions:
       reason: OK
       message: 'Success: (200) OK'
     headers:
-      date: Wed, 25 May 2022 11:31:35 GMT
+      date: Wed, 25 May 2022 13:25:00 GMT
       content-type: text/xml;charset=utf-8
       transfer-encoding: chunked
       wl-original-content-type: text/xml;charset=utf-8
@@ -107,7 +107,7 @@ http_interactions:
         générique</Title><Abstract>Fichier de légende générique – pour la compatibilité
         avec certains systèmes</Abstract><LegendURL height=\"200\" width=\"200\"><Format>image/jpeg</Format><OnlineResource
         xlink:href=\"https://wxs.ign.fr/static/legends/LEGEND.jpg\" xlink:type=\"simple\"/></LegendURL></Style><MinScaleDenominator>267.857142857</MinScaleDenominator><MaxScaleDenominator>559082264.285714269</MaxScaleDenominator></Layer><Layer><Name>ORTHOIMAGERY.ORTHOPHOTOS.IRC-EXPRESS.2021</Name><Title>ortho-express
-        IRC 2021</Title><Abstract>L’Ortho Express est une mosaïque d’ortho�\x90images
+        IRC 2021</Title><Abstract>L’Ortho Express est une mosaïque d’ortho??\x90images
         numériques. Elle se différencie des autres produits orthophotographiques
         de l’IGN par le fait que, par souci de minimiser les délais de sa production,
         elle résulte d’un traitement massivement automatisé . L’Ortho Express
@@ -129,7 +129,7 @@ http_interactions:
         générique</Title><Abstract>Fichier de légende générique – pour la compatibilité
         avec certains systèmes</Abstract><LegendURL height=\"200\" width=\"200\"><Format>image/jpeg</Format><OnlineResource
         xlink:href=\"https://wxs.ign.fr/static/legends/LEGEND.jpg\" xlink:type=\"simple\"/></LegendURL></Style><MinScaleDenominator>267.857142857</MinScaleDenominator><MaxScaleDenominator>559082264.285714269</MaxScaleDenominator></Layer><Layer><Name>ORTHOIMAGERY.ORTHOPHOTOS.ORTHO-EXPRESS.2021</Name><Title>ortho-express
-        2021</Title><Abstract>L’Ortho Express est une mosaïque d’ortho�\x90images
+        2021</Title><Abstract>L’Ortho Express est une mosaïque d’ortho??\x90images
         numériques. Elle se différencie des autres produits orthophotographiques
         de l’IGN par le fait que, par souci de minimiser les délais de sa production,
         elle résulte d’un traitement massivement automatisé . L’Ortho Express
@@ -188,5 +188,5 @@ http_interactions:
         générique</Title><Abstract>Fichier de légende générique – pour la compatibilité
         avec certains systèmes</Abstract><LegendURL height=\"200\" width=\"200\"><Format>image/jpeg</Format><OnlineResource
         xlink:href=\"https://wxs.ign.fr/static/legends/LEGEND.jpg\" xlink:type=\"simple\"/></LegendURL></Style><MinScaleDenominator>267.857142857</MinScaleDenominator><MaxScaleDenominator>559082264.285714269</MaxScaleDenominator></Layer></Layer></Capability></WMS_Capabilities>"
-  recorded_at: 2022-05-25 11:31:36 GMT
+  recorded_at: 2022-05-25 13:25:00 GMT
   recorded_with: vcr/1.0.2, webmockr/0.8.0

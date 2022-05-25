@@ -52,7 +52,7 @@ format_url <- function(apikey = NULL, layer_name = NULL) {
 # ---- WFS ----
 start_time <- Sys.time()
 
-all_metadata = get_apikeys() %>%
+all_metadata <- get_apikeys() %>%
    set_names() %>% 
    map_df(.f = ~ get_layers_metadata(., "wfs"), .id = "apikey") %>%
    mutate(url = pmap_chr(., ~ format_url(..1, ..3))) %>%
