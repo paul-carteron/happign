@@ -25,15 +25,27 @@ test_that("xml_to_df", {
 })
 
 test_that("get_layers_metada_wfs", {
-   apikey <- "altimetrie"
-   data_type <- "wfs"
 
    vcr::use_cassette("get_layers_metada_wfs", {
-      res <- get_layers_metadata(apikey, data_type)
+      res <- get_layers_metadata("altimetrie", "wfs")
    })
 
    expect_equal(dim(res), c(1, 7))
    expect_equal(names(res),
                 c("itemindex", "name", "title", "abstract",
                   "keywords", "defaultcrs", "wgs84boundingbox"))
+})
+
+
+test_that("get_layers_metada_wms", {
+
+   vcr::use_cassette("get_layers_metada_wms", {
+      res <- get_layers_metadata("ortho", "wms")
+   })
+
+   expect_equal(dim(res), c(12, 12))
+   expect_equal(names(res),
+                c("itemindex", "name", "title", "abstract", "keywordlist", "crs",
+                  "ex_geographicboundingbox", "boundingbox", "metadataurl", "style",
+                  "minscaledenominator", "maxscaledenominator"))
 })
