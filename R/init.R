@@ -1,5 +1,5 @@
-#' @importFrom httr http_error set_config config reset_config
 #' @importFrom curl has_internet
+#' @importFrom httr2 request req_perform resp_body_xml resp_is_error
 #' @importFrom dplyr bind_rows
 #' @importFrom magrittr `%>%`
 #' @importFrom xml2 read_xml as_list xml_find_all
@@ -14,25 +14,24 @@
 
    # Last actu
 
-   resp <- GET("http://geoservices.ign.fr/actualites/rss.xml",
-               config(ssl_verifypeer = 0))
-
-   doc <- read_xml(resp) %>%
+   req <- request("http://geoservices.ign.fr/actualites/rss.xml") %>%
+      req_perform() %>%
+      resp_body_xml() %>%
       xml_find_all("//item") %>%
       as_list() %>%
       bind_rows()
 
    last_actu <- paste0("Last news from IGN website : ",
                       "\"",
-                      unlist(doc[1,1]),
+                      unlist(req[1,1]),
                       "\"",
-                      " on ", substring(unlist(doc[1, 2]), 39, 48),
-                     " (", unlist(doc[1, 2]), ")\n")
+                      " on ", substring(unlist(req[1, 2]), 39, 48),
+                     " (", unlist(req[1, 2]), ")\n")
 
-   base_url <- "http://geoservices.ign.fr/"
+   resp <- request("http://geoservices.ign.fr/") %>%
+      req_perform()
 
-   # check that IGN web service can be reached (400 or above-
-   if (http_error(GET(base_url, config(ssl_verifypeer = 0)))) {
+   if (resp_is_error(resp)) {
       packageStartupMessage("IGN web service API is unavailable.\n",
                             "It may be due to a site crash ",
                             "or an update of the IGN data. More ",
@@ -43,6 +42,5 @@
                             last_actu)
    }
 
-   reset_config()
 
 }
