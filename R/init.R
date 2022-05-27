@@ -15,6 +15,7 @@
    # Last actu
 
    req <- request("http://geoservices.ign.fr/actualites/rss.xml") %>%
+      req_options(ssl_verifypeer = 0) %>%
       req_perform() %>%
       resp_body_xml() %>%
       xml_find_all("//item") %>%
@@ -29,6 +30,7 @@
                      " (", unlist(req[1, 2]), ")\n")
 
    resp <- request("http://geoservices.ign.fr/") %>%
+      req_options(ssl_verifypeer = 0) %>%
       req_perform()
 
    if (resp_is_error(resp)) {
