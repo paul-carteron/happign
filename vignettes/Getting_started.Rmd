@@ -67,7 +67,6 @@ Again, all layer's name and other metadata (abstract, style, keywords, defaultcr
 apikey <- get_apikeys()[1]
 get_layers_metadata(apikey = apikey, data_type = "wfs")
 get_layers_metadata(apikey = apikey, data_type = "wms")
-
 ```
 
 ## Downloading the data

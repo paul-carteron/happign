@@ -77,7 +77,7 @@ source_ign = "PCI")
 library(sf)
 library(tmap)
 
-#' # shape from the best town in France
+# shape from the best town in France
 shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
                                  -4.375615, 47.79738,
                                  -4.375147, 47.79683,

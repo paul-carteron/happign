@@ -17,7 +17,6 @@ Imports:
     checkmate,
     curl,
     dplyr,
-    httr,
     httr2,
     magrittr,
     sf,

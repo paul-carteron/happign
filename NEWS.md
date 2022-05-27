@@ -1,3 +1,9 @@
+# happign 0.1.5
+* remove `get_iso()`
+* remove dependency to `httr` by `httr2`
+* add `get_wms_info()`
+* add `get_apicarto_plu`
+
 # happign 0.1.4
 
 * Fix resolution for `get_wms_raster()`. Depending on shape and resolution, multiple tile are downloaded and combine to get the right resolution. Also adding vignette [Resolution for raster](https://paul-carteron.github.io/happign/articles/web_only/resolution_for_raster.html) for further explanation

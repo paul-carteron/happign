@@ -33,7 +33,7 @@
 #' @export
 #'
 #' @importFrom sf st_as_sfc st_transform read_sf
-#' @importFrom httr content GET modify_url
+#' @importFrom httr2 req_url_path req_perform req_url_query request resp_body_json resp_body_string
 #' @importFrom dplyr bind_rows mutate rowwise
 #' @importFrom utils globalVariables
 #'
@@ -42,7 +42,7 @@
 #' library(sf)
 #' library(tmap)
 #'
-#' #' # shape from the best town in France
+#' # shape from the best town in France
 #' shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
 #'                                  -4.375615, 47.79738,
 #'                                  -4.375147, 47.79683,
@@ -87,11 +87,11 @@ get_apicarto_cadastre.sf <- function(x,
    geojson_geom <- shp_to_geojson(x)
 
    query_parameter <- list(geom = geojson_geom,
-                          code_insee = NULL,
-                          section = section,
-                          numero = numero,
-                          code_abs = code_abs,
-                          source_ign = source_ign)
+                           code_insee = NULL,
+                           section = section,
+                           numero = numero,
+                           code_abs = code_abs,
+                           source_ign = source_ign)
 
    download_cadastre(query_parameter)
 }
@@ -107,11 +107,11 @@ get_apicarto_cadastre.sfc <- function(x,
    geojson_geom <- shp_to_geojson(x)
 
    query_parameter <- list(geom = geojson_geom,
-                          code_insee = NULL,
-                          section = section,
-                          numero = numero,
-                          code_abs = code_abs,
-                          source_ign = source_ign)
+                           code_insee = NULL,
+                           section = section,
+                           numero = numero,
+                           code_abs = code_abs,
+                           source_ign = source_ign)
 
    download_cadastre(query_parameter)
 }
@@ -127,11 +127,11 @@ get_apicarto_cadastre.character <- function(x,
    stopifnot("x is not a valid INSEE code (check insee database here : <https://www.insee.fr/fr/information/2560452>)" = x %in% happign::code_insee)
 
    query_parameter <- list(geom = NULL,
-                          code_insee = x,
-                          section = section,
-                          numero = numero,
-                          code_abs = code_abs,
-                          source_ign = source_ign)
+                           code_insee = x,
+                           section = section,
+                           numero = numero,
+                           code_abs = code_abs,
+                           source_ign = source_ign)
 
    download_cadastre(query_parameter)
 
@@ -144,18 +144,22 @@ download_cadastre <- function(query_parameter){
    vectorized_query <- lapply(query_parameter,
                              function(x){if(is.null(x)){list(NULL)}else{x}})
 
+   # Obliger de feinter httr2 pour convertir le geojson en format lisible par url
    urls <- expand.grid(vectorized_query) %>%
       rowwise() %>%
-      mutate(url =  modify_url("https://apicarto.ign.fr",
-                               path = "api/cadastre/parcelle",
-                               query = list(code_insee = code_insee,
-                                            section = section,
-                                            numero = numero,
-                                            geom = geom,
-                                            code_abs = code_abs,
-                                            source_ign = source_ign)))
+      mutate(url = list(request("https://apicarto.ign.fr") %>%
+                            req_url_path("api/cadastre/parcelle") %>%
+                            req_url_query(code_insee = code_insee,
+                                               section = section,
+                                               numero = numero,
+                                               geom = geom,
+                                               code_abs = code_abs,
+                                               source_ign = source_ign))) %>%
+      mutate(url = url[[1]])
 
-   nb_loop <- lapply(urls$url, function(x){content(GET(x))$totalFeatures %/% 1000 + 1})
+   nb_loop <- lapply(urls$url,
+                     \(x){resp_body_json(req_perform(request(x[[1]])))$totalFeatures %/% 1000 + 1})
+
 
    urls <- paste0(rep(urls$url, nb_loop),
                   "&_start=",
@@ -164,8 +168,10 @@ download_cadastre <- function(query_parameter){
    bind_resp <- function(x, urls){
       cat("Request ", x, "/", length(urls),
           " downloading...\n", sep = "")
-      resp <- GET(urls[x])
-      read_sf(resp,  quiet = TRUE)
+      resp <- request(urls[x]) %>%
+         req_perform() %>%
+         resp_body_string() %>%
+         read_sf(quiet = TRUE)
    }
 
    parcelles <- lapply(seq_along(urls), bind_resp, urls) %>%

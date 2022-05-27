@@ -60,7 +60,7 @@
 #' @importFrom magrittr `%>%`
 #' @importFrom stars read_stars write_stars st_mosaic st_warp
 #' @importFrom sf st_as_sf st_as_sfc st_bbox st_filter st_length st_linestring
-#' st_make_grid st_make_valid st_set_precision st_sfc st_intersects
+#' st_make_grid st_make_valid st_set_precision st_sfc st_intersects st_crs
 #' @importFrom utils download.file
 #' @importFrom checkmate assert check_class assert_character assert_numeric
 #' check_character check_null

@@ -51,6 +51,7 @@
 #'
 #' @importFrom dplyr mutate select rename_all across
 #' @importFrom tidyr pivot_wider
+#' @importFrom httr2 request req_perform resp_body_xml
 #' @importFrom xml2 read_xml xml_child xml_children xml_find_all xml_name xml_text
 #'
 get_layers_metadata <- function(apikey, data_type) {
@@ -70,9 +71,9 @@ get_layers_metadata.wfs <- function(apikey, data_type) {
                 apikey,
                 "/geoportail/wfs?SERVICE=WFS&REQUEST=GetCapabilities")
 
-   resp <- GET(url)
-
-   items <- read_xml(resp) %>%
+   items <- request(url) %>%
+      req_perform() %>%
+      resp_body_xml() %>%
       xml_child("d1:FeatureTypeList") %>%
       xml_children()
 
@@ -93,9 +94,9 @@ get_layers_metadata.wms <- function(apikey, data_type) {
                 apikey,
                 "/geoportail/r/wms?SERVICE=WMS&REQUEST=GetCapabilities")
 
-   resp <- GET(url)
-
-   items <- read_xml(resp) %>%
+   items <- request(url) %>%
+      req_perform() %>%
+      resp_body_xml() %>%
       xml_child("d1:Capability") %>%
       xml_child("d1:Layer") %>%
       xml_find_all("d1:Layer")
