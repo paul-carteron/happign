@@ -37,6 +37,9 @@
     <loc>https://paul-carteron.github.io/happign/news/index.html</loc>
   </url>
   <url>
+    <loc>https://paul-carteron.github.io/happign/reference/are_queryable.html</loc>
+  </url>
+  <url>
     <loc>https://paul-carteron.github.io/happign/reference/code_insee.html</loc>
   </url>
   <url>
@@ -56,6 +59,9 @@
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_wfs.html</loc>
+  </url>
+  <url>
+    <loc>https://paul-carteron.github.io/happign/reference/get_wms_info.html</loc>
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_wms_raster.html</loc>
