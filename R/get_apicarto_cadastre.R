@@ -11,16 +11,17 @@
 #'                       source_ign = "PCI")
 #'
 #' @param x It can be a shape or multiple insee code :
-#' * Shape : all the cadastral parcels contained in it are downloaded. It should be an
-#' object of class `sf` or `sfc`.
-#' * Code insee : filter the response on the INSEE code entered (must be a `character` or a vector
-#' of `character`)
-#' @param section A `character` or a vector of `character` to filter the response on the
-#' cadastral section code entered (on 2 characters)
-#' @param numero A `character` or a vector of `character` to filter the answers on the entered parcel
-#' number (on 4 characters)
-#' @param code_abs  A `character` or a vector of `character` to filter the answers on the code of
-#' absorbed commune. This prefix is useful to differentiate between communes that have merged
+#' * Shape : all the cadastral parcels contained in it are downloaded. It should
+#'  be an object of class `sf` or `sfc`.
+#' * Code insee : filter the response on the INSEE code entered (must be a
+#'  `character` or a vector of `character`)
+#' @param section A `character` or a vector of `character` to filter the
+#'  response on the cadastral section code entered (on 2 characters)
+#' @param numero A `character` or a vector of `character` to filter the answers on
+#' the entered parcel number (on 4 characters)
+#' @param code_abs A `character` or a vector of `character` to filter the answers
+#' on the code of absorbed commune. This prefix is useful to differentiate between
+#' communes that have merged
 #' @param source_ign Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
 #'  The BD Parcellaire is a discontinued product. Its use is no longer
 #'  recommended because it is no longer updated. The use of PCI Express is
@@ -85,7 +86,7 @@ get_apicarto_cadastre.sf <- function(x,
    x <- st_transform(x, 4326)
    geojson_geom <- shp_to_geojson(x)
 
-   query_parameter = list(geom = geojson_geom,
+   query_parameter <- list(geom = geojson_geom,
                           code_insee = NULL,
                           section = section,
                           numero = numero,
@@ -105,7 +106,7 @@ get_apicarto_cadastre.sfc <- function(x,
    x <- st_transform(x, 4326)
    geojson_geom <- shp_to_geojson(x)
 
-   query_parameter = list(geom = geojson_geom,
+   query_parameter <- list(geom = geojson_geom,
                           code_insee = NULL,
                           section = section,
                           numero = numero,
@@ -125,7 +126,7 @@ get_apicarto_cadastre.character <- function(x,
    match.arg(source_ign, c("BDP", "PCI"))
    stopifnot("x is not a valid INSEE code (check insee database here : <https://www.insee.fr/fr/information/2560452>)" = x %in% happign::code_insee)
 
-   query_parameter = list(geom = NULL,
+   query_parameter <- list(geom = NULL,
                           code_insee = x,
                           section = section,
                           numero = numero,
@@ -138,9 +139,9 @@ get_apicarto_cadastre.character <- function(x,
 #' Download cadastre event if there more than 1000 features
 #' @param query_parameter List with parameters for apicarto API
 #' @noRd
-download_cadastre = function(query_parameter){
+download_cadastre <- function(query_parameter){
 
-   vectorized_query = lapply(query_parameter,
+   vectorized_query <- lapply(query_parameter,
                              function(x){if(is.null(x)){list(NULL)}else{x}})
 
    urls <- expand.grid(vectorized_query) %>%

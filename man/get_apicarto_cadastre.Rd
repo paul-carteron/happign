@@ -34,20 +34,21 @@
 \arguments{
 \item{x}{It can be a shape or multiple insee code :
 \itemize{
-\item Shape : all the cadastral parcels contained in it are downloaded. It should be an
-object of class \code{sf} or \code{sfc}.
-\item Code insee : filter the response on the INSEE code entered (must be a \code{character} or a vector
-of \code{character})
+\item Shape : all the cadastral parcels contained in it are downloaded. It should
+be an object of class \code{sf} or \code{sfc}.
+\item Code insee : filter the response on the INSEE code entered (must be a
+\code{character} or a vector of \code{character})
 }}
 
-\item{section}{A \code{character} or a vector of \code{character} to filter the response on the
-cadastral section code entered (on 2 characters)}
+\item{section}{A \code{character} or a vector of \code{character} to filter the
+response on the cadastral section code entered (on 2 characters)}
 
-\item{numero}{A \code{character} or a vector of \code{character} to filter the answers on the entered parcel
-number (on 4 characters)}
+\item{numero}{A \code{character} or a vector of \code{character} to filter the answers on
+the entered parcel number (on 4 characters)}
 
-\item{code_abs}{A \code{character} or a vector of \code{character} to filter the answers on the code of
-absorbed commune. This prefix is useful to differentiate between communes that have merged}
+\item{code_abs}{A \code{character} or a vector of \code{character} to filter the answers
+on the code of absorbed commune. This prefix is useful to differentiate between
+communes that have merged}
 
 \item{source_ign}{Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
 The BD Parcellaire is a discontinued product. Its use is no longer

@@ -10,18 +10,21 @@ get_apicarto_plu(x,
                  timeout = 10)
 }
 \arguments{
-\item{x}{An object of clas \code{sf} or \code{sfc}. If NULL, \code{partition} must be filled by partition of PLU.}
+\item{x}{An object of clas \code{sf} or \code{sfc}. If NULL, \code{partition} must be filled
+by partition of PLU.}
 
-\item{ressource}{A character from this list : "document", "zone-urba", "secteur-cc", "prescription-surf",
-"prescription-lin", "prescription-pct", "info-surf", "info-lin", "info-pct". See detail for more info.}
+\item{ressource}{A character from this list : "document", "zone-urba",
+"secteur-cc", "prescription-surf", "prescription-lin", "prescription-pct",
+"info-surf", "info-lin", "info-pct". See detail for more info.}
 
-\item{partition}{A character corresponding to PLU partition (can be retrieve using
-\code{get_apicarto_plu(x, "document", partition = NULL)}). If \code{partition} is explicitely set, all PLU
-features are returned and \code{geom} is override}
+\item{partition}{A character corresponding to PLU partition (can be retrieve
+using \code{get_apicarto_plu(x, "document", partition = NULL)}). If \code{partition}
+is explicitely set, all PLU features are returned and \code{geom} is override}
 
-\item{timeout}{Time to wait between two request. It's useful when \code{get_apicarto_plu()} is implemented
-inside dynamic document. If API doesn't work for some reasons, it will try again (3 times). Be careful,
-if you're download is longer than \code{timeout}, the download will not have time to complete}
+\item{timeout}{Time to wait between two request. It's useful when \code{get_apicarto_plu()}
+is implemented inside dynamic document. If API doesn't work for some reasons,
+it will try again (3 times). Be careful, if you're download is longer than
+\code{timeout}, the download will not have time to complete}
 }
 \value{
 A object of class \code{sf}

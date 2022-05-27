@@ -45,7 +45,8 @@ test_that("get_layers_metada_wms", {
 
    expect_equal(dim(res), c(12, 12))
    expect_equal(names(res),
-                c("itemindex", "name", "title", "abstract", "keywordlist", "crs",
-                  "ex_geographicboundingbox", "boundingbox", "metadataurl", "style",
-                  "minscaledenominator", "maxscaledenominator"))
+                c("itemindex", "name", "title", "abstract", "keywordlist",
+                  "crs", "ex_geographicboundingbox", "boundingbox",
+                  "metadataurl", "style", "minscaledenominator",
+                  "maxscaledenominator"))
 })

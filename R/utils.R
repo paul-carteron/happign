@@ -1,6 +1,7 @@
 #' Convert sf or sfc to geojson format
 #'
-#' @param shape A shape of class sf or sfc. Could be a POLYGON, POINT or LINESTRING.
+#' @param shape A shape of class sf or sfc. Could be a POLYGON, POINT or
+#' LINESTRING.
 #'
 #' @importFrom sf st_as_sfc st_transform st_geometry_type st_coordinates
 #' @return Return a geojson string

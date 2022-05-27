@@ -14,7 +14,8 @@
 
    # Last actu
 
-   resp <- GET("http://geoservices.ign.fr/actualites/rss.xml", config(ssl_verifypeer = 0))
+   resp <- GET("http://geoservices.ign.fr/actualites/rss.xml",
+               config(ssl_verifypeer = 0))
 
    doc <- read_xml(resp) %>%
       xml_find_all("//item") %>%

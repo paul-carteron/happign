@@ -28,17 +28,19 @@
 #' @param resolution Cell size in meter. WMS are limited to 2048x2048 pixels so
 #' depending of the shape and the resolution, correct number and size of tiles
 #' is calculated. See detail for more information about resolution.
-#' @param filename Name of raster download to disk. The resolution is automatically added
-#' to the filename. If raster with same name already exist in the current directory,
-#' it is directly imported into R
+#' @param filename Name of raster download to disk. The resolution is automatically
+#'  added to the filename. If raster with same name already exist in the current
+#'  directory, it is directly imported into R
 #' @param version The version of the service used. Set to latest version
 #' by default. See detail for more information about `version`.
 #' @param format The output format - type-mime - of the image file. Set
 #' to geotiff by default. See detail for more information about `format`.
 #' @param styles The rendering style of the layers. Set to "" by default.
 #'  See detail for more information about `styles`.
-#' @param method Method to be used for downloading files. See [download.file()] for more detail.
-#' @param mode The mode with which to write the file. See [download.file()] for more detail.
+#' @param method Method to be used for downloading files. See [download.file()]
+#' for more detail.
+#' @param mode The mode with which to write the file. See [download.file()]
+#' for more detail.
 #'
 #' @return
 #' `get_wms_raster` return an object of class `stars`. Depending on the layer,
@@ -58,9 +60,11 @@
 #' @importFrom httr modify_url
 #' @importFrom magrittr `%>%`
 #' @importFrom stars read_stars write_stars st_mosaic st_warp
-#' @importFrom sf st_as_sf st_as_sfc st_bbox st_filter st_length st_linestring st_make_grid st_make_valid st_set_precision st_sfc st_intersects
+#' @importFrom sf st_as_sf st_as_sfc st_bbox st_filter st_length st_linestring
+#' st_make_grid st_make_valid st_set_precision st_sfc st_intersects
 #' @importFrom utils download.file
-#' @importFrom checkmate assert check_class assert_character assert_numeric check_character check_null
+#' @importFrom checkmate assert check_class assert_character assert_numeric
+#' check_character check_null
 #'
 #' @seealso
 #' [get_apikeys()], [get_layers_metadata()], [download.file()]

@@ -6,15 +6,18 @@
 #'                  partition = NULL,
 #'                  timeout = 10)
 #'
-#' @param x An object of clas `sf` or `sfc`. If NULL, `partition` must be filled by partition of PLU.
-#' @param ressource A character from this list : "document", "zone-urba", "secteur-cc", "prescription-surf",
-#' "prescription-lin", "prescription-pct", "info-surf", "info-lin", "info-pct". See detail for more info.
-#' @param partition A character corresponding to PLU partition (can be retrieve using
-#' `get_apicarto_plu(x, "document", partition = NULL)`). If `partition` is explicitely set, all PLU
-#' features are returned and `geom` is override
-#' @param timeout Time to wait between two request. It's useful when `get_apicarto_plu()` is implemented
-#' inside dynamic document. If API doesn't work for some reasons, it will try again (3 times). Be careful,
-#' if you're download is longer than `timeout`, the download will not have time to complete
+#' @param x An object of clas `sf` or `sfc`. If NULL, `partition` must be filled
+#' by partition of PLU.
+#' @param ressource A character from this list : "document", "zone-urba",
+#' "secteur-cc", "prescription-surf", "prescription-lin", "prescription-pct",
+#' "info-surf", "info-lin", "info-pct". See detail for more info.
+#' @param partition A character corresponding to PLU partition (can be retrieve
+#' using `get_apicarto_plu(x, "document", partition = NULL)`). If `partition`
+#' is explicitely set, all PLU features are returned and `geom` is override
+#' @param timeout Time to wait between two request. It's useful when `get_apicarto_plu()`
+#' is implemented inside dynamic document. If API doesn't work for some reasons,
+#' it will try again (3 times). Be careful, if you're download is longer than
+#' `timeout`, the download will not have time to complete
 #'
 #' @details
 #' * `"document'` :
@@ -79,7 +82,7 @@ get_apicarto_plu <- function(x,
                                "info-surf", "info-lin", "info-pct"))
 
    if (!is.null(partition)){
-      x = NULL
+      x <- NULL
    }
 
    # Create URL
@@ -89,7 +92,7 @@ get_apicarto_plu <- function(x,
       req_url_query(partition = partition,
                     geom = shp_to_geojson(x)) %>%
       req_retry(3) %>% # Nombre d'essai
-      req_timeout(timeout) %>% # Time to wait between two request. Be careful f download is too long. Test down with 1043 feature (partition = "DU_75056", ressources = "zone-urba), 10s looks ok
+      req_timeout(timeout) %>% # Time to wait between two request. Be careful if download is too long. Test down with 1043 feature (partition = "DU_75056", ressources = "zone-urba), 10s looks ok
       req_perform() %>%
       resp_body_string() %>%
       read_sf()

@@ -7,7 +7,8 @@
 shp_to_geojson(shape)
 }
 \arguments{
-\item{shape}{A shape of class sf or sfc. Could be a POLYGON, POINT or LINESTRING.}
+\item{shape}{A shape of class sf or sfc. Could be a POLYGON, POINT or
+LINESTRING.}
 }
 \value{
 Return a geojson string
