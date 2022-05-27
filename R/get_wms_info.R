@@ -26,10 +26,6 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom xml2 xml_child xml_find_all xml_has_attr as_list
 #'
-#' @examples
-#' \dontrun{
-#'
-#' }
 #'
 get_wms_info <- function(shape,
                          apikey = "ortho",
@@ -83,10 +79,6 @@ get_wms_info <- function(shape,
 #'
 #' @seealso
 #' [get_wms_info()]
-#'
-#' @examples
-#' \dontrun{
-#' }
 #'
 #' @name are_queryable
 #' @return character containing the name of the queryable layers

@@ -16,11 +16,6 @@ character containing the name of the queryable layers
 \description{
 Check if a wms layer is queryable with GetFeatureInfo
 }
-\examples{
-\dontrun{
-}
-
-}
 \seealso{
 \code{\link[=get_wms_info]{get_wms_info()}}
 }

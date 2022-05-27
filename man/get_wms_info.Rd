@@ -35,9 +35,3 @@ apikey = "ortho",
 layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
 version = "1.3.0"
 }
-\examples{
-\dontrun{
-
-}
-
-}
