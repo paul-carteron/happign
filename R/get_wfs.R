@@ -26,9 +26,10 @@
 #'
 #' @export
 #'
-#' @importFrom sf st_bbox st_transform st_make_valid st_read st_as_sf st_write
-#' @importFrom httr modify_url GET content status_code stop_for_status
-#' @importFrom dplyr select
+#' @importFrom sf read_sf st_bbox st_make_valid st_transform st_write
+#' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent
+#' request resp_body_json resp_body_string
+#' @importFrom dplyr bind_rows
 #' @importFrom magrittr `%>%`
 #'
 #' @seealso
@@ -76,54 +77,29 @@ get_wfs <- function(shape,
                     apikey = "cartovecto",
                     layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route",
                     filename = NULL) {
-  bbox <- NULL
+   bbox <- NULL
+   shape <- st_make_valid(shape)
 
-  lapply_function <- function(startindex, nb_request, apikey,
-                              layer_name, shape) {
-    cat("Request ", startindex + 1, "/", nb_request + 1,
-        " downloading...\n", sep = "")
-     resp <- GET(format_url(apikey, layer_name, shape,
-                            startindex = 1000 * startindex))
-     res <- st_read(resp,
-                    quiet = TRUE)
-  }
+   req <- req_function(apikey, shape, layer_name)
+   features <- read_sf(resp_body_string(req))
+   request_need <- resp_body_json(req)$totalFeatures %/% 1000
+   message("1/",request_need + 1," downloaded")
 
-  shape <- st_make_valid(shape) %>%
-    st_transform(4326)
+   if (request_need != 0) {
+      list_features <- lapply(seq_len(request_need),
+                              \(x) {
+                                 features <- req_function(shape,
+                                              layer_name,
+                                              x * 1000) %>%
+                                    resp_body_string() %>%
+                                    read_sf()
+                                 message(x + 1, "/", request_need + 1, " downloaded")
+                                 return(features)
+                              })
+      features <- bind_rows(features, list_features)
+   }
 
-  resp <- GET(format_url(apikey, layer_name, shape, startindex = 0))
-
-  stop_for_status(resp,
-                  task = paste0("find resource. Check layer_name ",
-                                "at https://geoservices.ign.fr/",
-                                "services-web-experts-",
-                                apikey))
-
-  nb_features <- content(resp)$numberMatched
-
-  if (nb_features == 0) {
-     stop("Your search returned zero results. There is no features for ",
-          layer_name,
-          " inside your shape")
-  }
-
-  nb_request <- nb_features %/% 1000
-
-  list_features <- lapply(
-    X = 0:nb_request,
-    FUN = lapply_function,
-    nb_request = nb_request,
-    apikey = apikey,
-    layer_name = layer_name,
-    shape = shape
-  )
-
-  features <- do.call("rbind", list_features) %>%
-    st_as_sf() %>%
-    st_make_valid() %>%
-    select(-bbox)
-
-  if (!is.null(filename)) {
+   if (!is.null(filename)) {
      st_write(features, file.path(paste0(filename, ".shp")))
      message("The shape is saved at : ", file.path(getwd(),
                                                    paste0(filename, ".shp")))
@@ -131,25 +107,22 @@ get_wfs <- function(shape,
 
   return(features)
 }
-#'
-#' format url for request
-#' @param apikey API key from IGN web service
-#' @param layer_name Name of the layer from get_layer_metadata
-#' @param shape Zone of interest
-#' @param startindex Control number of feature (1 corresopnd to 0->1000)
+
+#' format url and request it
+#' @param apikey API key from `get_apikeys()`
+#' @param shape Object of class `sf`. Needs to be located in France.
+#' @param layer_name Name of the layer
+#' @param startindex startindex for features returned limit
 #' @noRd
 #'
-format_url <- function(apikey = NULL, layer_name = NULL,
-                       shape = NULL, startindex = NULL) {
+req_function <- function(apikey, shape, layer_name, startindex = 0) {
 
    bbox <- st_bbox(st_transform(shape, 4326))
    formated_bbox <- paste(bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"],
                           "epsg:4326",
                           sep = ",")
 
-  url <- modify_url("https://wxs.ign.fr",
-    path = paste0(apikey, "/geoportail/wfs"),
-    query = list(
+   params <- list(
       service = "WFS",
       version = "2.0.0",
       request = "GetFeature",
@@ -157,8 +130,14 @@ format_url <- function(apikey = NULL, layer_name = NULL,
       srsName = "EPSG:4326",
       typeName = layer_name,
       bbox = formated_bbox,
-      startindex = startindex
-    )
-  )
-  url
+      startindex = startindex,
+      count = 1000
+   )
+
+   request <- request("https://wxs.ign.fr") %>%
+      req_url_path_append(apikey) %>%
+      req_url_path_append("geoportail/wfs") %>%
+      req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
+      req_url_query(!!!params) %>%
+      req_perform()
 }
