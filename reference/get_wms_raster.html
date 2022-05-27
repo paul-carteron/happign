@@ -102,9 +102,9 @@ or directly from
 depending of the shape and the resolution, correct number and size of tiles
 is calculated. See detail for more information about resolution.</p></dd>
 <dt>filename</dt>
-<dd><p>Name of raster download to disk. The resolution is automatically added
-to the filename. If raster with same name already exist in the current directory,
-it is directly imported into R</p></dd>
+<dd><p>Name of raster download to disk. The resolution is automatically
+added to the filename. If raster with same name already exist in the current
+directory, it is directly imported into R</p></dd>
 <dt>version</dt>
 <dd><p>The version of the service used. Set to latest version
 by default. See detail for more information about <code>version</code>.</p></dd>
@@ -115,9 +115,11 @@ to geotiff by default. See detail for more information about <code>format</code>
 <dd><p>The rendering style of the layers. Set to "" by default.
 See detail for more information about <code>styles</code>.</p></dd>
 <dt>method</dt>
-<dd><p>Method to be used for downloading files. See <code><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file()</a></code> for more detail.</p></dd>
+<dd><p>Method to be used for downloading files. See <code><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file()</a></code>
+for more detail.</p></dd>
 <dt>mode</dt>
-<dd><p>The mode with which to write the file. See <code><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file()</a></code> for more detail.</p></dd>
+<dd><p>The mode with which to write the file. See <code><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file()</a></code>
+for more detail.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -150,7 +152,7 @@ IGN will be optimal for a resolution of 25m.</p></li>
 <span class="r-in"><span class="va">apikey</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">metadata_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="va">apikey</span>, <span class="st">"wms"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">layer_name</span> <span class="op">&lt;-</span> <span class="va">metadata_table</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span></span>
+<span class="r-in"><span class="va">layer_name</span> <span class="op">&lt;-</span> <span class="va">metadata_table</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># shape from the best town in France</span></span>
 <span class="r-in"><span class="va">shape</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4.373937</span>, <span class="fl">47.79859</span>,</span>
@@ -162,7 +164,7 @@ IGN will be optimal for a resolution of 25m.</p></li>
 <span class="r-in"><span class="va">shape</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="va">shape</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Downloading digital elevation model from IGN</span></span>
-<span class="r-in"><span class="va">mnt</span> <span class="op">&lt;-</span> <span class="fu">get_wms_raster</span><span class="op">(</span><span class="va">shape</span>, <span class="va">apikey</span>, <span class="va">layer_name</span>, resolution <span class="op">=</span> <span class="fl">10</span>, filename <span class="op">=</span> <span class="st">"raster_name"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">mnt</span> <span class="op">&lt;-</span> <span class="fu">get_wms_raster</span><span class="op">(</span><span class="va">shape</span>, <span class="va">apikey</span>, <span class="va">layer_name</span>, resolution <span class="op">=</span> <span class="fl">25</span>, filename <span class="op">=</span> <span class="st">"raster_name"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">mnt</span><span class="op">[</span><span class="va">mnt</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co"># remove negative values in case of singularity</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Elevation [m]"</span> <span class="co"># Rename raster ie the title legend</span></span>
 <span class="r-in"></span>

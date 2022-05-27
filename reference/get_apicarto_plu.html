@@ -70,18 +70,21 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>An object of clas <code>sf</code> or <code>sfc</code>. If NULL, <code>partition</code> must be filled by partition of PLU.</p></dd>
+<dd><p>An object of clas <code>sf</code> or <code>sfc</code>. If NULL, <code>partition</code> must be filled
+by partition of PLU.</p></dd>
 <dt>ressource</dt>
-<dd><p>A character from this list : "document", "zone-urba", "secteur-cc", "prescription-surf",
-"prescription-lin", "prescription-pct", "info-surf", "info-lin", "info-pct". See detail for more info.</p></dd>
+<dd><p>A character from this list : "document", "zone-urba",
+"secteur-cc", "prescription-surf", "prescription-lin", "prescription-pct",
+"info-surf", "info-lin", "info-pct". See detail for more info.</p></dd>
 <dt>partition</dt>
-<dd><p>A character corresponding to PLU partition (can be retrieve using
-<code>get_apicarto_plu(x, "document", partition = NULL)</code>). If <code>partition</code> is explicitely set, all PLU
-features are returned and <code>geom</code> is override</p></dd>
+<dd><p>A character corresponding to PLU partition (can be retrieve
+using <code>get_apicarto_plu(x, "document", partition = NULL)</code>). If <code>partition</code>
+is explicitely set, all PLU features are returned and <code>geom</code> is override</p></dd>
 <dt>timeout</dt>
-<dd><p>Time to wait between two request. It's useful when <code>get_apicarto_plu()</code> is implemented
-inside dynamic document. If API doesn't work for some reasons, it will try again (3 times). Be careful,
-if you're download is longer than <code>timeout</code>, the download will not have time to complete</p></dd>
+<dd><p>Time to wait between two request. It's useful when <code>get_apicarto_plu()</code>
+is implemented inside dynamic document. If API doesn't work for some reasons,
+it will try again (3 times). Be careful, if you're download is longer than
+<code>timeout</code>, the download will not have time to complete</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>

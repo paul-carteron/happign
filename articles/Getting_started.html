@@ -84,7 +84,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Getting started with happign</h1>
                         <h4 data-toc-skip class="author">Paul Carteron</h4>
             
-            <h4 data-toc-skip class="date">2022-05-24</h4>
+            <h4 data-toc-skip class="date">2022-05-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/paul-carteron/happign/blob/HEAD/vignettes/Getting_started.Rmd" class="external-link"><code>vignettes/Getting_started.Rmd</code></a></small>
       <div class="d-none name"><code>Getting_started.Rmd</code></div>
@@ -95,30 +95,33 @@
 <div class="section level2">
 <h2 id="before-starting">Before starting<a class="anchor" aria-label="anchor" href="#before-starting"></a>
 </h2>
-<p>We can load the <code>happign</code> package, and some additional packages we will need while we are here.</p>
+<p>We can load the <code>happign</code> package, and some additional packages we will need.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-carteron" class="external-link">happign</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="the-wfs-wms-service">The WFS, WMS service<a class="anchor" aria-label="anchor" href="#the-wfs-wms-service"></a>
+<h2 id="wfs-and-wms-service">WFS and WMS service<a class="anchor" aria-label="anchor" href="#wfs-and-wms-service"></a>
 </h2>
 <p><code>happign</code> use two data type from IGN web service :</p>
 <ul>
-<li>WMS raster : data in raster format (.tiff)</li>
+<li>WMS raster : data in raster format which are images (.jpg, .png, .tif)</li>
 <li>WFS : data in shape format (.shp).</li>
 </ul>
 <p>More detailed information are available <a href="https://www.ogc.org/standards/wms" class="external-link">here</a> for WMS and <a href="https://www.ogc.org/standards/wfs" class="external-link">here</a> for WFS.</p>
 <p>To download data you need :</p>
 <ul>
-<li>Its layer name ;</li>
-<li>The API key corresponding to the layer ;</li>
-<li>Your area of interest in .shp format</li>
+<li>API key corresponding to the layer you want ;</li>
+<li>The layer’s name ;</li>
+<li>A shape read by <a href="https://cran.r-project.org/web/packages/sf/index.html" class="external-link"><code>sf</code></a> package</li>
 </ul>
-<p>The layer name and API key can be directly retrieved on the <a href="https://geoservices.ign.fr/services-web-experts" class="external-link">IGN website in the expert web services</a> (I recommend you at this point to go and have a look).</p>
-<p>For example, if I take the first category “Administratif”, I see that the API key is “administratif” and the first layer name in WFS format is “ADMINEXPRESS-COG.LATEST:arrondissement”</p>
-<p>With <code>happign</code>, there is no need to go through the website because all api keys are available by running the function <code><a href="../reference/get_apikeys.html">get_apikeys()</a></code>.</p>
+<div class="section level3">
+<h3 id="api-keys">API keys<a class="anchor" aria-label="anchor" href="#api-keys"></a>
+</h3>
+<p>API keys can be directly retrieved on the <a href="https://geoservices.ign.fr/services-web-experts" class="external-link">IGN website in the expert web services</a> (I recommend you at this point to go and have a look).</p>
+<p>For example, if I take the first category “Administratif”, I see that the API key is “administratif”.</p>
+<p>With <code>happign</code>, there is no need to go through the website because all 18 api keys can be retrieved by running the function <code><a href="../reference/get_apikeys.html">get_apikeys()</a></code> :</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "administratif" "adresse"       "agriculture"   "altimetrie"   </span>
@@ -126,38 +129,25 @@
 <span class="co">#&gt;  [9] "environnement" "geodesie"      "lambert93"     "ortho"        </span>
 <span class="co">#&gt; [13] "orthohisto"    "parcellaire"   "satellite"     "sol"          </span>
 <span class="co">#&gt; [17] "topographie"   "transports"</span></code></pre></div>
-<p>After choosing the API key containing our resource, you can access all layer names with <code><a href="../reference/get_layers_metadata.html">get_layers_metadata()</a></code>.</p>
-<p><strong><em>Rq :</em></strong></p>
-<ul>
-<li><em>This function can be a bit slow because it connects directly to the website so that the information is up to date.</em></li>
-<li>*The returned data correspond to the intersection with the shape <strong>bbox</strong>.</li>
-</ul>
+</div>
+<div class="section level3">
+<h3 id="layer-name">Layer name<a class="anchor" aria-label="anchor" href="#layer-name"></a>
+</h3>
+<p>As for API key, it is possible to find the names of available layers from the expert web services of the IGN. If I continue to explore the <a href="https://geoservices.ign.fr/services-web-experts-administratif" class="external-link">“Administratif” category</a>, the first layer name in <strong>WFS format</strong> is <em>“ADMINEXPRESS-COG.LATEST:arrondissement”</em>.</p>
+<p>Again, all layer’s name and other metadata (abstract, style, keywords, defaultcrs, …) can be accessed from R with the <code><a href="../reference/get_layers_metadata.html">get_layers_metadata()</a></code> function. This one connects directly to the IGN site which allows to have the last updated resources. It can be used for WMS and WFS :</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">apikey</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>
 <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>apikey <span class="op">=</span> <span class="va">apikey</span>, data_type <span class="op">=</span> <span class="st">"wfs"</span><span class="op">)</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 36 × 7</span></span>
-<span class="co">#&gt;    itemindex name            title abstract keywords defaultcrs wgs84boundingbox</span>
-<span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         1 ADMINEXPRESS-C… ADMI… édition… Unités … 4326       -61.80983861776…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2 ADMINEXPRESS-C… ADMI… édition… Unités … 4326       -61.80983861776…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         3 ADMINEXPRESS-C… ADMI… édition… Unités … 4326       -61.80983861776…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4 ADMINEXPRESS-C… ADMI… édition… Unités … 4326       -61.80983861776…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         5 ADMINEXPRESS-C… ADMI… édition… Unités … 4326       -61.80983861776…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6 ADMINEXPRESS-C… ADMI… édition… Unités … 4326       -61.80983861776…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         7 ADMINEXPRESS-C… ADMI… édition… Unités … 4326       -61.80983861776…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8 ADMINEXPRESS-C… ADMI… édition… Unités … 4326       -61.80983861776…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         9 ADMINEXPRESS-C… ADMI… édition… Unités … 4326       -61.80983861776…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10 ADMINEXPRESS-C… ADMI… édition… Unités … 4326       -61.80983861776…</span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 26 more rows</span></span></code></pre></div>
+<span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>apikey <span class="op">=</span> <span class="va">apikey</span>, data_type <span class="op">=</span> <span class="st">"wms"</span><span class="op">)</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="downloading-the-data">Downloading the data<a class="anchor" aria-label="anchor" href="#downloading-the-data"></a>
-</h2>
 <div class="section level3">
-<h3 id="wfs">WFS<a class="anchor" aria-label="anchor" href="#wfs"></a>
+<h3 id="downloading-the-data">Downloading the data<a class="anchor" aria-label="anchor" href="#downloading-the-data"></a>
 </h3>
-<p>For the example we will look at the beautiful town of Penmarch in France and we are going to get these borders.</p>
-<p>The <code><a href="../reference/get_wfs.html">get_wfs()</a></code> function connects to WFS service of the IGN that contain borders of the communes. It is also necessary to take a point inside penmarch so that the function detects all the shape that intersect this point.</p>
+<p>Now that we know how to get an API key and layer name, it only takes a few lines to get plethora of resources. For the example we will look at the beautiful town of Penmarch in France.</p>
+<div class="section level4">
+<h4 id="wfs">WFS<a class="anchor" aria-label="anchor" href="#wfs"></a>
+</h4>
+<p>First, we are going to get borders of the town which is a shape resources so <code><a href="../reference/get_wfs.html">get_wfs()</a></code> will be used. This function need a shape to work. A single point is take inside Penmarch so that the function detects all the shape that intersect this point :</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">penmarch_point</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4.370</span>, <span class="fl">47.800</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span>
 <span class="va">penmarch_borders</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch_point</span>,
@@ -178,16 +168,20 @@
              frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="Getting_started_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>It’s as simple as that! Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many road junctions there are in Penmarch?</p>
-<p><em>Spoiler : there are 220 of them</em></p>
+<p><em>Spoiler : there are 192 of them</em></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dikes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch_borders</span>,
                  apikey <span class="op">=</span> <span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">6</span><span class="op">]</span>,
                  layer_name <span class="op">=</span> <span class="st">"BDCARTO_BDD_WLD_WGS84G:noeud_routier"</span><span class="op">)</span>
 <span class="co">#&gt; Request 1/1 downloading...</span>
 
+<span class="va">dikes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html" class="external-link">st_intersection</a></span><span class="op">(</span><span class="va">penmarch_borders</span>, <span class="va">dikes</span><span class="op">)</span>
+<span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout all</span>
+<span class="co">#&gt; geometries</span>
+
 <span class="co"># Checking result</span>
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Borders of penmarch</span>
-   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span>
+   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span>
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">dikes</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Point use to retrieve data</span>
    <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_symbols.html" class="external-link">tm_dots</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
    <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"symbol"</span>, label <span class="op">=</span> <span class="st">"Road junction"</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
@@ -197,19 +191,13 @@
              frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="Getting_started_files/figure-html/unnamed-chunk-6-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
-<div class="section level3">
-<h3 id="wms-raster">WMS raster<a class="anchor" aria-label="anchor" href="#wms-raster"></a>
-</h3>
-<p>/! Code below isn’t evaluated because raster needs to be downloaded to disk. I can only recommend you to try it yourself.</p>
-<p>For raster, the process is the same but with the function <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code>. There’s plenty of elevation resources inside <a href="https://geoservices.ign.fr/services-web-experts-altimetrie" class="external-link">“altimetrie” category</a>. The basic one is the Digital Elevation Model (DEM or MNT in French).</p>
-<p><strong><em>Rq :</em></strong></p>
-<ul>
-<li><em>The raster is not loaded into R’s memory. It is an on-the-fly sequential reading of files from network, without downloading the whole file first. In other words, it is quite possible to access the DEM of an entire region. The counterpart is the connection time which is about 30s;</em></li>
-<li><em>Raster from <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> are stars object from the <code>stars</code> package. To learn more about conversion between other raster type in R go <a href="https://geocompr.github.io/post/2021/spatial-classes-conversion/" class="external-link">check this out</a>.</em></li>
-</ul>
+<div class="section level4">
+<h4 id="wms-raster">WMS raster<a class="anchor" aria-label="anchor" href="#wms-raster"></a>
+</h4>
+<p>For raster, the process is the same but with the function <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code>. There’s plenty of elevation resources inside <a href="https://geoservices.ign.fr/services-web-experts-altimetrie" class="external-link">“altimetrie” category</a>. A basic one is the Digital Elevation Model (DEM or MNT in French). Borders of Penmarch are used as shape for downloading the DEM.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">apikey</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>
-<span class="va">layers_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="st">"altimetrie"</span>, <span class="st">"wms"</span><span class="op">)</span>
+<span class="va">layers_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="va">apikey</span>, <span class="st">"wms"</span><span class="op">)</span>
 <span class="va">dem_layer_name</span> <span class="op">&lt;-</span> <span class="va">layers_metadata</span><span class="op">[</span><span class="fl">2</span>, <span class="st">"name"</span><span class="op">]</span>
 
 <span class="va">mnt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wms_raster.html">get_wms_raster</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch_borders</span>,
@@ -217,13 +205,28 @@
                       layer_name <span class="op">=</span> <span class="va">dem_layer_name</span>,
                       resolution <span class="op">=</span> <span class="fl">25</span>,
                       filename <span class="op">=</span> <span class="st">"best_raster_name"</span><span class="op">)</span>
+<span class="co">#&gt; 1/1 downloaded</span>
+<span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="st">"best_raster_name_25m.tif"</span><span class="op">)</span> <span class="co"># raster are download to disk but I don't want to keep it</span>
+<span class="co">#&gt; [1] TRUE</span>
 
 <span class="va">mnt</span><span class="op">[</span><span class="va">mnt</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co"># remove negative values in case of singularity</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Elevation [m]"</span> <span class="co"># Rename raster ie the title legend</span>
 
 <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span> <span class="op">+</span>
    <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span>colorNA <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span>
-   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"DEM of Penmarch"</span>, frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span><span class="op">+</span>
+   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">+</span>
+<span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>main.title <span class="op">=</span> <span class="st">"DEM of Penmarch"</span>,
+          main.title.position <span class="op">=</span> <span class="st">"center"</span>,
+          legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"bottom"</span><span class="op">)</span>,
+          legend.bg.color <span class="op">=</span> <span class="st">"white"</span>, legend.bg.alpha <span class="op">=</span> <span class="fl">0.7</span>,
+          frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<p><img src="Getting_started_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><strong><em>Rq :</em></strong></p>
+<ul>
+<li><em>Raster from <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> are stars object from the <code>stars</code> package. To learn more about conversion between other raster type in R go <a href="https://geocompr.github.io/post/2021/spatial-classes-conversion/" class="external-link">check this out</a>.</em></li>
+</ul>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
