@@ -1,5 +1,5 @@
 #' @importFrom curl has_internet
-#' @importFrom httr2 request req_perform resp_body_xml resp_is_error
+#' @importFrom httr2 request req_perform resp_body_xml resp_is_error req_options
 #' @importFrom dplyr bind_rows
 #' @importFrom magrittr `%>%`
 #' @importFrom xml2 read_xml as_list xml_find_all
