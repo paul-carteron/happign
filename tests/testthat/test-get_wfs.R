@@ -13,7 +13,7 @@ test_that("req_function format bbox from sf object", {
                           sep = ",")
    expect_type(formated_bbox, "character")
    expect_length(formated_bbox, 1)
-   expect_equal(nchar(formated_bbox), 78)
+   expect_equal(length(gregexpr(",",formated_bbox, fixed = TRUE)[[1]]), 4)
 
 })
 
@@ -32,7 +32,7 @@ test_that("req_function format bbox from sfc object", {
                           sep = ",")
    expect_type(formated_bbox, "character")
    expect_length(formated_bbox, 1)
-   expect_equal(nchar(formated_bbox), 78)
+   expect_equal(length(gregexpr(",",formated_bbox, fixed = TRUE)[[1]]), 4)
 
 })
 
