@@ -26,11 +26,12 @@ Imports:
 Suggests: 
     covr,
     DT,
+    httptest2,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
     tmap,
-    vcr (>= 0.6.0),
+    vcr (>= 0.6.0)
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
