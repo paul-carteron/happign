@@ -110,7 +110,9 @@ get_wfs <- function(shape,
       features <- bind_rows(features, list_features)
    }
 
-   features <- select(features, -"bbox")
+   if ("bbox" %in% names(features)){
+      features <- select(features, -"bbox")
+   }
 
    if (!is.null(filename)) {
      st_write(features, file.path(paste0(filename, ".shp")))
