@@ -29,7 +29,7 @@
 #' @importFrom sf read_sf st_bbox st_make_valid st_transform st_write
 #' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent
 #' request resp_body_json resp_body_string
-#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_rows select
 #' @importFrom magrittr `%>%`
 #' @importFrom checkmate assert check_class check_character check_null check_double
 #'
@@ -109,6 +109,8 @@ get_wfs <- function(shape,
                               })
       features <- bind_rows(features, list_features)
    }
+
+   features <- select(features, -"bbox")
 
    if (!is.null(filename)) {
      st_write(features, file.path(paste0(filename, ".shp")))
