@@ -31,6 +31,7 @@
 #' request resp_body_json resp_body_string
 #' @importFrom dplyr bind_rows
 #' @importFrom magrittr `%>%`
+#' @importFrom checkmate assert check_class check_character check_null
 #'
 #' @seealso
 #' [get_apikeys()], [get_layers_metadata()]
@@ -77,6 +78,14 @@ get_wfs <- function(shape,
                     apikey = "cartovecto",
                     layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route",
                     filename = NULL) {
+
+   assert(check_class(shape, "sf"),
+          check_class(shape, "sfc"))
+   check_character(apikey, max.len = 1)
+   check_character(layer_name, max.len = 1)
+   assert(check_character(filename, max.len = 1),
+          check_null(filename))
+
    bbox <- NULL
    shape <- st_make_valid(shape)
 
