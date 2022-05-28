@@ -57,11 +57,10 @@
 #'
 #' @export
 #'
-#' @importFrom httr modify_url
 #' @importFrom magrittr `%>%`
 #' @importFrom stars read_stars write_stars st_mosaic st_warp
 #' @importFrom sf st_as_sf st_as_sfc st_bbox st_filter st_length st_linestring
-#' st_make_grid st_make_valid st_set_precision st_sfc st_intersects
+#' st_make_grid st_make_valid st_set_precision st_sfc st_intersects st_crs
 #' @importFrom utils download.file
 #' @importFrom checkmate assert check_class assert_character assert_numeric
 #' check_character check_null
@@ -130,17 +129,18 @@ get_wms_raster <- function(shape,
    all_bbox <- lapply(grid, format_bbox_wms)
    width_height <- nb_pixel_bbox(grid[[1]], resolution = resolution)
 
-   base_url <- modify_url("https://wxs.ign.fr",
-                          path = paste0(apikey, "/geoportail/r/wms"),
-                          query = list(version = version,
-                                       request = "GetMap",
-                                       format = format,
-                                       layers = layer_name,
-                                       styles = styles,
-                                       width = width_height[1],
-                                       height = width_height[2],
-                                       crs = "EPSG:4326",
-                                       bbox = ""))
+   base_url <- paste0("https://wxs.ign.fr/",
+                      apikey,
+                      "/geoportail/r/wms?",
+                      "version=", version,
+                      "&request=GetMap",
+                      "&format=", format,
+                      "&layers=", layer_name,
+                      "&styles=", styles,
+                      "&width=", width_height[1],
+                      "&height=", width_height[2],
+                      "&crs=EPSG:4326",
+                      "&bbox=")
 
    # construct url and filename
    urls <- paste0(base_url, all_bbox)

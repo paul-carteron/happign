@@ -17,7 +17,6 @@ Imports:
     checkmate,
     curl,
     dplyr,
-    httr,
     httr2,
     magrittr,
     sf,
@@ -32,7 +31,6 @@ Suggests:
     testthat (>= 3.0.0),
     tmap,
     vcr (>= 0.6.0),
-    webmockr
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
