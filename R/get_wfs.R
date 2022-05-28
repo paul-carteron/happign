@@ -31,7 +31,7 @@
 #' request resp_body_json resp_body_string
 #' @importFrom dplyr bind_rows
 #' @importFrom magrittr `%>%`
-#' @importFrom checkmate assert check_class check_character check_null
+#' @importFrom checkmate assert check_class check_character check_null check_double
 #'
 #' @seealso
 #' [get_apikeys()], [get_layers_metadata()]
@@ -97,7 +97,9 @@ get_wfs <- function(shape,
    if (request_need != 0) {
       list_features <- lapply(seq_len(request_need),
                               \(x) {
-                                 features <- req_function(shape,
+                                 features <- req_function(
+                                              apikey,
+                                              shape,
                                               layer_name,
                                               x * 1000) %>%
                                     resp_body_string() %>%
@@ -125,6 +127,12 @@ get_wfs <- function(shape,
 #' @noRd
 #'
 req_function <- function(apikey, shape, layer_name, startindex = 0) {
+
+   check_character(apikey, max.len = 1)
+   assert(check_class(shape, "sf"),
+          check_class(shape, "sfc"))
+   check_character(layer_name, max.len = 1)
+   check_double(startindex)
 
    bbox <- st_bbox(st_transform(shape, 4326))
    formated_bbox <- paste(bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"],

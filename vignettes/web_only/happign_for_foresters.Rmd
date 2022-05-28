@@ -76,7 +76,7 @@ borders <- borders %>%
 
 apikey <- get_apikeys()[14] # "parcellaire"
 layer_name <- get_layers_metadata(apikey, "wfs")
-name_parcellaire_layer <- layer_name[15,2] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
+name_parcellaire_layer <- as.character(layer_name[15,2]) # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
 
 parcellaire <- get_wfs(shape = borders,
                        apikey = apikey,
@@ -104,8 +104,8 @@ The first interesting layer for forester is the "BD Forêt" which is all vegetat
 ```{r warning=FALSE}
 apikey <- get_apikeys()[9]  #"environement"
 layer_name <- get_layers_metadata(apikey, "wfs")
-name_BDV1 <- layer_name[1,2] #LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape
-name_BDV2 <- layer_name[2,2] #LANDCOVER.FORESTINVENTORY.V2:bdforetv2
+name_BDV1 <- as.character(layer_name[1,2]) #LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape
+name_BDV2 <- as.character(layer_name[2,2]) #LANDCOVER.FORESTINVENTORY.V2:bdforetv2
 
 BDV1 <- get_wfs(borders, apikey, name_BDV1) %>% 
    st_transform(st_crs(borders)) %>% 
@@ -178,7 +178,7 @@ protected_area_names <- get_layers_metadata(apikey, "wfs") %>%
 all_protected_area <- map(.x = protected_area_names,
                          .f = ~ try(get_wfs(borders, apikey, .x), silent = TRUE)) %>% 
    set_names(protected_area_names) %>% 
-   discard(~ is.null(dim(.)))
+   discard(~ nrow(.) == 0)
 
 # Plot the result
 tm_shape(all_protected_area[[1]])+
