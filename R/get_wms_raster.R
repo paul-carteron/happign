@@ -128,57 +128,27 @@ get_wms_raster <- function(shape,
    grid <- grid(shape, resolution = resolution)
    all_bbox <- lapply(grid, format_bbox_wms)
    width_height <- nb_pixel_bbox(grid[[1]], resolution = resolution)
-
-   base_url <- paste0("https://wxs.ign.fr/",
-                      apikey,
-                      "/geoportail/r/wms?",
-                      "version=", version,
-                      "&request=GetMap",
-                      "&format=", format,
-                      "&layers=", layer_name,
-                      "&styles=", styles,
-                      "&width=", width_height[1],
-                      "&height=", width_height[2],
-                      "&crs=EPSG:4326",
-                      "&bbox=")
-
-   # construct url and filename
-   urls <- paste0(base_url, all_bbox)
-
-   ext <- switch(
-      format,
-      "image/jpeg" = ".jpg",
-      "image/png" = ".png",
-      "image/tiff" = ".tif",
-      "image/geotiff" = ".tif",
-      stop("Bad format, please check ",
-           "`?get_wms_raster()`")
-   )
-
-   clean_names <- paste0(gsub("[^[:alnum:]]", '_', c(layer_name, filename)),
-                         "_",
-                         gsub("[^[:alnum:]]", '_',resolution),
-                         "m", ext)
-
-   filename <- ifelse(is.null(filename), clean_names[1], clean_names[2])
+   urls <- construct_urls(apikey, version, format, layer_name, styles, width_height, all_bbox)
+   filename <- construct_filename(format, layer_name, filename, resolution)
 
    # if raster_name already exist is directly load in R, else is download
-   if (filename %in% list.files()){
+   if (basename(filename) %in% list.files(dirname(filename))){
       raster_final <- read_stars(filename)
-      message(filename, " already exist at :\n", getwd(), "\nPlease change filename argument if you want to download it again.")
+      message(basename(filename),
+              " already exist at :\n", file.path(getwd(), dirname(filename)), "\nPlease change filename argument if you want to download it again.")
    }else{
       raster_list <- list()
       for (i in seq_along(urls)){
 
-         cat(i,"/",length(urls), " downloaded\n", sep = "")
+         message(i,"/",length(urls), " downloaded", sep = "")
 
-         filename_tile <- paste0("tile", i, "_", filename)
+         filename_tile <- paste0("tile", i, "_", basename(filename))
 
          download.file(url = urls[i],
                        method = method,
                        mode = mode,
-                       destfile  = filename_tile)
-         raster_list[[i]] <- read_stars(filename_tile)
+                       destfile = file.path(dirname(filename),filename_tile))
+         raster_list[[i]] <- read_stars(file.path(dirname(filename),filename_tile))
       }
 
       # cf ?st_transform, detail. st_transform convert lossless by into curvilinear grid with is
@@ -188,7 +158,8 @@ get_wms_raster <- function(shape,
                      crs =  st_crs(4326))
 
       raster_final <- do.call("st_mosaic", raster_final)
-      file.remove(paste0("tile", seq_along(urls), "_", filename))
+      file.remove(file.path(dirname(filename),
+                           paste0("tile", seq_along(urls), "_", basename(filename))))
 
       write_stars(raster_final, filename)
 
@@ -196,21 +167,19 @@ get_wms_raster <- function(shape,
 
    return(raster_final)
 }
-#'
+
 #' format bbox to wms url format
 #' @param shape zone of interest of class sf
 #' @noRd
-#'
 format_bbox_wms <- function(shape = NULL) {
    bbox <- st_bbox(shape)
    paste(bbox["ymin"], bbox["xmin"], bbox["ymax"], bbox["xmax"], sep = ",")
 }
-#'
+
 #' Calculate number of pixel needed from resolution ad bbox
 #' @param shape zone of interest of class sf
 #' @param resolution cell_size in meter
 #' @noRd
-#'
 nb_pixel_bbox <- function(shape, resolution){
    bbox <- st_bbox(shape)
    height <- st_linestring(rbind(c(bbox[1], bbox[2]),
@@ -221,11 +190,11 @@ nb_pixel_bbox <- function(shape, resolution){
    nb_pixel <- as.numeric(ceiling(width_height/resolution))
    return(nb_pixel)
 }
+
 #' Create optimize grid according max width and height pixel of 2048 from bbox
 #' @param shape zone of interest of class sf
 #' @param resolution cell_size in meter
 #' @noRd
-#'
 grid <- function(shape, resolution) {
    # Fix S2 invalid object
    shape <- st_make_valid(st_set_precision(shape, 1e6))
@@ -239,3 +208,60 @@ grid <- function(shape, resolution) {
 
    invisible(grid)
 }
+
+#' Create urls for download
+#' @param apikey zone of interest of class sf
+#' @param version cell_size in meter
+#' @param format from mother function
+#' @param layer_name from mother function
+#' @param styles from mother function
+#' @param width_height from width_height function
+#' @param all_bbox from mother format_bbox_wms
+#' @noRd
+construct_urls <- function(apikey, version, format, layer_name, styles, width_height, all_bbox) {
+  base_url <- paste0("https://wxs.ign.fr/",
+                     apikey,
+                     "/geoportail/r/wms?",
+                     "version=", version,
+                     "&request=GetMap",
+                     "&format=", format,
+                     "&layers=", layer_name,
+                     "&styles=", styles,
+                     "&width=", width_height[1],
+                     "&height=", width_height[2],
+                     "&crs=EPSG:4326",
+                     "&bbox=")
+
+  # construct url and filename
+  urls <- paste0(base_url, all_bbox)
+}
+
+#' Create filename
+#' @param format from mother function
+#' @param layer_name from mother function
+#' @param filename from mother function
+#' @param resolution from mother function
+#' @noRd
+construct_filename <- function(format, layer_name, filename, resolution) {
+  ext <- switch(
+     format,
+     "image/jpeg" = ".jpg",
+     "image/png" = ".png",
+     "image/tiff" = ".tif",
+     "image/geotiff" = ".tif",
+     stop("Bad format, please check ",
+          "`?get_wms_raster()`")
+  )
+
+  clean_names <- function(text){
+     paste0(gsub("[^[:alnum:]]", '_', text),
+            "_",
+            gsub("[^[:alnum:]]", '_',resolution),
+            "m", ext)
+     }
+
+  filename <- ifelse(is.null(filename),
+                     clean_names(layer_name),
+                     file.path(dirname(filename), clean_names(basename(filename))))
+}
+
