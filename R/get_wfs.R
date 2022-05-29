@@ -10,7 +10,7 @@
 #' get_wfs(shape,
 #'         apikey,
 #'         layer_name,
-#'         file = NULL)
+#'         filename = NULL)
 #'
 #' @param shape Object of class `sf`. Needs to be located in
 #' France.
@@ -19,7 +19,7 @@
 #' @param layer_name Name of the layer from `get_layers_metadata(apikey, "wfs")`
 #' or directly from
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
-#' @param file Either a character string naming a file or a connection open
+#' @param filename Either a character string naming a file or a connection open
 #' for writing.
 #'
 #' @return
@@ -53,7 +53,7 @@
 #' shape <- st_sfc(shape, crs = st_crs(4326))
 #'
 #' # Download borders
-#' borders <- get_wfs(shape, apikey, layer_name, file = file.path(tempdir(), "borders.shp"))
+#' borders <- get_wfs(shape, apikey, layer_name, filename = file.path(tempdir(), "borders"))
 #'
 #' # Verif
 #' tmap_mode("view") # easy interactive map
@@ -78,14 +78,14 @@
 get_wfs <- function(shape,
                     apikey = "cartovecto",
                     layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route",
-                    file = NULL) {
+                    filename = NULL){
 
    assert(check_class(shape, "sf"),
           check_class(shape, "sfc"))
    check_character(apikey, max.len = 1)
    check_character(layer_name, max.len = 1)
-   assert(check_character(file, max.len = 1, pattern = ".shp"),
-          check_null(file))
+   assert(check_character(filename, max.len = 1),
+          check_null(filename))
 
    bbox <- NULL
    shape <- st_make_valid(shape)
@@ -115,10 +115,11 @@ get_wfs <- function(shape,
       features <- select(features, -"bbox")
    }
 
-   if (!is.null(file)) {
-     st_write(features, file.path(file))
-     message("The shape is saved at : ", file.path(file))
-  }
+   if (!is.null(filename)) {
+      st_write(features, file.path(paste0(filename, ".shp")))
+      message("The shape is saved at : ", file.path(getwd(),
+                                                    paste0(filename, ".shp")))
+      }
 
   return(features)
 }
