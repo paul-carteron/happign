@@ -112,3 +112,39 @@ test_that("combine_tiles", {
    expect_equal(dim(raster_final), c(x = 21, y = 20, band = 6))
    unlink(temp_rast, recursive = TRUE,force = TRUE)
 })
+test_that("download_tiles", {
+   skip_on_cran()
+   skip_if_offline()
+
+   temp_tiles <- tempdir(check = TRUE)
+   filename <- file.path(temp_tiles, "pouet.tif")
+   urls <- paste0("https://wxs.ign.fr/altimetrie/geoportail/r/wms?",
+                  "version=1.3.0&request=GetMap&format=image/geotiff",
+                  "&layers=ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES&styles=",
+                  "&width=6&height=8&crs=EPSG:4326&",
+                  "bbox=47.79683,-4.375615,47.79859,-4.373898")
+   method <- "auto"
+   mode <- "wb"
+
+   tiles <- download_tiles(filename, urls, method, mode)
+   expect_type(tiles, "list")
+   expect_length(tiles, 1)
+   unlink(temp_tiles, recursive = TRUE,force = TRUE)
+})
+test_that("the whole function", {
+   skip_on_cran()
+   skip_if_offline()
+
+   temp_whole <- tempdir(check = TRUE)
+   filename <- file.path(temp_whole, "pouet")
+   shape <- st_polygon(list(matrix(c(-4.373937, 47.79859, -4.375615, 47.79738,
+                                     -4.375147, 47.79683, -4.373898, 47.79790,
+                                     -4.373937, 47.79859), ncol = 2, byrow = TRUE)))
+   shape <- st_sfc(shape, crs = st_crs(4326))
+   mnt <- get_wms_raster(shape = shape, resolution = 25, filename = filename)
+
+   expect_s3_class(mnt, "stars")
+   expect_equal(dim(mnt), c(x = 7, y = 8))
+
+   unlink(temp_whole, recursive = TRUE, force = TRUE)
+})

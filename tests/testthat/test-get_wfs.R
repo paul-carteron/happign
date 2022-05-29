@@ -88,6 +88,7 @@ with_mock_dir("get_wfs simple request", {
    #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
    test_that("get_wfs", {
       skip_on_cran()
+      skip_if_offline()
       shape <- st_polygon(list(matrix(c(-4.373, -4.373, -4.372, -4.372, -4.373, 47.798,
                                         47.799, 47.799, 47.798, 47.798), ncol = 2)))
       shape <- st_sfc(shape, crs = st_crs(4326))
@@ -103,7 +104,7 @@ with_mock_dir("get_wfs simple request", {
                        file = filename)
 
       expect_s3_class(layer, "sf")
-      expect_equal(length(grep("pouet", list.files(temp))), 4)
+      expect_equal(sum(grepl("pouet.shp", list.files(temp))), 1)
 
       unlink(temp, recursive = TRUE,force = TRUE)
 
