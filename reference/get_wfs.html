@@ -76,7 +76,7 @@ information from
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_wfs</span><span class="op">(</span><span class="va">shape</span>,
         <span class="va">apikey</span>,
         <span class="va">layer_name</span>,
-        filename <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+        file <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -91,8 +91,9 @@ from <a href="https://geoservices.ign.fr/services-web-experts" class="external-l
 <dd><p>Name of the layer from <code>get_layers_metadata(apikey, "wfs")</code>
 or directly from
 <a href="https://geoservices.ign.fr/services-web-experts" class="external-link">IGN website</a></p></dd>
-<dt>filename</dt>
-<dd><p>File name to save shape on disk as ".shp".</p></dd>
+<dt>file</dt>
+<dd><p>Either a character string naming a file or a connection open
+for writing.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -120,7 +121,7 @@ or directly from
 <span class="r-in"><span class="va">shape</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="va">shape</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Download borders</span></span>
-<span class="r-in"><span class="va">borders</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span><span class="va">shape</span>, <span class="va">apikey</span>, <span class="va">layer_name</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">borders</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span><span class="va">shape</span>, <span class="va">apikey</span>, <span class="va">layer_name</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"borders.shp"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Verif</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_mode.html" class="external-link">tmap_mode</a></span><span class="op">(</span><span class="st">"view"</span><span class="op">)</span> <span class="co"># easy interactive map</span></span>
