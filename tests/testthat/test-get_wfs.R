@@ -16,7 +16,6 @@ test_that("req_function format bbox from sf object", {
    expect_equal(length(gregexpr(",",formated_bbox, fixed = TRUE)[[1]]), 4)
 
 })
-
 test_that("req_function format bbox from sfc object", {
 
    shape_sfc <- st_as_sfc(read_sf(system.file("shape/nc.shp", package = "sf")))
@@ -35,8 +34,6 @@ test_that("req_function format bbox from sfc object", {
    expect_equal(length(gregexpr(",",formated_bbox, fixed = TRUE)[[1]]), 4)
 
 })
-
-
 test_that("req_function build request properly", {
 
    params <- list(
@@ -64,7 +61,6 @@ test_that("req_function build request properly", {
    expect_match(request$url, "VERIF")
 
 })
-
 test_that("req_function error", {
    shape_sf <- read_sf(system.file("shape/nc.shp", package = "sf"))
    layer_name <- "no_need"
@@ -74,7 +70,6 @@ test_that("req_function error", {
    expect_error(req_function(shape, layer_name,  1000)) # Don't forget the apikey !
    expect_error(req_function("parcellaire", shape, layer_name,  1000)) # Forbidden
 })
-
 with_mock_dir("req_function perform request", {
    #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
    test_that("req_function perform request", {
@@ -89,7 +84,6 @@ with_mock_dir("req_function perform request", {
       expect_s3_class(resp, "httr2_response")
    })
 }, simplify = FALSE)
-
 with_mock_dir("get_wfs simple request", {
    #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
    test_that("get_wfs", {
@@ -103,7 +97,7 @@ with_mock_dir("get_wfs simple request", {
       layer <- get_wfs(shape = shape,
                        apikey = apikey,
                        layer_name = layer_name,
-                       filename = "pouet")
+                       file = "pouet.shp")
 
       expect_s3_class(layer, "sf")
       expect_equal(length(grep("pouet", list.files())), 4)
@@ -114,4 +108,3 @@ with_mock_dir("get_wfs simple request", {
 
    })
 }, simplify = FALSE)
-

@@ -7,7 +7,7 @@
 get_wfs(shape,
         apikey,
         layer_name,
-        filename = NULL)
+        file = NULL)
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
@@ -20,7 +20,8 @@ from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{filename}{File name to save shape on disk as ".shp".}
+\item{file}{Either a character string naming a file or a connection open
+for writing.}
 }
 \value{
 \code{get_wfs}return an object of class \code{sf}
@@ -48,7 +49,7 @@ shape <- st_point(c(-4.373937, 47.79859))
 shape <- st_sfc(shape, crs = st_crs(4326))
 
 # Download borders
-borders <- get_wfs(shape, apikey, layer_name)
+borders <- get_wfs(shape, apikey, layer_name, file = file.path(tempdir(), "borders.shp"))
 
 # Verif
 tmap_mode("view") # easy interactive map
