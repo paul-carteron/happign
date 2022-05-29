@@ -131,40 +131,21 @@ get_wms_raster <- function(shape,
    urls <- construct_urls(apikey, version, format, layer_name, styles, width_height, all_bbox)
    filename <- construct_filename(format, layer_name, filename, resolution)
 
-   # if raster_name already exist is directly load in R, else is download
-   if (basename(filename) %in% list.files(dirname(filename))){
+   basename <- basename(filename)
+   dirname <- dirname(filename)
+
+   if (basename %in% list.files(dirname)) {
       raster_final <- read_stars(filename)
-      message(basename(filename),
-              " already exist at :\n", file.path(getwd(), dirname(filename)), "\nPlease change filename argument if you want to download it again.")
+      message(
+         basename,
+         " already exist at :\n",
+         file.path(getwd(), dirname),
+         "\nPlease change filename argument if you want to download it again."
+      )
    }else{
-      raster_list <- list()
-      for (i in seq_along(urls)){
-
-         message(i,"/",length(urls), " downloaded", sep = "")
-
-         filename_tile <- paste0("tile", i, "_", basename(filename))
-
-         download.file(url = urls[i],
-                       method = method,
-                       mode = mode,
-                       destfile = file.path(dirname(filename),filename_tile))
-         raster_list[[i]] <- read_stars(file.path(dirname(filename),filename_tile))
-      }
-
-      # cf ?st_transform, detail. st_transform convert lossless by into curvilinear grid with is
-      # not handle by terra
-      raster_final <- lapply(X = raster_list,
-                     FUN = st_warp,
-                     crs =  st_crs(4326))
-
-      raster_final <- do.call("st_mosaic", raster_final)
-      file.remove(file.path(dirname(filename),
-                           paste0("tile", seq_along(urls), "_", basename(filename))))
-
-      write_stars(raster_final, filename)
-
+      tiles_list <- download_tiles(filename, urls, method, mode)
+      raster_final <- combine_tiles(tiles_list, filename)
    }
-
    return(raster_final)
 }
 
@@ -263,5 +244,54 @@ construct_filename <- function(format, layer_name, filename, resolution) {
   filename <- ifelse(is.null(filename),
                      clean_names(layer_name),
                      file.path(dirname(filename), clean_names(basename(filename))))
+}
+
+#' Checks if the raster is already downloaded and downloads it if necessary.
+#' Also allows to download several grids
+#' @param filename name of file or connection
+#' @param urls urls from construct_urls
+#' @param method see download.file()
+#' @param mode see download.file()
+#' @noRd
+#'
+# if raster_name already exist is directly load in R, else is download
+download_tiles <- function(filename, urls, method, mode) {
+   basename <- basename(filename)
+   dirname <- dirname(filename)
+
+   tiles_list <- list()
+   for (i in seq_along(urls)) {
+      message(i, "/", length(urls), " downloaded", sep = "")
+
+      filename_tile <- paste0("tile", i, "_", basename)
+
+      download.file(url = urls[i],
+                    method = method,
+                    mode = mode,
+                    destfile = file.path(dirname, filename_tile))
+
+      tiles_list[[i]] <- read_stars(file.path(dirname, filename_tile))
+   }
+   return(tiles_list)
+}
+
+#' Combine tiles
+#' @param tiles_list list of tiles from download_tiles
+#' @param filename name of file or connection
+#' @noRd
+#'
+combine_tiles <- function(tiles_list, filename) {
+   raster_final <- lapply(X = tiles_list,
+                          FUN = st_warp,
+                          crs =  st_crs(4326))
+
+   raster_final <- do.call("st_mosaic", raster_final)
+
+   file.remove(file.path(
+      dirname(filename),
+      paste0("tile", seq_along(tiles_list),
+             "_", basename(filename))))
+
+   write_stars(raster_final, filename)
 }
 

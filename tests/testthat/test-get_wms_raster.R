@@ -86,5 +86,29 @@ test_that("construct_filename", {
                 "test_with_point_inside_name_25m.tif")
 
 })
+test_that("construct_urls", {
+   urls <- construct_urls("apikey", "version", "format", "layer_name", "styles", c(6, 8), c("bbox1", "bbox2"))
+   expect_length(urls, 2)
+   expect_equal(urls[1],
+                "https://wxs.ign.fr/apikey/geoportail/r/wms?version=version&request=GetMap&format=format&layers=layer_name&styles=styles&width=6&height=8&crs=EPSG:4326&bbox=bbox1")
+})
+test_that("combine_tiles", {
 
+   temp <- tempdir()
 
+   raster <- read_stars(system.file("tif/L7_ETMs.tif", package = "stars"))
+   rast_1 <- raster[, 1:10, 1:10]
+   rast_2 <- raster[, 11:20, 1:20]
+
+   write_stars(rast_1, file.path(temp, "tile1_pouet.tif"))
+   write_stars(rast_2, file.path(temp, "tile2_pouet.tif"))
+
+   tiles_list <- list(rast_1, rast_2)
+   filename <- file.path(temp, "pouet.tif")
+
+   raster_final <- combine_tiles(tiles_list, filename)
+
+   expect_s3_class(raster_final, "stars")
+   expect_equal(dim(raster_final), c(x = 21, y = 20, band = 6))
+   unlink(temp, recursive = TRUE,force = TRUE)
+})

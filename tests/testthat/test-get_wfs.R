@@ -97,7 +97,7 @@ with_mock_dir("get_wfs simple request", {
       layer <- get_wfs(shape = shape,
                        apikey = apikey,
                        layer_name = layer_name,
-                       file = "pouet.shp")
+                       file = "pouet")
 
       expect_s3_class(layer, "sf")
       expect_equal(length(grep("pouet", list.files())), 4)
