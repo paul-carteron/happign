@@ -94,21 +94,21 @@ test_that("construct_urls", {
 })
 test_that("combine_tiles", {
 
-   temp <- tempdir()
+   temp_rast <- tempdir(check=TRUE)
 
    raster <- read_stars(system.file("tif/L7_ETMs.tif", package = "stars"))
    rast_1 <- raster[, 1:10, 1:10]
    rast_2 <- raster[, 11:20, 1:20]
 
-   write_stars(rast_1, file.path(temp, "tile1_pouet.tif"))
-   write_stars(rast_2, file.path(temp, "tile2_pouet.tif"))
+   write_stars(rast_1, file.path(temp_rast, "tile1_pouet.tif"))
+   write_stars(rast_2, file.path(temp_rast, "tile2_pouet.tif"))
 
    tiles_list <- list(rast_1, rast_2)
-   filename <- file.path(temp, "pouet.tif")
+   filename <- file.path(temp_rast, "pouet.tif")
 
    raster_final <- combine_tiles(tiles_list, filename)
 
    expect_s3_class(raster_final, "stars")
    expect_equal(dim(raster_final), c(x = 21, y = 20, band = 6))
-   unlink(temp, recursive = TRUE,force = TRUE)
+   unlink(temp_rast, recursive = TRUE,force = TRUE)
 })
