@@ -27,12 +27,12 @@ with_mock_dir("get_apicarto_cadastre sf",{
       expect_s3_class(res, "sf")
    })
 }, simplify = FALSE)
-with_mock_dir("get_apicarto_cadastre character",{
+with_mock_dir("get_api_cadastre char",{
    test_that("download_cadastre", {
       skip_on_cran()
       skip_if_offline()
 
-      res <- get_apicarto_cadastre("26274", numero = "0001")
+      res <- get_apicarto_cadastre("26274", numero = "0001", section = "0A")
 
       expect_s3_class(res, "sf")
    })
