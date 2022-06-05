@@ -129,7 +129,7 @@ test_that("download_tiles", {
    tiles <- download_tiles(filename, urls, method, mode)
    expect_type(tiles, "list")
    expect_length(tiles, 1)
-   unlink(temp_tiles, recursive = TRUE,force = TRUE)
+   unlink(temp_tiles, recursive = TRUE, force = TRUE)
 })
 test_that("the whole function", {
    skip_on_cran()
@@ -145,6 +145,9 @@ test_that("the whole function", {
 
    expect_s3_class(mnt, "stars")
    expect_equal(dim(mnt), c(x = 7, y = 8))
+
+   expect_message(get_wms_raster(shape = shape, resolution = 25, filename = filename),
+                  "already exist at")
 
    unlink(temp_whole, recursive = TRUE, force = TRUE)
 })

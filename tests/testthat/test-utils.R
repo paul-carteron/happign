@@ -44,3 +44,13 @@ test_that("sf_to_polygon", {
                 '{"type":"Polygon","coordinates":[[[-4.373,47.798],[-4.373,47.799],[-4.372,47.799],[-4.372,47.798],[-4.373,47.798]],[[-4.373,47.798],[-4.373,47.799],[-4.372,47.799],[-4.372,47.798],[-4.373,47.798]]]}')
 
 })
+test_that("null shape", {
+   expect_null(shp_to_geojson(NULL))
+})
+test_that("sf is convert to sfc", {
+   shape_sf <- read_sf(system.file("shape/nc.shp", package = "sf"))[1,]
+   shape_sf <- st_cast(shape_sf, "POLYGON", warn = FALSE)
+
+   expect_match(shp_to_geojson(shape_sf), "\\[\\[\\[")
+   expect_match(shp_to_geojson(shape_sf), "\\]]]")
+})
