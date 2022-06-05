@@ -54,8 +54,8 @@ get_wms_info <- function(shape,
                     query_layers = layer_name,
                     layers = layer_name,
                     styles = "",
-                    width = 2064,
-                    height = 2064,
+                    width = 1,
+                    height = 1,
                     crs = "EPSG:4326",
                     bbox = bbox,
                     I = 1,
@@ -87,8 +87,11 @@ get_wms_info <- function(shape,
 #' @importFrom httr2 request req_perform resp_body_xml req_url_path_append
 #' req_user_agent req_url_query
 #' @importFrom xml2 xml_child xml_find_all xml_has_attr as_list
+#' @importFrom checkmate assert_choice
 #'
 are_queryable <- function(apikey){
+
+   assert_choice(apikey, get_apikeys())
 
    request <- request("https://wxs.ign.fr") %>%
       req_url_path_append(apikey) %>%
