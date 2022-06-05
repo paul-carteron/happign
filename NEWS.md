@@ -2,7 +2,7 @@
 * remove `get_iso()`
 * remove dependency to `httr` by `httr2`
 * add `get_wms_info()`
-* add `get_apicarto_plu`
+* add `get_apicarto_gpu`
 
 # happign 0.1.4
 

@@ -1,5 +1,5 @@
 structure(list(method = "GET", url = "https://geoservices.ign.fr/",
-    status_code = 504L, headers = structure(list(date = "Sun, 05 Jun 2022 08:44:24 GMT",
+    status_code = 504L, headers = structure(list(date = "Sun, 05 Jun 2022 09:43:08 GMT",
         `strict-transport-security` = "max-age=63072000", `x-content-type-options` = "nosniff",
         `cache-control` = "must-revalidate, no-cache, private",
         `x-drupal-dynamic-cache` = "MISS", `x-ua-compatible` = "IE=edge",
@@ -7,6 +7,6 @@ structure(list(method = "GET", url = "https://geoservices.ign.fr/",
         `x-frame-options` = "SAMEORIGIN", expires = "Sun, 19 Nov 1978 05:00:00 GMT",
         `x-generator` = "Drupal 8 (https://www.drupal.org)",
         `x-drupal-cache` = "HIT", vary = "Accept-Encoding", `content-encoding` = "gzip",
-        `content-length` = "11384", `content-type` = "text/html; charset=UTF-8",
+        `content-length` = "11384", `content-type` = "text/html; charset=ISO-8859-1",
         `set-cookie` = "REDACTED"), class = "httr2_headers"),
-    body = charToRaw(""  )), class = "httr2_response")
+    body = charToRaw("")), class = "httr2_response")

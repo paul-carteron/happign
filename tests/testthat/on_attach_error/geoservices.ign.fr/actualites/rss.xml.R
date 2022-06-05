@@ -1,5 +1,5 @@
 structure(list(method = "GET", url = "https://geoservices.ign.fr/actualites/rss.xml", 
-    status_code = 200L, headers = structure(list(date = "Sun, 05 Jun 2022 08:44:24 GMT", 
+    status_code = 200L, headers = structure(list(date = "Sun, 05 Jun 2022 09:43:07 GMT", 
         `strict-transport-security` = "max-age=63072000", `x-content-type-options` = "nosniff", 
         `cache-control` = "must-revalidate, no-cache, private", 
         `x-drupal-dynamic-cache` = "MISS", `x-ua-compatible` = "IE=edge", 
