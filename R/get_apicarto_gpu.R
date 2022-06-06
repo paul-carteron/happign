@@ -3,8 +3,7 @@
 #' @usage
 #' get_apicarto_gpu(x,
 #'                  ressource = "zone-urba",
-#'                  partition = NULL,
-#'                  timeout = 10)
+#'                  partition = NULL)
 #'
 #' @param x An object of clas `sf` or `sfc`. If NULL, `partition` must be filled
 #' by partition of GPU.
@@ -14,32 +13,29 @@
 #' @param partition A character corresponding to GPU partition (can be retrieve
 #' using `get_apicarto_gpu(x, "document", partition = NULL)`). If `partition`
 #' is explicitely set, all GPU features are returned and `geom` is override
-#' @param timeout Time to wait between two request. It's useful when `get_apicarto_gpu()`
-#' is implemented inside dynamic document. If API doesn't work for some reasons,
-#' it will try again (3 times). Be careful, if you're download is longer than
-#' `timeout`, the download will not have time to complete
 #'
 #' @details
-#' * `"document'` :
-#' * `"zone-urba"` :
-#' * `"secteur-cc"` :
-#' * `"prescription-surf"` :
-#' * `"prescription-lin"` :
-#' * `"prescription-pct"` :
-#' * `"info-surf"` :
-#' * `"info-lin"` :
-#' * `"info-pct"` :
-#' * `"acte-sup"` :
-#' * `"assiette-sup-s"` :
-#' * `"assiette-sup-l"` :
-#' * `"assiette-sup-p"` :
-#' * `"generateur-sup-s"` :
-#' * `"generateur-sup-l"` :
-#' * `"generateur-sup-p"` :
+#' * `"municipality` : information on the communes (commune with RNU, merged commune)
+#' * `"document'` : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)
+#' * `"zone-urba"` : zoning of urban planning documents,
+#' * `"secteur-cc"` : communal map sectors
+#' * `"prescription-surf"` : surface prescriptions like Classified wooded area, Area contributing to the green and blue framework, Landscape element to be protected or created, Protected open space, ...
+#' * `"prescription-lin"` : linear prescription like pedestrian path, bicycle path, hedges or tree lines to be protected, ...
+#' * `"prescription-pct"` : punctual prescription like Building of architectural interest, Building to protect, Remarkable tree, Protected pools, ...
+#' * `"info-surf"` : surface information perimeters of urban planning documents like Protection of drinking water catchments, archaeological sector, noise classification, ...
+#' * `"info-lin"` : linear information perimeters of urban planning documents like Bicycle path to be created, Long hike, Façade and/or roof protected as historical monuments, ...
+#' * `"info-pct"` : punctual information perimeters of urban planning documents like Archaeological heritage, Listed or classified historical monument, Underground cavity, ...
+#' * `"acte-sup"` : the Servitudes of Public Utility (SUP) affect the use of the grounds according to the administrative limitations to the right of ownership
+#' * `"assiette-sup-s"` :  Protected area, historical monument, risk prevention plan perimeter, ...
+#' * `"assiette-sup-l"` : No example
+#' * `"assiette-sup-p"` : No example
+#' * `"generateur-sup-s"` : National Park, Forest, Monument, Site, ...
+#' * `"generateur-sup-l"` : Waterways, Supports and Cables, ...
+#' * `"generateur-sup-p"` : No example
 #'
 #' @importFrom checkmate assert assert_choice check_character check_class check_null
 #' @importFrom sf read_sf
-#' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request resp_body_json resp_body_string req_retry req_timeout
+#' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request resp_body_json resp_body_string
 #'
 #' @return A object of class `sf`
 #' @export
@@ -75,8 +71,7 @@
 #'
 get_apicarto_gpu <- function(x,
                              ressource = "zone-urba",
-                             partition = NULL,
-                             timeout = 10){
+                             partition = NULL){
 
    # Test input values
    assert(check_class(x, "sf"),
@@ -100,8 +95,6 @@ get_apicarto_gpu <- function(x,
       req_url_path_append(ressource) %>%
       req_url_query(partition = partition,
                     geom = shp_to_geojson(x)) %>%
-      req_retry(3) %>% # Nombre d'essai
-      req_timeout(timeout) %>% # Time to wait between two request. Be careful if download is too long. Test down with 1043 feature (partition = "DU_75056", ressources = "zone-urba), 10s looks ok
       req_perform() %>%
       resp_body_string() %>%
       read_sf()

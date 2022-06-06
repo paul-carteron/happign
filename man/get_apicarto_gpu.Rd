@@ -6,8 +6,7 @@
 \usage{
 get_apicarto_gpu(x,
                  ressource = "zone-urba",
-                 partition = NULL,
-                 timeout = 10)
+                 partition = NULL)
 }
 \arguments{
 \item{x}{An object of clas \code{sf} or \code{sfc}. If NULL, \code{partition} must be filled
@@ -20,11 +19,6 @@ by partition of GPU.}
 \item{partition}{A character corresponding to GPU partition (can be retrieve
 using \code{get_apicarto_gpu(x, "document", partition = NULL)}). If \code{partition}
 is explicitely set, all GPU features are returned and \code{geom} is override}
-
-\item{timeout}{Time to wait between two request. It's useful when \code{get_apicarto_gpu()}
-is implemented inside dynamic document. If API doesn't work for some reasons,
-it will try again (3 times). Be careful, if you're download is longer than
-\code{timeout}, the download will not have time to complete}
 }
 \value{
 A object of class \code{sf}
@@ -34,22 +28,23 @@ Apicarto module Geoportail de l'urbanisme
 }
 \details{
 \itemize{
-\item \verb{"document'} :
-\item \code{"zone-urba"} :
-\item \code{"secteur-cc"} :
-\item \code{"prescription-surf"} :
-\item \code{"prescription-lin"} :
-\item \code{"prescription-pct"} :
-\item \code{"info-surf"} :
-\item \code{"info-lin"} :
-\item \code{"info-pct"} :
-\item \code{"acte-sup"} :
-\item \code{"assiette-sup-s"} :
-\item \code{"assiette-sup-l"} :
-\item \code{"assiette-sup-p"} :
-\item \code{"generateur-sup-s"} :
-\item \code{"generateur-sup-l"} :
-\item \code{"generateur-sup-p"} :
+\item \verb{"municipality} : information on the communes (commune with RNU, merged commune)
+\item \verb{"document'} : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)
+\item \code{"zone-urba"} : zoning of urban planning documents,
+\item \code{"secteur-cc"} : communal map sectors
+\item \code{"prescription-surf"} : surface prescriptions like Classified wooded area, Area contributing to the green and blue framework, Landscape element to be protected or created, Protected open space, ...
+\item \code{"prescription-lin"} : linear prescription like pedestrian path, bicycle path, hedges or tree lines to be protected, ...
+\item \code{"prescription-pct"} : punctual prescription like Building of architectural interest, Building to protect, Remarkable tree, Protected pools, ...
+\item \code{"info-surf"} : surface information perimeters of urban planning documents like Protection of drinking water catchments, archaeological sector, noise classification, ...
+\item \code{"info-lin"} : linear information perimeters of urban planning documents like Bicycle path to be created, Long hike, Façade and/or roof protected as historical monuments, ...
+\item \code{"info-pct"} : punctual information perimeters of urban planning documents like Archaeological heritage, Listed or classified historical monument, Underground cavity, ...
+\item \code{"acte-sup"} : the Servitudes of Public Utility (SUP) affect the use of the grounds according to the administrative limitations to the right of ownership
+\item \code{"assiette-sup-s"} :  Protected area, historical monument, risk prevention plan perimeter, ...
+\item \code{"assiette-sup-l"} : No example
+\item \code{"assiette-sup-p"} : No example
+\item \code{"generateur-sup-s"} : National Park, Forest, Monument, Site, ...
+\item \code{"generateur-sup-l"} : Waterways, Supports and Cables, ...
+\item \code{"generateur-sup-p"} : No example
 }
 }
 \examples{
