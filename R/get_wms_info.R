@@ -26,7 +26,23 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom xml2 xml_child xml_find_all xml_has_attr as_list
 #'
+#' @examples
+#' \dontrun{
+#' library(sf)
 #'
+#' shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
+#'                                  -4.375615, 47.79738,
+#'                                  -4.375147, 47.79683,
+#'                                  -4.373898, 47.79790,
+#'                                  -4.373937, 47.79859),
+#'                                  ncol = 2, byrow = TRUE)))
+#' shape <- st_sfc(shape, crs = st_crs(4326))
+#'
+#' wms_info <- get_wms_info(shape, "ortho", "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO")
+#'
+#' date_vol <- wms_info$date_vol
+#'
+#' }
 get_wms_info <- function(shape,
                          apikey = "ortho",
                          layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
