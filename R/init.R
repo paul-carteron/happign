@@ -16,33 +16,44 @@
 
    req <- request("http://geoservices.ign.fr/actualites/rss.xml") %>%
       req_options(ssl_verifypeer = 0) %>%
-      req_perform() %>%
-      resp_body_xml() %>%
-      xml_find_all("//item") %>%
-      as_list() %>%
-      bind_rows()
+      req_perform()
 
-   last_actu <- paste0("Last news from IGN website : ",
-                      "\"",
-                      unlist(req[1,1]),
-                      "\"",
-                      " on ", substring(unlist(req[1, 2]), 39, 48),
-                     " (", unlist(req[1, 2]), ")\n")
+   if (resp_is_error(req)){
+      return(packageStartupMessage("IGN actuality is unavailable.\n",
+                                   "It may be due to a site crash ",
+                                   "or an update of the IGN data. More ",
+                                   "information at ",
+                                   "<https://geoservices.ign.fr/actualites>."))
+   }else{
+      req <- req %>%
+         resp_body_xml() %>%
+         xml_find_all("//item") %>%
+         as_list() %>%
+         bind_rows()
+
+      last_actu <- paste0("Last news from IGN website : ",
+                          "\"",
+                          unlist(req[1,1]),
+                          "\"",
+                          " on ", substring(unlist(req[1, 2]), 39, 48),
+                          " (", unlist(req[1, 2]), ")\n")
+   }
 
    resp <- request("http://geoservices.ign.fr/") %>%
       req_options(ssl_verifypeer = 0) %>%
       req_perform()
 
    if (resp_is_error(resp)) {
-      packageStartupMessage("IGN web service API is unavailable.\n",
-                            "It may be due to a site crash ",
-                            "or an update of the IGN data. More ",
-                            "information at ",
-                            "<https://geoservices.ign.fr/actualites>.")
+      return(packageStartupMessage("IGN web service API is unavailable.\n",
+                                   "It may be due to a site crash ",
+                                   "or an update of the IGN data. More ",
+                                   "information at ",
+                                   "<https://geoservices.ign.fr/actualites>."))
    }else{
-      packageStartupMessage("IGN web service API is available.\n",
-                            last_actu)
+      return(packageStartupMessage("IGN web service API is available.\n",
+                            last_actu))
    }
 
 
 }
+

@@ -17,6 +17,7 @@ checks](https://cranchecks.info/badges/summary/happign)](https://cran.r-project.
 coverage](https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg)](https://app.codecov.io/gh/paul-carteron/happign?branch=main)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/paul-carteron/happign/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/paul-carteron/happign/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of happign is to facilitate the use of Web Services and API
