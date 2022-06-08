@@ -9,9 +9,6 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/happign)](https://CRAN.R-project.org/package=happign)
-[![CRAN
-checks](https://cranchecks.info/badges/summary/happign)](https://cran.r-project.org/web/checks/check_results_happign.html)
-[![R-CMD-check](https://github.com/paul-carteron/happign/workflows/R-CMD-check/badge.svg)](https://github.com/paul-carteron/happign/actions)
 [![downloads](http://cranlogs.r-pkg.org/badges/last-month/happign?color=green)](https://cran.r-project.org/package=happign)
 [![Codecov test
 coverage](https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg)](https://app.codecov.io/gh/paul-carteron/happign?branch=main)
