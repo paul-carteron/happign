@@ -67,9 +67,11 @@ get_layers_metadata.character <- function(apikey, data_type) {
 #' @name get_layers_metadata
 #' @export
 get_layers_metadata.wfs <- function(apikey, data_type) {
+   version <- "2.0.0"
    url <- paste0("https://wxs.ign.fr/",
                 apikey,
-                "/geoportail/wfs?SERVICE=WFS&REQUEST=GetCapabilities")
+                "/geoportail/wfs?SERVICE=WFS&VERSION=",version,
+                "&REQUEST=GetCapabilities")
 
    items <- request(url) %>%
       req_perform() %>%
@@ -89,10 +91,11 @@ get_layers_metadata.wfs <- function(apikey, data_type) {
 #' @name get_layers_metadata
 #' @export
 get_layers_metadata.wms <- function(apikey, data_type) {
-
+   version <- "1.3.0"
    url <- paste0("https://wxs.ign.fr/",
                 apikey,
-                "/geoportail/r/wms?SERVICE=WMS&REQUEST=GetCapabilities")
+                "/geoportail/r/wms?SERVICE=WMS&VERSION=",version,
+                "&REQUEST=GetCapabilities")
 
    items <- request(url) %>%
       req_perform() %>%
