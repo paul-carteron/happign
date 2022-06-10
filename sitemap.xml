@@ -4,19 +4,22 @@
     <loc>https://paul-carteron.github.io/happign/404.html</loc>
   </url>
   <url>
-    <loc>https://paul-carteron.github.io/happign/articles/Getting_started.html</loc>
+    <loc>https://paul-carteron.github.io/happign/CODE_OF_CONDUCT.html</loc>
   </url>
   <url>
-    <loc>https://paul-carteron.github.io/happign/articles/index.html</loc>
+    <loc>https://paul-carteron.github.io/happign/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://paul-carteron.github.io/happign/articles/Getting_started.html</loc>
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html</loc>
   </url>
   <url>
-    <loc>https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html</loc>
+    <loc>https://paul-carteron.github.io/happign/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://paul-carteron.github.io/happign/articles/web_only/Non_functional_APIs.html</loc>
+    <loc>https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html</loc>
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/articles/web_only/resolution_for_raster.html</loc>
@@ -25,13 +28,7 @@
     <loc>https://paul-carteron.github.io/happign/authors.html</loc>
   </url>
   <url>
-    <loc>https://paul-carteron.github.io/happign/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
     <loc>https://paul-carteron.github.io/happign/index.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/LICENSE.html</loc>
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/news/index.html</loc>
@@ -46,7 +43,7 @@
     <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_cadastre.html</loc>
   </url>
   <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_plu.html</loc>
+    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_gpu.html</loc>
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_apikeys.html</loc>
