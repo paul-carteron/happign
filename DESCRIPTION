@@ -21,7 +21,7 @@ Imports:
     dplyr,
     httr2,
     magrittr,
-    sf,
+    sf (>= 1.0-7),
     stars,
     tidyr,
     xml2

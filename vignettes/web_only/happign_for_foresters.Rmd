@@ -204,13 +204,15 @@ It's always good to know a more about terrain topologie. IGN offers MNT and MNS 
 
 ```{r}
 layers_name <- get_layers_metadata("altimetrie", "wms")
-MNT_name <- layers_name[2,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
-MNS_name <- layers_name[3,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
+MNT_name <- layers_name[3,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
+MNS_name <- layers_name[4,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
 MNT <- get_wms_raster(borders, "altimetrie", resolution = 5, MNT_name, filename = "MNT")
 file.remove("MNT_5m.tif") # I don't want to keep MNT on disk because this is vignette
 MNS <- get_wms_raster(borders, "altimetrie", resolution = 5, MNS_name, filename = "MNS")
 file.remove("MNS_5m.tif") # I don't want to keep MNS on disk because this is vignette
+level_curve <- get_wfs(borders, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe") %>% 
+   st_intersection(borders)
 
 MNH <- MNS - MNT
 MNH[MNH < 0] <- NA  # Remove negative value 
@@ -218,6 +220,8 @@ MNH[MNH > 50] <- NA # Remove height more than 50m
 
 tm_shape(MNH)+
    tm_raster()+
+tm_shape(level_curve)+
+   tm_lines()+
 tm_shape(borders)+
    tm_borders(lwd = 2)+
    tm_basemap("OpenStreetMap")
