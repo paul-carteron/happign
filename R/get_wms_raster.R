@@ -28,12 +28,14 @@
 #' @param resolution Cell size in meter. WMS are limited to 2048x2048 pixels so
 #' depending of the shape and the resolution, correct number and size of tiles
 #' is calculated. See detail for more information about resolution.
-#' @param filename Name of raster download to disk. The resolution is automatically
-#'  added to the filename. If raster with same name already exist in the current
-#'  directory, it is directly imported into R
+#' @param filename Either a character string naming a file or a connection open
+#' for writing. (ex : "test" or "~/test"). The resolution is automatically
+#' added to the filename. If raster with same name is already downloaded it
+#' is directly imported into R. You don't have to specify the extension because
+#' it is defined in the argument `format`.
 #' @param version The version of the service used. Set to latest version
 #' by default. See detail for more information about `version`.
-#' @param format The output format - type-mime - of the image file. Set
+#' @param format The output format of the image file. Set
 #' to geotiff by default. See detail for more information about `format`.
 #' @param styles The rendering style of the layers. Set to "" by default.
 #'  See detail for more information about `styles`.
@@ -139,7 +141,7 @@ get_wms_raster <- function(shape,
       message(
          basename,
          " already exist at :\n",
-         file.path(getwd(), dirname),
+         file.path(dirname),
          "\nPlease change filename argument if you want to download it again."
       )
    }else{
@@ -264,13 +266,15 @@ download_tiles <- function(filename, urls, method, mode) {
       message(i, "/", length(urls), " downloaded", sep = "")
 
       filename_tile <- paste0("tile", i, "_", basename)
+      path <- normalizePath(file.path(dirname, filename_tile), mustWork = FALSE)
+      path <- enc2utf8(path)
 
       download.file(url = urls[i],
                     method = method,
                     mode = mode,
-                    destfile = file.path(dirname, filename_tile))
+                    destfile = path)
 
-      tiles_list[[i]] <- read_stars(file.path(dirname, filename_tile))
+      tiles_list[[i]] <- read_stars(path, quiet = TRUE)
    }
    return(tiles_list)
 }
@@ -287,10 +291,16 @@ combine_tiles <- function(tiles_list, filename) {
 
    raster_final <- do.call("st_mosaic", raster_final)
 
-   file.remove(file.path(
-      dirname(filename),
-      paste0("tile", seq_along(tiles_list),
-             "_", basename(filename))))
+   file.remove(
+      enc2utf8(
+         normalizePath(
+            file.path(
+               dirname(filename),
+               paste0("tile", seq_along(tiles_list),
+                      "_", basename(filename)))
+            )
+      )
+   )
 
    write_stars(raster_final, filename)
 }

@@ -30,14 +30,16 @@ or directly from
 depending of the shape and the resolution, correct number and size of tiles
 is calculated. See detail for more information about resolution.}
 
-\item{filename}{Name of raster download to disk. The resolution is automatically
-added to the filename. If raster with same name already exist in the current
-directory, it is directly imported into R}
+\item{filename}{Either a character string naming a file or a connection open
+for writing. (ex : "test" or "~/test"). The resolution is automatically
+added to the filename. If raster with same name is already downloaded it
+is directly imported into R. You don't have to specify the extension because
+it is defined in the argument \code{format}.}
 
 \item{version}{The version of the service used. Set to latest version
 by default. See detail for more information about \code{version}.}
 
-\item{format}{The output format - type-mime - of the image file. Set
+\item{format}{The output format of the image file. Set
 to geotiff by default. See detail for more information about \code{format}.}
 
 \item{styles}{The rendering style of the layers. Set to "" by default.

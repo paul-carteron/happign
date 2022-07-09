@@ -21,7 +21,7 @@ or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
 \item{filename}{Either a character string naming a file or a connection open
-for writing.}
+for writing. (ex : "test.shp" or "~/test.shp")}
 }
 \value{
 \code{get_wfs}return an object of class \code{sf}
@@ -70,6 +70,7 @@ roads <- get_wfs(shape = borders,
 
 # Verif
 qtm(roads)
+
 }
 }
 \seealso{

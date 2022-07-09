@@ -96,7 +96,7 @@ with_mock_dir("get_wfs simple request", {
       layer_name <- "BDCARTO_BDD_WLD_WGS84G:troncon_route"
 
       temp <- tempdir(check = TRUE)
-      filename <- file.path(temp, "pouet")
+      filename <- file.path(temp, "pouet.shp")
 
       layer <- get_wfs(shape = shape,
                        apikey = apikey,
@@ -105,8 +105,8 @@ with_mock_dir("get_wfs simple request", {
 
       expect_s3_class(layer, "sf")
       expect_equal(sum(grepl("pouet.shp", list.files(temp))), 1)
-
-      unlink(temp, recursive = TRUE,force = TRUE)
+      expect_match(list.files(temp), "pouet", fixed = TRUE, all = FALSE)
+      unlink(temp, recursive = TRUE, force = TRUE)
 
    })
 }, simplify = FALSE)

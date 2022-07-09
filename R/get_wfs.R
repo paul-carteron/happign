@@ -20,7 +20,7 @@
 #' or directly from
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
 #' @param filename Either a character string naming a file or a connection open
-#' for writing.
+#' for writing. (ex : "test.shp" or "~/test.shp")
 #'
 #' @return
 #' `get_wfs`return an object of class `sf`
@@ -74,6 +74,7 @@
 #'
 #' # Verif
 #' qtm(roads)
+#'
 #' }
 get_wfs <- function(shape,
                     apikey = "cartovecto",
@@ -116,10 +117,17 @@ get_wfs <- function(shape,
    }
 
    if (!is.null(filename)) {
-      st_write(features, file.path(paste0(filename, ".shp")))
-      message("The shape is saved at : ", file.path(getwd(),
-                                                    paste0(filename, ".shp")))
+      path <- normalizePath(filename, mustWork = FALSE)
+      path <- enc2utf8(path)
+
+      if (sum(nchar(names(features))>10) > 1){
+         st_write(features, sub("\\.[^.]*$", ".gpkg", path))
+         message("Some varibles names are more than 10 character so .gpkg format is used.")
+      }else{
+         st_write(features, path, append = FALSE)
+
       }
+   }
 
   return(features)
 }
