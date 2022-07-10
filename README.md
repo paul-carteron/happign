@@ -79,10 +79,6 @@ Package vignettes :
 -   [Getting started with
     happign](https://paul-carteron.github.io/happign/articles/Getting_started.html)
     : A brief intro to happign world ;
--   [Non functionnal
-    API](https://paul-carteron.github.io/happign/articles/web_only/Non_functional_APIs.html)
-    : Every week all API from IGN website are tested to find link that
-    doesn’t work ;
 -   [happign for
     foresters](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html)
     : happign can be used in many ways but here I focus on a forestry
@@ -101,9 +97,9 @@ Package vignettes :
 IGN offers other services. Their implementation in R is under
 development :
 
--   Calculation of isochron and isodistance
 -   Implement all REST API Carto compatible with the OpenAPI
     specification (easy and quick downloading for WFS)
+-   Implement spatial filter directly as an argument of function for WFS
 
 ### Problems and Issues
 

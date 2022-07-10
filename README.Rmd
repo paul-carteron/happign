@@ -64,17 +64,18 @@ devtools::install_github("paul-carteron/happign")
 Package vignettes :
 
 - [Getting started with happign](https://paul-carteron.github.io/happign/articles/Getting_started.html) : A brief intro to happign world ;
-- [Non functionnal API](https://paul-carteron.github.io/happign/articles/web_only/Non_functional_APIs.html) : Every week all API from IGN website are tested to find link that doesn't work ;
 - [happign for foresters](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html) : happign can be used in many ways but here I focus on a forestry use.
 - [SCAN 25, SCAN 100 et SCAN OACI](https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html) : How to download the only Scan 25, Scan 100 and Scan OACI
 - [Resolution for raster](https://paul-carteron.github.io/happign/articles/web_only/resolution_for_raster.html) : IGN tiles are limited to 2064x2064 pixel. `happign` happign allows you to get around this limitation. The process is explained in this vignette.
 
 ### Future features
 
-IGN offers other services. Their implementation in R is under development :
+IGN offers other services. Their implementation in R is under
+development :
 
-* Calculation of isochron and isodistance
-* Implement all REST API Carto compatible with the OpenAPI specification (easy and quick downloading for WFS)
+- Implement all REST API Carto compatible with the OpenAPI
+    specification (easy and quick downloading for WFS)
+- Implement spatial filter directly as an argument of function for WFS
 
 ### Problems and Issues
 

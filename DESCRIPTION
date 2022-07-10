@@ -6,8 +6,9 @@ Authors@R:
            comment = c(ORCID = "0000-0002-6942-6662"))
 Maintainer: Paul Carteron <carteronpaul@gmail.com>
 Description: Interface to easily access the National Institute of
-    Geographic and Forestry Information open-source data for any area of
-    interest in France via WFS (shapefile) and WMS (raster) web services
+    Geographic and Forestry Information open-source data from Geoservice
+    website for any area of interest in France via WFS (shapefile) and WMS
+    (raster) web services
     <https://geoservices.ign.fr/services-web-experts>.
 License: GPL (>= 3)
 URL: https://github.com/paul-carteron,
@@ -22,7 +23,7 @@ Imports:
     httr2,
     magrittr,
     sf (>= 1.0-7),
-    stars,
+    stars (>= 0.5-5),
     tidyr,
     xml2
 Suggests: 
