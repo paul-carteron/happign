@@ -31,6 +31,7 @@ get_apikeys <- function() {
       "environnement",
       "geodesie",
       "lambert93",
+      "ocsge",
       "ortho",
       "orthohisto",
       "parcellaire",

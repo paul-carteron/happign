@@ -27,12 +27,13 @@
 #'
 #' @export
 #'
-#' @importFrom sf read_sf st_bbox st_make_valid st_transform st_write
+#' @importFrom sf read_sf st_bbox st_make_valid st_transform st_write st_sf st_point
 #' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent
 #' request resp_body_json resp_body_string
 #' @importFrom dplyr bind_rows select
 #' @importFrom magrittr `%>%`
-#' @importFrom checkmate assert check_class check_character check_null check_double
+#' @importFrom checkmate assert assert_double assert_character check_character
+#' check_class check_null
 #'
 #' @seealso
 #' [get_apikeys()], [get_layers_metadata()]
@@ -46,14 +47,14 @@
 #'
 #' apikey <- get_apikeys()[1]
 #' metadata_table <- get_layers_metadata(apikey, "wfs")
-#' layer_name <- metadata_table[32,2]
+#' layer_name <- as.character(metadata_table[32,2])
 #'
 #' # One point from the best town in France
 #' shape <- st_point(c(-4.373937, 47.79859))
 #' shape <- st_sfc(shape, crs = st_crs(4326))
 #'
 #' # Download borders
-#' borders <- get_wfs(shape, apikey, layer_name, filename = file.path(tempdir(), "borders"))
+#' borders <- get_wfs(shape, apikey, layer_name)
 #'
 #' # Verif
 #' tmap_mode("view") # easy interactive map
@@ -62,10 +63,10 @@
 #' # Get forest_area of the best town in France ----------------
 #' forest_area <- get_wfs(shape = borders,
 #'                        apikey = get_apikeys()[9],
-#'                        layer_name = get_layers_metadata(get_apikeys()[9], "wfs")[2,2])
+#'                        layer_name = "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape")
 #'
 #' # Verif
-#' qtm(forest_area, fill = "essence")
+#' qtm(forest_area, fill = "libelle")
 #'
 #' # Get roads of the best town in France ----------------------
 #' roads <- get_wfs(shape = borders,
@@ -83,8 +84,8 @@ get_wfs <- function(shape,
 
    assert(check_class(shape, "sf"),
           check_class(shape, "sfc"))
-   check_character(apikey, max.len = 1)
-   check_character(layer_name, max.len = 1)
+   assert_character(apikey, max.len = 1)
+   assert_character(layer_name, max.len = 1)
    assert(check_character(filename, max.len = 1),
           check_null(filename))
 
@@ -122,11 +123,16 @@ get_wfs <- function(shape,
 
       if (sum(nchar(names(features))>10) > 1){
          st_write(features, sub("\\.[^.]*$", ".gpkg", path))
-         message("Some varibles names are more than 10 character so .gpkg format is used.")
+         message("Some variables names are more than 10 character so .gpkg format is used.")
       }else{
          st_write(features, path, append = FALSE)
 
       }
+   }
+
+   if (dim(features)[1] == 0){
+      features <- st_sf(st_sfc(st_point()))
+      warning("No features find, an empty point geometry is returned.")
    }
 
   return(features)
@@ -141,11 +147,11 @@ get_wfs <- function(shape,
 #'
 req_function <- function(apikey, shape, layer_name, startindex = 0) {
 
-   check_character(apikey, max.len = 1)
+   assert_character(apikey, max.len = 1)
    assert(check_class(shape, "sf"),
           check_class(shape, "sfc"))
-   check_character(layer_name, max.len = 1)
-   check_double(startindex)
+   assert_character(layer_name, max.len = 1)
+   assert_double(startindex)
 
    bbox <- st_bbox(st_transform(shape, 4326))
    formated_bbox <- paste(bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"],

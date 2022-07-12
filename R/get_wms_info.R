@@ -13,8 +13,8 @@
 #' @param layer_name Name of the layer from `get_layers_metadata(apikey, "wms")`
 #' or directly from
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
-#' @param version The version of the service used. Set to latest version
-#' by default.
+#' @param version The version of the service used. More details at
+#' [IGN documentation](https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc)
 #'
 #' @return data.frame containing additional information from the layer
 #'
@@ -25,6 +25,7 @@
 #' @importFrom sf st_bbox
 #' @importFrom dplyr bind_rows
 #' @importFrom xml2 xml_child xml_find_all xml_has_attr as_list
+#' @importFrom checkmate assert check_class assert_character
 #'
 #' @examples
 #' \dontrun{
@@ -47,6 +48,12 @@ get_wms_info <- function(shape,
                          apikey = "ortho",
                          layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
                          version = "1.3.0"){
+
+   assert(check_class(shape, "sf"),
+          check_class(shape, "sfc"))
+   assert_character(apikey, max.len = 1)
+   assert_character(layer_name, max.len = 1)
+   assert_character(version, max.len = 1)
 
    # test if layer is queryable
    queryable_layers <- are_queryable(apikey)

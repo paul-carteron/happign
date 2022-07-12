@@ -33,8 +33,8 @@
 #' added to the filename. If raster with same name is already downloaded it
 #' is directly imported into R. You don't have to specify the extension because
 #' it is defined in the argument `format`.
-#' @param version The version of the service used. Set to latest version
-#' by default. See detail for more information about `version`.
+#' @param version The version of the service used. See detail for more
+#' information about `version`.
 #' @param format The output format of the image file. Set
 #' to geotiff by default. See detail for more information about `format`.
 #' @param styles The rendering style of the layers. Set to "" by default.

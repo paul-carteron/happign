@@ -36,8 +36,8 @@ added to the filename. If raster with same name is already downloaded it
 is directly imported into R. You don't have to specify the extension because
 it is defined in the argument \code{format}.}
 
-\item{version}{The version of the service used. Set to latest version
-by default. See detail for more information about \code{version}.}
+\item{version}{The version of the service used. See detail for more
+information about \code{version}.}
 
 \item{format}{The output format of the image file. Set
 to geotiff by default. See detail for more information about \code{format}.}

@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(happign)
+library(sf)
 ```
 
 ## Brief presentation

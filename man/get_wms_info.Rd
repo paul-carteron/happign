@@ -22,8 +22,8 @@ from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{version}{The version of the service used. Set to latest version
-by default.}
+\item{version}{The version of the service used. More details at
+\href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc}{IGN documentation}}
 }
 \value{
 data.frame containing additional information from the layer

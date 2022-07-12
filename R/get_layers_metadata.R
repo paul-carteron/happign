@@ -8,6 +8,8 @@
 #' from the [IGN website](https://geoservices.ign.fr/services-web-experts)
 #' @param data_type Should be `"wfs"` or `"wms"`. See details for more
 #' information about these two Webservice formats.
+#' @param version The version of the service used. More details at
+#' [IGN documentation](https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc)
 #'
 #' @details
 #' * WFS is a standard protocol defined by the OGC (Open Geospatial Consortium)
@@ -54,20 +56,20 @@
 #' @importFrom httr2 request req_perform resp_body_xml
 #' @importFrom xml2 read_xml xml_child xml_children xml_find_all xml_name xml_text
 #'
-get_layers_metadata <- function(apikey, data_type) {
+get_layers_metadata <- function(apikey, data_type, version) {
    UseMethod("get_layers_metadata")
 }
 
 #' @name get_layers_metadata
 #' @export
-get_layers_metadata.character <- function(apikey, data_type) {
+get_layers_metadata.character <- function(apikey, data_type, version) {
    get_layers_metadata(constructor(apikey, data_type))
    }
 
 #' @name get_layers_metadata
 #' @export
-get_layers_metadata.wfs <- function(apikey, data_type) {
-   version <- "2.0.0"
+get_layers_metadata.wfs <- function(apikey, data_type, version = "2.0.0") {
+
    url <- paste0("https://wxs.ign.fr/",
                 apikey,
                 "/geoportail/wfs?SERVICE=WFS&VERSION=",version,
@@ -90,8 +92,8 @@ get_layers_metadata.wfs <- function(apikey, data_type) {
 
 #' @name get_layers_metadata
 #' @export
-get_layers_metadata.wms <- function(apikey, data_type) {
-   version <- "1.3.0"
+get_layers_metadata.wms <- function(apikey, data_type, version = "1.3.0") {
+
    url <- paste0("https://wxs.ign.fr/",
                 apikey,
                 "/geoportail/r/wms?SERVICE=WMS&VERSION=",version,

@@ -1,6 +1,5 @@
 test_that("apikeys return good keys", {
-   apikeys <- c(
-      "administratif",
+   apikeys <- c("administratif",
       "adresse",
       "agriculture",
       "altimetrie",
@@ -11,6 +10,7 @@ test_that("apikeys return good keys", {
       "environnement",
       "geodesie",
       "lambert93",
+      "ocsge",
       "ortho",
       "orthohisto",
       "parcellaire",
@@ -20,5 +20,5 @@ test_that("apikeys return good keys", {
       "transports"
    )
   expect_equal(get_apikeys(), apikeys)
-  expect_equal(length(get_apikeys()), 18)
+  expect_equal(length(get_apikeys()), 19)
 })

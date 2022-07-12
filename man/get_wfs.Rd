@@ -42,14 +42,14 @@ library(tmap)
 
 apikey <- get_apikeys()[1]
 metadata_table <- get_layers_metadata(apikey, "wfs")
-layer_name <- metadata_table[32,2]
+layer_name <- as.character(metadata_table[32,2])
 
 # One point from the best town in France
 shape <- st_point(c(-4.373937, 47.79859))
 shape <- st_sfc(shape, crs = st_crs(4326))
 
 # Download borders
-borders <- get_wfs(shape, apikey, layer_name, filename = file.path(tempdir(), "borders"))
+borders <- get_wfs(shape, apikey, layer_name)
 
 # Verif
 tmap_mode("view") # easy interactive map
@@ -58,10 +58,10 @@ qtm(borders, fill = NULL, borders = "firebrick") # easy map
 # Get forest_area of the best town in France ----------------
 forest_area <- get_wfs(shape = borders,
                        apikey = get_apikeys()[9],
-                       layer_name = get_layers_metadata(get_apikeys()[9], "wfs")[2,2])
+                       layer_name = "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape")
 
 # Verif
-qtm(forest_area, fill = "essence")
+qtm(forest_area, fill = "libelle")
 
 # Get roads of the best town in France ----------------------
 roads <- get_wfs(shape = borders,
