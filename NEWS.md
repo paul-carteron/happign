@@ -1,8 +1,13 @@
 # happign 0.1.5
 * remove `get_iso()`
 * remove dependency to `httr` by `httr2`
-* add `get_wms_info()`
-* add `get_apicarto_gpu`
+* add `get_wms_info()` to find metadata of a layer
+* add `get_apicarto_plu()` (Plan Local d'Urbanisme)
+* Rework of `get_wms_raster()`
+* Adding new apikey "ocsge"
+* Better testing
+* Add all insee code as package data `data("code_insee")`
+* `get_apicarto_*` now support MultiPolygon
 
 # happign 0.1.4
 

@@ -21,27 +21,27 @@ test_that("sf_to_polygon", {
                 '{"type":"Point","coordinates":[-4.373,-4.373]}')
 
    # LINESTRING
-   linestring <- sf::st_linestring(matrix(c(-4.373, -4.373,
-                                            -4.372, -4.372), ncol = 2))
+   linestring <- sf::st_linestring(matrix(c(-4.35, -4.31,
+                                            47.8, 47.8), ncol = 2))
    linestring <- sf::st_sfc(linestring, crs = 4326)
 
    expect_true(grepl("LineString", shp_to_geojson(linestring)))
    expect_equal(shp_to_geojson(linestring),
-                '{"type":"LineString","coordinates":[[-4.373,-4.372],[-4.373,-4.372]]}')
+                '{"type":"LineString","coordinates":[[-4.35,47.8],[-4.31,47.8]]}')
 
    # MULTIPLE POLYGON
-   poly2 <- sf::st_polygon(list(matrix(c(-4.374, -4.374,
-                                        -4.373, -4.373,
-                                        -4.374, 47.799,
-                                        47.710, 47.710,
-                                        47.799, 47.799), ncol = 2)))
-   poly2 <- sf::st_sfc(poly, crs = 4326)
+   poly2 <- sf::st_polygon(list(matrix(c(-4.26, -4.26,
+                                         -4.24, -4.24,
+                                         -4.26, 47.79,
+                                         47.80, 47.80,
+                                         47.79, 47.79), ncol = 2)))
+   poly2 <- sf::st_sfc(poly2, crs = 4326)
 
    multiple_poly <- c(poly, poly2)
 
-   expect_true(grepl("Polygon", shp_to_geojson(multiple_poly)))
+   expect_true(grepl("MultiPolygon", shp_to_geojson(multiple_poly)))
    expect_equal(shp_to_geojson(multiple_poly),
-                '{"type":"Polygon","coordinates":[[[-4.373,47.798],[-4.373,47.799],[-4.372,47.799],[-4.372,47.798],[-4.373,47.798]],[[-4.373,47.798],[-4.373,47.799],[-4.372,47.799],[-4.372,47.798],[-4.373,47.798]]]}')
+                '{"type":"MultiPolygon","coordinates":[[[[-4.373,47.798],[-4.373,47.799],[-4.372,47.799],[-4.372,47.798],[-4.373,47.798]]],[[[-4.26,47.79],[-4.26,47.8],[-4.24,47.8],[-4.24,47.79],[-4.26,47.79]]]]}')
 
 })
 test_that("null shape", {
