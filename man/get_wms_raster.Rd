@@ -82,7 +82,7 @@ library(tmap)
 apikey <- get_apikeys()[4]
 
 metadata_table <- get_layers_metadata(apikey, "wms")
-layer_name <- metadata_table[2,2][[1]]
+layer_name <- as.character(metadata_table[2,2])
 
 # shape from the best town in France
 shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
@@ -95,6 +95,7 @@ shape <- st_sfc(shape, crs = st_crs(4326))
 
 # Downloading digital elevation model from IGN
 mnt <- get_wms_raster(shape, apikey, layer_name, resolution = 25, filename = "raster_name")
+file.remove("raster_name_25m.tif") # Don't want to keep raster on disk
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
 

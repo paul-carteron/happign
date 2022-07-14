@@ -50,20 +50,18 @@ The reference document is available on the
 }
 \examples{
 \dontrun{
-
 apikey <- get_apikeys()[4]
 metadata_table <- get_layers_metadata(apikey, "wms")
 all_layer_name <- metadata_table$name
-abstract_of_MNT <- metadata_table[1,3]
-crs_of_MNT <- unlist(metadata_table[1,4])
+abstract_of_MNT <- metadata_table[1,"abstract"]
 
-# list with every wfs metadata
-list_metadata = lapply(X = get_apikeys(),
+# list with every wfs metadata (warning : it's quite long)
+list_metadata <- lapply(X = get_apikeys(),
                        FUN = get_layers_metadata,
                        data_type = "wfs")
 
 # Convert list to one single data.frame
-all_metadata = dplyr::bind_rows(list_metadata)
+all_metadata <- dplyr::bind_rows(list_metadata)
 }
 
 }

@@ -7,7 +7,7 @@
 get_wms_info(
   shape,
   apikey = "ortho",
-  layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
+  layer_name = "ORTHOIMAGERY.ORTHOPHOTOS",
   version = "1.3.0"
 )
 }
@@ -47,7 +47,8 @@ shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
                                  ncol = 2, byrow = TRUE)))
 shape <- st_sfc(shape, crs = st_crs(4326))
 
-wms_info <- get_wms_info(shape, "ortho", "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO")
+wms_info <- get_wms_info(shape, "ortho", "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO") #no info but there are other layer
+wms_info <- get_wms_info(shape, "ortho", "ORTHOIMAGERY.ORTHOPHOTOS")
 
 date_vol <- wms_info$date_vol
 

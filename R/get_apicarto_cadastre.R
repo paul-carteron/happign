@@ -42,22 +42,17 @@
 #' library(sf)
 #' library(tmap)
 #'
-#' # shape from the best town in France
-#' shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
-#'                                  -4.375615, 47.79738,
-#'                                  -4.375147, 47.79683,
-#'                                  -4.373898, 47.79790,
-#'                                  -4.373937, 47.79859),
-#'                                  ncol = 2, byrow = TRUE)))
-#' shape <- st_sfc(shape, crs = st_crs(4326))
+#' # line from the best town in France
+#' line <- st_linestring(matrix(c(-4.372215, -4.365177, 47.803943, 47.79772), ncol = 2))
+#' line <- st_sfc(line, crs = st_crs(4326))
 #'
-#' PCI_shape <- get_apicarto_cadastre(shape, section = c("AX", "BR"))
+#' PCI_shape <- get_apicarto_cadastre(shape, section = c("AX", "AV"))
 #' BDP_Code <- get_apicarto_cadastre("29158", section = c("AX", "BR"), source_ign = "BDP")
 #'
 #' tm_shape(PCI_shape)+
 #'    tm_borders()+
-#' tm_shape(shape)+
-#'    tm_borders(col = "red")
+#' tm_shape(line)+
+#'    tm_lines(col = "red")
 #'
 #' tm_shape(BDP_Code)+
 #'    tm_polygons(col = "section", border.col = "black")

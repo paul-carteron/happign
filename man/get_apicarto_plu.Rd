@@ -63,7 +63,6 @@ partition <- unique(document$partition)
 partition <- "DU_17345"
 ressources <- c("prescription-surf", "prescription-lin", "prescription-pct")
 
-# I recommend to use purrr package for loop
 library(purrr)
 all_prescription <- map(.x = ressources,
                         .f = ~ get_apicarto_plu(point, .x, partition))
