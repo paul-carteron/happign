@@ -8,6 +8,7 @@
 * Better testing
 * Add all insee code as package data `data("code_insee")`
 * `get_apicarto_*` now support MultiPolygon
+* `get_wms_raster` now have 1h for downloading tile instead of 1min (for low connection)
 
 # happign 0.1.4
 
