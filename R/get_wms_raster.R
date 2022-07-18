@@ -259,6 +259,11 @@ construct_filename <- function(format, layer_name, filename, resolution) {
 #'
 # if raster_name already exist is directly load in R, else is download
 download_tiles <- function(filename, urls, method, mode) {
+   # allow 1h of downloading before error
+   default <- options("timeout")
+   options("timeout" = 3600)
+   on.exit(options(default))
+
    basename <- basename(filename)
    dirname <- dirname(filename)
 

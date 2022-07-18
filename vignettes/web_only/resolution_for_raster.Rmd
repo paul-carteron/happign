@@ -103,7 +103,7 @@ nb_pixel
 
 ## Bonus step
 
-   To optimize the number of tiles to download, an intersection is made in the case of mulipolygon or particular shapes
+   To optimize the number of tiles to download, an intersection is made in the case of multipolygon or particular shapes
 
 ```{r}
 multipolygon <- st_sfc(st_polygon(list(matrix(c(-4.496155, 47.92191,

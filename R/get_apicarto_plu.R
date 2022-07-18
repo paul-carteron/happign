@@ -12,7 +12,7 @@
 #' "info-surf", "info-lin", "info-pct". See detail for more info.
 #' @param partition A character corresponding to PLU partition (can be retrieve
 #' using `get_apicarto_plu(x, "document", partition = NULL)`). If `partition`
-#' is explicitely set, all PLU features are returned and `geom` is override
+#' is explicitly set, all PLU features are returned and `geom` is override
 #'
 #' @details
 #' * `"municipality` : information on the communes (commune with RNU, merged commune)

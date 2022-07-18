@@ -17,23 +17,24 @@
 #'  `character` or a vector of `character`)
 #' @param section A `character` or a vector of `character` to filter the
 #'  response on the cadastral section code entered (on 2 characters)
-#' @param numero A `character` or a vector of `character` to filter the answers on
-#' the entered parcel number (on 4 characters)
-#' @param code_abs A `character` or a vector of `character` to filter the answers
-#' on the code of absorbed commune. This prefix is useful to differentiate between
-#' communes that have merged
-#' @param source_ign Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
-#'  The BD Parcellaire is a discontinued product. Its use is no longer
+#' @param numero A `character` or a vector of `character` to filter the answers
+#' on the entered parcel number (on 4 characters)
+#' @param code_abs A `character` or a vector of `character` to filter the
+#' answers on the code of absorbed commune. This prefix is useful to
+#'  differentiate between communes that have merged
+#' @param source_ign Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire
+#' express. The BD Parcellaire is a discontinued product. Its use is no longer
 #'  recommended because it is no longer updated. The use of PCI Express is
-#'  strongly recommended and will become mandatory. More information on the comparison
-#'  of this two products can be found
+#'  strongly recommended and will become mandatory. More information on the
+#'  comparison of this two products can be found
 #'  [here](https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf)
 #'
 #' @return `get_apicarto_cadastre`return an object of class `sf`
 #' @export
 #'
 #' @importFrom sf st_as_sfc st_transform read_sf
-#' @importFrom httr2 req_url_path req_perform req_url_query request resp_body_json resp_body_string
+#' @importFrom httr2 req_url_path req_perform req_url_query request
+#' resp_body_json resp_body_string
 #' @importFrom dplyr bind_rows mutate rowwise
 #' @importFrom utils globalVariables
 #'
@@ -43,11 +44,13 @@
 #' library(tmap)
 #'
 #' # line from the best town in France
-#' line <- st_linestring(matrix(c(-4.372215, -4.365177, 47.803943, 47.79772), ncol = 2))
+#' line <- st_linestring(matrix(c(-4.372215, -4.365177, 47.803943, 47.79772),
+#'                              ncol = 2))
 #' line <- st_sfc(line, crs = st_crs(4326))
 #'
 #' PCI_shape <- get_apicarto_cadastre(shape, section = c("AX", "AV"))
-#' BDP_Code <- get_apicarto_cadastre("29158", section = c("AX", "BR"), source_ign = "BDP")
+#' BDP_Code <- get_apicarto_cadastre("29158", section = c("AX", "BR"),
+#'                                   source_ign = "BDP")
 #'
 #' tm_shape(PCI_shape)+
 #'    tm_borders()+
@@ -61,7 +64,8 @@
 #' @name get_apicarto_cadastre
 #' @export
 #'
-globalVariables(c("code_insee", "section", "numero", "geom", "code_abs", "source_ign"))
+globalVariables(c("code_insee", "section", "numero", "geom", "code_abs",
+                  "source_ign"))
 #'
 get_apicarto_cadastre <- function(x,
                                   section = NULL,
@@ -153,7 +157,8 @@ download_cadastre <- function(query_parameter){
       mutate(url = url[[1]])
 
    nb_loop <- lapply(urls$url,
-                     \(x){resp_body_json(req_perform(request(x[[1]])))$totalFeatures %/% 1000 + 1})
+                     \(x){resp_body_json(req_perform(
+                           request(x[[1]])))$totalFeatures %/% 1000 + 1})
 
 
    urls <- paste0(rep(urls$url, nb_loop),

@@ -18,7 +18,7 @@ by partition of PLU.}
 
 \item{partition}{A character corresponding to PLU partition (can be retrieve
 using \code{get_apicarto_plu(x, "document", partition = NULL)}). If \code{partition}
-is explicitely set, all PLU features are returned and \code{geom} is override}
+is explicitly set, all PLU features are returned and \code{geom} is override}
 }
 \value{
 A object of class \code{sf}

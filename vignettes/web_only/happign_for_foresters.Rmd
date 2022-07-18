@@ -94,7 +94,7 @@ tm_shape(parcellaire)+
 
 __*Rq :*__
 
- * *IGN WFS can return a maximum of 1000 features. The get_wfs() function overrides this limit by performing several consecutive requests, that why there 10 request aboves ;*
+ * *IGN WFS can return a maximum of 1000 features. The get_wfs() function overrides this limit by performing several consecutive requests, that why there 10 request above ;*
  * *The shape used get_wfs() is converted to bbox before requesting. In other words, several parcels will be outside our zone, which is why an intersection is made.*
  
 ## Downloading BD Forêt
@@ -134,7 +134,7 @@ With the map below, you can choose which BD Forêt you want to display. The BDV2
 More calculations can be done as you can see below :
 
 ```{r warning=FALSE}
-forest_type_BDV2 = BDV2 %>%
+forest_type_BDV2 <- BDV2 %>%
   mutate(area = as.numeric(st_area(geometry))) %>%
   st_drop_geometry() %>%
   group_by(essence) %>%
@@ -163,7 +163,7 @@ One information you really want when you work at forest management is if your zo
 So, for Le Gâcre forest we find :
 - 19 forest rescue point (PRSF in red)
 - 1 SIC ("Sites d’Importance Communautaire" in purple)
-- 1 ZPS ("Zone de protection spéciale" in green)
+- 1 ZPS ("Zone de protection speciale" in green)
 - 6 Znieff 1 (blue on map)
 - 3 Znieff 2 (grey on map)
 
