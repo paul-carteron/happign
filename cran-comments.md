@@ -1,3 +1,8 @@
 -- happign 0.1.5:
 
-all github r-cmd-check test are fine
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Paul Carteron <carteronpaul@gmail.com>'
+
+Possibly misspelled words in DESCRIPTION:
+  Geoservice (9:63)
+

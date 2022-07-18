@@ -43,7 +43,7 @@ To download data you need :
 
 * API key corresponding to the layer you want ;
 * The layer's name ;
-* A shape read by [`sf`](https://cran.r-project.org/web/packages/sf/index.html) package
+* A shape read by [`sf`]( https://CRAN.R-project.org/package=sf) package
 
 ## API keys
 
