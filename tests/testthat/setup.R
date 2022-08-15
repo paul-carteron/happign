@@ -1,3 +1,3 @@
 library(httptest2)
-library(stars)
+library(terra)
 library(sf)

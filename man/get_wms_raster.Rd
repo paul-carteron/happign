@@ -6,14 +6,13 @@
 \usage{
 get_wms_raster(shape,
                apikey = "altimetrie",
-               layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
-               resolution = 25,
+               layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES",
+               resolution = 5,
                filename = NULL,
+               crs = 2154,
                version = "1.3.0",
                format = "image/geotiff",
-               styles = "",
-               method = "auto",
-               mode = "wb")
+               styles = "")
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
@@ -36,6 +35,9 @@ added to the filename. If raster with same name is already downloaded it
 is directly imported into R. You don't have to specify the extension because
 it is defined in the argument \code{format}.}
 
+\item{crs}{Numeric, character, or object of class sf or sfc. Is set to EPSG:4326
+by default. See \code{\link[sf:st_crs]{sf::st_crs()}} for more detail.}
+
 \item{version}{The version of the service used. See detail for more
 information about \code{version}.}
 
@@ -44,12 +46,6 @@ to geotiff by default. See detail for more information about \code{format}.}
 
 \item{styles}{The rendering style of the layers. Set to "" by default.
 See detail for more information about \code{styles}.}
-
-\item{method}{Method to be used for downloading files. See \code{\link[=download.file]{download.file()}}
-for more detail.}
-
-\item{mode}{The mode with which to write the file. See \code{\link[=download.file]{download.file()}}
-for more detail.}
 }
 \value{
 \code{get_wms_raster} return an object of class \code{stars}. Depending on the layer,

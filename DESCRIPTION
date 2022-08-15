@@ -23,7 +23,7 @@ Imports:
     httr2,
     magrittr,
     sf (>= 1.0-7),
-    stars (>= 0.5-5),
+    terra,
     tidyr,
     xml2
 Suggests: 
@@ -41,4 +41,4 @@ Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1

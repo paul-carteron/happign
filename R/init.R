@@ -26,7 +26,7 @@
                                    "<https://geoservices.ign.fr/actualites>."))
    }else{
       req <- req %>%
-         resp_body_xml() %>%
+         resp_body_xml(check_type = FALSE) %>%
          xml_find_all("//item") %>%
          as_list() %>%
          bind_rows()

@@ -83,9 +83,7 @@ get_layers_metadata.wfs <- function(apikey, data_type, version = "2.0.0") {
 
    res <- xml_to_df(items) %>%
       rename_all(tolower) %>%
-      mutate(defaultcrs = gsub(".*?([0-9]+).*", "\\1", defaultcrs)) %>%
-      mutate(across(.fns = ~ as.character(.)))
-
+      mutate(defaultcrs = gsub(".*?([0-9]+).*", "\\1", defaultcrs))
 }
 
 #' @name get_layers_metadata
@@ -106,8 +104,7 @@ get_layers_metadata.wms <- function(apikey, data_type, version = "1.3.0") {
 
    res <- suppressWarnings(xml_to_df(items, values_fn = list)) %>%
       rename_all(tolower) %>%
-      as.data.frame() %>%
-      mutate(across(.fns = ~ as.character(.)))
+      as.data.frame()
 
 }
 #' Constructor for class data_type
