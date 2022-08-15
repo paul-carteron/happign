@@ -134,7 +134,7 @@ mnt <- get_wms_raster(shape = penmarch_borders,
                       apikey = apikey,
                       layer_name = unlist(dem_layer_name),
                       resolution = 25,
-                      filename = tempdir())
+                      filename = file.path(tempdir(check = TRUE), "mnt.tif"))
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
