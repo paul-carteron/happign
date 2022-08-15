@@ -86,35 +86,31 @@ test_that("construct_urls", {
    expect_equal(urls[1],
                 "https://wxs.ign.fr/apikey/geoportail/r/wms?version=version&request=GetMap&format=format&layers=layer_name&styles=styles&width=6&height=8&crs=EPSG:4326&bbox=bbox1")
 })
-# test_that("combine_tiles", {
-#
-#    temp_rast <- tempdir(check=TRUE)
-#
-#    rast_1 <- rast(ncol=10, nrow=10, xmin=-150, xmax=-80, ymin=20, ymax=60)
-#    values(rast_1) <- runif(ncell(rast_1))
-#    rast_2 <- rast(ncol=10, nrow=10, xmin=-150, xmax=-80, ymin=20, ymax=60)
-#    values(rast_2) <- runif(ncell(rast_2))
-#
-#    writeRaster(rast_1, file.path(temp_rast, "tile1_pouet.tif"), overwrite=TRUE)
-#    writeRaster(rast_2, file.path(temp_rast, "tile2_pouet.tif"), overwrite=TRUE)
-#
-#    tiles_list <- list(normalizePath(file.path(temp_rast, "tile1_pouet.tif")),
-#                       normalizePath(file.path(temp_rast, "tile2_pouet.tif")))
-#    filename <- file.path(temp_rast, "pouet.tif")
-#
-#    raster_final <- combine_tiles(tiles_list, filename)
-#
-#    expect_s4_class(raster_final, "SpatRaster")
-#    expect_equal(dim(raster_final), c(10, 10, 1))
-#    unlink(temp_rast, recursive = TRUE, force = TRUE)
-#
-# })
+test_that("combine_tiles", {
+
+   rast_1 <- rast(ncol=10, nrow=10, xmin=0, xmax=10, ymin=0, ymax=10)
+   values(rast_1) <- runif(ncell(rast_1))
+   rast_2 <- rast(ncol=10, nrow=10, xmin=0, xmax=10, ymin=10, ymax=20)
+   values(rast_2) <- runif(ncell(rast_2))
+
+   writeRaster(rast_1, file.path(tempdir(), "tile1.tif"), overwrite=TRUE)
+   writeRaster(rast_2, file.path(tempdir(), "tile2.tif"), overwrite=TRUE)
+
+   tiles_list <- list(normalizePath(file.path(tempdir(), "tile1.tif")),
+                      normalizePath(file.path(tempdir(), "tile2.tif")))
+
+   filename <- file.path(tempdir(), "combined.tif")
+
+   rast <- combine_tiles(tiles_list, filename)
+
+   expect_s4_class(rast, "SpatRaster")
+   expect_equal(dim(rast), c(20, 10, 1))
+})
 test_that("download_tiles", {
    skip_on_cran()
    skip_if_offline()
 
-   temp_tiles <- tempdir(check = TRUE)
-   filename <- file.path(temp_tiles, "pouet.tif")
+   filename <- file.path(tempdir(), "pouet.tif")
    urls <- paste0("https://wxs.ign.fr/altimetrie/geoportail/r/wms?",
                   "version=1.3.0&request=GetMap&format=image/geotiff",
                   "&layers=ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES&styles=",
@@ -124,25 +120,24 @@ test_that("download_tiles", {
    tiles <- download_tiles(filename, urls, crs = 4326)
    expect_type(tiles, "list")
    expect_length(tiles, 1)
-   unlink(temp_tiles, recursive = TRUE, force = TRUE)
+
 })
-# test_that("the whole function", {
-#    skip_on_cran()
-#    skip_if_offline()
-#
-#    temp_whole <- tempdir(check = TRUE)
-#    filename <- file.path(temp_whole, "pouet2")
-#    shape <- st_polygon(list(matrix(c(-4.373937, 47.79859, -4.375615, 47.79738,
-#                                      -4.375147, 47.79683, -4.373898, 47.79790,
-#                                      -4.373937, 47.79859), ncol = 2, byrow = TRUE)))
-#    shape <- st_sfc(shape, crs = st_crs(4326))
-#    mnt <- get_wms_raster(shape = shape, resolution = 25, filename = filename)
-#
-#    expect_s4_class(mnt, "SpatRaster")
-#    expect_equal(dim(mnt), c(8, 6, 1))
-#
-#    expect_message(get_wms_raster(shape = shape, resolution = 25, filename = filename),
-#                   "already exist at")
-#    unlink(temp_whole, recursive = TRUE, force = TRUE)
-#
-# })
+test_that("the whole function", {
+   skip_on_cran()
+   skip_if_offline()
+
+   filename <- file.path(tempdir(), "pouet2")
+   shape <- st_polygon(list(matrix(c(-4.373937, 47.79859, -4.375615, 47.79738,
+                                     -4.375147, 47.79683, -4.373898, 47.79790,
+                                     -4.373937, 47.79859), ncol = 2, byrow = TRUE)))
+   shape <- st_sfc(shape, crs = st_crs(4326))
+   mnt <- get_wms_raster(shape = shape, resolution = 25, filename = filename)
+
+   expect_s4_class(mnt, "SpatRaster")
+   expect_equal(dim(mnt), c(8, 6, 1))
+
+   expect_message(get_wms_raster(shape = shape, resolution = 25, filename = filename),
+                  "already exist at")
+
+})
+

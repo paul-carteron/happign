@@ -134,12 +134,11 @@ mnt <- get_wms_raster(shape = penmarch_borders,
                       apikey = apikey,
                       layer_name = unlist(dem_layer_name),
                       resolution = 25,
-                      filename = "best_raster_name")
+                      filename = tempdir())
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
 
-file.remove("best_raster_name_25m.tif") # raster are download to disk but I don't want to keep it
 
 tm_shape(mnt) +
    tm_raster(colorNA = NULL) +
