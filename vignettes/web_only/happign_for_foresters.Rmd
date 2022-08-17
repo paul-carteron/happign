@@ -74,7 +74,7 @@ Cadastral parcels are essential for any forest management. Here how to download 
 borders <- borders %>% 
    slice(1)
 
-apikey <- get_apikeys()[14] # "parcellaire"
+apikey <- get_apikeys()[15] # "parcellaire"
 layer_name <- get_layers_metadata(apikey, "wfs")
 name_parcellaire_layer <- as.character(layer_name[15,2]) # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
 
@@ -111,19 +111,19 @@ BDV1 <- get_wfs(borders, apikey, name_BDV1) %>%
    st_transform(st_crs(borders)) %>% 
    st_intersection(borders) # Layer is download for a bbox around the shape. An intersection is done to get forest only inside our zone of interest
 
-BDV2 <- get_wfs(borders, apikey, name_BDV2) %>%
-   st_transform(st_crs(borders)) %>% 
-   st_intersection(borders)
+# BDV2 <- get_wfs(borders, apikey, name_BDV2) %>%
+#    st_transform(st_crs(borders)) %>% 
+#    st_intersection(borders)
 
 tm_shape(BDV1) +
    tm_polygons(col = "libelle",
                popup.vars = names(BDV1)[1:20],
                legend.show = FALSE) +
-tm_shape(BDV2) +
-   tm_polygons(col = "tfv",
-               alpha = 0.5,
-               popup.vars = names(BDV2)[1:16],
-               legend.show = FALSE) +
+# tm_shape(BDV2) +
+#    tm_polygons(col = "tfv",
+#                alpha = 0.5,
+#                popup.vars = names(BDV2)[1:16],
+#                legend.show = FALSE) +
 tm_shape(borders) +
    tm_borders(lwd = 2) +
    tm_basemap("OpenStreetMap")
@@ -134,24 +134,24 @@ With the map below, you can choose which BD Forêt you want to display. The BDV2
 More calculations can be done as you can see below :
 
 ```{r warning=FALSE}
-forest_type_BDV2 <- BDV2 %>%
-  mutate(area = as.numeric(st_area(geometry))) %>%
-  st_drop_geometry() %>%
-  group_by(essence) %>%
-  summarise(sum_area = sum(area)/10000) %>%
-  arrange(sum_area) %>%
-  mutate(essence = as.factor(essence))
-
-ggplot()+
-  geom_col(data = forest_type_BDV2,
-           aes(x = rev(reorder(essence, sum_area)),
-               y = sum_area,
-               fill = as.factor(essence)))+
-  theme_bw()+
-  labs(title = "Surface couverte par essences [ha]",
-       y = "Surface [ha]",
-       fill = "Essence :")+
-  theme(axis.text.x = element_blank())
+# forest_type_BDV2 <- BDV2 %>%
+#   mutate(area = as.numeric(st_area(geometry))) %>%
+#   st_drop_geometry() %>%
+#   group_by(essence) %>%
+#   summarise(sum_area = sum(area)/10000) %>%
+#   arrange(sum_area) %>%
+#   mutate(essence = as.factor(essence))
+# 
+# ggplot()+
+#   geom_col(data = forest_type_BDV2,
+#            aes(x = rev(reorder(essence, sum_area)),
+#                y = sum_area,
+#                fill = as.factor(essence)))+
+#   theme_bw()+
+#   labs(title = "Surface couverte par essences [ha]",
+#        y = "Surface [ha]",
+#        fill = "Essence :")+
+#   theme(axis.text.x = element_blank())
 
    
 ```
@@ -176,9 +176,9 @@ protected_area_names <- get_layers_metadata(apikey, "wfs") %>%
    pull(name)
 
 all_protected_area <- map(.x = protected_area_names,
-                         .f = ~ try(get_wfs(borders, apikey, .x), silent = TRUE)) %>% 
+                         .f = ~ get_wfs(borders, apikey, .x), silent = TRUE) %>% 
    set_names(protected_area_names) %>% 
-   discard(~ nrow(.) == 0)
+   discard(~ is.null(.$geometry))
 
 # Plot the result
 tm_shape(all_protected_area[[1]])+
@@ -207,10 +207,9 @@ layers_name <- get_layers_metadata("altimetrie", "wms")
 MNT_name <- layers_name[3,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
 MNS_name <- layers_name[4,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
-MNT <- get_wms_raster(borders, "altimetrie", resolution = 5, MNT_name, filename = "MNT")
-file.remove("MNT_5m.tif") # I don't want to keep MNT on disk because this is vignette
-MNS <- get_wms_raster(borders, "altimetrie", resolution = 5, MNS_name, filename = "MNS")
-file.remove("MNS_5m.tif") # I don't want to keep MNS on disk because this is vignette
+MNT <- get_wms_raster(borders, "altimetrie", resolution = 5, unlist(MNT_name), filename = "MNT")
+MNS <- get_wms_raster(borders, "altimetrie", resolution = 5, unlist(MNS_name), filename = "MNS")
+
 level_curve <- get_wfs(borders, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe") %>% 
    st_intersection(borders)
 
@@ -225,6 +224,9 @@ tm_shape(level_curve)+
 tm_shape(borders)+
    tm_borders(lwd = 2)+
    tm_basemap("OpenStreetMap")
+
+file.remove("MNT_5m.tif") # I don't want to keep MNT on disk because this is vignette
+file.remove("MNS_5m.tif") # I don't want to keep MNS on disk because this is vignette
 ```
 
 ## NDVI
@@ -252,7 +254,7 @@ IRC <- get_wms_raster(shape = biggest_parcels,
                       resolution = 0.2,
                       layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC",
                       filename = "IRC")
-file.remove("IRC_0_2m.tif") # I don't want to keep IRC on disk because this is vignette
+IRC <- st_as_stars(IRC) 
 
 infrared <- IRC %>% slice(band, 1)
 red <- IRC %>% slice(band, 2)
@@ -273,6 +275,8 @@ tm_shape(NDVI)+
 tm_shape(biggest_parcels)+
    tm_borders(lwd = 2, col = "blue")+
    tm_basemap("OpenStreetMap")
+
+file.remove("IRC_0_2m.tif") # I don't want to keep IRC on disk because this is vignette
    
 ```
 
@@ -342,11 +346,13 @@ etat_major <- get_wms_raster(shape = borders,
                             resolution = 5,
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
                             filename = "etat_major")
-file.remove("etat_major_5m.tif") # I don't want to keep etat_major on disk because this is vignette
 
 tm_shape(etat_major)+
    tm_rgb()+
 tm_shape(borders)+
    tm_borders(lwd = 3, col = "red")+
    tm_basemap("OpenStreetMap")
+
+file.remove("etat_major_5m.tif") # I don't want to keep etat_major on disk because this is vignette
+
 ```
