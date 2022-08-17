@@ -134,7 +134,8 @@ mnt <- get_wms_raster(shape = penmarch_borders,
                       apikey = apikey,
                       layer_name = unlist(dem_layer_name),
                       resolution = 25,
-                      filename = file.path(tempdir(check = TRUE), "mnt.tif"))
+                      filename = "temp",
+                      crs = 4326)
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
@@ -149,6 +150,8 @@ tm_layout(main.title = "DEM of Penmarch",
           legend.position = c("right", "bottom"),
           legend.bg.color = "white", legend.bg.alpha = 0.7,
           frame = FALSE)
+
+file.remove("temp_25m.tif")
 ```
 
 __*Rq :*__

@@ -318,8 +318,7 @@ download_tiles <- function(filename, urls, crs) {
 #'
 combine_tiles <- function(tiles_list, filename) {
 
-   writeRaster(vrt(unlist(tiles_list), filename = "tile", overwrite=TRUE),
-               normalizePath(filename), overwrite=TRUE)
+   writeRaster(vrt(unlist(tiles_list)), filename, overwrite=TRUE)
    rast <- rast(normalizePath(filename))
 
    file.remove(
