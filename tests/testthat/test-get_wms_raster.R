@@ -38,14 +38,6 @@ test_that("grid", {
                                        ncol = 2, byrow = TRUE)))
    shape <- st_sfc(shape, crs = st_crs(4326))
 
-   verif_matrix_res_10 <- matrix(c(47.796830, -4.375615,
-                                   47.796830, -4.373898,
-                                   47.798590, -4.373898,
-                                   47.798590, -4.375615,
-                                   47.796830, -4.375615), ncol = 2, byrow = TRUE)
-
-   expect_equal(suppressMessages(grid(shape, resolution = 10, crs = st_crs(4326))[[1]][[1]]),
-                verif_matrix_res_10)
    expect_equal(length(grid(shape, resolution = 0.05, crs = st_crs(4326))),
                 4)
    expect_type(suppressMessages(grid(shape, resolution = 10, crs = st_crs(4326))), "list")
