@@ -88,13 +88,13 @@ test_that("construct_urls", {
 })
 test_that("combine_tiles", {
 
-   rast_1 <- rast(ncol=10, nrow=10, xmin=0, xmax=10, ymin=0, ymax=10)
-   values(rast_1) <- runif(ncell(rast_1))
-   rast_2 <- rast(ncol=10, nrow=10, xmin=0, xmax=10, ymin=10, ymax=20)
-   values(rast_2) <- runif(ncell(rast_2))
+   rast_1 <- terra::rast(ncol=10, nrow=10, xmin=0, xmax=10, ymin=0, ymax=10)
+   terra::values(rast_1) <- runif(terra::ncell(rast_1))
+   rast_2 <- terra::rast(ncol=10, nrow=10, xmin=0, xmax=10, ymin=10, ymax=20)
+   terra::values(rast_2) <- runif(terra::ncell(rast_2))
 
-   writeRaster(rast_1, tempfile(pattern = "tile1", fileext = ".tif"), overwrite=TRUE)
-   writeRaster(rast_2, tempfile(pattern = "tile2", fileext = ".tif"), overwrite=TRUE)
+   terra::writeRaster(rast_1, tempfile(pattern = "tile1", fileext = ".tif"), overwrite=TRUE)
+   terra::writeRaster(rast_2, tempfile(pattern = "tile2", fileext = ".tif"), overwrite=TRUE)
 
    tiles_list <- list.files(tempdir(), pattern = "tile1|tile2", full.names = T)
 
