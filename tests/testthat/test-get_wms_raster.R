@@ -93,13 +93,12 @@ test_that("combine_tiles", {
    rast_2 <- rast(ncol=10, nrow=10, xmin=0, xmax=10, ymin=10, ymax=20)
    values(rast_2) <- runif(ncell(rast_2))
 
-   writeRaster(rast_1, file.path(tempdir(), "tile1.tif"), overwrite=TRUE)
-   writeRaster(rast_2, file.path(tempdir(), "tile2.tif"), overwrite=TRUE)
+   writeRaster(rast_1, tempfile(pattern = "tile1", fileext = ".tif"), overwrite=TRUE)
+   writeRaster(rast_2, tempfile(pattern = "tile2", fileext = ".tif"), overwrite=TRUE)
 
-   tiles_list <- list(normalizePath(file.path(tempdir(), "tile1.tif")),
-                      normalizePath(file.path(tempdir(), "tile2.tif")))
+   tiles_list <- list.files(tempdir(), pattern = "tile1|tile2", full.names = T)
 
-   filename <- file.path(tempdir(), "combined.tif")
+   filename <- tempfile(pattern = "combined", fileext = ".tif")
 
    rast <- combine_tiles(tiles_list, filename)
 
@@ -110,34 +109,31 @@ test_that("download_tiles", {
    skip_on_cran()
    skip_if_offline()
 
-   filename <- file.path(tempdir(), "pouet.tif")
-   urls <- paste0("https://wxs.ign.fr/altimetrie/geoportail/r/wms?",
-                  "version=1.3.0&request=GetMap&format=image/geotiff",
-                  "&layers=ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES&styles=",
-                  "&width=6&height=8&crs=EPSG:4326&",
-                  "bbox=47.79683,-4.375615,47.79859,-4.373898")
+   filename <- tempfile(pattern = "download", fileext = "tif")
+
+   urls <- "https://wxs.ign.fr/altimetrie/geoportail/r/wms?version=1.3.0&request=GetMap&format=image/geotiff&layers=ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES&styles=&width=6&height=8&crs=EPSG:4326&bbox=47.79683,-4.375615,47.79859,-4.373898"
 
    tiles <- download_tiles(filename, urls, crs = 4326)
    expect_type(tiles, "list")
    expect_length(tiles, 1)
 
 })
-test_that("the whole function", {
-   skip_on_cran()
-   skip_if_offline()
-
-   filename <- file.path(tempdir(), "pouet2")
-   shape <- st_polygon(list(matrix(c(-4.373937, 47.79859, -4.375615, 47.79738,
-                                     -4.375147, 47.79683, -4.373898, 47.79790,
-                                     -4.373937, 47.79859), ncol = 2, byrow = TRUE)))
-   shape <- st_sfc(shape, crs = st_crs(4326))
-   mnt <- get_wms_raster(shape = shape, resolution = 25, filename = filename)
-
-   expect_s4_class(mnt, "SpatRaster")
-   expect_equal(dim(mnt), c(8, 6, 1))
-
-   expect_message(get_wms_raster(shape = shape, resolution = 25, filename = filename),
-                  "already exist at")
-
-})
+# test_that("the whole function", {
+#    skip_on_cran()
+#    skip_if_offline()
+#
+#    filename <- tempfile(pattern = "whole_function", fileext = ".tif")
+#    shape <- st_polygon(list(matrix(c(-4.373937, 47.79859, -4.375615, 47.79738,
+#                                      -4.375147, 47.79683, -4.373898, 47.79790,
+#                                      -4.373937, 47.79859), ncol = 2, byrow = TRUE)))
+#    shape <- st_sfc(shape, crs = st_crs(4326))
+#    mnt <- get_wms_raster(shape = shape, resolution = 25, filename = filename)
+#
+#    expect_s4_class(mnt, "SpatRaster")
+#    expect_equal(dim(mnt), c(8, 6, 1))
+#
+#    expect_message(get_wms_raster(shape = shape, resolution = 25, filename = filename),
+#                   "already exist at")
+#
+# })
 
