@@ -34,6 +34,8 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     tmap
+    stars
+    purrr
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3

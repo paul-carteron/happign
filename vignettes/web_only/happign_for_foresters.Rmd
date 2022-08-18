@@ -24,6 +24,7 @@ library(tmap); tmap_mode("view") # Set map to interactive
 library(dplyr)
 library(ggplot2)
 library(purrr)
+library(stars)
 ```
 
 ## First choose a zone of interest
