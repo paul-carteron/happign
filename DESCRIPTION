@@ -42,3 +42,5 @@ LazyData: true
 NeedsCompilation: no
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+SystemRequirements: C++11, GDAL (>= 3.3.2), GEOS (>= 3.9.1),
+    PROJ (>= 7.2.1), sqlite3

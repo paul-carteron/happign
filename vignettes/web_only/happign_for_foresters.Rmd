@@ -129,7 +129,7 @@ tm_shape(borders) +
    tm_basemap("OpenStreetMap")
 ```
 
-With the map below, you can choose which BD Forêt you want to display. The BDV2 is obviously more precise. Also, many differences can be calculated, one is the area : BDV2 as `r sum(st_area(BDV2))-sum(st_area(BDV1))` more hectare described. 
+With the map below, you can choose which BD Forêt you want to display. The BDV2 is obviously more precise.
 
 More calculations can be done as you can see below :
 
