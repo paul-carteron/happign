@@ -105,7 +105,7 @@ The first interesting layer for forester is the "BD Forêt" which is all vegetat
 apikey <- get_apikeys()[9]  #"environement"
 layer_name <- get_layers_metadata(apikey, "wfs")
 name_BDV1 <- as.character(layer_name[1,2]) #LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape
-name_BDV2 <- as.character(layer_name[2,2]) #LANDCOVER.FORESTINVENTORY.V2:bdforetv2
+# name_BDV2 <- as.character(layer_name[2,2]) #LANDCOVER.FORESTINVENTORY.V2:bdforetv2
 
 BDV1 <- get_wfs(borders, apikey, name_BDV1) %>% 
    st_transform(st_crs(borders)) %>% 
