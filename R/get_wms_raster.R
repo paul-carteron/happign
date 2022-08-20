@@ -256,12 +256,12 @@ construct_filename <- function(format, layer_name, filename, resolution) {
   clean_names <- function(text){
      paste0(gsub("[^[:alnum:]]", '_', text),
             "_",
-            gsub("[^[:alnum:]]", '_',resolution),
+            gsub("[^[:alnum:]]", '_', resolution),
             "m", ext)
      }
 
   filename <- ifelse(is.null(filename),
-                     clean_names(layer_name),
+                     file.path(dirname("."), clean_names(layer_name)),
                      file.path(dirname(filename), clean_names(basename(filename))))
 }
 
@@ -318,7 +318,18 @@ download_tiles <- function(filename, urls, crs) {
 #'
 combine_tiles <- function(tiles_list, filename) {
 
-   writeRaster(vrt(unlist(tiles_list)), filename, overwrite=TRUE)
+   tmp <- tempfile(fileext = ".vrt")
+
+   gdal_utils(
+      util = "buildvrt",
+      source = unlist(tiles_list),
+      destination = tmp)
+
+   gdal_utils(
+      util = "translate",
+      source = tmp,
+      destination = filename)
+
    rast <- rast(normalizePath(filename))
 
    file.remove(
@@ -328,6 +339,9 @@ combine_tiles <- function(tiles_list, filename) {
             )
          )
       )
+
+   message("Raster is saved at :\n",
+           path.expand(normalizePath(filename)))
 
    return(rast)
 
