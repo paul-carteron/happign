@@ -261,7 +261,7 @@ construct_filename <- function(format, layer_name, filename, resolution) {
      }
 
   filename <- ifelse(is.null(filename),
-                     file.path(dirname("."), clean_names(layer_name)),
+                     clean_names(layer_name),
                      file.path(dirname(filename), clean_names(basename(filename))))
 }
 

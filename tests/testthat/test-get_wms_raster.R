@@ -69,7 +69,7 @@ test_that("construct_filename", {
                 "output/test_25m.tif")
 
    expect_equal(construct_filename(format, layer_name, NULL, resolution),
-                "./test_with_point_inside_name_25m.tif")
+                "test_with_point_inside_name_25m.tif")
 
 })
 test_that("construct_urls", {
@@ -114,7 +114,8 @@ test_that("the whole function", {
    skip_on_cran()
    skip_if_offline()
 
-   filename <- tempfile(pattern = "whole_function", fileext = ".tif")
+   unlink(tempfile(), recursive = T)
+   filename <- tempfile(pattern = "whole_function")
    shape <- st_polygon(list(matrix(c(-4.373937, 47.79859, -4.375615, 47.79738,
                                      -4.375147, 47.79683, -4.373898, 47.79790,
                                      -4.373937, 47.79859), ncol = 2, byrow = TRUE)))
