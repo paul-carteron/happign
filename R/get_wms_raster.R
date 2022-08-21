@@ -58,9 +58,9 @@
 #'
 #' @importFrom magrittr `%>%`
 #' @importFrom terra vrt writeRaster rast
-#' @importFrom sf st_as_sf st_as_sfc st_bbox st_filter st_length st_linestring
-#' st_make_grid st_make_valid st_set_precision st_sfc st_intersects st_crs
-#' st_axis_order st_is_longlat gdal_utils st_transform
+#' @importFrom sf gdal_utils st_as_sf st_as_sfc st_axis_order st_bbox st_crs
+#' st_filter st_is_longlat st_length st_linestring st_make_grid
+#' st_make_valid st_set_precision st_sfc st_intersects
 #' @importFrom utils download.file
 #' @importFrom checkmate assert check_class assert_character assert_numeric
 #' check_character check_null
@@ -127,21 +127,14 @@ get_wms_raster <- function(shape,
    all_bbox <- lapply(X = grid_for_shp, FUN = format_bbox_wms, crs = crs)
    width_height <- nb_pixel_bbox(grid_for_shp[[1]], resolution = resolution, crs = crs)
    urls <- construct_urls(apikey, version, format, layer_name, styles, width_height, all_bbox, crs)
-   filename <- construct_filename(format, layer_name, filename, resolution)
+   filename <- construct_filename(filename, resolution, layer_name, format)
 
-   basename <- basename(filename)
-   dirname <- dirname(filename)
-
-   if (basename %in% list.files(dirname)) {
+   if (file.exists(filename)) {
       raster_final <- rast(filename)
-      message(
-         basename,
-         " already exist at :\n",
-         file.path(dirname),
-         "\nPlease change filename argument if you want to download it again."
-      )
+      message("Raster already exist at :\n",
+              filename)
    }else{
-      tiles_list <- download_tiles(filename, urls, crs)
+      tiles_list <- download_tiles(urls, crs, format)
       raster_final <- combine_tiles(tiles_list, filename)
    }
    return(raster_final)
@@ -236,13 +229,10 @@ construct_urls <- function(apikey, version, format, layer_name, styles, width_he
   urls <- paste0(base_url, all_bbox)
 }
 
-#' Create filename
+#' Get ext
 #' @param format from mother function
-#' @param layer_name from mother function
-#' @param filename from mother function
-#' @param resolution from mother function
 #' @noRd
-construct_filename <- function(format, layer_name, filename, resolution) {
+get_extension <- function(format) {
   ext <- switch(
      format,
      "image/jpeg" = ".jpg",
@@ -252,17 +242,26 @@ construct_filename <- function(format, layer_name, filename, resolution) {
      stop("Bad format, please check ",
           "`?get_wms_raster()`")
   )
+}
 
-  clean_names <- function(text){
-     paste0(gsub("[^[:alnum:]]", '_', text),
-            "_",
-            gsub("[^[:alnum:]]", '_', resolution),
-            "m", ext)
-     }
+#' Construct clean filename
+#' @param format from mother function
+#' @noRd
+construct_filename <- function(filename, resolution, layer_name, format) {
 
-  filename <- ifelse(is.null(filename),
-                     clean_names(layer_name),
-                     file.path(dirname(filename), clean_names(basename(filename))))
+   ext <- get_extension(format)
+
+   clean_names <- function(text){
+      paste0(gsub("[^[:alnum:]]", '_',
+                  paste0(text, "_", resolution,"m")),
+             ext)
+   }
+
+   filename <- ifelse(is.null(filename),
+                      clean_names(layer_name),
+                      file.path(dirname(filename), clean_names(basename(filename))))
+
+   filename <- normalizePath(enc2utf8(filename), mustWork = FALSE)
 }
 
 #' Checks if the raster is already downloaded and downloads it if necessary.
@@ -272,23 +271,18 @@ construct_filename <- function(format, layer_name, filename, resolution) {
 #' @param crs see st_crs()
 #' @noRd
 #'
-# if raster_name already exist is directly load in R, else is download
-download_tiles <- function(filename, urls, crs) {
+download_tiles <- function(urls, crs, format) {
+
+   ext <- get_extension(format)
+
    # allow 1h of downloading before error
    default <- options("timeout")
    options("timeout" = 3600)
    on.exit(options(default))
 
-   basename <- basename(filename)
-   dirname <- dirname(filename)
-
-   tiles_list <- list()
+   tiles_list <- NULL
    for (i in seq_along(urls)) {
-      message(i, "/", length(urls), " downloaded", sep = "")
-
-      filename_tile <- paste0("tile", i, "_", basename)
-      path <- normalizePath(file.path(dirname, filename_tile), mustWork = FALSE)
-      path <- enc2utf8(path)
+      message(i, "/", length(urls), " downloading...", sep = "")
 
       # No need for tempfile beacaus I can download directly from url with gdal_translate
       # Will see in long run
@@ -300,14 +294,17 @@ download_tiles <- function(filename, urls, crs) {
       #               mode = mode,
       #               destfile = tmpfile)
 
+      tmp <- tempfile(fileext = ext)
+
       gdal_utils(
          util = "translate",
          source = urls[i],
-         destination = path,
+         destination = tmp,
          options = c("-a_srs", st_crs(crs)$input))
 
-      tiles_list[[i]] <- path
+      tiles_list <- c(tiles_list, tmp)
    }
+
    return(tiles_list)
 }
 
@@ -318,30 +315,24 @@ download_tiles <- function(filename, urls, crs) {
 #'
 combine_tiles <- function(tiles_list, filename) {
 
-   tmp <- tempfile(fileext = ".vrt")
+   # Another way of acheving the same goal
+   # tmp <- tempfile(fileext = ".vrt")
+   #
+   # gdal_utils(
+   #    util = "buildvrt",
+   #    source = unlist(tiles_list),
+   #    destination = tmp)
+   #
+   # gdal_utils(
+   #    util = "translate",
+   #    source = tmp,
+   #    destination = filename)
 
-   gdal_utils(
-      util = "buildvrt",
-      source = unlist(tiles_list),
-      destination = tmp)
-
-   gdal_utils(
-      util = "translate",
-      source = tmp,
-      destination = filename)
-
-   rast <- rast(normalizePath(filename))
-
-   file.remove(
-      normalizePath(
-         enc2utf8(
-            list.files(dirname(filename), pattern = "tile", full.names = T)
-            )
-         )
-      )
+   writeRaster(vrt(tiles_list, overwrite = TRUE), filename, overwrite = TRUE)
+   rast <- rast(filename)
 
    message("Raster is saved at :\n",
-           path.expand(normalizePath(filename)))
+           filename)
 
    return(rast)
 

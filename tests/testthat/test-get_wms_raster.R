@@ -61,14 +61,12 @@ test_that("construct_filename", {
    format <- "image/geotiff"
    layer_name <- "test.with.point.inside.name"
    resolution <- 25
+   filename <- "test"
 
-   expect_equal(construct_filename(format, layer_name, "test", resolution),
-                "./test_25m.tif")
+   expect_equal(basename(construct_filename(filename, resolution, layer_name, format)),
+                "test_25m.tif")
 
-   expect_equal(construct_filename(format, layer_name, "output/test", resolution),
-                "output/test_25m.tif")
-
-   expect_equal(construct_filename(format, layer_name, NULL, resolution),
+   expect_equal(basename(construct_filename(NULL, resolution, layer_name, format)),
                 "test_with_point_inside_name_25m.tif")
 
 })
@@ -101,13 +99,10 @@ test_that("download_tiles", {
    skip_on_cran()
    skip_if_offline()
 
-   filename <- tempfile(pattern = "download", fileext = "tif")
-
    urls <- "https://wxs.ign.fr/altimetrie/geoportail/r/wms?version=1.3.0&request=GetMap&format=image/geotiff&layers=ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES&styles=&width=6&height=8&crs=EPSG:4326&bbox=47.79683,-4.375615,47.79859,-4.373898"
 
-   tiles <- download_tiles(filename, urls, crs = 4326)
-   expect_type(tiles, "list")
-   expect_length(tiles, 1)
+   tiles <- download_tiles(urls, crs = 4326, format = "image/geotiff")
+   expect_type(tiles, "character")
 
 })
 test_that("the whole function", {
