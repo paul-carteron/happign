@@ -44,7 +44,7 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: "Install spatial libraries"
+      - name: Install spatial libraries
           if: runner.os == 'Linux'
           run: sudo apt-get install libgdal-dev libproj-dev libgeos-dev libudunits2-dev
 
