@@ -39,10 +39,21 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: "Install spatial libraries for macOS and Windows"
       - uses: r-lib/actions/setup-r-dependencies@v2
+        if: runner.os != 'Linux'
         with:
-          extra-packages: any::rcmdcheck any::XML any::sf
+          extra-packages: any::rcmdcheck
           needs: check
+
+      - name: "[Stage] [Linux] Install required system libs"
+        if: runner.os == 'Linux'
+        run: sudo apt install libcurl4-openssl-dev libgit2-dev
+
+     - name: "[Custom block] [Linux] Install spatial libraries"
+        if: runner.os == 'Linux'
+        run: sudo apt-get install libgdal-dev libproj-dev libgeos-dev libudunits2-dev
+
 
       - uses: r-lib/actions/check-r-package@v2
         with:
