@@ -278,22 +278,18 @@ download_tiles <- function(urls, crs, format) {
    Sys.setenv("GDAL_HTTP_UNSAFESSL" = "YES")
    on.exit(Sys.setenv("GDAL_HTTP_UNSAFESSL" = old_env), add = TRUE)
 
-   ext <- get_extension(format)
-
    # allow 1h of downloading before error
    default <- options("timeout")
    options("timeout" = 3600)
    on.exit(options(default))
 
+
+   ext <- get_extension(format)
+
    tiles_list <- NULL
    for (i in seq_along(urls)) {
       message(i, "/", length(urls), " downloading...", sep = "")
 
-      # No need for tempfile beacaus I can download directly from url with gdal_translate
-      # Will see in long run
-
-      # tmpfile <- tempfile(tmpdir = tempdir(check = T))
-      #
       # download.file(url = urls[i],
       #               method = method,
       #               mode = mode,
