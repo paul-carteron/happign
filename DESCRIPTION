@@ -17,6 +17,7 @@ BugReports: https://github.com/paul-carteron/happign/issues
 Depends: 
     R (>= 2.10)
 Imports: 
+    archive,
     checkmate,
     curl,
     dplyr,
