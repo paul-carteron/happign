@@ -2,18 +2,9 @@
 % Please edit documentation in R/get_layers_metadata.R
 \name{get_layers_metadata}
 \alias{get_layers_metadata}
-\alias{get_layers_metadata.character}
-\alias{get_layers_metadata.wfs}
-\alias{get_layers_metadata.wms}
 \title{Metadata for one couple of apikey and data_type}
 \usage{
-get_layers_metadata(apikey, data_type, version)
-
-\method{get_layers_metadata}{character}(apikey, data_type, version)
-
-\method{get_layers_metadata}{wfs}(apikey, data_type, version = "2.0.0")
-
-\method{get_layers_metadata}{wms}(apikey, data_type, version = "1.3.0")
+get_layers_metadata(apikey, data_type)
 }
 \arguments{
 \item{apikey}{API key from \code{get_apikeys()} or directly
@@ -21,12 +12,9 @@ from the \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
 \item{data_type}{Should be \code{"wfs"} or \code{"wms"}. See details for more
 information about these two Webservice formats.}
-
-\item{version}{The version of the service used. More details at
-\href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc}{IGN documentation}}
 }
 \value{
-data.frame with name of layer, abstract and crs
+data.frame
 }
 \description{
 Metadata are retrieved using the IGN APIs. The execution time can

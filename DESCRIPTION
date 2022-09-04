@@ -26,7 +26,6 @@ Imports:
     methods,
     sf (>= 1.0-7),
     terra,
-    tidyr,
     xml2
 Suggests: 
     covr,

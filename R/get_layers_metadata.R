@@ -8,8 +8,6 @@
 #' from the [IGN website](https://geoservices.ign.fr/services-web-experts)
 #' @param data_type Should be `"wfs"` or `"wms"`. See details for more
 #' information about these two Webservice formats.
-#' @param version The version of the service used. More details at
-#' [IGN documentation](https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc)
 #'
 #' @details
 #' * WFS is a standard protocol defined by the OGC (Open Geospatial Consortium)
@@ -46,101 +44,47 @@
 #' }
 #'
 #' @name get_layers_metadata
-#' @return data.frame with name of layer, abstract and crs
+#' @return data.frame
 #' @export
 #'
-#' @importFrom dplyr mutate select rename_all across
-#' @importFrom tidyr pivot_wider
-#' @importFrom httr2 request req_perform resp_body_xml
-#' @importFrom xml2 read_xml xml_child xml_children xml_find_all xml_name xml_text
+#' @importFrom httr2 req_perform req_url_path req_url_query request resp_body_xml
+#' @importFrom xml2 as_list xml_child xml_children xml_find_all
 #'
-get_layers_metadata <- function(apikey, data_type, version) {
-   UseMethod("get_layers_metadata")
-}
+get_layers_metadata <- function(apikey,
+                                data_type) {
 
-#' @name get_layers_metadata
-#' @export
-get_layers_metadata.character <- function(apikey, data_type, version) {
-   get_layers_metadata(constructor(apikey, data_type))
-   }
+   match.arg(data_type, c("wms", "wfs"))
+   match.arg(apikey, get_apikeys())
 
-#' @name get_layers_metadata
-#' @export
-get_layers_metadata.wfs <- function(apikey, data_type, version = "2.0.0") {
+   version <- switch(data_type,
+                     "wms" = "1.3.0",
+                     "wfs" = "2.0.0")
 
-   url <- paste0("https://wxs.ign.fr/",
-                apikey,
-                "/geoportail/wfs?SERVICE=WFS&VERSION=",version,
-                "&REQUEST=GetCapabilities")
+   path <- switch(data_type,
+                  "wms" = "r",
+                  "wfs" = "")
 
-   items <- request(url) %>%
+   req <- request("https://wxs.ign.fr/") %>%
+      req_url_path(apikey,"geoportail", path, data_type) %>%
+      req_url_query(service = data_type,
+                    version = version,
+                    request = "GetCapabilities") %>%
       req_perform() %>%
-      resp_body_xml() %>%
-      xml_child("d1:FeatureTypeList") %>%
-      xml_children()
+      resp_body_xml()
 
-   defaultcrs <- NULL
+   raw_metadata <- switch(data_type,
+                          "wms" = xml_child(req, "d1:Capability") |> xml_child("d1:Layer") |>
+                             xml_find_all("d1:Layer"),
+                          "wfs" = xml_child(req, "d1:FeatureTypeList") |> xml_children())
 
-   res <- xml_to_df(items) %>%
-      rename_all(tolower) %>%
-      mutate(defaultcrs = gsub(".*?([0-9]+).*", "\\1", defaultcrs))
+   tryCatch({
+      clean_metadata <- suppressWarnings(
+      as.data.frame(do.call(rbind, as_list(raw_metadata)))[, 1:3])
+      clean_metadata <-
+      as.data.frame(apply(clean_metadata, c(1, 2), unlist))
+   },
+   error = function(cond){
+      message("There's no ", data_type, " resources for apikey ", apikey)
+   })
 }
 
-#' @name get_layers_metadata
-#' @export
-get_layers_metadata.wms <- function(apikey, data_type, version = "1.3.0") {
-
-   url <- paste0("https://wxs.ign.fr/",
-                apikey,
-                "/geoportail/r/wms?SERVICE=WMS&VERSION=",version,
-                "&REQUEST=GetCapabilities")
-
-   items <- request(url) %>%
-      req_perform() %>%
-      resp_body_xml() %>%
-      xml_child("d1:Capability") %>%
-      xml_child("d1:Layer") %>%
-      xml_find_all("d1:Layer")
-
-   res <- suppressWarnings(xml_to_df(items, values_fn = list)) %>%
-      rename_all(tolower) %>%
-      as.data.frame()
-
-}
-#' Constructor for class data_type
-#' @param apikey API key from IGN web service
-#' @param data_type "wfs" or "wms"
-#' @noRd
-#'
-constructor <- function(apikey, data_type) {
-   if (!is.character(apikey)) stop("apikey must be character")
-   if (!is.character(data_type)) stop("data_type must be character")
-   if (!(apikey %in% get_apikeys())) stop("apikey must be one of :\n",
-                                         paste(get_apikeys(), collapse = ", "))
-   if (!(data_type == "wfs" | data_type == "wms")) {
-      stop("data_type must be \"wms\" or \"wfs\"")
-   }
-   structure(list(apikey), class = data_type)
-}
-#' Convert xml to data.frame
-#' @param xml_nodeset Response from httr::GET request
-#' @noRd
-#'
-xml_to_df <- function(xml_nodeset, ...) {
-
-   nodenames <- xml_name(xml_children(xml_nodeset))
-   contents <- trimws(xml_text(xml_children(xml_nodeset)))
-
-   #Need to create an index to associate the nodes/contents with each item
-   itemindex <- rep(seq_len(length(xml_nodeset)),
-                    times = sapply(xml_nodeset,
-                                 function(x) {
-                                    length(xml_children(x))
-                                    }))
-
-   #store all information in data frame.
-   df <- data.frame(itemindex, nodenames, contents)
-
-   res <-  pivot_wider(df, id_cols = itemindex, names_from = nodenames,
-                       values_from = contents)
-}
