@@ -65,7 +65,7 @@
 #' @export
 #'
 globalVariables(c("code_insee", "section", "numero", "geom", "code_abs",
-                  "source_ign"))
+                  "source_ign", "cog_2022"))
 #'
 get_apicarto_cadastre <- function(x,
                                   section = NULL,
@@ -123,7 +123,7 @@ get_apicarto_cadastre.character <- function(x,
                                             source_ign = "PCI") {
 
    match.arg(source_ign, c("BDP", "PCI"))
-   stopifnot("x is not a valid INSEE code (check insee database here : <https://www.insee.fr/fr/information/2560452>)" = x %in% happign::code_insee)
+   stopifnot("x is not a valid INSEE code (check insee database here : <https://www.insee.fr/fr/information/2560452>)" = x %in% cog_2022$COM)
 
    query_parameter <- list(geom = NULL,
                            code_insee = x,

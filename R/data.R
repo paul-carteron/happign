@@ -1,7 +1,8 @@
-#' code INSEE
+#' COG 2022
 #'
-#' A dataset containing insee code of commune
+#' A dataset containing insee code and libelle of commune as of January 1, 2022. COG mean
+#' Code Officiel Géographique
 #'
 #' @format A vector
 #' @source \url{https://www.insee.fr/fr/information/2115000}
-"code_insee"
+"cog_2022"
