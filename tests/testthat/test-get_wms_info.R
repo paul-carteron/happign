@@ -37,7 +37,7 @@ with_mock_dir("get_wms_info works", {
       shape <- st_sfc(shape, crs = st_crs(4326))
 
       resp <- get_wms_info(shape)
-      expect_type(resp, "list")
+      expect_type(resp, "character")
       expect_equal(dim(resp)[1],1)
    })
 }, simplify = FALSE)

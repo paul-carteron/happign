@@ -30,8 +30,6 @@
 #' @importFrom sf read_sf st_bbox st_make_valid st_transform st_write st_sf st_point
 #' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent
 #' request resp_body_json resp_body_string
-#' @importFrom dplyr bind_rows select
-#' @importFrom magrittr `%>%`
 #' @importFrom checkmate assert assert_double assert_character check_character
 #' check_class check_null
 #'
@@ -104,17 +102,18 @@ get_wfs <- function(shape,
                                               apikey,
                                               shape,
                                               layer_name,
-                                              x * 1000) %>%
-                                    resp_body_string() %>%
+                                              x * 1000) |>
+                                    resp_body_string() |>
                                     read_sf()
                                  message(x + 1, "/", request_need + 1, " downloaded")
                                  return(features)
                               })
-      features <- bind_rows(features, list_features)
+      list_features <-  do.call("rbind", list_features)
+      features <- rbind(features, list_features)
    }
 
    if ("bbox" %in% names(features)){
-      features <- select(features, -"bbox")
+      features <- features[ , - which(names(features) %in% "bbox")]
    }
 
    if (!is.null(filename)) {
@@ -170,10 +169,10 @@ req_function <- function(apikey, shape, layer_name, startindex = 0) {
       count = 1000
    )
 
-   request <- request("https://wxs.ign.fr") %>%
-      req_url_path_append(apikey) %>%
-      req_url_path_append("geoportail/wfs") %>%
-      req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
-      req_url_query(!!!params) %>%
+   request <- request("https://wxs.ign.fr") |>
+      req_url_path_append(apikey) |>
+      req_url_path_append("geoportail/wfs") |>
+      req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
+      req_url_query(!!!params) |>
       req_perform()
 }
