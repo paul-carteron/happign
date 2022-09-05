@@ -119,7 +119,7 @@ get_wms_raster <- function(shape,
    assert_character(format)
    assert_character(styles)
 
-   shape <- st_make_valid(shape) |>
+   shape <- st_make_valid(shape) %>%
       st_transform(st_crs(crs))
 
    grid_for_shp <- grid(shape, resolution = resolution, crs = crs)
@@ -185,8 +185,8 @@ grid <- function(shape, resolution, crs) {
 
    nb_pixel_bbox <- nb_pixel_bbox(shape, resolution, crs)
    n_tiles <- as.numeric(ceiling(nb_pixel_bbox/2048))
-   grid <- st_make_grid(shape, n = n_tiles) |>
-      st_as_sf() |>
+   grid <- st_make_grid(shape, n = n_tiles) %>%
+      st_as_sf() %>%
       st_filter(shape, .predicate = st_intersects)
 
    if(st_is_longlat(st_crs(crs))){
@@ -194,7 +194,7 @@ grid <- function(shape, resolution, crs) {
       grid <- st_transform(grid, "CRS:84")
    }
 
-   grid <- grid |>
+   grid <- grid %>%
       st_as_sfc()
 
    invisible(grid)

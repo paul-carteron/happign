@@ -47,7 +47,6 @@
 get_raw_lidar <- function(shape, destfile = ".", grid_path = "."){
 
    grid <- get_lidar_grid(grid_path)
-
    shape <- st_transform(shape, 2154)
 
    urls <- grid %>%
@@ -59,17 +58,17 @@ get_raw_lidar <- function(shape, destfile = ".", grid_path = "."){
    }
 
    already_dowload <- paste(list.files(destfile, pattern = "LIDARHD"), collapse = "|")
-   urls <- urls[!grepl(already_dowload, urls)]
+   urls <- urls[grepl(already_dowload, urls)]
 
    # allow 1h of downloadin
    default <- options("timeout")
    options("timeout" = 3600)
    on.exit(options(default))
 
-   invisible(lapply(urls, download_extract_7z, destfile = destfile))
+   lapply(urls, download_extract_7z, destfile = destfile)
 
    message("LIDAR data are download at :\n",
-           path.expand(destfile))
+           normalizePath(destfile))
 
 }
 #' download and extract .7z file
@@ -91,11 +90,11 @@ download_extract_7z <- function(url, destfile = "."){
 #' @param destfile folder path where data are downloaded. By default set to "." e.g. the current
 #'  directory
 #' @noRd
-get_lidar_grid <- function(destfile = "."){
+get_lidar_grid <- function(destfile = ".", grid_path = "."){
 
    if (length(list.files(destfile, pattern = "lidarhd.shp$")) == 0){
       url <- "https://pcrs.ign.fr/download/lidar/shp"
-      message("Downloading grid at : ", path.expand(destfile))
+      message("Downloading grid at : ", normalizePath(grid_path))
       invisible(download_extract_7z(url, destfile))
    }
 

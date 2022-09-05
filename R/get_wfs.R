@@ -102,8 +102,8 @@ get_wfs <- function(shape,
                                               apikey,
                                               shape,
                                               layer_name,
-                                              x * 1000) |>
-                                    resp_body_string() |>
+                                              x * 1000) %>%
+                                    resp_body_string() %>%
                                     read_sf()
                                  message(x + 1, "/", request_need + 1, " downloaded")
                                  return(features)
@@ -169,10 +169,10 @@ req_function <- function(apikey, shape, layer_name, startindex = 0) {
       count = 1000
    )
 
-   request <- request("https://wxs.ign.fr") |>
-      req_url_path_append(apikey) |>
-      req_url_path_append("geoportail/wfs") |>
-      req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
-      req_url_query(!!!params) |>
+   request <- request("https://wxs.ign.fr") %>%
+      req_url_path_append(apikey) %>%
+      req_url_path_append("geoportail/wfs") %>%
+      req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
+      req_url_query(!!!params) %>%
       req_perform()
 }

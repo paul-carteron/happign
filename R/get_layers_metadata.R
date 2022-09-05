@@ -73,9 +73,9 @@ get_layers_metadata <- function(apikey,
       resp_body_xml()
 
    raw_metadata <- switch(data_type,
-                          "wms" = xml_child(req, "d1:Capability") |> xml_child("d1:Layer") |>
+                          "wms" = xml_child(req, "d1:Capability") %>% xml_child("d1:Layer") %>%
                              xml_find_all("d1:Layer"),
-                          "wfs" = xml_child(req, "d1:FeatureTypeList") |> xml_children())
+                          "wfs" = xml_child(req, "d1:FeatureTypeList") %>% xml_children())
 
    tryCatch({
       clean_metadata <- suppressWarnings(

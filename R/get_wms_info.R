@@ -65,10 +65,10 @@ get_wms_info <- function(shape,
    bbox <- st_bbox(shape)
    bbox <- paste(bbox["ymin"], bbox["xmin"], bbox["ymax"], bbox["xmax"], sep = ",")
 
-   request <- request("https://wxs.ign.fr") |>
-      req_url_path_append(apikey) |>
-      req_url_path_append("geoportail/r/wms") |>
-      req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
+   request <- request("https://wxs.ign.fr") %>%
+      req_url_path_append(apikey) %>%
+      req_url_path_append("geoportail/r/wms") %>%
+      req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
       req_url_query(service = "WMS",
                     version = version,
                     request = "GetFeatureInfo",
@@ -82,15 +82,15 @@ get_wms_info <- function(shape,
                     bbox = bbox,
                     I = 1,
                     J = 1,
-                    info_format = "text/xml") |>
-      req_perform() |>
-      resp_body_xml() |>
-      xml_child(2) |>
-      xml_child(1) |>
+                    info_format = "text/xml") %>%
+      req_perform() %>%
+      resp_body_xml() %>%
+      xml_child(2) %>%
+      xml_child(1) %>%
       as_list()
 
-   res <- request[!grepl("geom", names(request))] |>
-      unlist() |>
+   res <- request[!grepl("geom", names(request))] %>%
+      unlist() %>%
       rbind()
 
 }
@@ -115,23 +115,23 @@ are_queryable <- function(apikey){
 
    assert_choice(apikey, get_apikeys())
 
-   request <- request("https://wxs.ign.fr") |>
-      req_url_path_append(apikey) |>
-      req_url_path_append("geoportail/r/wms") |>
-      req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
+   request <- request("https://wxs.ign.fr") %>%
+      req_url_path_append(apikey) %>%
+      req_url_path_append("geoportail/r/wms") %>%
+      req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
       req_url_query(service = "wms",
-                    request = "GetCapabilities") |>
-      req_perform() |>
-      resp_body_xml() |>
-      xml_child("d1:Capability") |>
-      xml_child("d1:Layer") |>
+                    request = "GetCapabilities") %>%
+      req_perform() %>%
+      resp_body_xml() %>%
+      xml_child("d1:Capability") %>%
+      xml_child("d1:Layer") %>%
       xml_find_all("d1:Layer")
 
-   queryable_layers <- request[xml_has_attr(request, "queryable")==1] |>
-      as_list() |>
+   queryable_layers <- request[xml_has_attr(request, "queryable")==1] %>%
+      as_list() %>%
       unlist(recursive = FALSE)
 
-   queryable_layers_names <- queryable_layers[grep("Name", names(queryable_layers))] |>
+   queryable_layers_names <- queryable_layers[grep("Name", names(queryable_layers))] %>%
       unlist()
 }
 
