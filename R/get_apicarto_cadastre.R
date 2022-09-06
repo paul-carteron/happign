@@ -157,7 +157,7 @@ download_cadastre <- function(query_parameter){
       mutate(url = url[[1]])
 
    nb_loop <- lapply(urls$url,
-                     \(x){resp_body_json(req_perform(
+                     function(x){resp_body_json(req_perform(
                            request(x[[1]])))$totalFeatures %/% 1000 + 1})
 
 
