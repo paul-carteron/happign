@@ -97,7 +97,7 @@ get_wfs <- function(shape,
 
    if (request_need != 0) {
       list_features <- lapply(seq_len(request_need),
-                              \(x) {
+                              function(x) {
                                  features <- req_function(
                                               apikey,
                                               shape,
