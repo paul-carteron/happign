@@ -15,7 +15,8 @@ URL: https://github.com/paul-carteron,
     https://paul-carteron.github.io/happign/
 BugReports: https://github.com/paul-carteron/happign/issues
 Depends: 
-    R (>= 4.1.0)
+    methods,
+    R (>= 3.3.0)
 Imports: 
     archive,
     checkmate,
@@ -23,7 +24,6 @@ Imports:
     dplyr,
     httr2,
     magrittr,
-    methods,
     sf (>= 1.0-7),
     terra,
     xml2
@@ -45,4 +45,5 @@ LazyData: true
 NeedsCompilation: no
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
-SystemRequirements: C++11, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3
+SystemRequirements: C++11, GDAL (>= 2.0.1), GEOS (>= 3.4.0),
+    PROJ (>= 4.8.0), sqlite3
