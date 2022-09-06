@@ -4,17 +4,17 @@
 \alias{get_raw_lidar}
 \title{Download raw LIDAR data}
 \usage{
-get_raw_lidar(shape, destfile = ".", grid_path = ".")
+get_raw_lidar(shape, destfile = ".", grid_path = ".", quiet = F)
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
 France.}
 
-\item{destfile}{folder path where data are downloaded. By default set to "." e.g. the current
-directory}
+\item{destfile}{folder path where data are downloaded. By default set to "." e.g. the current directory}
 
-\item{grid_path}{folder path where grid is downloaded. By default set to "." e.g. the current
-directory}
+\item{grid_path}{folder path where grid is downloaded. By default set to "." e.g. the current directory}
+
+\item{quiet}{if TRUE download is silent}
 }
 \value{
 No object
@@ -35,11 +35,11 @@ the \code{destfile} to avoid re-downloading them.
 library(sf)
 
 # create shape
-shape <- st_polygon(list(matrix(c(-4.409637, 48.01736,
-                                  -4.409637, 48.03023,
-                                  -4.393158, 48.03023,
-                                  -4.393158, 48.01736,
-                                  -4.409637, 48.01736),
+shape <- st_polygon(list(matrix(c(8.852234, 42.55466,
+                                  8.852234, 42.57289,
+                                  8.860474, 42.57289,
+                                  8.860474, 42.55466,
+                                  8.852234, 42.55466),
                                  ncol = 2, byrow = TRUE)))
 shape <- st_sfc(shape, crs = st_crs(4326))
 

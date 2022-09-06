@@ -4,10 +4,9 @@
 #'
 #' @param shape Object of class `sf`. Needs to be located in
 #' France.
-#' @param destfile folder path where data are downloaded. By default set to "." e.g. the current
-#'  directory
-#' @param grid_path folder path where grid is downloaded. By default set to "." e.g. the current
-#'  directory
+#' @param destfile folder path where data are downloaded. By default set to "." e.g. the current directory
+#' @param grid_path folder path where grid is downloaded. By default set to "." e.g. the current directory
+#' @param quiet if TRUE download is silent
 #'
 #' @details
 #' `get_raw_lidar` first downloads a grid containing the name of LIDAR tiles which is
@@ -29,11 +28,11 @@
 #' library(sf)
 #'
 #' # create shape
-#' shape <- st_polygon(list(matrix(c(-4.409637, 48.01736,
-#'                                   -4.409637, 48.03023,
-#'                                   -4.393158, 48.03023,
-#'                                   -4.393158, 48.01736,
-#'                                   -4.409637, 48.01736),
+#' shape <- st_polygon(list(matrix(c(8.852234, 42.55466,
+#'                                   8.852234, 42.57289,
+#'                                   8.860474, 42.57289,
+#'                                   8.860474, 42.55466,
+#'                                   8.852234, 42.55466),
 #'                                  ncol = 2, byrow = TRUE)))
 #' shape <- st_sfc(shape, crs = st_crs(4326))
 #'
@@ -44,7 +43,7 @@
 #' list.files(".", pattern = ".laz", recursive = TRUE)
 #' }
 #'
-get_raw_lidar <- function(shape, destfile = ".", grid_path = "."){
+get_raw_lidar <- function(shape, destfile = ".", grid_path = ".", quiet = F){
 
    grid <- get_lidar_grid(grid_path)
    shape <- st_transform(shape, 2154)
@@ -58,16 +57,20 @@ get_raw_lidar <- function(shape, destfile = ".", grid_path = "."){
    }
 
    already_dowload <- paste(list.files(destfile, pattern = "LIDARHD"), collapse = "|")
-   urls <- urls[grepl(already_dowload, urls)]
+   urls <- urls[!grepl(already_dowload, urls)]
 
    # allow 1h of downloadin
    default <- options("timeout")
    options("timeout" = 3600)
    on.exit(options(default))
 
-   lapply(urls, download_extract_7z, destfile = destfile)
+   if(length(urls) != 0){
+      message ("Tiles to download : ", length(urls))
+   }
 
-   message("LIDAR data are download at :\n",
+   invisible(lapply(urls, download_extract_7z, destfile = destfile, quiet = quiet))
+
+   message("LIDAR data are download at : ",
            normalizePath(destfile))
 
 }
@@ -76,10 +79,10 @@ get_raw_lidar <- function(shape, destfile = ".", grid_path = "."){
 #' @param destfile folder path where data are downloaded. By default set to "." e.g. the current
 #'  directory
 #' @noRd
-download_extract_7z <- function(url, destfile = "."){
+download_extract_7z <- function(url, destfile = ".", quiet = quiet){
 
    tf <- tempfile()
-   download.file(url, tf , mode = "wb", quiet = T)
+   download.file(url, tf , mode = "wb", quiet = quiet)
 
    # ---- Lecture avec archive et sf ----
    invisible(archive(tf))
@@ -94,7 +97,6 @@ get_lidar_grid <- function(destfile = ".", grid_path = "."){
 
    if (length(list.files(destfile, pattern = "lidarhd.shp$")) == 0){
       url <- "https://pcrs.ign.fr/download/lidar/shp"
-      message("Downloading grid at : ", normalizePath(grid_path))
       invisible(download_extract_7z(url, destfile))
    }
 
@@ -102,5 +104,6 @@ get_lidar_grid <- function(destfile = ".", grid_path = "."){
                               pattern = "lidarhd.shp$",
                               full.names = TRUE))
    st_crs(grid) <- st_crs(2154)
+   message("Grid is dowloaded at : ", normalizePath(grid_path))
    return(grid)
 }
