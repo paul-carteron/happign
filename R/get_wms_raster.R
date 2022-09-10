@@ -13,6 +13,7 @@
 #'                resolution = 5,
 #'                filename = NULL,
 #'                crs = 2154,
+#'                overwrite = FALSE,
 #'                version = "1.3.0",
 #'                format = "image/geotiff",
 #'                styles = "")
@@ -34,6 +35,7 @@
 #' it is defined in the argument `format`.
 #' @param crs Numeric, character, or object of class sf or sfc. Is set to EPSG:4326
 #' by default. See [sf::st_crs()] for more detail.
+#' @param overwrite If TRUE, output raster is overwrite
 #' @param version The version of the service used. See detail for more
 #' information about `version`.
 #' @param format The output format of the image file. Set
@@ -103,6 +105,7 @@ get_wms_raster <- function(shape,
                            resolution = 5,
                            filename = NULL,
                            crs = 2154,
+                           overwrite = FALSE,
                            version = "1.3.0",
                            format = "image/geotiff",
                            styles = "") {
@@ -128,10 +131,9 @@ get_wms_raster <- function(shape,
    urls <- construct_urls(apikey, version, format, layer_name, styles, width_height, all_bbox, crs)
    filename <- construct_filename(filename, resolution, layer_name, format)
 
-   if (file.exists(filename)) {
+   if (file.exists(filename) && !overwrite) {
       raster_final <- rast(filename)
-      message("Raster already exist at :\n",
-              filename)
+      message("File exists at ", filename," and overwrite is not TRUE.")
    }else{
       tiles_list <- download_tiles(urls, crs, format)
       raster_final <- combine_tiles(tiles_list, filename)
