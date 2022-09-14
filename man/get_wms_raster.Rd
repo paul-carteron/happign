@@ -10,6 +10,7 @@ get_wms_raster(shape,
                resolution = 5,
                filename = NULL,
                crs = 2154,
+               overwrite = FALSE,
                version = "1.3.0",
                format = "image/geotiff",
                styles = "")
@@ -37,6 +38,8 @@ it is defined in the argument \code{format}.}
 
 \item{crs}{Numeric, character, or object of class sf or sfc. Is set to EPSG:4326
 by default. See \code{\link[sf:st_crs]{sf::st_crs()}} for more detail.}
+
+\item{overwrite}{If TRUE, output raster is overwrite}
 
 \item{version}{The version of the service used. See detail for more
 information about \code{version}.}
