@@ -1,5 +1,3 @@
-This is mainly a maintenance release:
-
 ## Checks
 
 ### Local check seems fine
