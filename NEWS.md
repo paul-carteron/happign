@@ -1,6 +1,6 @@
 # happign 0.1.6
 * `get_wms_raster()` use gdal with `sf::gdal_utils()` for downloading and `terra::vrt()` for
-merging for quiet faster results
+merging for quiet faster results. `stars` package is not used anymore.
 * `get_wms_raster()` supports the download of big raster of several gigabytes
 * `get_wms_raster()` has new `crs` argument
 * New function `get_raw_lidar()` to download raw lidar data
@@ -8,6 +8,9 @@ merging for quiet faster results
 * A new dataset containing names of communes and their associated insee code has been added
 * Simplify `get_layers_metadata()` to retrieve only title, name, and abstract
 * Remove dependency to `tidyr`
+* new function `get_raw_lidar()` to download raw lidar data from IGN
+* new function `get_apicarto_commune` to downloas commune borders from the apicarto "cadastre" of IGN
+
 
 # happign 0.1.5
 * remove `get_iso()`
