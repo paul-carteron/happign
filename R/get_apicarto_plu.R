@@ -3,7 +3,8 @@
 #' @usage
 #' get_apicarto_plu(x,
 #'                  ressource = "zone-urba",
-#'                  partition = NULL)
+#'                  partition = NULL,
+#'                  categorie = NULL)
 #'
 #' @param x An object of class `sf` or `sfc`. If NULL, `partition` must be filled
 #' by partition of PLU.
@@ -29,6 +30,7 @@
 #' @importFrom checkmate assert assert_choice check_character check_class check_null
 #' @importFrom sf read_sf
 #' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request resp_body_json resp_body_string
+#' @importFrom geojsonsf sf_geojson geojson_sf
 #'
 #' @return A object of class `sf`
 #' @export
@@ -63,7 +65,8 @@
 #'
 get_apicarto_plu <- function(x,
                              ressource = "zone-urba",
-                             partition = NULL){
+                             partition = NULL,
+                             categorie = NULL){
 
    # Test input values
    assert(check_class(x, "sf"),
@@ -72,21 +75,46 @@ get_apicarto_plu <- function(x,
    assert(check_character(partition, pattern = "(?:DU|PSMW)_(?:[0-9])+$"),
           check_null(partition))
    assert_choice(ressource, c("document","zone-urba", "secteur-cc", "prescription-surf",
-                               "prescription-lin", "prescription-pct",
-                               "info-surf", "info-lin", "info-pct", "acte-sup"))
+                              "prescription-lin", "prescription-pct",
+                              "info-surf", "info-lin", "info-pct", "acte-sup",
+                              "assiette-sup-s", "assiette-sup-l", "assiette-sup-p",
+                              "generateur-sup-s", "generateur-sup-l", "generateur-sup-p"))
 
    if (!is.null(partition)){
       x <- NULL
    }
 
-   # Create URL
-   request <- request("https://apicarto.ign.fr/api/gpu") %>%
-      req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
-      req_url_path_append(ressource) %>%
-      req_url_query(partition = partition,
-                    geom = shp_to_geojson(x)) %>%
-      req_perform() %>%
-      resp_body_string() %>%
-      read_sf()
+   param <- list(
+      geom = sf_geojson(st_make_valid(x)),
+      partition = partition,
+      categorie = categorie,
+      startindex = 0
+   )
+
+   res <- NULL
+   i <- 0
+
+   while(length(res) == 5000){
+      res <- hit_api(ressource, param)
+      res <- rbind(res)
+      i <- i + 5000
+   }
 
 }
+#' format url and request it
+#' @param ressource name of ressource you want
+#' @param param liste of param for hitting API
+#' @noRd
+hit_api <- function(ressource, param){
+
+   req <- request("https://apicarto.ign.fr/api/gpu") %>%
+      req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
+      req_url_path_append(ressource) %>%
+      req_url_query(!!!param) %>%
+      req_perform() %>%
+      resp_body_string() %>%
+      geojson_sf()
+
+   return(req)
+}
+

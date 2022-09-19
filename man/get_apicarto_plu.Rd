@@ -6,7 +6,8 @@
 \usage{
 get_apicarto_plu(x,
                  ressource = "zone-urba",
-                 partition = NULL)
+                 partition = NULL,
+                 categorie = NULL)
 }
 \arguments{
 \item{x}{An object of class \code{sf} or \code{sfc}. If NULL, \code{partition} must be filled

@@ -19,8 +19,8 @@ Depends:
 Imports: 
     archive,
     checkmate,
-    curl,
     dplyr,
+    geojsonsf,
     httr2,
     magrittr,
     methods,
