@@ -37,6 +37,7 @@
 #' resp_body_json resp_body_string
 #' @importFrom dplyr bind_rows mutate rowwise
 #' @importFrom utils globalVariables
+#' @importFrom geojsonsf sfc_geojson
 #'
 #' @examples
 #' \dontrun{
@@ -83,7 +84,8 @@ get_apicarto_cadastre.sf <- function(x,
                                      source_ign = "PCI") {
    match.arg(source_ign, c("BDP", "PCI"))
    x <- st_transform(x, 4326)
-   geojson_geom <- shp_to_geojson(x)
+   x <- st_as_sfc(x)
+   geojson_geom <- sfc_geojson(x)
 
    query_parameter <- list(geom = geojson_geom,
                            code_insee = NULL,
@@ -103,7 +105,7 @@ get_apicarto_cadastre.sfc <- function(x,
                                       source_ign = "PCI") {
    match.arg(source_ign, c("BDP", "PCI"))
    x <- st_transform(x, 4326)
-   geojson_geom <- shp_to_geojson(x)
+   geojson_geom <- sfc_geojson(x)
 
    query_parameter <- list(geom = geojson_geom,
                            code_insee = NULL,

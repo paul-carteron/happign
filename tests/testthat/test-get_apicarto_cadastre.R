@@ -3,8 +3,12 @@ with_mock_dir("get_apicarto_cadastre sfc",{
       skip_on_cran()
       skip_if_offline()
 
-      shape <- st_polygon(list(matrix(c(-4.373937, 47.79859, -4.375615, 47.79738, -4.375147, 47.79683,
-                                        -4.373898, 47.79790, -4.373937, 47.79859), ncol = 2, byrow = TRUE)))
+      shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
+                                        -4.375615, 47.79738,
+                                        -4.375147, 47.79683,
+                                        -4.373898, 47.79790,
+                                        -4.373937, 47.79859),
+                                      ncol = 2, byrow = TRUE)))
       shape <- st_sfc(shape, crs = st_crs(4326))
 
       res <- get_apicarto_cadastre(shape)
@@ -12,6 +16,8 @@ with_mock_dir("get_apicarto_cadastre sfc",{
       expect_s3_class(res, "sf")
    })
 }, simplify = FALSE)
+
+
 with_mock_dir("get_apicarto_cadastre sf",{
    test_that("download_cadastre", {
       skip_on_cran()

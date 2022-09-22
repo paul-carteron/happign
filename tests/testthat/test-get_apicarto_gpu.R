@@ -11,7 +11,10 @@ with_mock_dir("get_apicarto_plu partition", {
       skip_if_offline()
 
       partition <- "DU_17345"
-      poly <- get_apicarto_plu(x = NULL, ressource = "zone-urba", partition = partition)
+      poly <- get_apicarto_plu(x = NULL,
+                               ressource = "zone-urba",
+                               partition = partition,
+                               categorie = NULL)
 
       expect_equal(dim(poly), c(39, 17))
       expect_s3_class(poly, "sf")

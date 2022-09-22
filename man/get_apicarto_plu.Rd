@@ -20,6 +20,9 @@ by partition of PLU.}
 \item{partition}{A character corresponding to PLU partition (can be retrieve
 using \code{get_apicarto_plu(x, "document", partition = NULL)}). If \code{partition}
 is explicitly set, all PLU features are returned and \code{geom} is override}
+
+\item{categorie}{public utility easement according to the
+(national nomenclature)\link{http://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html}}
 }
 \value{
 A object of class \code{sf}
@@ -28,6 +31,9 @@ A object of class \code{sf}
 Apicarto module Geoportail de l'urbanisme
 }
 \details{
+For the moment the API cannot returned more than 5000 features.
+
+All resssources description :
 \itemize{
 \item \verb{"municipality} : information on the communes (commune with RNU, merged commune)
 \item \verb{"document'} : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)

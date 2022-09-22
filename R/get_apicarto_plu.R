@@ -14,6 +14,8 @@
 #' @param partition A character corresponding to PLU partition (can be retrieve
 #' using `get_apicarto_plu(x, "document", partition = NULL)`). If `partition`
 #' is explicitly set, all PLU features are returned and `geom` is override
+#' @param categorie public utility easement according to the
+#' (national nomenclature)[http://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html]
 #'
 #' @details
 #' For the moment the API cannot returned more than 5000 features.
@@ -33,7 +35,7 @@
 #' @importFrom checkmate assert assert_choice check_character check_class check_null
 #' @importFrom sf read_sf
 #' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request resp_body_json resp_body_string
-#' @importFrom geojsonsf sf_geojson geojson_sf
+#' @importFrom geojsonsf sfc_geojson geojson_sf
 #'
 #' @return A object of class `sf`
 #' @export
@@ -87,15 +89,15 @@ get_apicarto_plu <- function(x,
       x <- NULL
    }
 
-   if ("sf" %in% class(x)){
+   if (methods::is(x, "sf")){
       x <- st_as_sfc(x)
    }
 
    param <- list(
-      geom = sfc_geojson(st_make_valid(x)),
+      geom = switch(is.null(x) + 1, sfc_geojson(x), NULL),
       partition = partition,
-      categorie = categorie,
-      startindex = 0
+      categorie = categorie
+      # startindex = 0
    )
 
    # When start parameter will appear im prepare
@@ -108,7 +110,7 @@ get_apicarto_plu <- function(x,
    #    i <- i + 5000
    # }
 
-   res <- hit_api(param, ressource)
+   res <- hit_api(ressource, param)
    return(res)
 
 }
