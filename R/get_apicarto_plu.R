@@ -16,6 +16,9 @@
 #' is explicitly set, all PLU features are returned and `geom` is override
 #'
 #' @details
+#' For the moment the API cannot returned more than 5000 features.
+#'
+#' All resssources description :
 #' * `"municipality` : information on the communes (commune with RNU, merged commune)
 #' * `"document'` : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)
 #' * `"zone-urba"` : zoning of urban planning documents,
@@ -84,21 +87,29 @@ get_apicarto_plu <- function(x,
       x <- NULL
    }
 
+   if ("sf" %in% class(x)){
+      x <- st_as_sfc(x)
+   }
+
    param <- list(
-      geom = sf_geojson(st_make_valid(x)),
+      geom = sfc_geojson(st_make_valid(x)),
       partition = partition,
       categorie = categorie,
       startindex = 0
    )
 
-   res <- NULL
-   i <- 0
+   # When start parameter will appear im prepare
+   # res <- NULL
+   # i <- 0
+   #
+   # while(length(res) == 5000){
+   #    res <- hit_api(ressource, param)
+   #    res <- rbind(res)
+   #    i <- i + 5000
+   # }
 
-   while(length(res) == 5000){
-      res <- hit_api(ressource, param)
-      res <- rbind(res)
-      i <- i + 5000
-   }
+   res <- hit_api(param, ressource)
+   return(res)
 
 }
 #' format url and request it
@@ -113,7 +124,7 @@ hit_api <- function(ressource, param){
       req_url_query(!!!param) %>%
       req_perform() %>%
       resp_body_string() %>%
-      geojson_sf()
+      read_sf()
 
    return(req)
 }
