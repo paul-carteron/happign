@@ -22,7 +22,7 @@ using \code{get_apicarto_plu(x, "document", partition = NULL)}). If \code{partit
 is explicitly set, all PLU features are returned and \code{geom} is override}
 
 \item{categorie}{public utility easement according to the
-(national nomenclature)\link{http://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html}}
+national nomenclature ("http://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html")}
 }
 \value{
 A object of class \code{sf}

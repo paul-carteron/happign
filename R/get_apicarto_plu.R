@@ -15,7 +15,7 @@
 #' using `get_apicarto_plu(x, "document", partition = NULL)`). If `partition`
 #' is explicitly set, all PLU features are returned and `geom` is override
 #' @param categorie public utility easement according to the
-#' (national nomenclature)[http://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html]
+#' national nomenclature ("http://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html")
 #'
 #' @details
 #' For the moment the API cannot returned more than 5000 features.
