@@ -87,6 +87,7 @@ get_wfs <- function(shape,
    assert(check_character(filename, max.len = 1),
           check_null(filename))
 
+   # 1 hour long downloading
    default <- options("timeout")
    options("timeout" = 3600)
    on.exit(options(default))
