@@ -87,6 +87,10 @@ get_wfs <- function(shape,
    assert(check_character(filename, max.len = 1),
           check_null(filename))
 
+   default <- options("timeout")
+   options("timeout" = 3600)
+   on.exit(options(default))
+
    bbox <- NULL
    shape <- st_make_valid(shape)
 
