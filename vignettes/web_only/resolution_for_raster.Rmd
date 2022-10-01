@@ -24,7 +24,7 @@ library(tmap)
 
 # The limitations of the IGN API
 
-The APIs of the IGN allow to manipulate the resolution of the raster by specifying the height and width of the image in number of pixels. Let us imagine a cube of 5000m by 5000m. To obtain a resolution of 2m (in other words 1 pixel = 2m), it will then be necessary to make a request such that the height and width of the raster is equal to 2500.
+The APIs of the IGN allow to manipulate the resolution of the raster by specifying the height and width of the image in number of pixels. Let us imagine a square of 5000m by 5000m. To obtain a resolution of 2m (in other words 1 pixel = 2m), it will then be necessary to make a request such that the height and width of the raster is equal to 2500.
 
 However, these two parameters are limited to 2048x2048, in other words, if we want a resolution of 1m on an area larger than 2048, we will have to split our area into several tiles. This is exactly how get_wms_raster() works.
 

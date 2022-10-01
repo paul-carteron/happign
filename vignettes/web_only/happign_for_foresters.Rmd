@@ -22,62 +22,38 @@ library(happign)
 library(sf)
 library(tmap); tmap_mode("view") # Set map to interactive
 library(dplyr)
-library(ggplot2)
+library(ggplot2);sf_use_s2(FALSE) # Avoid problem with spherical geometry
 library(purrr)
 library(stars)
 ```
 
 ## First choose a zone of interest
 
-For the example we will work with the Gâvre forest. The starting point come from [google map](https://www.google.fr/maps) : you just have to select a random point inside the forest by using right click on map.
+For the example we will work with the Camors forest. First of all we need the commune border that can be obtained from the insee code. Fortunately, happign provides a table containing all insee codes (`data("cog_2022")`). Then, `get_apicarto_commune` is used to donxload shape from Apicarto commune.
 
 ```{r}
-point <- st_sfc(st_point(c(-1.7977020162748798, 47.52634370369097)), crs = 4326)
+data("cog_2022")
 
-tm_shape(point)+
-   tm_dots(size = 0.1)+
-   tm_basemap("OpenStreetMap")
+insee_code <- cog_2022[grepl("^Camors", cog_2022$LIBELLE),1]
 
-```
-
-## Extract commune borders
-
-Now that we have point, getting shape of commune is just a matter of finding the good layer name from IGN. The one we are after is called "ADMINEXPRESS-COG-CARTO.LATEST:commune" from the "Administrative" category. Then we use the `get_wfs()` function to download the shape.
-
-As you can see below, there are two communes close to our point (tip : click on the interactive map below to get more info). For following examples we will only use "Le Gâvre" shape.
-
-```{r}
-apikey <- get_apikeys()[1]  # "administratif"
-layer_name <- "ADMINEXPRESS-COG-CARTO.LATEST:commune"
-
-# The layer_name I use come from `all_layers = get_layers_metadata(apikey, "wfs") that return all of them layer_name
-
-borders <- get_wfs(shape = point,
-                   apikey = apikey,
-                   layer_name = layer_name)
+borders <- get_apicarto_commune(insee_code)
 
 tm_shape(borders)+
-   tm_polygons(lwd = 2,
-               col = "nom",
-               id = "nom",
-               popup.vars = "population")+
+   tm_borders()+
+   tm_text("nom_com")+
    tm_basemap("OpenStreetMap")
-
 
 ```
 
 ## Download cadastral parcel
 
-Cadastral parcels are essential for any forest management. Here how to download it with happign. 
+Cadastral parcels are essential for any forest management. Here how to download it with `get_wfs`.
 
 ```{r}
-# Select only commune to reduce downloading time for hight resolution raster
-borders <- borders %>% 
-   slice(1)
 
-apikey <- get_apikeys()[15] # "parcellaire"
+apikey <- "parcellaire"
 layer_name <- get_layers_metadata(apikey, "wfs")
-name_parcellaire_layer <- as.character(layer_name[15,2]) # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
+name_parcellaire_layer <- layer_name[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
 
 parcellaire <- get_wfs(shape = borders,
                        apikey = apikey,
@@ -95,66 +71,63 @@ tm_shape(parcellaire)+
 
 __*Rq :*__
 
- * *IGN WFS can return a maximum of 1000 features. The get_wfs() function overrides this limit by performing several consecutive requests, that why there 10 request above ;*
+ * *IGN WFS can return a maximum of 1000 features. The get_wfs() function overrides this limit by performing several consecutive requests, that why there 6 request above ;*
  * *The shape used get_wfs() is converted to bbox before requesting. In other words, several parcels will be outside our zone, which is why an intersection is made.*
  
 ## Downloading BD Forêt
 
-The first interesting layer for forester is the "BD Forêt" which is all vegetation type assigned to each area greater than or equal to 0.5 ha (5,000 m²). There is two layer for forest : the old one BD Forêt V1 and the new one BD Forêt V2.
+The first interesting layer for forester is the "BD Forêt" which is all vegetation type assigned to each area greater than or equal to 0.5 ha (5,000 m²). There is two layer for forest : the old one BD Forêt V1 and the new one BD Forêt V2 that can be accessed with "burger menu" on the top left of interactive map below.
 
 ```{r warning=FALSE}
-apikey <- get_apikeys()[9]  #"environement"
+apikey <- "environnement"
 layer_name <- get_layers_metadata(apikey, "wfs")
-name_BDV1 <- as.character(layer_name[1,2]) #LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape
-# name_BDV2 <- as.character(layer_name[2,2]) #LANDCOVER.FORESTINVENTORY.V2:bdforetv2
+name_BDV1 <- layer_name[1,1]
+name_BDV2 <- layer_name[2,1]
 
 BDV1 <- get_wfs(borders, apikey, name_BDV1) %>% 
    st_transform(st_crs(borders)) %>% 
-   st_intersection(borders) # Layer is download for a bbox around the shape. An intersection is done to get forest only inside our zone of interest
+   st_intersection(borders)
 
-# BDV2 <- get_wfs(borders, apikey, name_BDV2) %>%
-#    st_transform(st_crs(borders)) %>% 
-#    st_intersection(borders)
+BDV2 <- get_wfs(borders, apikey, name_BDV2) %>%
+   st_transform(st_crs(borders)) %>%
+   st_intersection(borders)
 
 tm_shape(BDV1) +
    tm_polygons(col = "libelle",
-               popup.vars = names(BDV1)[1:20],
-               legend.show = FALSE) +
-# tm_shape(BDV2) +
-#    tm_polygons(col = "tfv",
-#                alpha = 0.5,
-#                popup.vars = names(BDV2)[1:16],
-#                legend.show = FALSE) +
+               popup.vars = names(BDV1)[1:(ncol(BDV1)-2)],
+               legend.show = FALSE)+
+tm_shape(BDV2) +
+    tm_polygons(col = "tfv",
+                alpha = 0.5,
+                popup.vars = names(BDV2)[1:(ncol(BDV2)-2)],
+                legend.show = FALSE) +
 tm_shape(borders) +
-   tm_borders(lwd = 2) +
-   tm_basemap("OpenStreetMap")
+   tm_borders(lwd = 2)
 ```
-
-With the map below, you can choose which BD Forêt you want to display. The BDV2 is obviously more precise.
 
 More calculations can be done as you can see below :
 
 ```{r warning=FALSE}
-# forest_type_BDV2 <- BDV2 %>%
-#   mutate(area = as.numeric(st_area(geometry))) %>%
-#   st_drop_geometry() %>%
-#   group_by(essence) %>%
-#   summarise(sum_area = sum(area)/10000) %>%
-#   arrange(sum_area) %>%
-#   mutate(essence = as.factor(essence))
-# 
-# ggplot()+
-#   geom_col(data = forest_type_BDV2,
-#            aes(x = rev(reorder(essence, sum_area)),
-#                y = sum_area,
-#                fill = as.factor(essence)))+
-#   theme_bw()+
-#   labs(title = "Surface couverte par essences [ha]",
-#        y = "Surface [ha]",
-#        fill = "Essence :")+
-#   theme(axis.text.x = element_blank())
+forest_type_BDV2 <- BDV2 %>%
+  mutate(area = as.numeric(st_area(geometry))) %>%
+  st_drop_geometry() %>%
+  group_by(essence) %>%
+  summarise(sum_area = sum(area)/10000) %>%
+  arrange(desc(sum_area)) %>%
+  mutate(essence = as.factor(essence))
 
-   
+ggplot()+
+  geom_col(data = forest_type_BDV2,
+           aes(x = rev(reorder(essence, sum_area)),
+               y = sum_area,
+               fill = as.factor(essence)))+
+  theme_bw()+
+  labs(title = "Surface couverte par essences [ha]",
+       y = "Surface [ha]",
+       fill = "Essence :")+
+  theme(axis.text.x = element_blank())
+
+
 ```
 
 ## Detect protected area
@@ -173,29 +146,27 @@ Again, you can click on map, point and shape for more informations.
 ```{r message=FALSE, warning=FALSE}
 apikey <- "environnement"
 protected_area_names <- get_layers_metadata(apikey, "wfs") %>% 
-   filter(grepl("^PROTECTED", name)) %>% 
-   pull(name)
+   filter(grepl("^PROTECTED", Name)) %>% 
+   pull(Name)
 
 all_protected_area <- map(.x = protected_area_names,
-                         .f = ~ get_wfs(borders, apikey, .x), silent = TRUE) %>% 
+                          .f = ~ try(get_wfs(borders, apikey, .x), silent = TRUE)) %>% 
    set_names(protected_area_names) %>% 
-   discard(~ is.null(.$geometry))
+   discard(~ dim(.)[2] == 1)
 
 # Plot the result
 tm_shape(all_protected_area[[1]])+
-   tm_dots(group = "Point rencontre des secours en forêts", col = "red")+
+   tm_polygons(group = "APB", alpha = 0.8, col = "blue")+
 tm_shape(all_protected_area[[2]])+
+   tm_dots(group = "Point rencontre des secours en forêts", col = "red")+
+tm_shape(all_protected_area[[3]])+
    tm_polygons(group = "SIC", alpha = 0.8, col = "purple")+
 tm_shape(all_protected_area[[4]])+
-   tm_polygons(group = "Znieff 2", alpha = 0.8)+
-tm_shape(all_protected_area[[3]], alpha = 0.8)+
-   tm_polygons(group = "Znieff 1", alpha = 0.8, col = "blue")+
+   tm_polygons(group = "Znieff 2", alpha = 0.8, col = "pink")+
 tm_shape(all_protected_area[[5]])+
    tm_polygons(group = "ZPS", alpha = 0.8, col = "green")+
-tm_shape(borders) +
-   tm_borders(lwd = 2) +
-   tm_basemap("OpenStreetMap")
-   
+tm_shape(borders,is.master = TRUE) +
+   tm_borders(lwd = 2)
 ```
 
 
@@ -205,8 +176,8 @@ It's always good to know a more about terrain topologie. IGN offers MNT and MNS 
 
 ```{r}
 layers_name <- get_layers_metadata("altimetrie", "wms")
-MNT_name <- layers_name[3,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
-MNS_name <- layers_name[4,2] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
+MNT_name <- layers_name[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
+MNS_name <- layers_name[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
 MNT <- get_wms_raster(borders, "altimetrie", resolution = 5, unlist(MNT_name), filename = "MNT")
 MNS <- get_wms_raster(borders, "altimetrie", resolution = 5, unlist(MNS_name), filename = "MNS")
@@ -223,8 +194,7 @@ tm_shape(MNH)+
 tm_shape(level_curve)+
    tm_lines()+
 tm_shape(borders)+
-   tm_borders(lwd = 2)+
-   tm_basemap("OpenStreetMap")
+   tm_borders(lwd = 2)
 
 file.remove("MNT_5m.tif") # I don't want to keep MNT on disk because this is vignette
 file.remove("MNS_5m.tif") # I don't want to keep MNS on disk because this is vignette
@@ -255,7 +225,7 @@ IRC <- get_wms_raster(shape = biggest_parcels,
                       resolution = 0.2,
                       layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC",
                       filename = "IRC")
-IRC <- st_as_stars(IRC) 
+IRC <- st_as_stars(IRC)
 
 infrared <- IRC %>% slice(band, 1)
 red <- IRC %>% slice(band, 2)
@@ -274,8 +244,7 @@ tm_shape(NDVI)+
              palette = palette_NDVI,
              colorNA = "red")+
 tm_shape(biggest_parcels)+
-   tm_borders(lwd = 2, col = "blue")+
-   tm_basemap("OpenStreetMap")
+   tm_borders(lwd = 2, col = "blue")
 
 file.remove("IRC_0_2m.tif") # I don't want to keep IRC on disk because this is vignette
    
@@ -294,8 +263,7 @@ tm_shape(borders)+
 tm_shape(gloss_index)+
    tm_raster()+
 tm_shape(biggest_parcels)+
-   tm_borders(lwd = 2, col = "blue")+
-   tm_basemap("OpenStreetMap")
+   tm_borders(lwd = 2, col = "blue")
 
 ```
 
@@ -318,13 +286,14 @@ For the example below I choose to download all water-related data :
 
 ```{r}
 cour_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:cours_d_eau") %>% 
-   st_intersection(st_buffer(borders,100))
-detail_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:detail_hydrographique") %>% 
-   st_intersection(st_buffer(borders,100))
+   st_intersection(borders)
+
+detail_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:detail_hydrographique")  %>% 
+   st_intersection(borders)
 
 # water detected by satellite
-surf_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:surface_hydrographique") %>% 
-   st_intersection(st_buffer(borders,100))
+surf_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:surface_hydrographique")  %>% 
+   st_intersection(borders)
 
 tm_shape(cour_eau)+
    tm_lines(col = "blue")+
@@ -333,8 +302,7 @@ tm_shape(detail_hydro)+
 tm_shape(surf_hydro)+
    tm_polygons("steelblue")+
 tm_shape(borders)+
-   tm_borders(lwd = 2)+
-   tm_basemap("OpenStreetMap")
+   tm_borders(lwd = 2)
 ```
 
 ## What about history ?
@@ -344,16 +312,15 @@ The "Etat-major" map is a general map of France made, in its first version, in t
 ```{r}
 etat_major <- get_wms_raster(shape = borders,
                             apikey = "cartes",
-                            resolution = 5,
+                            resolution = 2,
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
                             filename = "etat_major")
 
 tm_shape(etat_major)+
    tm_rgb()+
 tm_shape(borders)+
-   tm_borders(lwd = 3, col = "red")+
-   tm_basemap("OpenStreetMap")
+   tm_borders(lwd = 3, col = "red")
 
-file.remove("etat_major_5m.tif") # I don't want to keep etat_major on disk because this is vignette
+file.remove("etat_major_2m.tif") # I don't want to keep etat_major on disk because this is vignette
 
 ```
