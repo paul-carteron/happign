@@ -57,12 +57,15 @@ get_apicarto_commune <- function(x, source_ign = "PCI"){
    match.arg(source_ign, c("BDP", "PCI"))
    geom <- code_insee <- code_dep <- NULL
 
-   if (methods::is(x, "sf") || methods::is(x, "sfc")){
-      x <- st_transform(st_make_valid(x), 4326)
+   if(methods::is(x, "sf")){
+      x <- st_as_sfc(x)
    }
 
-   if (methods::is(x, "sf") ){
-      x <- st_as_sfc(x)
+   if(methods::is(x, "sfc")){
+      geom <- x %>%
+         st_make_valid() %>%
+         st_transform(4326) %>%
+         sfc_geojson()
    }
 
    if(methods::is(x, "character") && nchar(x) == 5){
@@ -77,7 +80,7 @@ get_apicarto_commune <- function(x, source_ign = "PCI"){
       req_url_path("api/cadastre/commune") %>%
       req_url_query(code_insee = code_insee,
                     code_dep = code_dep,
-                    geom = sfc_geojson(x),
+                    geom = geom,
                     source_ign = source_ign) %>%
       req_perform() %>%
       resp_body_string() %>%

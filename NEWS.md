@@ -1,3 +1,9 @@
+# happign 0.1.7
+* Correct bug preventing `get_apicarto_commune` to work with dep and insee code
+* Adding 1 hour of downloading to `get_wfs()` for big shape
+* Remove connection to IGN news when library is load. Now `get_last_news()` can be used
+to retrieve last news.
+
 # happign 0.1.6
 * `get_wms_raster()` use gdal with `sf::gdal_utils()` for downloading and `terra::vrt()` for
 merging for quiet faster results. `stars` package is not used anymore.
@@ -9,8 +15,7 @@ merging for quiet faster results. `stars` package is not used anymore.
 * Simplify `get_layers_metadata()` to retrieve only title, name, and abstract
 * Remove dependency to `tidyr`
 * new function `get_raw_lidar()` to download raw lidar data from IGN
-* new function `get_apicarto_commune` to downloas commune borders from the apicarto "cadastre" of IGN
-
+* new function `get_apicarto_commune` to download commune borders from the apicarto "cadastre" of IGN
 
 # happign 0.1.5
 * remove `get_iso()`

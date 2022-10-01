@@ -35,7 +35,7 @@ The final use for the general public is free of charge up to a certain threshold
 
 ## How to use them with happign ?
 
-These layers are WMS raster, so you just have to use the `get_wms_raster()` function with a personal apikey. To do this, you need to create an account on the geoservice site and then request a key in the "My keys" section of your account. It should look like this : "abc12efghi34j5k678lmnopq" (obviously, this is a fake key).
+These layers are WMS raster, so you just have to use the `get_wms_raster()` function with a personal apikey. To do this, you need to create an account on the [geoservice site](https://geoservices.ign.fr/) and then request a key in the "My keys" section of your account. It should look like this : "abc12efghi34j5k678lmnopq" (obviously, this is a fake key).
 
 Then you choose the layer you want at the [Web services from IGN SCANs](https://geoservices.ign.fr/services-web-issus-des-scans-ign) and it's done !
 

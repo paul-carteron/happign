@@ -47,11 +47,8 @@ To download data you need :
 
 ## API keys
 
-API keys can be directly retrieved on the [IGN website in the expert web services](https://geoservices.ign.fr/services-web-experts) (I recommend you at this point to go and have a look).
+API keys can be directly retrieved on the [IGN website in the expert web services](https://geoservices.ign.fr/services-web-experts) (I recommend you at this point to go and have a look) or with `get_apikeys()` function.
 
-For example, if I take the first category "Administratif", I see that the API key is "administratif".
-
-With `happign`, there is no need to go through the website because all 18 api keys can be retrieved by running the function `get_apikeys()` :
 
 ```{r, echo = TRUE}
 get_apikeys()
@@ -59,14 +56,13 @@ get_apikeys()
 
 ## Layer name
 
-As for API key, it is possible to find the names of available layers from the expert web services of the IGN. If I continue to explore the ["Administratif" category](https://geoservices.ign.fr/services-web-experts-administratif), the first layer name in **WFS format** is *"ADMINEXPRESS-COG.LATEST:arrondissement"*.
+As for API key, it is possible to find the names of available layers from the expert web services of the IGN. For example, the first layer name in **WFS format** for ["Administratif" category](https://geoservices.ign.fr/services-web-experts-administratif) is *"ADMINEXPRESS-COG-CARTO.LATEST:arrondissement"*
 
-Again, all layer's name and other metadata (abstract, style, keywords, defaultcrs, ...) can be accessed from R with the `get_layers_metadata()` function. This one connects directly to the IGN site which allows to have the last updated resources. It can be used for WMS and WFS :
+Again, all layer's name can be accessed from R with the `get_layers_metadata()` function. This one connects directly to the IGN site which allows to have the last updated resources. It can be used for WMS and WFS :
 
 ```{r}
-apikey <- get_apikeys()[1]
-get_layers_metadata(apikey = apikey, data_type = "wfs")
-get_layers_metadata(apikey = apikey, data_type = "wms")
+administratif_wfs <- get_layers_metadata(apikey = "administratif", data_type = "wfs")
+administratif_wms <- get_layers_metadata(apikey = "administratif", data_type = "wms")
 ```
 
 ## Downloading the data
@@ -75,10 +71,13 @@ Now that we know how to get an API key and layer name, it only takes a few lines
 
 ### WFS
 
-First, we are going to get borders of the town which is a shape resources so `get_wfs()` will be used. This function need a shape to work. A single point is take inside Penmarch so that the function detects all the shape that intersect this point :
+First, we are going to get borders of the Penmarch. Since it's a shape object, `get_wfs()` will be used.
 
 ```{r, eval=TRUE, include=TRUE}
+# First retrieve create a point inside Penmarc'h
 penmarch_point <- st_sfc(st_point(c(-4.370, 47.800)), crs = 4326)
+
+# Then download borders
 penmarch_borders <- get_wfs(shape = penmarch_point,
                             apikey = "administratif",
                             layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
@@ -126,34 +125,32 @@ For raster, the process is the same but with the function `get_wms_raster()`. Th
 
 
 ```{r, eval=TRUE, include=TRUE}
-apikey <- get_apikeys()[4]
-layers_metadata <- get_layers_metadata(apikey, "wms")
-dem_layer_name <- layers_metadata[2, "name"]
+layers_metadata <- get_layers_metadata("altimetrie", "wms")
+dem_layer_name <- layers_metadata[2, 1]
 
-# mnt <- get_wms_raster(shape = penmarch_borders,
-#                       apikey = apikey,
-#                       layer_name = unlist(dem_layer_name),
-#                       resolution = 25,
-#                       filename = "temp",
-#                       crs = 4326)
-# 
-# mnt[mnt < 0] <- NA # remove negative values in case of singularity
-# names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
-# 
-# 
-# tm_shape(mnt) +
-#    tm_raster(colorNA = NULL) +
-# tm_shape(penmarch_borders)+
-#    tm_borders(lwd = 2)+
-# tm_layout(main.title = "DEM of Penmarch",
-#           main.title.position = "center",
-#           legend.position = c("right", "bottom"),
-#           legend.bg.color = "white", legend.bg.alpha = 0.7,
-#           frame = FALSE)
-# 
-# file.remove("temp_25m.tif")
+mnt <- get_wms_raster(shape = penmarch_borders,
+                      apikey = "altimetrie",
+                      layer_name = dem_layer_name,
+                      resolution = 25,
+                      filename = "temp",
+                      crs = 4326)
+
+mnt[mnt < 0] <- NA # remove negative values in case of singularity
+names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
+
+tm_shape(mnt) +
+   tm_raster(colorNA = NULL) +
+tm_shape(penmarch_borders)+
+   tm_borders(lwd = 2)+
+tm_layout(main.title = "DEM of Penmarch",
+          main.title.position = "center",
+          legend.position = c("right", "bottom"),
+          legend.bg.color = "white", legend.bg.alpha = 0.7,
+          frame = FALSE)
+
+file.remove("temp_25m.tif") #Raster is saved to disk, this line remove it
 ```
 
 __*Rq :*__
 
- * *Raster from `get_wms_raster()` are stars object from the `stars` package. To learn more about conversion between other raster type in R go [check this out](https://geocompr.github.io/post/2021/spatial-classes-conversion/).*
+ * *Raster from `get_wms_raster()` are `SpatRaster` object from the `terra` package. To learn more about conversion between other raster type in R go [check this out](https://geocompr.github.io/post/2021/spatial-classes-conversion/).*
