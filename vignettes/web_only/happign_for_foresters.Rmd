@@ -134,13 +134,6 @@ ggplot()+
 
 One information you really want when you work at forest management is if your zone of interest is inside protected area. The example code below is design to automatically test every layer starting with "PROTECTED" so you can be sure that you have all of them.
 
-So, for Le Gâcre forest we find :
-- 19 forest rescue point (PRSF in red)
-- 1 SIC ("Sites d’Importance Communautaire" in purple)
-- 1 ZPS ("Zone de protection speciale" in green)
-- 6 Znieff 1 (blue on map)
-- 3 Znieff 2 (grey on map)
-
 Again, you can click on map, point and shape for more informations.
 
 ```{r message=FALSE, warning=FALSE}
