@@ -279,6 +279,12 @@ download_tiles <- function(urls, crs, format) {
    Sys.setenv("GDAL_HTTP_UNSAFESSL" = "YES")
    on.exit(Sys.setenv("GDAL_HTTP_UNSAFESSL" = old_env), add = TRUE)
 
+   # Avoid linux certificate error
+   old_env2 <- Sys.getenv("GDAL_SKIP")
+   Sys.setenv("GDAL_SKIP" = "DODS")
+   on.exit(Sys.setenv("GDAL_SKIP" = old_env), add = TRUE)
+
+
    # allow 1h of downloading before error
    default <- options("timeout")
    options("timeout" = 3600)
