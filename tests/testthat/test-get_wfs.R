@@ -1,4 +1,4 @@
-test_that("req_function format bbox from sf object", {
+test_that("hit_api_wfs format bbox from sf object", {
 
    shape_sf <- read_sf(system.file("shape/nc.shp", package = "sf"))
    expect_s3_class(shape_sf, "sf")
@@ -16,7 +16,7 @@ test_that("req_function format bbox from sf object", {
    expect_equal(length(gregexpr(",",formated_bbox, fixed = TRUE)[[1]]), 4)
 
 })
-test_that("req_function format bbox from sfc object", {
+test_that("hit_api_wfs format bbox from sfc object", {
 
    shape_sfc <- st_as_sfc(read_sf(system.file("shape/nc.shp", package = "sf")))
    expect_s3_class(shape_sfc, "sfc")
@@ -34,7 +34,7 @@ test_that("req_function format bbox from sfc object", {
    expect_equal(length(gregexpr(",",formated_bbox, fixed = TRUE)[[1]]), 4)
 
 })
-test_that("req_function build request properly", {
+test_that("hit_api_wfs build request properly", {
 
    params <- list(
       service = "WFS",
@@ -61,18 +61,18 @@ test_that("req_function build request properly", {
    expect_match(request$url, "VERIF")
 
 })
-test_that("req_function error", {
+test_that("hit_api_wfs error", {
    shape_sf <- read_sf(system.file("shape/nc.shp", package = "sf"))
    layer_name <- "no_need"
 
-   expect_error(req_function("a"))
-   expect_error(req_function())
-   expect_error(req_function(shape, layer_name,  1000)) # Don't forget the apikey !
-   expect_error(req_function("parcellaire", shape, layer_name,  1000)) # Forbidden
+   expect_error(hit_api_wfs("a"))
+   expect_error(hit_api_wfs())
+   expect_error(hit_api_wfs(shape, layer_name,  1000)) # Don't forget the apikey !
+   expect_error(hit_api_wfs("parcellaire", shape, layer_name,  1000)) # Forbidden
 })
-with_mock_dir("req_function perform request", {
+with_mock_dir("hit_api_wfs perform request", {
    #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
-   test_that("req_function perform request", {
+   test_that("hit_api_wfs perform request", {
       shape <- st_polygon(list(matrix(c(-4.373, -4.373, -4.372, -4.372, -4.373, 47.798,
                                             47.799, 47.799, 47.798, 47.798), ncol = 2)))
       shape <- st_sfc(shape, crs = st_crs(4326))
@@ -80,8 +80,8 @@ with_mock_dir("req_function perform request", {
       apikey <- "parcellaire"
       layer_name <- "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
 
-      resp <- req_function(apikey, shape, layer_name, startindex = 0)
-      expect_s3_class(resp, "httr2_response")
+      resp <- hit_api_wfs(shape, apikey, layer_name, startindex = 0)
+      expect_s3_class(resp, "sf")
    })
 }, simplify = FALSE)
 with_mock_dir("get_wfs simple request", {
