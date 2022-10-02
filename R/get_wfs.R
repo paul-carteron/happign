@@ -10,7 +10,8 @@
 #' get_wfs(shape,
 #'         apikey,
 #'         layer_name,
-#'         filename = NULL)
+#'         filename = NULL,
+#'         interactive = FALSE)
 #'
 #' @param shape Object of class `sf`. Needs to be located in
 #' France.
@@ -21,6 +22,7 @@
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
 #' @param filename Either a character string naming a file or a connection open
 #' for writing. (ex : "test.shp" or "~/test.shp")
+#' @param interactive if set to TRUE, no need to specify `apikey` and `layer_name`, you'll be ask.
 #'
 #' @return
 #' `get_wfs`return an object of class `sf`
@@ -78,7 +80,16 @@
 get_wfs <- function(shape,
                     apikey = "cartovecto",
                     layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route",
-                    filename = NULL){
+                    filename = NULL,
+                    interactive = FALSE){
+
+   if (interactive){
+      apikeys <- get_apikeys()
+      apikey <- apikeys[menu(apikeys)]
+
+      layers <- get_layers_metadata(apikey, data = "wfs")$Name
+      layer <- layers[menu(layers)]
+   }
 
    assert(check_class(shape, "sf"),
           check_class(shape, "sfc"))
