@@ -58,7 +58,7 @@
 #'
 #' @export
 #'
-#' @importFrom terra rast
+#' @importFrom terra rast vrt writeRaster
 #' @importFrom sf gdal_utils st_as_sf st_as_sfc st_axis_order st_bbox st_crs
 #' st_filter st_is_longlat st_length st_linestring st_make_grid
 #' st_make_valid st_set_precision st_sfc st_intersects
@@ -286,9 +286,6 @@ download_tiles <- function(urls, crs, format) {
 
    ext <- get_extension(format)
 
-   tmpdir <- tempfile(pattern="gdalwarp_")
-   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
-
    tiles_list <- NULL
    for (i in seq_along(urls)) {
       message(i, "/", length(urls), " downloading...", sep = "")
@@ -298,10 +295,7 @@ download_tiles <- function(urls, crs, format) {
       #               mode = mode,
       #               destfile = tmpfile)
 
-      tmp <- file.path(
-         tmpdir,
-         basename(tempfile(fileext = ext))
-      )
+      tmp <- tempfile(fileext = ext)
 
       gdal_utils(
          util = "translate",
@@ -335,12 +329,14 @@ combine_tiles <- function(tiles_list, filename) {
    #    source = tmp,
    #    destination = filename)
 
-   gdal_utils(
-      util = "warp",
-      source = normalizePath(tiles_list),
-      destination = filename)
+   # Another way
+   # gdal_utils(
+   #    util = "warp",
+   #    source = normalizePath(tiles_list),
+   #    destination = filename)
 
-   # writeRaster(vrt(tiles_list, overwrite = TRUE), filename, overwrite = TRUE)
+   tiles_list <- normalizePath(tiles_list)
+   writeRaster(vrt(tiles_list, overwrite = TRUE), filename, overwrite = TRUE)
    rast <- rast(filename)
 
    message("Raster is saved at :\n",
