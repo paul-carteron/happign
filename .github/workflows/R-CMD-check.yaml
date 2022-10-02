@@ -56,6 +56,12 @@ jobs:
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
         run: |
+          sudo apt install libcurl4-openssl-dev libgit2-dev
+          sudo apt-get install libgdal-dev libproj-dev libgeos-dev libudunits2-dev
+
+      - name: "[Stage] [Linux] Install linux system dependencies"
+        if: runner.os == 'Linux'
+        run: |
           while read -r cmd
           do
             eval sudo $cmd
