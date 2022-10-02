@@ -331,7 +331,7 @@ combine_tiles <- function(tiles_list, filename) {
 
    gdal_utils(
       util = "warp",
-      source =  unlist(tiles_list),
+      source = normalizePath(tiles_list),
       destination = filename)
 
    # writeRaster(vrt(tiles_list, overwrite = TRUE), filename, overwrite = TRUE)
