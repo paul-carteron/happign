@@ -7,7 +7,8 @@
 get_wfs(shape,
         apikey,
         layer_name,
-        filename = NULL)
+        filename = NULL,
+        interactive = FALSE)
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
@@ -22,6 +23,8 @@ or directly from
 
 \item{filename}{Either a character string naming a file or a connection open
 for writing. (ex : "test.shp" or "~/test.shp")}
+
+\item{interactive}{if set to TRUE, no need to specify \code{apikey} and \code{layer_name}, you'll be ask.}
 }
 \value{
 \code{get_wfs}return an object of class \code{sf}
@@ -42,7 +45,7 @@ library(tmap)
 
 apikey <- get_apikeys()[1]
 metadata_table <- get_layers_metadata(apikey, "wfs")
-layer_name <- as.character(metadata_table[32,2])
+layer_name <- as.character(metadata_table[32,1])
 
 # One point from the best town in France
 shape <- st_point(c(-4.373937, 47.79859))

@@ -32,8 +32,9 @@
 #' @importFrom sf read_sf st_bbox st_make_valid st_transform st_write st_sf st_point
 #' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent
 #' request resp_body_json resp_body_string
-#' @importFrom checkmate assert assert_double assert_character check_character
+#' @importFrom checkmate assert assert_character check_character
 #' check_class check_null
+#' @importFrom utils menu
 #'
 #' @seealso
 #' [get_apikeys()], [get_layers_metadata()]
@@ -47,7 +48,7 @@
 #'
 #' apikey <- get_apikeys()[1]
 #' metadata_table <- get_layers_metadata(apikey, "wfs")
-#' layer_name <- as.character(metadata_table[32,2])
+#' layer_name <- as.character(metadata_table[32,1])
 #'
 #' # One point from the best town in France
 #' shape <- st_point(c(-4.373937, 47.79859))
@@ -83,14 +84,16 @@ get_wfs <- function(shape,
                     filename = NULL,
                     interactive = FALSE){
 
+   # Rewrite apikey and layer_name with interactive session
    if (interactive){
       apikeys <- get_apikeys()
       apikey <- apikeys[menu(apikeys)]
 
-      layers <- get_layers_metadata(apikey, data = "wfs")$Name
+      layers <- get_layers_metadata(apikey, data_type = "wfs")$Name
       layer <- layers[menu(layers)]
    }
 
+   # Check input parameter
    assert(check_class(shape, "sf"),
           check_class(shape, "sfc"))
    assert_character(apikey, max.len = 1)
@@ -98,59 +101,50 @@ get_wfs <- function(shape,
    assert(check_character(filename, max.len = 1),
           check_null(filename))
 
-   # 1 hour long downloading
+   # Allow 1 hour long downloading
    default <- options("timeout")
    options("timeout" = 3600)
    on.exit(options(default))
 
-   bbox <- NULL
+   # Looping because length of request is limited to 1000
    shape <- st_make_valid(shape)
+   res <- hit_api_wfs(shape, apikey, layer_name, startindex = 0)
+   cat("Features downloaded :", nrow(res))
 
-   req <- req_function(apikey, shape, layer_name)
-   features <- read_sf(resp_body_string(req))
-   request_need <- resp_body_json(req)$totalFeatures %/% 1000
-   message("1/",request_need + 1," downloaded")
-
-   if (request_need != 0) {
-      list_features <- lapply(seq_len(request_need),
-                              function(x) {
-                                 features <- req_function(
-                                              apikey,
-                                              shape,
-                                              layer_name,
-                                              x * 1000) %>%
-                                    resp_body_string() %>%
-                                    read_sf()
-                                 message(x + 1, "/", request_need + 1, " downloaded")
-                                 return(features)
-                              })
-      list_features <-  do.call("rbind", list_features)
-      features <- rbind(features, list_features)
+   i <- 1000
+   res_temp <- res
+   while(nrow(res_temp) == 1000){
+      cat("...")
+      res_temp <- hit_api_wfs(shape, apikey, layer_name, startindex = i)
+      res <- rbind(res, res_temp)
+      i <- i + 1000
+      cat(nrow(res))
    }
 
-   if ("bbox" %in% names(features)){
-      features <- features[ , - which(names(features) %in% "bbox")]
-   }
+   # Cleaning features from list column
+   res <- res[ , !sapply(res, is.list)]
 
+   # Saving file
    if (!is.null(filename)) {
       path <- normalizePath(filename, mustWork = FALSE)
       path <- enc2utf8(path)
 
-      if (sum(nchar(names(features))>10) > 1){
-         st_write(features, sub("\\.[^.]*$", ".gpkg", path))
+      if (sum(nchar(names(res))>10) > 1){
+         st_write(res, sub("\\.[^.]*$", ".gpkg", path))
          message("Some variables names are more than 10 character so .gpkg format is used.")
       }else{
-         st_write(features, path, append = FALSE)
+         st_write(res, path, append = FALSE)
 
       }
    }
 
-   if (dim(features)[1] == 0){
-      features <- st_sf(st_sfc(st_point()))
+   # Returned empty geometry if no features returned
+   if (dim(res)[1] == 0){
+      res <- st_sf(st_sfc(st_point()))
       warning("No features find, an empty point geometry is returned.")
    }
 
-  return(features)
+  return(res)
 }
 
 #' format url and request it
@@ -160,13 +154,7 @@ get_wfs <- function(shape,
 #' @param startindex startindex for features returned limit
 #' @noRd
 #'
-req_function <- function(apikey, shape, layer_name, startindex = 0) {
-
-   assert_character(apikey, max.len = 1)
-   assert(check_class(shape, "sf"),
-          check_class(shape, "sfc"))
-   assert_character(layer_name, max.len = 1)
-   assert_double(startindex)
+hit_api_wfs <- function(shape, apikey, layer_name, startindex = 0) {
 
    bbox <- st_bbox(st_transform(shape, 4326))
    formated_bbox <- paste(bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"],
@@ -190,5 +178,7 @@ req_function <- function(apikey, shape, layer_name, startindex = 0) {
       req_url_path_append("geoportail/wfs") %>%
       req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
       req_url_query(!!!params) %>%
-      req_perform()
+      req_perform() %>%
+      resp_body_string() %>%
+      read_sf()
 }
