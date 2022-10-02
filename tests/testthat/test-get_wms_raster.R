@@ -76,25 +76,25 @@ test_that("construct_urls", {
    expect_equal(urls[1],
                 "https://wxs.ign.fr/apikey/geoportail/r/wms?version=version&request=GetMap&format=format&layers=layer_name&styles=styles&width=6&height=8&crs=EPSG:4326&bbox=bbox1")
 })
-test_that("combine_tiles", {
-
-   rast_1 <- terra::rast(ncol=10, nrow=10, xmin=0, xmax=10, ymin=0, ymax=10)
-   terra::values(rast_1) <- runif(terra::ncell(rast_1))
-   rast_2 <- terra::rast(ncol=10, nrow=10, xmin=0, xmax=10, ymin=10, ymax=20)
-   terra::values(rast_2) <- runif(terra::ncell(rast_2))
-
-   terra::writeRaster(rast_1, tempfile(pattern = "tile1", fileext = ".tif"), overwrite=TRUE)
-   terra::writeRaster(rast_2, tempfile(pattern = "tile2", fileext = ".tif"), overwrite=TRUE)
-
-   tiles_list <- list.files(tempdir(), pattern = "tile1|tile2", full.names = T)
-
-   filename <- tempfile(pattern = "combined", fileext = ".tif")
-
-   rast <- combine_tiles(tiles_list, filename)
-
-   expect_s4_class(rast, "SpatRaster")
-   expect_equal(dim(rast), c(20, 10, 1))
-})
+# test_that("combine_tiles", {
+#
+#    rast_1 <- terra::rast(ncol=10, nrow=10, xmin=0, xmax=10, ymin=0, ymax=10)
+#    terra::values(rast_1) <- runif(terra::ncell(rast_1))
+#    rast_2 <- terra::rast(ncol=10, nrow=10, xmin=0, xmax=10, ymin=10, ymax=20)
+#    terra::values(rast_2) <- runif(terra::ncell(rast_2))
+#
+#    terra::writeRaster(rast_1, tempfile(pattern = "tile1", fileext = ".tif"), overwrite=TRUE)
+#    terra::writeRaster(rast_2, tempfile(pattern = "tile2", fileext = ".tif"), overwrite=TRUE)
+#
+#    tiles_list <- list.files(tempdir(), pattern = "tile1|tile2", full.names = T)
+#
+#    filename <- tempfile(pattern = "combined", fileext = ".tif")
+#
+#    rast <- combine_tiles(tiles_list, filename)
+#
+#    expect_s4_class(rast, "SpatRaster")
+#    expect_equal(dim(rast), c(20, 10, 1))
+# })
 test_that("download_tiles", {
    skip_on_cran()
    skip_if_offline()
