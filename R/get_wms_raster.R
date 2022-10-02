@@ -58,7 +58,7 @@
 #'
 #' @export
 #'
-#' @importFrom terra vrt writeRaster rast
+#' @importFrom terra rast
 #' @importFrom sf gdal_utils st_as_sf st_as_sfc st_axis_order st_bbox st_crs
 #' st_filter st_is_longlat st_length st_linestring st_make_grid
 #' st_make_valid st_set_precision st_sfc st_intersects
@@ -284,7 +284,6 @@ download_tiles <- function(urls, crs, format) {
    options("timeout" = 3600)
    on.exit(options(default))
 
-
    ext <- get_extension(format)
 
    tiles_list <- NULL
@@ -330,7 +329,12 @@ combine_tiles <- function(tiles_list, filename) {
    #    source = tmp,
    #    destination = filename)
 
-   writeRaster(vrt(tiles_list, overwrite = TRUE), filename, overwrite = TRUE)
+   gdal_utils(
+      util = "warp",
+      source =  unlist(tiles_list),
+      destination = filename)
+
+   # writeRaster(vrt(tiles_list, overwrite = TRUE), filename, overwrite = TRUE)
    rast <- rast(filename)
 
    message("Raster is saved at :\n",

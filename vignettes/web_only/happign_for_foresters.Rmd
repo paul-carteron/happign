@@ -40,8 +40,7 @@ borders <- get_apicarto_commune(insee_code)
 
 tm_shape(borders)+
    tm_borders()+
-   tm_text("nom_com")+
-   tm_basemap("OpenStreetMap")
+   tm_text("nom_com")
 
 ```
 
@@ -64,8 +63,7 @@ parcellaire <- get_wfs(shape = borders,
 tm_shape(borders)+
    tm_borders(col = "red", lwd = 2)+
 tm_shape(parcellaire)+
-   tm_polygons(alpha = 0)+
-   tm_basemap("OpenStreetMap")
+   tm_polygons(alpha = 0)
 
 ```
 
@@ -189,8 +187,8 @@ tm_shape(level_curve)+
 tm_shape(borders)+
    tm_borders(lwd = 2)
 
-file.remove("MNT_5m.tif") # I don't want to keep MNT on disk because this is vignette
-file.remove("MNS_5m.tif") # I don't want to keep MNS on disk because this is vignette
+file.remove(list.files()[grep("^MNT",list.files())]) # I don't want to keep MNT on disk because this is vignette
+file.remove(list.files()[grep("^MNS",list.files())])# I don't want to keep MNS on disk because this is vignette
 ```
 
 ## NDVI
@@ -239,8 +237,7 @@ tm_shape(NDVI)+
 tm_shape(biggest_parcels)+
    tm_borders(lwd = 2, col = "blue")
 
-file.remove("IRC_0_2m.tif") # I don't want to keep IRC on disk because this is vignette
-   
+file.remove(list.files()[grep("^IRC",list.files())]) # I don't want to keep IRC on disk because this is vignette
 ```
 
 ## The gloss index
@@ -305,15 +302,17 @@ The "Etat-major" map is a general map of France made, in its first version, in t
 ```{r}
 etat_major <- get_wms_raster(shape = borders,
                             apikey = "cartes",
-                            resolution = 2,
+                            resolution = 1.5,
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
                             filename = "etat_major")
+
+etat_major <- st_as_stars(etat_major, ignore_file = TRUE)
 
 tm_shape(etat_major)+
    tm_rgb()+
 tm_shape(borders)+
    tm_borders(lwd = 3, col = "red")
 
-file.remove("etat_major_2m.tif") # I don't want to keep etat_major on disk because this is vignette
+file.remove(list.files()[grep("^etat_major",list.files())])
 
 ```
