@@ -286,6 +286,9 @@ download_tiles <- function(urls, crs, format) {
 
    ext <- get_extension(format)
 
+   tmpdir <- tempfile(pattern="gdalwarp_")
+   dir.create(tmpdir, recursive=FALSE, showWarnings=FALSE)
+
    tiles_list <- NULL
    for (i in seq_along(urls)) {
       message(i, "/", length(urls), " downloading...", sep = "")
@@ -295,7 +298,10 @@ download_tiles <- function(urls, crs, format) {
       #               mode = mode,
       #               destfile = tmpfile)
 
-      tmp <- tempfile(fileext = ext)
+      tmp <- file.path(
+         tmpdir,
+         basename(tempfile(fileext = ext))
+      )
 
       gdal_utils(
          util = "translate",
