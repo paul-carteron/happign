@@ -131,6 +131,9 @@ get_wms_raster <- function(shape,
    urls <- construct_urls(apikey, version, format, layer_name, styles, width_height, all_bbox, crs)
    filename <- construct_filename(filename, resolution, layer_name, format)
 
+   Sys.setenv(GDAL_SKIP="DODS")
+   Sys.setenv(GDAL_HTTP_UNSAFESSL = "YES")
+
    if (file.exists(filename) && !overwrite) {
       raster_final <- rast(filename)
       message("File exists at ", filename," and overwrite is not TRUE.")
@@ -273,17 +276,6 @@ construct_filename <- function(filename, resolution, layer_name, format) {
 #' @noRd
 #'
 download_tiles <- function(urls, crs, format) {
-
-   # Avoid pb with working pc
-   old_env <- Sys.getenv("GDAL_HTTP_UNSAFESSL")
-   Sys.setenv("GDAL_HTTP_UNSAFESSL" = "YES")
-   on.exit(Sys.setenv("GDAL_HTTP_UNSAFESSL" = old_env), add = TRUE)
-
-   # Avoid linux certificate error
-   old_env2 <- Sys.getenv("GDAL_SKIP")
-   Sys.setenv("GDAL_SKIP" = "DODS")
-   on.exit(Sys.setenv("GDAL_SKIP" = old_env), add = TRUE)
-
 
    # allow 1h of downloading before error
    default <- options("timeout")
