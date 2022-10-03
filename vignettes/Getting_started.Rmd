@@ -25,7 +25,6 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 We can load the `happign` package, and some additional packages we will need.
 
 ```{r, message = FALSE, warning = FALSE}
-library(happign)
 library(sf)
 library(tmap)
 Sys.setenv(GDAL_SKIP="DODS")
