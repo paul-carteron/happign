@@ -28,6 +28,8 @@ We can load the `happign` package, and some additional packages we will need.
 library(happign)
 library(sf)
 library(tmap)
+Sys.setenv(GDAL_SKIP="DODS")
+Sys.setenv(GDAL_HTTP_UNSAFESSL="YES")
 ```
 
 # WFS and WMS service

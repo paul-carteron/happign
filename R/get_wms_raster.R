@@ -132,7 +132,7 @@ get_wms_raster <- function(shape,
    filename <- construct_filename(filename, resolution, layer_name, format)
 
    Sys.setenv(GDAL_SKIP="DODS")
-   Sys.setenv(GDAL_HTTP_UNSAFESSL = "YES")
+   Sys.setenv(GDAL_HTTP_UNSAFESSL="YES")
 
    if (file.exists(filename) && !overwrite) {
       raster_final <- rast(filename)
