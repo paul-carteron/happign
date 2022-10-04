@@ -20,9 +20,13 @@ library(happign)
 
 
 ```{r}
-Sys.setenv(GDAL_SKIP="DODS")
-Sys.getenv("GDAL_SKIP")
+
 library(sf)
+library(terra)
+
+Sys.setenv(GDAL_SKIP="DODS")
+mes <- Sys.getenv("GDAL_SKIP")
+print(mes)
 
 urls <- c(
   "https://wxs.ign.fr/altimetrie/geoportail/r/wms?version=1.3.0&request=GetMap&format=image/geotiff&layers=ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES&styles=&width=1409&height=1958&crs=EPSG:2154&bbox=122533.640534,6793252.122258,129577.244682667,6803041.179502"

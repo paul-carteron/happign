@@ -131,7 +131,6 @@ get_wms_raster <- function(shape,
    urls <- construct_urls(apikey, version, format, layer_name, styles, width_height, all_bbox, crs)
    filename <- construct_filename(filename, resolution, layer_name, format)
 
-   Sys.setenv(GDAL_SKIP="DODS")
    Sys.setenv(GDAL_HTTP_UNSAFESSL="YES")
 
    if (file.exists(filename) && !overwrite) {
