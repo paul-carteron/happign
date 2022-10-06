@@ -281,10 +281,10 @@ download_tiles <- function(urls, crs, format) {
 
    default_gdal_skip <- Sys.getenv("GDAL_SKIP")
    default_gdal_http_unsafessl <- Sys.getenv("GDAL_HTTP_UNSAFESSL")
-   Sys.setenv(GDAL_SKIP="DODS")
-   Sys.setenv(GDAL_HTTP_UNSAFESSL="YES")
-   on.exit(Sys.setenv(GDAL_SKIP=default_gdal_skip))
-   on.exit(Sys.setenv(GDAL_HTTP_UNSAFESSL=default_gdal_http_unsafessl))
+   Sys.setenv(GDAL_SKIP = "DODS")
+   Sys.setenv(GDAL_HTTP_UNSAFESSL = "YES")
+   on.exit(Sys.setenv(GDAL_SKIP = default_gdal_skip))
+   on.exit(Sys.setenv(GDAL_HTTP_UNSAFESSL = default_gdal_http_unsafessl))
 
    ext <- get_extension(format)
 
@@ -299,11 +299,10 @@ download_tiles <- function(urls, crs, format) {
 
       tmp <- tempfile(fileext = ext)
 
-      gdal_utils(
-         util = "translate",
-         source = urls[i],
-         destination = tmp,
-         options = c("-a_srs", st_crs(crs)$input))
+      gdal_utils(util = "translate",
+                 source = urls[i],
+                 destination = tmp,
+                 options = c("-a_srs", st_crs(crs)$input))
 
       tiles_list <- c(tiles_list, tmp)
    }
