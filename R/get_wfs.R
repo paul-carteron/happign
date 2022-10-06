@@ -108,20 +108,20 @@ get_wfs <- function(shape,
 
    # Looping because length of request is limited to 1000
    shape <- st_make_valid(shape)
-   res <- hit_api_wfs(shape, apikey, layer_name, startindex = 0)
-   cat("Features downloaded :", nrow(res))
 
-   i <- 1000
-   res_temp <- res
-   while(nrow(res_temp) == 1000){
+   i <- 0
+   res <- res_temp <- data.frame()
+
+   cat("Features downloaded : ")
+   while(nrow(res) %% 1000 == 0 | nrow(res_temp) == 0){
       cat("...")
       res_temp <- hit_api_wfs(shape, apikey, layer_name, startindex = i)
       res <- rbind(res, res_temp)
-      i <- i + 1000
       cat(nrow(res))
+      i <- i + 1000
    }
 
-   # Cleaning features from list column
+   # Cleaning list column from features
    res <- res[ , !sapply(res, is.list)]
 
    # Saving file
