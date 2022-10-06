@@ -13,7 +13,8 @@ get_wms_raster(shape,
                overwrite = FALSE,
                version = "1.3.0",
                format = "image/geotiff",
-               styles = "")
+               styles = "",
+               interactive = FALSE)
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
@@ -49,6 +50,8 @@ to geotiff by default. See detail for more information about \code{format}.}
 
 \item{styles}{The rendering style of the layers. Set to "" by default.
 See detail for more information about \code{styles}.}
+
+\item{interactive}{if set to TRUE, no need to specify \code{apikey} and \code{layer_name}, you'll be ask.}
 }
 \value{
 \code{get_wms_raster} return an object of class \code{stars}. Depending on the layer,

@@ -16,7 +16,8 @@
 #'                overwrite = FALSE,
 #'                version = "1.3.0",
 #'                format = "image/geotiff",
-#'                styles = "")
+#'                styles = "",
+#'                interactive = FALSE)
 #'
 #' @param shape Object of class `sf`. Needs to be located in
 #' France.
@@ -42,6 +43,7 @@
 #' to geotiff by default. See detail for more information about `format`.
 #' @param styles The rendering style of the layers. Set to "" by default.
 #'  See detail for more information about `styles`.
+#' @param interactive if set to TRUE, no need to specify `apikey` and `layer_name`, you'll be ask.
 #'
 #' @return
 #' `get_wms_raster` return an object of class `stars`. Depending on the layer,
@@ -65,6 +67,7 @@
 #' @importFrom utils download.file
 #' @importFrom checkmate assert check_class assert_character assert_numeric
 #' check_character check_null
+#' @importFrom utils menu
 #'
 #' @seealso
 #' [get_apikeys()], [get_layers_metadata()], [download.file()]
@@ -108,7 +111,17 @@ get_wms_raster <- function(shape,
                            overwrite = FALSE,
                            version = "1.3.0",
                            format = "image/geotiff",
-                           styles = "") {
+                           styles = "",
+                           interactive = FALSE) {
+
+   # Rewrite apikey and layer_name with interactive session
+   if (interactive){
+      apikeys <- get_apikeys()
+      apikey <- apikeys[menu(apikeys)]
+
+      layers <- get_layers_metadata(apikey, data_type = "wms")$Name
+      layer_name <- layers[menu(layers)]
+   }
 
    # Check input class
    assert(check_class(shape, "sf"),

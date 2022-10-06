@@ -90,7 +90,7 @@ get_wfs <- function(shape,
       apikey <- apikeys[menu(apikeys)]
 
       layers <- get_layers_metadata(apikey, data_type = "wfs")$Name
-      layer <- layers[menu(layers)]
+      layer_name <- layers[menu(layers)]
    }
 
    # Check input parameter
