@@ -32,11 +32,11 @@ Suggests:
     DT,
     httptest2,
     knitr,
+    purrr,
     rmarkdown,
-    testthat (>= 3.0.0),
-    tmap,
     stars,
-    purrr
+    testthat (>= 3.0.0),
+    tmap
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
@@ -45,5 +45,5 @@ LazyData: true
 NeedsCompilation: no
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
-SystemRequirements: C++11, GDAL (>= 2.0.1), GEOS (>= 3.4.0),
-    PROJ (>= 4.8.0), sqlite3
+SystemRequirements: C++11, GDAL (>= 2.0.1), GEOS (>= 3.4.0), PROJ (>=
+    4.8.0), sqlite3
