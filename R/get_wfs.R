@@ -109,18 +109,19 @@ get_wfs <- function(shape,
    # Looping because length of request is limited to 1000
    shape <- st_make_valid(shape)
 
-   i <- 0
-   res <- res_temp <- data.frame()
+   res <- hit_api_wfs(shape, apikey, layer_name, startindex = 0)
+   message("Features downloaded : ", nrow(res), appendLF = F)
 
-   cat("Features downloaded : ")
-   while(nrow(res) %% 1000 == 0 | nrow(res_temp) == 0){
-      cat("...")
+   i <- 1000
+   res_temp <- res
+   while(nrow(res_temp) == 1000){
+      message("...", appendLF = F)
       res_temp <- hit_api_wfs(shape, apikey, layer_name, startindex = i)
       res <- rbind(res, res_temp)
-      cat(nrow(res))
+      message(nrow(res), appendLF = F)
       i <- i + 1000
    }
-
+   message("\n")
    # Cleaning list column from features
    res <- res[ , !sapply(res, is.list)]
 

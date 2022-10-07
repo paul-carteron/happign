@@ -29,7 +29,7 @@ library(stars)
 
 ## First choose a zone of interest
 
-For the example we will work with the Camors forest. First of all we need the commune border that can be obtained from the insee code. Fortunately, happign provides a table containing all insee codes (`data("cog_2022")`). Then, `get_apicarto_commune` is used to donxload shape from Apicarto commune.
+For the example we will work with the Camors forest. First of all we need the commune border that can be obtained from the insee code. Fortunately, happign provides a table containing all insee codes (`data("cog_2022")`). Then, `get_apicarto_commune` is used to download shape from Apicarto commune.
 
 ```{r}
 data("cog_2022")
@@ -69,8 +69,7 @@ tm_shape(parcellaire)+
 
 __*Rq :*__
 
- * *IGN WFS can return a maximum of 1000 features. The get_wfs() function overrides this limit by performing several consecutive requests, that why there 6 request above ;*
- * *The shape used get_wfs() is converted to bbox before requesting. In other words, several parcels will be outside our zone, which is why an intersection is made.*
+ * *IGN WFS can return a maximum of 1000 features. The get_wfs() function overrides this limit by performing several consecutive requests as the console show ;*
  
 ## Downloading BD Forêt
 
@@ -183,7 +182,7 @@ MNH[MNH > 50] <- NA # Remove height more than 50m
 tm_shape(MNH)+
    tm_raster()+
 tm_shape(level_curve)+
-   tm_lines()+
+   tm_lines(col = "darkgrey")+
 tm_shape(borders)+
    tm_borders(lwd = 2)
 
@@ -233,8 +232,8 @@ tm_shape(NDVI)+
    tm_raster(stretch.palette = F,
              breaks = breaks_NDVI,
              palette = palette_NDVI,
-             colorNA = "red")+
-tm_shape(biggest_parcels)+
+             colorNA = NULL)+
+tm_shape(biggest_parcels, is.master = TRUE)+
    tm_borders(lwd = 2, col = "blue")
 
 file.remove(list.files()[grep("^IRC",list.files())]) # I don't want to keep IRC on disk because this is vignette
@@ -252,7 +251,7 @@ tm_shape(borders)+
    tm_borders(lwd = 2, col = "red")+
 tm_shape(gloss_index)+
    tm_raster()+
-tm_shape(biggest_parcels)+
+tm_shape(biggest_parcels, is.master = T)+
    tm_borders(lwd = 2, col = "blue")
 
 ```
