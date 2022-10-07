@@ -22,7 +22,7 @@
 #'
 #' @importFrom httr2 request req_perform resp_body_xml req_url_path_append
 #' req_user_agent req_url_query
-#' @importFrom sf st_bbox
+#' @importFrom sf st_bbox st_centroid st_buffer
 #' @importFrom xml2 xml_child xml_find_all xml_has_attr as_list
 #' @importFrom checkmate assert check_class assert_character
 #'
@@ -62,6 +62,12 @@ get_wms_info <- function(shape,
            " layers.")
    }
 
+   shape <- suppressWarnings(st_centroid(shape)) %>%
+      st_transform(4326) %>%
+      st_transform(2154) %>%
+      st_buffer(10) %>%
+      st_transform(4326)
+
    bbox <- st_bbox(shape)
    bbox <- paste(bbox["ymin"], bbox["xmin"], bbox["ymax"], bbox["xmax"], sep = ",")
 
@@ -76,8 +82,8 @@ get_wms_info <- function(shape,
                     query_layers = layer_name,
                     layers = layer_name,
                     styles = "",
-                    width = 1,
-                    height = 1,
+                    width = 10,
+                    height = 10,
                     crs = "EPSG:4326",
                     bbox = bbox,
                     I = 1,
@@ -134,5 +140,4 @@ are_queryable <- function(apikey){
    queryable_layers_names <- queryable_layers[grep("Name", names(queryable_layers))] %>%
       unlist()
 }
-
 

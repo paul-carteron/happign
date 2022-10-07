@@ -69,7 +69,7 @@ tm_shape(parcellaire)+
 
 __*Rq :*__
 
- * *IGN WFS can return a maximum of 1000 features. The get_wfs() function overrides this limit by performing several consecutive requests as the console show ;*
+ * *IGN WFS can return a maximum of 1000 features. The get_wfs() function overrides this limit by performing several consecutive requests as the console show*
  
 ## Downloading BD Forêt
 
@@ -239,6 +239,25 @@ tm_shape(biggest_parcels, is.master = TRUE)+
 file.remove(list.files()[grep("^IRC",list.files())]) # I don't want to keep IRC on disk because this is vignette
 ```
 
+### Info on raster
+
+For some resources, it is essential to have additional information in order to use them properly. For example, in the forest field, the date the picture was taken is important because our object of study is dynamic. The function `get_wms_info()` allows to get, if they exist, additional information on the raster layers.
+
+```{r}
+
+info_sup <- get_wms_info(shape = st_centroid(borders),
+                         apikey = "ortho",
+                         layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO")
+info_sup
+```
+
+The call to the function `get_wms_info` indicates that this orthophoto was taken in `r info_sup[5]`.
+
+__*Rq :*__
+
+ * *The information returned corresponds to the centroid of the input shape*
+ 
+
 ## The gloss index
 
 The gloss index represents the average of the image glosses. This index is therefore sensitive to the brightness of the soil, related to its moisture and the presence of salts on the surface. It characterizes especially the albedo (solar radiation that is reflected back to the atmosphere). The gloss index allows us to estimate whether the observed surface feature is light or dark.
@@ -301,7 +320,7 @@ The "Etat-major" map is a general map of France made, in its first version, in t
 ```{r}
 etat_major <- get_wms_raster(shape = borders,
                             apikey = "cartes",
-                            resolution = 1.5,
+                            resolution = 0.5,
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
                             filename = "etat_major")
 
