@@ -37,19 +37,28 @@
     <loc>https://paul-carteron.github.io/happign/reference/are_queryable.html</loc>
   </url>
   <url>
-    <loc>https://paul-carteron.github.io/happign/reference/code_insee.html</loc>
+    <loc>https://paul-carteron.github.io/happign/reference/cog_2022.html</loc>
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_cadastre.html</loc>
   </url>
   <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_gpu.html</loc>
+    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_commune.html</loc>
+  </url>
+  <url>
+    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_plu.html</loc>
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_apikeys.html</loc>
   </url>
   <url>
+    <loc>https://paul-carteron.github.io/happign/reference/get_last_news.html</loc>
+  </url>
+  <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_layers_metadata.html</loc>
+  </url>
+  <url>
+    <loc>https://paul-carteron.github.io/happign/reference/get_raw_lidar.html</loc>
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_wfs.html</loc>
@@ -62,8 +71,5 @@
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/shp_to_geojson.html</loc>
   </url>
 </urlset>

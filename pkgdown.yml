@@ -1,12 +1,12 @@
 pandoc: 2.14.2
-pkgdown: 2.0.3
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   Getting_started: Getting_started.html
   SCAN_25_SCAN_100_SCAN_OACI: SCAN_25_SCAN_100_SCAN_OACI.html
   happign_for_foresters: web_only/happign_for_foresters.html
   resolution_for_raster: web_only/resolution_for_raster.html
-last_built: 2022-06-10T19:13Z
+last_built: 2022-10-07T14:27Z
 urls:
   reference: https://paul-carteron.github.io/happign/reference
   article: https://paul-carteron.github.io/happign/articles
