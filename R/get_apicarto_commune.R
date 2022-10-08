@@ -21,8 +21,10 @@
 #' @return `get_apicarto_commune`return an object of class `sf`
 #' @export
 #'
-#' @importFrom sf st_transform read_sf
-#' @importFrom httr2 req_url_path req_perform req_url_query request resp_body_string
+#' @importFrom sf st_transform read_sf st_as_sfc st_make_valid
+#' @importFrom httr2 req_perform req_url_path req_url_query request resp_body_string
+#' resp_is_error last_response
+#' @importFrom geojsonsf sfc_geojson
 #'
 #' @examples
 #' \dontrun{
@@ -82,16 +84,15 @@ get_apicarto_commune <- function(x, source_ign = "PCI"){
                     code_dep = code_dep,
                     geom = geom,
                     source_ign = source_ign) %>%
-      req_perform() %>%
+      req_perform()%>%
       resp_body_string() %>%
       read_sf(quiet = TRUE)
 
-   if(dim(res)[1] == 0){
+   if(resp_is_error(last_response()) | dim(res)[1] == 0){
       stop("No results is retrieve by API.\nCheck that",
-           switch(class(x),
-                  "sf" = "the shape is in France",
-                  "sfc" = "the shape is in France",
-                  "character" = " insee or department code exists. Running `x %in% happign::cog_2022$COM` can help"))
+           switch(substr(class(x),1,3)[1],
+                  "sfc" = " the shape is in France",
+                  "cha" = " insee or department code exists. Running `x %in% happign::cog_2022$COM` can help"))
    }
 
    return(res)
