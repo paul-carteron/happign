@@ -3,7 +3,7 @@ structure(list(method = "GET", url = "https://apicarto.ign.fr/api/cadastre/commu
         `Cache-Control` = "private, no-cache, no-store, must-revalidate", 
         Expires = "-1", Pragma = "no-cache", Vary = "Origin", 
         `Access-Control-Allow-Credentials` = "true", `Content-Type` = "application/json; charset=utf-8", 
-        `Content-Length` = "147", Date = "Sun, 09 Oct 2022 09:37:59 GMT", 
+        `Content-Length` = "147", Date = "Sun, 09 Oct 2022 10:51:25 GMT", 
         Connection = "keep-alive", `Keep-Alive` = "timeout=5", 
         `Set-Cookie` = "REDACTED", `Strict-Transport-Security` = "max-age=31536000; includeSubDomains"), class = "httr2_headers"), 
-    body = charToRaw("{\"type\":\"FeatureCollection\",\"features\":[],\"totalFeatures\":0,\"numberMatched\":0,\"numberReturned\":0,\"timeStamp\":\"2022-10-09T09:37:59.316Z\",\"crs\":null}")), class = "httr2_response")
+    body = charToRaw("{\"type\":\"FeatureCollection\",\"features\":[],\"totalFeatures\":0,\"numberMatched\":0,\"numberReturned\":0,\"timeStamp\":\"2022-10-09T10:51:24.813Z\",\"crs\":null}")), class = "httr2_response")
