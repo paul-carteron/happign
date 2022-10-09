@@ -1,7 +1,7 @@
 #' Apicarto Commune
 #'
 #' Implementation of the cadastre module of the
-#'  [IGN's apicarto](https://apicarto.ign.fr/api/doc/cadastre)
+#'  [IGN's apicarto](https://apicarto.ign.fr/api/doc/cadastre) for commune borders
 #'
 #' @usage
 #' get_apicarto_commune(x,
@@ -50,7 +50,17 @@
 #'    tm_borders()+
 #'    tm_text("nom_com")
 #'
+#' # Get multiple communes borders
+#'
+#' input <- list(line, "29171")
+#' borders <- lapply(input, get_apicarto_commune, source = "PCI")
+#' borders <- do.call(rbind, borders)
+#'
+#' tm_shape(borders)+
+#'    tm_borders()+
+#'    tm_text("nom_com")
 #' }
+#'
 #' @name get_apicarto_commune
 #' @export
 #'
