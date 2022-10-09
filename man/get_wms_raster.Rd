@@ -21,15 +21,13 @@ get_wms_raster(shape,
 France.}
 
 \item{apikey}{API key from \code{get_apikeys()} or directly
-from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
+from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}.}
 
 \item{layer_name}{Name of the layer from \code{get_layers_metadata(apikey, "wms")}
 or directly from
-\href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
+\href{https://geoservices.ign.fr/services-web-experts}{IGN website}.}
 
-\item{resolution}{Cell size in meter. WMS are limited to 2048x2048 pixels so
-depending of the shape and the resolution, correct number and size of tiles
-is calculated. See detail for more information about resolution.}
+\item{resolution}{Cell size in meter. See detail for more information about resolution.}
 
 \item{filename}{Either a character string naming a file or a connection open
 for writing. (ex : "test" or "~/test"). The resolution is automatically
@@ -37,7 +35,7 @@ added to the filename. If raster with same name is already downloaded it
 is directly imported into R. You don't have to specify the extension because
 it is defined in the argument \code{format}.}
 
-\item{crs}{Numeric, character, or object of class sf or sfc. Is set to EPSG:4326
+\item{crs}{Numeric, character, or object of class sf or sfc. Is set to EPSG:2154
 by default. See \code{\link[sf:st_crs]{sf::st_crs()}} for more detail.}
 
 \item{overwrite}{If TRUE, output raster is overwrite}
@@ -51,28 +49,30 @@ to geotiff by default. See detail for more information about \code{format}.}
 \item{styles}{The rendering style of the layers. Set to "" by default.
 See detail for more information about \code{styles}.}
 
-\item{interactive}{if set to TRUE, no need to specify \code{apikey} and \code{layer_name}, you'll be ask.}
+\item{interactive}{if set to TRUE, no need to specify \code{apikey} and \code{layer_name},
+you'll be ask.}
 }
 \value{
-\code{get_wms_raster} return an object of class \code{stars}. Depending on the layer,
-this can be a simple raster (2 dimensions and 1 attribute) or an RGB
-raster (3 dimensions and 1 attribute).
+\code{get_wms_raster} return an object of class \code{SpatRaster} from \code{terra} package.
 }
 \description{
-Directly download a raster layer from the French National Institute
-of Geographic and Forestry. To do that, it need a location giving by
-a shapefile, an apikey and the name of layer. You can find those
-information from
+Download a raster layer from IGN Web Mapping Services (WMS).
+To do that, it need a location giving by a shape, an apikey
+and the name of layer. You can find those information from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}
+or with \code{get_apikeys()} and \code{get_layers_metadata}.
 }
 \details{
 \itemize{
-\item Setting the \code{resolution} parameter higher than the base resolution
+\item Raster tile are limited to 2048x2048 pixels so depending of the shape
+and the resolution, correct number of tiles to download is calculated.
+This mean that setting the \code{resolution} argument higher than the base resolution
 of the layer multiplies the number of pixels without increasing
 the precision. For example, the download of the BD Alti layer from
 IGN will be optimal for a resolution of 25m.
-\item \code{version}, \code{format} and \code{styles} parameters are detailed on
+\item \code{version}, \code{format} and \code{styles} arguments are detailed on
 \href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc}{IGN documentation}
+\item Using the \code{crs} argument avoids post-reprojection which can be time consuming
 }
 }
 \examples{
@@ -80,11 +80,6 @@ IGN will be optimal for a resolution of 25m.
 library(sf)
 library(stars)
 library(tmap)
-
-apikey <- get_apikeys()[4]
-
-metadata_table <- get_layers_metadata(apikey, "wms")
-layer_name <- as.character(metadata_table[2,2])
 
 # shape from the best town in France
 shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
@@ -95,17 +90,25 @@ shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
                                  ncol = 2, byrow = TRUE)))
 shape <- st_sfc(shape, crs = st_crs(4326))
 
+# For quick testing, use interactive = TRUE
+raster <- get_wms_raster(shape = shape, interactive = TRUE, filename = tempfile())
+
+# For specific use, choose apikey with get_apikey() and layer_name with get_layers_metadata()
+apikey <- get_apikeys()[4]  # altimetrie
+metadata_table <- get_layers_metadata(apikey, "wms") # all layers for altimetrie wms
+layer_name <- as.character(metadata_table[2,1]) # ELEVATION.ELEVATIONGRIDCOVERAGE
+
 # Downloading digital elevation model from IGN
-mnt <- get_wms_raster(shape, apikey, layer_name, resolution = 25, filename = "raster_name")
-file.remove("raster_name_25m.tif") # Don't want to keep raster on disk
+mnt <- get_wms_raster(shape, apikey, layer_name, resolution = 25, filename = tempfile())
+
+# Preparing raster for plotting
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
 
-# Verif
 qtm(mnt)+
 qtm(shape, fill = NULL, borders.lwd = 3)
 }
 }
 \seealso{
-\code{\link[=get_apikeys]{get_apikeys()}}, \code{\link[=get_layers_metadata]{get_layers_metadata()}}, \code{\link[=download.file]{download.file()}}
+\code{\link[=get_apikeys]{get_apikeys()}}, \code{\link[=get_layers_metadata]{get_layers_metadata()}}
 }
