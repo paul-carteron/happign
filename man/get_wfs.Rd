@@ -30,49 +30,46 @@ for writing. (ex : "test.shp" or "~/test.shp")}
 \code{get_wfs}return an object of class \code{sf}
 }
 \description{
-Directly download a shapefile layer from the French National Institute
-of Geographic and Forestry. To do that, it need a location giving by
-a shapefile, an apikey and the name of layer. You can find those
-information from
+Download a shapefile layer from IGN Web Feature Service (WFS).
+To do that, it need a location giving by a shape, an apikey
+and the name of layer. You can find those information from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}
+}
+\details{
+By default, when \code{filename} is set, shape are saved as .shp but if names are too
+long, .gpkg is used.
 }
 \examples{
 \dontrun{
 library(sf)
 library(tmap)
 
-# Get the borders of best town in France --------------------
-
-apikey <- get_apikeys()[1]
-metadata_table <- get_layers_metadata(apikey, "wfs")
-layer_name <- as.character(metadata_table[32,1])
-
 # One point from the best town in France
 shape <- st_point(c(-4.373937, 47.79859))
 shape <- st_sfc(shape, crs = st_crs(4326))
 
-# Download borders
+# For quick testing, use interactive = TRUE
+shape_of_my_choice <- get_wfs(shape = shape,
+                              interactive = TRUE)
+
+# For specific use, choose apikey with get_apikey() and layer_name with get_layers_metadata()
+## Getting borders of best town in France
+apikey <- get_apikeys()[1]
+metadata_table <- get_layers_metadata(apikey, "wfs")
+layer_name <- as.character(metadata_table[32,1])
+
+# Downloading borders
 borders <- get_wfs(shape, apikey, layer_name)
 
-# Verif
-tmap_mode("view") # easy interactive map
+# Plotting result
 qtm(borders, fill = NULL, borders = "firebrick") # easy map
 
-# Get forest_area of the best town in France ----------------
+## Get forest_area of the best town in France
 forest_area <- get_wfs(shape = borders,
-                       apikey = get_apikeys()[9],
+                       apikey = "environnement",
                        layer_name = "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape")
 
-# Verif
 qtm(forest_area, fill = "libelle")
-
-# Get roads of the best town in France ----------------------
-roads <- get_wfs(shape = borders,
-                 apikey = "cartovecto",
-                 layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route")
-
-# Verif
-qtm(roads)
 
 }
 }
