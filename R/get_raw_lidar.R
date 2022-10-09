@@ -1,22 +1,21 @@
 #' Download raw LIDAR data
 #'
-#' The raw LIDAR data are not classified. They correspond to a point cloud.
+#' Check if raw LIDAR data are available at the shape location.
+#' The raw LIDAR data are not classified; they correspond to a cloud point.
 #'
-#' @param shape Object of class `sf`. Needs to be located in
+#' @param shape Object of class `sf` or `sfc`. Needs to be located in
 #' France.
-#' @param destfile folder path where data are downloaded. By default set to "." e.g. the current directory
-#' @param grid_path folder path where grid is downloaded. By default set to "." e.g. the current directory
+#' @param destfile Folder path where data are downloaded. By default set to "." e.g. the current directory
+#' @param grid_path Folder path where grid is downloaded. By default set to "." e.g. the current directory
 #' @param quiet if TRUE download is silent
 #'
 #' @details
-#' `get_raw_lidar` first downloads a grid containing the name of LIDAR tiles which is
+#' `get_raw_lidar()` first download a grid containing the name of LIDAR tiles which is
 #' then intersected with `shape` to determine which ones will be uploaded.
-#' The grid is downloaded to `grid_path` if it is not already in the folder.
+#' The grid is downloaded to `grid_path` and lidar data to `destfile`. For both
+#' directory, function check if grid or data already exist to avoid re-downloading them.
 #'
-#' `get_raw_lidar` automatically compares the required tiles to those already in
-#' the `destfile` to avoid re-downloading them.
-#'
-#' @return No object
+#' @return No object.
 #' @export
 #'
 #' @importFrom sf read_sf st_crs st_filter st_transform st_crs<-
@@ -28,7 +27,7 @@
 #' \dontrun{
 #' library(sf)
 #'
-#' # create shape
+#' # Create shape
 #' shape <- st_polygon(list(matrix(c(8.852234, 42.55466,
 #'                                   8.852234, 42.57289,
 #'                                   8.860474, 42.57289,
@@ -96,10 +95,15 @@ download_extract_7z <- function(url, destfile = ".", quiet = quiet){
 #' @noRd
 get_lidar_grid <- function(destfile = ".", grid_path = "."){
 
-   if (length(list.files(destfile, pattern = "lidarhd.shp$")) == 0){
-      url <- "https://pcrs.ign.fr/download/lidar/shp"
-      invisible(download_extract_7z(url, destfile))
-   }
+   tryCatch({
+      if (length(list.files(destfile, pattern = "lidarhd.shp$")) == 0){
+         url <- "https://pcrs.ign.fr/download/lidar/shp"
+         invisible(download_extract_7z(url, destfile))
+      }
+   },
+   error = function(cnd){
+      stop("Downloading of grid isn't available. Please submit new issue to https://github.com/paul-carteron/happign/issues.", call. = FALSE)
+   })
 
    grid <- read_sf(list.files(destfile,
                               pattern = "lidarhd.shp$",
