@@ -31,7 +31,7 @@
 #' library(sf)
 #' library(tmap)
 #'
-#' # line from the best town in France
+#' # Using shape
 #' line <- st_linestring(matrix(c(-4.372215, -4.365177, 47.803943, 47.79772),
 #'                              ncol = 2))
 #' line <- st_sfc(line, crs = st_crs(4326))
@@ -43,7 +43,7 @@
 #' tm_shape(line)+
 #'    tm_lines(col = "red", lwd = 2)
 #'
-#' # code_insee of the best town in France
+#' # Using code_insee
 #' commune <- get_apicarto_commune("29158")
 #'
 #' tm_shape(commune)+
@@ -62,8 +62,8 @@ get_apicarto_commune <- function(x, source = "PCI"){
    # Input class verification
    match.arg(source, c("BDP", "PCI"))
 
-   if (sum(class(x) %in% c("sf", "sfc", "character")) == 0) {
-      stop("x", " must be character, sf or sfc; not ", class(x))
+   if (sum(class(x) %in% c("sf", "sfc", "character")) == 0) { # x can have 3 class
+      stop("x must be character, sf or sfc; not ", class(x))
    }
 
    # Deal with sf or sfc object
@@ -79,12 +79,12 @@ get_apicarto_commune <- function(x, source = "PCI"){
    }
 
    # Deal with character
-   if(methods::is(x, "character") && nchar(x) == 5){
-      code_insee <- x
-   }
-
-   if(methods::is(x, "character") && nchar(x) == 2 && nchar(x) == 3){
-      code_dep <- x
+   if(methods::is(x, "character")){
+      switch(as.character(nchar(x)),
+             "2" = {code_dep <- x},
+             "3" = {code_dep <- x},  #DOM-TOM
+             "5" = {code_insee <- x},
+             stop("x must be length 2, 3 or 5; not ", nchar(x)))
    }
 
    # Request
@@ -101,12 +101,11 @@ get_apicarto_commune <- function(x, source = "PCI"){
       read_sf(quiet = TRUE)
 
    if (dim(res)[1] == 0) {
-      stop("No results is retrieve by API.\nCheck that",
+      stop("No results is returned by API.\nCheck that",
            switch(substr(class(x), 1, 3)[1],
                   "sfc" = " the shape is in France",
-                  "cha" = " insee or department code exists. Running `x %in% happign::cog_2022$COM` can help"),
+                  "cha" = " insee or department code exists. Running data(cog_2022) can help."),
            call. = FALSE)}
-
 
    return(res)
 }

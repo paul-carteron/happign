@@ -5,7 +5,7 @@
 \title{Apicarto Commune}
 \usage{
 get_apicarto_commune(x,
-                     source_ign = "PCI")
+                     source = "PCI")
 }
 \arguments{
 \item{x}{It can be a shape, insee code or departement code.
@@ -15,7 +15,7 @@ get_apicarto_commune(x,
 from France can be retrieved by running \code{data(cog_2022)}
 }}
 
-\item{source_ign}{Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire
+\item{source}{Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire
 express. The BD Parcellaire is a discontinued product. Its use is no longer
 recommended because it is no longer updated. The use of PCI Express is
 strongly recommended and will become mandatory. More information on the
