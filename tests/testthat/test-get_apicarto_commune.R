@@ -26,20 +26,6 @@ with_mock_dir("get_apicarto_commune_2", {
    })
 }, simplify = FALSE)
 
-with_mock_dir("get_apicarto_commune_3", {
-   test_that("sf and sfc object works",{
-      skip_on_cran()
-      skip_if_offline()
-      x <- st_point(c(-4.362473, 47.808511)) |>
-         st_sfc(crs = st_crs(4326)) |>
-         st_sf()
-
-      res <- get_apicarto_commune(x)
-      expect_s3_class(res, "sf")
-      expect_equal(dim(res), c(1, 6))
-   })
-}, simplify = FALSE)
-
 with_mock_dir("get_apicarto_commune_4", {
    test_that("character object works",{
       skip_on_cran()
@@ -49,4 +35,19 @@ with_mock_dir("get_apicarto_commune_4", {
       expect_equal(dim(res), c(1, 6))
    })
 }, simplify = FALSE)
+
+# with_mock_dir("get_apicarto_commune_3", {
+#    test_that("sf and sfc object works",{
+#       skip_on_cran()
+#       skip_if_offline()
+#
+#       x <- st_point(c(-4.362, 47.808)) |>
+#          st_sfc(crs = st_crs(4326)) |>
+#          st_sf()
+#
+#       res <- get_apicarto_commune(x)
+#       expect_s3_class(res, "sf")
+#       expect_equal(dim(res), c(1, 6))
+#    })
+# }, simplify = F)
 
