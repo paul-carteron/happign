@@ -9,20 +9,8 @@
 #' @param data_type Should be `"wfs"` or `"wms"`. See details for more
 #' information about these two Webservice formats.
 #'
-#' @details
-#' * WFS is a standard protocol defined by the OGC (Open Geospatial Consortium)
-#' and recognized by an ISO standard. The reference document is available
-#' on the [OGC website](https://www.ogc.org/standards/wfs). The Geoportail
-#' WFS service implements version 2.0 of this protocol. The WFS service
-#' of Geoportail gives access to objects from different IGN databases:
-#' BD TOPO®, BD CARTO®, BD ADRESSE®, BD FORET® or PARCELLAIRE EXPRESS (PCI).
-#'
-#' * WMS is a standard protocol defined by the OGC
-#' (Open Geospatial Consortium) and recognized by an ISO standard.
-#' The reference document is available on the
-#' [OGC website](https://www.ogc.org/standards/wms).
-#'
-#' * For further more detail, check [IGN documentation page](https://geoservices.ign.fr/documentation/services/api-et-services-ogc)
+#' @importFrom httr2 req_perform req_url_path req_url_query request resp_body_xml
+#' @importFrom xml2 as_list xml_child xml_children xml_find_all
 #'
 #' @seealso
 #' [get_apikeys()]
@@ -31,24 +19,21 @@
 #' \dontrun{
 #' apikey <- get_apikeys()[4]
 #' metadata_table <- get_layers_metadata(apikey, "wms")
-#' all_layer_name <- metadata_table$name
-#' abstract_of_MNT <- metadata_table[1,"abstract"]
+#' all_layer_name <- metadata_table$Name
+#' one_abstract <- metadata_table[1,"Abstract"]
 #'
-#' # list with every wfs metadata (warning : it's quite long)
+#' # list every wfs metadata (warning : it's quite long)
 #' list_metadata <- lapply(X = get_apikeys(),
 #'                        FUN = get_layers_metadata,
 #'                        data_type = "wfs")
 #'
 #' # Convert list to one single data.frame
-#' all_metadata <- dplyr::bind_rows(list_metadata)
+#' list_metadata <- do.call(rbind, list_metadata)
 #' }
 #'
 #' @name get_layers_metadata
 #' @return data.frame
 #' @export
-#'
-#' @importFrom httr2 req_perform req_url_path req_url_query request resp_body_xml
-#' @importFrom xml2 as_list xml_child xml_children xml_find_all
 #'
 get_layers_metadata <- function(apikey,
                                 data_type) {
@@ -84,7 +69,7 @@ get_layers_metadata <- function(apikey,
       as.data.frame(apply(clean_metadata, c(1, 2), unlist))
    },
    error = function(cond){
-      message("There's no ", data_type, " resources for apikey ", apikey)
+      warning("There's no ", data_type, " resources for apikey ", apikey, ".", call. = F)
    })
 }
 

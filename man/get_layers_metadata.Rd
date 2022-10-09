@@ -21,35 +21,20 @@ Metadata are retrieved using the IGN APIs. The execution time can
 be long depending on the size of the metadata associated with
 the API key and the overload of the IGN servers.
 }
-\details{
-\itemize{
-\item WFS is a standard protocol defined by the OGC (Open Geospatial Consortium)
-and recognized by an ISO standard. The reference document is available
-on the \href{https://www.ogc.org/standards/wfs}{OGC website}. The Geoportail
-WFS service implements version 2.0 of this protocol. The WFS service
-of Geoportail gives access to objects from different IGN databases:
-BD TOPO®, BD CARTO®, BD ADRESSE®, BD FORET® or PARCELLAIRE EXPRESS (PCI).
-\item WMS is a standard protocol defined by the OGC
-(Open Geospatial Consortium) and recognized by an ISO standard.
-The reference document is available on the
-\href{https://www.ogc.org/standards/wms}{OGC website}.
-\item For further more detail, check \href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc}{IGN documentation page}
-}
-}
 \examples{
 \dontrun{
 apikey <- get_apikeys()[4]
 metadata_table <- get_layers_metadata(apikey, "wms")
-all_layer_name <- metadata_table$name
-abstract_of_MNT <- metadata_table[1,"abstract"]
+all_layer_name <- metadata_table$Name
+one_abstract <- metadata_table[1,"Abstract"]
 
-# list with every wfs metadata (warning : it's quite long)
+# list every wfs metadata (warning : it's quite long)
 list_metadata <- lapply(X = get_apikeys(),
                        FUN = get_layers_metadata,
                        data_type = "wfs")
 
 # Convert list to one single data.frame
-all_metadata <- dplyr::bind_rows(list_metadata)
+list_metadata <- do.call(rbind, list_metadata)
 }
 
 }
