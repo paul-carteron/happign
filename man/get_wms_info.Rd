@@ -12,7 +12,7 @@ get_wms_info(
 )
 }
 \arguments{
-\item{shape}{Object of class \code{sf}. Needs to be located in
+\item{shape}{Object of class \code{sf} or \code{sfc}. Needs to be located in
 France.}
 
 \item{apikey}{API key from \code{get_apikeys()} or directly
@@ -26,14 +26,22 @@ or directly from
 \href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc}{IGN documentation}}
 }
 \value{
-data.frame containing additional information from the layer
+character containing additional information from the layer
 }
 \description{
+For some wms layer more information can be found with GetFeatureInfo request.
+This function first chechk if info are available. If not, available layers
+are returned.
+}
+\details{
 #' @usage
 get_wms_info(shape,
 apikey = "ortho",
 layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
 version = "1.3.0"
+
+The function use the centroid of the shape to return info because sometime
+there's multiple tile.
 }
 \examples{
 \dontrun{
@@ -49,7 +57,7 @@ shape <- st_sfc(shape, crs = st_crs(4326))
 
 wms_info <- get_wms_info(shape, "ortho", "ORTHOIMAGERY.ORTHOPHOTOS")
 
-date_vol <- wms_info$date_vol
+wms_info
 
 }
 }

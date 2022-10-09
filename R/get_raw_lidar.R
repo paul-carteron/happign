@@ -102,7 +102,7 @@ get_lidar_grid <- function(destfile = ".", grid_path = "."){
       }
    },
    error = function(cnd){
-      stop("Downloading of grid isn't available. Please submit new issue to https://github.com/paul-carteron/happign/issues.", call. = FALSE)
+      stop("Downloading of grid is unavailable. Please submit new issue to https://github.com/paul-carteron/happign/issues.", call. = FALSE)
    })
 
    grid <- read_sf(list.files(destfile,

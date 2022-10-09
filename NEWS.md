@@ -4,6 +4,9 @@
 * Remove connection to IGN news when library is load. Now `get_last_news()` can be used
 to retrieve last news.
 * Adding `interactive` parameter to `get_wfs` and `get_wms_raster` to allow quick use
+* Catch error from `get_raw_lidar`
+* Change and complete vignette "happign for forester" on website
+* Testing as much as possible
 
 # happign 0.1.6
 * `get_wms_raster()` use gdal with `sf::gdal_utils()` for downloading and `terra::vrt()` for

@@ -1,12 +1,16 @@
 #' Retrieve additional information for wms layer
 #'
+#' For some wms layer more information can be found with GetFeatureInfo request.
+#' This function first chechk if info are available. If not, available layers
+#' are returned.
+#'
 #' #' @usage
 #' get_wms_info(shape,
 #'              apikey = "ortho",
 #'              layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
 #'              version = "1.3.0"
 #'
-#' @param shape Object of class `sf`. Needs to be located in
+#' @param shape Object of class `sf` or `sfc`. Needs to be located in
 #' France.
 #' @param apikey API key from `get_apikeys()` or directly
 #' from [IGN website](https://geoservices.ign.fr/services-web-experts)
@@ -16,7 +20,7 @@
 #' @param version The version of the service used. More details at
 #' [IGN documentation](https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc)
 #'
-#' @return data.frame containing additional information from the layer
+#' @return character containing additional information from the layer
 #'
 #' @export
 #'
@@ -25,6 +29,10 @@
 #' @importFrom sf st_bbox st_centroid st_buffer
 #' @importFrom xml2 xml_child xml_find_all xml_has_attr as_list
 #' @importFrom checkmate assert check_class assert_character
+#'
+#' @details
+#' The function use the centroid of the shape to return info because sometime
+#' there's multiple tile.
 #'
 #' @examples
 #' \dontrun{
@@ -40,7 +48,7 @@
 #'
 #' wms_info <- get_wms_info(shape, "ortho", "ORTHOIMAGERY.ORTHOPHOTOS")
 #'
-#' date_vol <- wms_info$date_vol
+#' wms_info
 #'
 #' }
 get_wms_info <- function(shape,
