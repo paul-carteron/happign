@@ -1,5 +1,9 @@
 #' Print latest news from geoservice
 #'
+#' This function connects directly to the RSS feed of the
+#' geoservice site to get the latest information. This allows
+#' to understand why some resources are sometimes not available.
+#'
 #' @usage
 #' get_last_news()
 #'
@@ -14,6 +18,7 @@
 #' \dontrun{
 #' get_last_news()
 #' }
+#'
 get_last_news <- function(){
 
    req <- request("http://geoservices.ign.fr/actualites/rss.xml") %>%
