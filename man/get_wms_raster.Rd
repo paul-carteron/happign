@@ -38,7 +38,7 @@ it is defined in the argument \code{format}.}
 \item{crs}{Numeric, character, or object of class sf or sfc. Is set to EPSG:2154
 by default. See \code{\link[sf:st_crs]{sf::st_crs()}} for more detail.}
 
-\item{overwrite}{If TRUE, output raster is overwrite}
+\item{overwrite}{If TRUE, output raster is overwrite.}
 
 \item{version}{The version of the service used. See detail for more
 information about \code{version}.}
@@ -49,7 +49,7 @@ to geotiff by default. See detail for more information about \code{format}.}
 \item{styles}{The rendering style of the layers. Set to "" by default.
 See detail for more information about \code{styles}.}
 
-\item{interactive}{if set to TRUE, no need to specify \code{apikey} and \code{layer_name},
+\item{interactive}{If set to TRUE, no need to specify \code{apikey} and \code{layer_name},
 you'll be ask.}
 }
 \value{
@@ -60,7 +60,7 @@ Download a raster layer from IGN Web Mapping Services (WMS).
 To do that, it need a location giving by a shape, an apikey
 and the name of layer. You can find those information from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}
-or with \code{get_apikeys()} and \code{get_layers_metadata}.
+or with \code{get_apikeys()} and \code{get_layers_metadata()}.
 }
 \details{
 \itemize{

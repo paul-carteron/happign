@@ -22,6 +22,7 @@
 #' @importFrom sf read_sf st_crs st_filter st_transform st_crs<-
 #' @importFrom archive archive archive_extract
 #' @importFrom dplyr pull
+#' @importFrom utils download.file
 #'
 #' @examples
 #' \dontrun{
