@@ -5,13 +5,13 @@
 #'
 #' @usage
 #' get_apicarto_commune(x,
-#'                      source_ign = "PCI")
+#'                      source = "PCI")
 #'
 #' @param x It can be a shape, insee code or departement code.
 #' * shape : it must be an object of class `sf` or `sfc`.
 #' * insee or departement code : it must be an object of class `character`. All insee code
 #' from France can be retrieved by running `data(cog_2022)`
-#' @param source_ign Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire
+#' @param source Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire
 #' express. The BD Parcellaire is a discontinued product. Its use is no longer
 #'  recommended because it is no longer updated. The use of PCI Express is
 #'  strongly recommended and will become mandatory. More information on the
@@ -54,11 +54,19 @@
 #' @name get_apicarto_commune
 #' @export
 #'
-get_apicarto_commune <- function(x, source_ign = "PCI"){
+get_apicarto_commune <- function(x, source = "PCI"){
 
-   match.arg(source_ign, c("BDP", "PCI"))
+   # Initialisation
    geom <- code_insee <- code_dep <- NULL
 
+   # Input class verification
+   match.arg(source, c("BDP", "PCI"))
+
+   if (sum(class(x) %in% c("sf", "sfc", "character")) == 0) {
+      stop("x", " must be character, sf or sfc; not ", class(x))
+   }
+
+   # Deal with sf or sfc object
    if(methods::is(x, "sf")){
       x <- st_as_sfc(x)
    }
@@ -70,30 +78,35 @@ get_apicarto_commune <- function(x, source_ign = "PCI"){
          sfc_geojson()
    }
 
+   # Deal with character
    if(methods::is(x, "character") && nchar(x) == 5){
       code_insee <- x
    }
 
-   if(methods::is(x, "character") && nchar(x) == 2){
+   if(methods::is(x, "character") && nchar(x) == 2 && nchar(x) == 3){
       code_dep <- x
    }
 
+   # Request
    res <- request("https://apicarto.ign.fr") %>%
       req_url_path("api/cadastre/commune") %>%
-      req_url_query(code_insee = code_insee,
-                    code_dep = code_dep,
-                    geom = geom,
-                    source_ign = source_ign) %>%
-      req_perform()%>%
+      req_url_query(
+         code_insee = code_insee,
+         code_dep = code_dep,
+         geom = geom,
+         source = source
+      ) %>%
+      req_perform() %>%
       resp_body_string() %>%
       read_sf(quiet = TRUE)
 
-   if(resp_is_error(last_response()) | dim(res)[1] == 0){
+   if (dim(res)[1] == 0) {
       stop("No results is retrieve by API.\nCheck that",
-           switch(substr(class(x),1,3)[1],
+           switch(substr(class(x), 1, 3)[1],
                   "sfc" = " the shape is in France",
-                  "cha" = " insee or department code exists. Running `x %in% happign::cog_2022$COM` can help"))
-   }
+                  "cha" = " insee or department code exists. Running `x %in% happign::cog_2022$COM` can help"),
+           call. = FALSE)}
+
 
    return(res)
 }
