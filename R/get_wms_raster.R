@@ -74,7 +74,6 @@
 #' @examples
 #' \dontrun{
 #' library(sf)
-#' library(stars)
 #' library(tmap)
 #'
 #' # shape from the best town in France
@@ -136,6 +135,11 @@ get_wms_raster <- function(shape,
    assert_character(version)
    assert_character(format)
    assert_character(styles)
+   assert_choice(overwrite, c(TRUE, FALSE))
+   assert_choice(apikey, get_apikeys())
+
+   # Check that crs is valid
+   tryCatch({st_crs(crs)}, error = function(cnd){stop("Invalid crs : ", crs, call. = FALSE)})
 
    shape <- st_make_valid(shape) %>%
       st_transform(st_crs(crs))
@@ -255,8 +259,8 @@ get_extension <- function(format) {
      "image/png" = ".png",
      "image/tiff" = ".tif",
      "image/geotiff" = ".tif",
-     stop("Bad format, please check ",
-          "`?get_wms_raster()`")
+     stop("Bad format, please check available format at function description ",
+          "`?get_wms_raster()`", call. = FALSE)
   )
 }
 
@@ -328,9 +332,10 @@ download_tiles <- function(urls, crs, format) {
 #' Combine tiles
 #' @param tiles_list list of tiles from download_tiles
 #' @param filename name of file or connection
+#' @param apikey apikey from get_apikeys() for error message
 #' @noRd
 #'
-combine_tiles <- function(tiles_list, filename) {
+combine_tiles <- function(tiles_list, filename, apikey) {
 
    # Another way of acheving the same goal
    # tmp <- tempfile(fileext = ".vrt")
@@ -351,10 +356,17 @@ combine_tiles <- function(tiles_list, filename) {
    #    source = normalizePath(tiles_list),
    #    destination = filename)
 
-   tiles_list <- normalizePath(tiles_list)
-   writeRaster(vrt(tiles_list, overwrite = TRUE), filename, overwrite = TRUE)
-   rast <- rast(filename)
+   tryCatch({
+      tiles_list <- normalizePath(tiles_list)
+      writeRaster(vrt(tiles_list, overwrite = TRUE), filename, overwrite = TRUE)
+   },error = function(cnd){
+      stop("Please check that :\n",
+           "- layer_name is valid by running `get_layers_metadata(",apikey,", \"wms\")[,1]`\n",
+           "- styles is valid (check function description for more info)\n",
+           "- version is valid (check function description for more info)\n ", call. = FALSE)
+   })
 
+   rast <- rast(filename)
    message("Raster is saved at :\n",
            filename)
 

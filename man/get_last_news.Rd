@@ -10,10 +10,13 @@ get_last_news()
 message
 }
 \description{
-Print latest news from geoservice
+This function connects directly to the RSS feed of the
+geoservice site to get the latest information. This allows
+to understand why some resources are sometimes not available.
 }
 \examples{
 \dontrun{
 get_last_news()
 }
+
 }

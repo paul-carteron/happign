@@ -78,7 +78,6 @@ IGN will be optimal for a resolution of 25m.
 \examples{
 \dontrun{
 library(sf)
-library(stars)
 library(tmap)
 
 # shape from the best town in France
