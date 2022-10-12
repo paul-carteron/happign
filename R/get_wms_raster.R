@@ -155,7 +155,7 @@ get_wms_raster <- function(shape,
       message("File exists at ", filename," and overwrite is not TRUE.")
    }else{
       tiles_list <- download_tiles(urls, crs, format)
-      raster_final <- combine_tiles(tiles_list, filename)
+      raster_final <- combine_tiles(tiles_list, filename, apikey)
    }
    return(raster_final)
 }
