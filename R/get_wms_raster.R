@@ -139,7 +139,9 @@ get_wms_raster <- function(shape,
    assert_choice(apikey, get_apikeys())
 
    # Check that crs is valid
-   tryCatch({st_crs(crs)}, error = function(cnd){stop("Invalid crs : ", crs, call. = FALSE)})
+   tryCatch({st_crs(crs)},
+            error = function(cnd){stop("Invalid crs : ", crs, call. = FALSE)},
+            warning = function(cns){stop("Invalid crs : ", crs, call. = FALSE)})
 
    shape <- st_make_valid(shape) %>%
       st_transform(st_crs(crs))
