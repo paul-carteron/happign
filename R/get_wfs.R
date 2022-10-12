@@ -133,8 +133,8 @@ get_wfs <- function(shape,
 
       if (sum(nchar(names(res))>10) > 1){
          st_write(res, sub("\\.[^.]*$", ".gpkg", path),
-                  layer_options = gsub("[^[:alnum:]]", '_', layer_name),
-                  append = !overwrite)
+                  layer = gsub("[^[:alnum:]]", '_', layer_name),
+                  layer_options = paste0("OVERWRITE=",ifelse(overwrite, "YES", "NO")))
          message("Some variables names are more than 10 character so .gpkg format is used.")
       }else{
          st_write(res, path, append = !overwrite)
