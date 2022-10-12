@@ -361,7 +361,7 @@ combine_tiles <- function(tiles_list, filename, apikey) {
       writeRaster(vrt(tiles_list, overwrite = TRUE), filename, overwrite = TRUE)
    },error = function(cnd){
       stop("Please check that :\n",
-           "- layer_name is valid by running `get_layers_metadata(",apikey,", \"wms\")[,1]`\n",
+           "- layer_name is valid by running `get_layers_metadata(\"",apikey,"\", \"wms\")[,1]`\n",
            "- styles is valid (check function description for more info)\n",
            "- version is valid (check function description for more info)\n ", call. = FALSE)
    })
