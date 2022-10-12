@@ -7,9 +7,10 @@
 #'
 #' @usage
 #' get_wfs(shape,
-#'         apikey,
-#'         layer_name,
+#'         apikey = "cartovecto",
+#'         layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route",
 #'         filename = NULL,
+#'         overwrite = FALSE,
 #'         interactive = FALSE)
 #'
 #' @param shape Object of class `sf`. Needs to be located in
@@ -21,6 +22,7 @@
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
 #' @param filename Either a character string naming a file or a connection open
 #' for writing. (ex : "test.shp" or "~/test.shp")
+#' @param overwrite If TRUE, file is overwrite
 #' @param interactive if set to TRUE, no need to specify `apikey` and `layer_name`, you'll be ask.
 #'
 #' @return
@@ -80,6 +82,7 @@ get_wfs <- function(shape,
                     apikey = "cartovecto",
                     layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route",
                     filename = NULL,
+                    overwrite = FALSE,
                     interactive = FALSE){
 
    # Rewrite apikey and layer_name with interactive session
@@ -129,10 +132,12 @@ get_wfs <- function(shape,
       path <- enc2utf8(path)
 
       if (sum(nchar(names(res))>10) > 1){
-         st_write(res, sub("\\.[^.]*$", ".gpkg", path))
+         st_write(res, sub("\\.[^.]*$", ".gpkg", path),
+                  layer_options = gsub("[^[:alnum:]]", '_', layer_name),
+                  append = !overwrite)
          message("Some variables names are more than 10 character so .gpkg format is used.")
       }else{
-         st_write(res, path, append = FALSE)
+         st_write(res, path, append = !overwrite)
 
       }
    }

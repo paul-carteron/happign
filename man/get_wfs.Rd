@@ -5,9 +5,10 @@
 \title{Download WFS layer}
 \usage{
 get_wfs(shape,
-        apikey,
-        layer_name,
+        apikey = "cartovecto",
+        layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route",
         filename = NULL,
+        overwrite = FALSE,
         interactive = FALSE)
 }
 \arguments{
@@ -23,6 +24,8 @@ or directly from
 
 \item{filename}{Either a character string naming a file or a connection open
 for writing. (ex : "test.shp" or "~/test.shp")}
+
+\item{overwrite}{If TRUE, file is overwrite}
 
 \item{interactive}{if set to TRUE, no need to specify \code{apikey} and \code{layer_name}, you'll be ask.}
 }
