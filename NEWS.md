@@ -6,7 +6,9 @@ to retrieve last news.
 * Adding `interactive` parameter to `get_wfs` and `get_wms_raster` to allow quick use
 * Catch error from `get_raw_lidar`
 * Change and complete vignette "happign for forester" on website
-* Testing as much as possible
+* Handling errors with tryCatch
+* `get_apicarto_plu()` is now `get_apicarto_gpu()` : it can handle complex shape 
+and acces all ressources from [APIcarto GPU](https://apicarto.ign.fr/api/doc/gpu)
 
 # happign 0.1.6
 * `get_wms_raster()` use gdal with `sf::gdal_utils()` for downloading and `terra::vrt()` for
