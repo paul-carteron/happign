@@ -143,9 +143,8 @@ get_wfs <- function(shape,
    }
 
    # Returned empty geometry if no features returned
-   if (dim(res)[1] == 0){
-      res <- st_sf(st_sfc(st_point()))
-      warning("No features find, an empty point geometry is returned.")
+   if (nrow(res) == 0){
+      warning("No features find.", call. = FALSE)
    }
 
   return(res)

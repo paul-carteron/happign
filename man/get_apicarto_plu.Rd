@@ -7,7 +7,8 @@
 get_apicarto_plu(x,
                  ressource = "zone-urba",
                  partition = NULL,
-                 categorie = NULL)
+                 categorie = NULL,
+                 dTolerance = 0)
 }
 \arguments{
 \item{x}{An object of class \code{sf} or \code{sfc}. If NULL, \code{partition} must be filled
@@ -23,6 +24,9 @@ is explicitly set, all PLU features are returned and \code{geom} is override}
 
 \item{categorie}{public utility easement according to the
 national nomenclature ("http://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html")}
+
+\item{dTolerance}{To complex shape cannot be handle by API; using dTolerance allow
+allows to simplify them. See \code{?sf::st_simplify}}
 }
 \value{
 A object of class \code{sf}
