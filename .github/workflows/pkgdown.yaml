@@ -3,26 +3,27 @@
 
 
 on:
- schedule:
- #At 12:00 AM, only on Monday
-   - cron: '0 0 * * 1'
+  push:
+    branches: [main, master]
+ # schedule:
+ # #At 12:00 AM, only on Monday
+ #   - cron: '0 0 * * 1'
 
 name: pkgdown
 
 jobs:
   pkgdown:
-    runs-on: macOS-latest
+    runs-on: windows-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      GDAL_SKIP : DODS
+      R_KEEP_PKG_SOURCE: yes
+      GDAL_SKIP: DODS
       GDAL_HTTP_UNSAFESSL: YES
 
     steps:
       - uses: actions/checkout@v2
-
-      - uses: r-lib/actions/setup-r@v2
-
       - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
 
       - name: Install spatial dependencies
         run: brew install gdal proj
@@ -34,17 +35,10 @@ jobs:
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
 
-      - name: Restore R package cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
-
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
-          install.packages("pkgdown", type = "binary")
+          remotes::install_cran("pkgdown", type = "binary")
         shell: Rscript {0}
 
       - name: Install package
