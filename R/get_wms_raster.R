@@ -65,8 +65,6 @@
 #' st_filter st_is_longlat st_length st_linestring st_make_grid
 #' st_make_valid st_set_precision st_sfc st_intersects st_transform
 #' @importFrom utils menu
-#' @importFrom checkmate assert assert_character assert_numeric check_character
-#' check_class check_null
 #'
 #' @seealso
 #' [get_apikeys()], [get_layers_metadata()]
@@ -124,24 +122,8 @@ get_wms_raster <- function(shape,
       layer_name <- layers[menu(layers)]
    }
 
-   # Check input class
-   assert(check_class(shape, "sf"),
-          check_class(shape, "sfc"))
-   assert_character(apikey)
-   assert_character(layer_name)
-   assert_numeric(resolution)
-   assert(check_character(filename),
-          check_null(filename))
-   assert_character(version)
-   assert_character(format)
-   assert_character(styles)
-   assert_choice(overwrite, c(TRUE, FALSE))
-   assert_choice(apikey, get_apikeys())
-
-   # Check that crs is valid
-   tryCatch({st_crs(crs)},
-            error = function(cnd){stop("Invalid crs : ", crs, call. = FALSE)},
-            warning = function(cns){stop("Invalid crs : ", crs, call. = FALSE)})
+   check_get_wms_raster_input(shape, apikey, layer_name, resolution, filename, crs,
+                              overwrite, version, format, styles, interactive)
 
    shape <- st_make_valid(shape) %>%
       st_transform(st_crs(crs))
@@ -170,7 +152,7 @@ format_bbox_wms <- function(shape, crs) {
    # The bounding box coordinate values shall be in the units defined for the Layer CRS.
    # cf : 06-042_OpenGIS_Web_Map_Service_WMS_Implementation_Specification.pdf
 
-   # EPSG:4326 is lat/lon but WMS take long/lat so you have to use st_axis_order  = T
+   # EPSG:4326 is lat/lon but WMS take long/lat so you have to use st_axis_order = T
    # That only if coord are long/lat, else is not working
 
       bbox <- st_bbox(shape)
