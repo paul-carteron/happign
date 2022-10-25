@@ -282,6 +282,10 @@ download_tiles <- function(urls, crs, format) {
    options("timeout" = 3600)
    on.exit(options(default))
 
+   # GDAL_HTTP_UNSAFESSL is used to avoid safe SSL host / certificate verification
+   # which can be problematic when using professional computer
+   # GDAL_SKIP is needed for GDAL < 3.5,
+   # See https://github.com/rspatial/terra/issues/828 for more
    default_gdal_skip <- Sys.getenv("GDAL_SKIP")
    default_gdal_http_unsafessl <- Sys.getenv("GDAL_HTTP_UNSAFESSL")
    Sys.setenv(GDAL_SKIP = "DODS")
@@ -295,6 +299,7 @@ download_tiles <- function(urls, crs, format) {
    for (i in seq_along(urls)) {
       message(i, "/", length(urls), " downloading...", sep = "")
 
+      # Old way of downlading raster data
       # download.file(url = urls[i],
       #               method = method,
       #               mode = mode,
@@ -302,6 +307,7 @@ download_tiles <- function(urls, crs, format) {
 
       tmp <- tempfile(fileext = ext)
 
+      # New way which allow to set crs and it also faster
       gdal_utils(util = "translate",
                  source = urls[i],
                  destination = tmp,

@@ -43,7 +43,10 @@ check_get_wms_raster_input <- function(shape, apikey, layer_name, resolution, fi
    # filename
    assert(check_character(filename),
           check_null(filename))
-   if(grepl("\\.", filename)){
+
+   # if filename contain point, it could be an extension which is not needed
+   # if filename is NULL, no need to check for point
+   if(grepl("\\.", filename) && !is.null(filename)){
       warning("filename param contain '.', please check there no extension add to filename.",
               call. = F)
    }
