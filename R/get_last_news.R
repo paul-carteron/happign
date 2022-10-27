@@ -42,7 +42,7 @@ get_last_news <- function(){
                           req[[1]][["title"]][[1]],
                           "\"",
                           " on ", substring(req[[1]][["pubDate"]][[1]], 6, 16),
-                          " (", req[[1]][["link"]][[1]], ")\n")
+                          " (", req[[1]][["link"]][[1]], ")")
    }
 
    message(last_actu)

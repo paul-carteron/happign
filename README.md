@@ -7,6 +7,7 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/paul-carteron/happign/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/paul-carteron/happign/actions/workflows/R-CMD-check.yaml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/happign)](https://CRAN.R-project.org/package=happign)
 [![downloads](http://cranlogs.r-pkg.org/badges/last-month/happign?color=green)](https://cran.r-project.org/package=happign)
@@ -14,20 +15,14 @@ status](https://www.r-pkg.org/badges/version/happign)](https://CRAN.R-project.or
 coverage](https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg)](https://app.codecov.io/gh/paul-carteron/happign?branch=main)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![R-CMD-check](https://github.com/paul-carteron/happign/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/paul-carteron/happign/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of happign is to facilitate the use of Web Services and API
-from the French National Institute of Geographic and Forestry
-Information to retrieve their free resources. `happign` allow
-downloading of :
+from the IGN (French National Institute of Geographic and Forestry
+Information). `happign` allow downloading of :
 
 -   Shapefile via use of WFS service and APIcarto
 -   Raster via use of WMS raster service
-
-and calculation of :
-
--   isochrone and isodistance
 
 ### Context
 
@@ -38,10 +33,9 @@ IGN data under the Etalab 2.0 open license means free access and use for
 all.
 
 To facilitate access to this data, IGN has implemented a set of APIs and
-Web services based on OGC standards. In other words, it is possible,
-with correctly formatted URLs, to access IGN data. In spite of a well
-supplied documentation, the use of APIs remains complex to set up. The
-`happign` package has been created to facilitate this.
+Web services based on OGC standards. In spite of a well supplied
+documentation, the use of APIs and Web services remains complex to set
+up in R. The `happign` package has been created to facilitate this.
 
 ### Rights of use for IGN data
 
@@ -81,8 +75,7 @@ Package vignettes :
     : A brief intro to happign world ;
 -   [happign for
     foresters](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html)
-    : happign can be used in many ways but here I focus on a forestry
-    use.
+    : happign can be used in many ways but here I focus on forestry.
 -   [SCAN 25, SCAN 100 et SCAN
     OACI](https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html)
     : How to download the only Scan 25, Scan 100 and Scan OACI
@@ -99,7 +92,7 @@ development :
 
 -   Implement all REST API Carto compatible with the OpenAPI
     specification (easy and quick downloading for WFS)
--   Implement spatial filter directly as an argument of function for WFS
+-   Implement isochrone and isodistance calculation
 
 ### Problems and Issues
 
@@ -112,11 +105,12 @@ development :
 
 ### Why it’s called `happign` ?
 
-This project is - obviously - called happign, here’s why :
+This project is - obviously - called happign; here’s why :
 
--   “ign” for… IGN : the acronym of the institute ;
--   “api” for… API : the interface used to retrieve the data;
--   and the addition of an “h” and a “p” for the pun with “happy”.
+-   “ign” stand for… IGN : the acronym of the institute ;
+-   “api” stand for… API : one of the interface used to retrieve the
+    data;
+-   and the addition of an “h” and another “p” for the pun with “happy”.
     Besides the fact that I love this kind of humor, the simplified use
     of APIs is a real source of happiness, trust me.
 
