@@ -245,10 +245,10 @@ For some resources, it is essential to have additional information in order to u
 
 ```{r}
 
-info_sup <- get_wms_info(shape = borders,
-                         apikey = "ortho",
-                         layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO")
-info_sup
+# info_sup <- get_wms_info(shape = borders,
+#                          apikey = "ortho",
+#                          layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO")
+# info_sup
 ```
 
 The call to the function `get_wms_info` indicates that this orthophoto was taken in `r info_sup[5]`.
