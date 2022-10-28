@@ -15,7 +15,7 @@ with_mock_dir("get_layers_metada_wms", {
 
       res <- get_layers_metadata("ortho", "wms")
 
-      expect_equal(dim(res), c(13, 3))
+      expect_equal(dim(res), c(11, 3))
       expect_equal(names(res),
                    c("Name", "Title", "Abstract"))
       })

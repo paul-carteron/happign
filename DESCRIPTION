@@ -29,14 +29,11 @@ Imports:
     xml2
 Suggests: 
     covr,
-    DT,
     httptest2,
     knitr,
-    purrr,
     rmarkdown,
-    stars,
+    tmap,
     testthat (>= 3.0.0),
-    tmap
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3

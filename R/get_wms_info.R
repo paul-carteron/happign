@@ -70,11 +70,13 @@ get_wms_info <- function(shape,
            " layers.")
    }
 
-   shape <- suppressWarnings(st_centroid(shape)) %>%
-      st_transform(4326) %>%
-      st_transform(2154) %>%
-      st_buffer(10) %>%
-      st_transform(4326)
+   # Another version needed to have point to be working good, for the moment
+   # shape seems okay
+   # shape <- suppressWarnings(st_centroid(shape)) %>%
+   #    st_transform(4326) %>%
+   #    st_transform(2154) %>%
+   #    st_buffer(10) %>%
+   #    st_transform(4326)
 
    bbox <- st_bbox(shape)
    bbox <- paste(bbox["ymin"], bbox["xmin"], bbox["ymax"], bbox["xmax"], sep = ",")

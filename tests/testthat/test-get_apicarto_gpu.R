@@ -16,7 +16,7 @@ with_mock_dir("get_apicarto_gpu partition", {
                                partition = partition,
                                categorie = NULL)
 
-      expect_equal(dim(poly), c(3, 17))
+      expect_equal(dim(poly), c(39, 17))
       expect_s3_class(poly, "sf")
    })
 }, simplify = FALSE)
@@ -27,7 +27,7 @@ with_mock_dir("get_apicarto_gpu geom", {
       skip_on_cran()
       skip_if_offline()
 
-      point <- st_sfc(st_point(c(-0.4950188466302029, 45.428039987269926)), crs = 4326)
+      point <- st_sfc(st_point(c(-0.49, 45.42)), crs = 4326)
       poly <- get_apicarto_gpu(x = point, ressource = "zone-urba")
 
       expect_equal(dim(poly), c(1, 17))

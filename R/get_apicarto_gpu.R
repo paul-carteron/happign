@@ -160,11 +160,11 @@ hit_api <- function(ressource, param){
 }
 
 #' prepare shape for geojson conversion
-#' @param shape objet of class sf or sfc
+#' @param x objet of class sf or sfc
 #' @param dTolerance tolerance for simplifying
 #' @noRd
-prepare_shape <- function(shape, dTolerance){
-   res <- shape %>%
+prepare_shape <- function(x, dTolerance){
+   res <- x %>%
       st_make_valid() %>%
       st_union() %>%
       st_transform(4326) %>%

@@ -215,7 +215,7 @@ IRC <- get_wms_raster(shape = biggest_parcels,
                       resolution = 0.2,
                       layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC",
                       filename = "IRC")
-IRC <- st_as_stars(IRC)
+IRC <- st_as_stars(IRC) # Needed for quick plotting
 
 infrared <- IRC %>% slice(band, 1)
 red <- IRC %>% slice(band, 2)
@@ -245,7 +245,7 @@ For some resources, it is essential to have additional information in order to u
 
 ```{r}
 
-info_sup <- get_wms_info(shape = st_centroid(borders),
+info_sup <- get_wms_info(shape = borders,
                          apikey = "ortho",
                          layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO")
 info_sup
@@ -320,7 +320,7 @@ The "Etat-major" map is a general map of France made, in its first version, in t
 ```{r}
 etat_major <- get_wms_raster(shape = borders,
                             apikey = "cartes",
-                            resolution = 0.5,
+                            resolution = 1,
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
                             filename = "etat_major")
 
