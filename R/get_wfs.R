@@ -14,7 +14,7 @@
 #'         interactive = FALSE)
 #'
 #' @param shape Object of class `sf`. Needs to be located in
-#' France.
+#' France. Bbox of shape is used to intersect features.
 #' @param apikey API key from `get_apikeys()` or directly
 #' from [IGN website](https://geoservices.ign.fr/services-web-experts)
 #' @param layer_name Name of the layer from `get_layers_metadata(apikey, "wfs")`
@@ -39,7 +39,11 @@
 #' @importFrom utils menu
 #'
 #' @details
-#' By default, when `filename` is set, shape are saved as .shp but if names are too
+#' * IGN limits the number of shapes downloaded at the same time to 1000.
+#' get_wfs allows to override this limit by making repeated requests but if very
+#' large input areas is used (ex : all of France), depending on the resource,
+#'  this can be time consuming;
+#' * By default, when `filename` is set, shape are saved as .shp but if names are too
 #' long, .gpkg is used.
 #'
 #' @seealso

@@ -13,7 +13,7 @@ get_wfs(shape,
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
-France.}
+France. Bbox of shape is used to intersect features.}
 
 \item{apikey}{API key from \code{get_apikeys()} or directly
 from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
@@ -39,8 +39,14 @@ and the name of layer. You can find those information from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}
 }
 \details{
-By default, when \code{filename} is set, shape are saved as .shp but if names are too
+\itemize{
+\item IGN limits the number of shapes downloaded at the same time to 1000.
+get_wfs allows to override this limit by making repeated requests but if very
+large input areas is used (ex : all of France), depending on the resource,
+this can be time consuming;
+\item By default, when \code{filename} is set, shape are saved as .shp but if names are too
 long, .gpkg is used.
+}
 }
 \examples{
 \dontrun{
