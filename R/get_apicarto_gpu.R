@@ -43,7 +43,7 @@
 #' * `"generateur-sup-p"` :
 #'
 #' @importFrom checkmate assert assert_choice check_character check_class check_null
-#' @importFrom sf read_sf st_simplify st_union
+#' @importFrom sf read_sf st_simplify st_union st_read
 #' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request resp_body_json resp_body_string
 #' @importFrom geojsonsf sfc_geojson geojson_sf
 #'
@@ -154,7 +154,7 @@ hit_api <- function(ressource, param){
       req_url_query(!!!param) %>%
       req_perform() %>%
       resp_body_string() %>%
-      read_sf()
+      st_read()
 
    return(req)
 }
