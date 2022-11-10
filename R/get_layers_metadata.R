@@ -70,11 +70,11 @@ get_layers_metadata <- function(apikey,
    },
    error = function(cond){
       if (grepl("parse", cond)){
-         warning("IGN Web service are unavailable for the moment : NULL is returned.",
+         message("IGN Web service are unavailable for the moment : NULL is returned.",
                  " Try get_last_news() for more info.")
       }else{
-         warning("There's no ", data_type, " resources for apikey ", apikey, " :",
-                 "NULL is returned.", call. = F)
+         message("There's no ", data_type, " resources for apikey ", apikey, " :",
+                 "NULL is returned.")
       }
       return(NULL)
    })
