@@ -8,7 +8,6 @@
 #' @param crs see get_wms_raster
 #' @param overwrite see get_wms_raster
 #' @param version see get_wms_raster
-#' @param format see get_wms_raster
 #' @param styles see get_wms_raster
 #' @param interactive see get_wms_raster
 #'
@@ -19,7 +18,7 @@
 #' @noRd
 #'
 check_get_wms_raster_input <- function(shape, apikey, layer_name, resolution, filename,
-                                       crs, overwrite, version, format, styles, interactive){
+                                       crs, overwrite, version, styles, interactive){
 
    # shape should be from sf package class
    assert(check_class(shape, "sf"),
@@ -44,13 +43,6 @@ check_get_wms_raster_input <- function(shape, apikey, layer_name, resolution, fi
    assert(check_character(filename),
           check_null(filename))
 
-   # if filename contain point, it could be an extension which is not needed
-   # if filename is NULL, no need to check for point
-   if(grepl("\\.", filename) && !is.null(filename)){
-      warning("filename param contain '.', please check there no extension add to filename.",
-              call. = F)
-   }
-
    # crs : can take any crs object
    tryCatch({st_crs(crs)},
             error = function(cnd){stop("Invalid crs : ", crs, call. = FALSE)},
@@ -58,10 +50,7 @@ check_get_wms_raster_input <- function(shape, apikey, layer_name, resolution, fi
 
    # version
    assert_character(version, pattern = "^[0-9]{1}\\.[0-9]{1}\\.[0-9]{1}$")
-   # format
-   assert_choice(format,
-                 paste("image",c("jpeg", "png", "tiff", "geotiff"),
-                       sep = "/"))
+
    # style
    assert_character(styles)
    # overwrite
