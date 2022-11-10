@@ -17,12 +17,11 @@ test_that("multiplication works", {
    crs = 2154
    overwrite = FALSE
    version = "1.3.0"
-   format = "image/geotiff"
    styles = ""
    interactive = FALSE
 
    res <- check_get_wms_raster_input(shape, apikey, layer_name, resolution, filename,
-                              crs, overwrite, version, format, styles, interactive)
+                              crs, overwrite, version, styles, interactive)
 
    # If res is false it means everything works, if not res will be an error
    expect_false(res)

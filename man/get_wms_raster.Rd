@@ -8,11 +8,10 @@ get_wms_raster(shape,
                apikey = "altimetrie",
                layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES",
                resolution = 5,
-               filename = NULL,
+               filename = tempfile(fileext = ".tif"),
                crs = 2154,
                overwrite = FALSE,
                version = "1.3.0",
-               format = "image/geotiff",
                styles = "",
                interactive = FALSE)
 }
@@ -30,21 +29,19 @@ or directly from
 \item{resolution}{Cell size in meter. See detail for more information about resolution.}
 
 \item{filename}{Either a character string naming a file or a connection open
-for writing. (ex : "test" or "~/test"). The resolution is automatically
-added to the filename. If raster with same name is already downloaded it
-is directly imported into R. You don't have to specify the extension because
-it is defined in the argument \code{format}.}
+for writing. (ex : "test.tif" or "~/test.tif"). If \code{NULL}, layer_name is used.
+Default drivers is ".tif" but all gdal drivers are supported, see details
+for more info. To avoid re-downloads, \verb{get_wms raster} checks that there is
+not already a raster with that name. If it does, it is imported into R without
+further downloading if \code{overwrite} is set to FALSE.}
 
-\item{crs}{Numeric, character, or object of class sf or sfc. Is set to EPSG:2154
+\item{crs}{Numeric, character, or object of class sf or sfc. It is set to EPSG:2154
 by default. See \code{\link[sf:st_crs]{sf::st_crs()}} for more detail.}
 
 \item{overwrite}{If TRUE, output raster is overwrite.}
 
 \item{version}{The version of the service used. See detail for more
 information about \code{version}.}
-
-\item{format}{The output format of the image file. Set
-to geotiff by default. See detail for more information about \code{format}.}
 
 \item{styles}{The rendering style of the layers. Set to "" by default.
 See detail for more information about \code{styles}.}
@@ -70,9 +67,10 @@ This mean that setting the \code{resolution} argument higher than the base resol
 of the layer multiplies the number of pixels without increasing
 the precision. For example, the download of the BD Alti layer from
 IGN will be optimal for a resolution of 25m.
-\item \code{version}, \code{format} and \code{styles} arguments are detailed on
+\item \code{version} and \code{styles} arguments are detailed on
 \href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc}{IGN documentation}
 \item Using the \code{crs} argument avoids post-reprojection which can be time consuming
+\item All GDAL supported drivers can be found \href{https://gdal.org/drivers/raster/index.html}{here}
 }
 }
 \examples{

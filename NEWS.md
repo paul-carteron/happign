@@ -9,6 +9,8 @@ to retrieve last news.
 * Handling errors with tryCatch
 * `get_apicarto_plu()` is now `get_apicarto_gpu()` : it can handle complex shape 
 and acces all ressources from [APIcarto GPU](https://apicarto.ign.fr/api/doc/gpu)
+* For more consistency, it is now necessary to add drivers to filename in get_wms_raster just 
+like in get_wfs. The automatic addition of resolution has been removed for simplicity.
 
 # happign 0.1.6
 * `get_wms_raster()` use gdal with `sf::gdal_utils()` for downloading and `terra::vrt()` for
