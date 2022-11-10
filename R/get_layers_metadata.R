@@ -49,27 +49,35 @@ get_layers_metadata <- function(apikey,
                   "wms" = "r",
                   "wfs" = "")
 
-   req <- request("https://wxs.ign.fr/") %>%
-      req_url_path(apikey,"geoportail", path, data_type) %>%
-      req_url_query(service = data_type,
-                    version = version,
-                    request = "GetCapabilities") %>%
-      req_perform() %>%
-      resp_body_xml()
-
-   raw_metadata <- switch(data_type,
-                          "wms" = xml_child(req, "d1:Capability") %>% xml_child("d1:Layer") %>%
-                             xml_find_all("d1:Layer"),
-                          "wfs" = xml_child(req, "d1:FeatureTypeList") %>% xml_children())
-
    tryCatch({
+      req <- request("https://wxs.ign.fr/") %>%
+         req_url_path(apikey,"geoportail", path, data_type) %>%
+         req_url_query(service = data_type,
+                       version = version,
+                       request = "GetCapabilities") %>%
+         req_perform() %>%
+         resp_body_xml()
+
+      raw_metadata <- switch(data_type,
+                             "wms" = xml_child(req, "d1:Capability") %>% xml_child("d1:Layer") %>%
+                                xml_find_all("d1:Layer"),
+                             "wfs" = xml_child(req, "d1:FeatureTypeList") %>% xml_children())
+
       clean_metadata <- suppressWarnings(
-      as.data.frame(do.call(rbind, as_list(raw_metadata)))[, 1:3])
+         as.data.frame(do.call(rbind, as_list(raw_metadata)))[, 1:3])
       clean_metadata <-
-      as.data.frame(apply(clean_metadata, c(1, 2), unlist))
+         as.data.frame(apply(clean_metadata, c(1, 2), unlist))
    },
    error = function(cond){
-      warning("There's no ", data_type, " resources for apikey ", apikey, ".", call. = F)
+      if (grepl("parse", cond)){
+         warning("IGN Web service are unavailable for the moment : NULL is returned.",
+                 " Try get_last_news() for more info.")
+      }else{
+         warning("There's no ", data_type, " resources for apikey ", apikey, " :",
+                 "NULL is returned.", call. = F)
+      }
+      return(NULL)
    })
+
 }
 
