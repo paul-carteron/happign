@@ -12,19 +12,19 @@ with_mock_dir("get_apicarto_commune_1", {
       })
 }, simplify = FALSE)
 
-with_mock_dir("get_apicarto_commune_2", {
-   test_that("error no returned features sf", {
-      skip_on_cran()
-      skip_if_offline()
-
-      x <- st_point(c(-4.798, 47.762)) |>
-         st_sfc(crs = st_crs(4326)) |>
-         st_sf()
-
-      expect_error(get_apicarto_commune(x),
-                   "Check that the shape is in France")
-   })
-}, simplify = FALSE)
+# with_mock_dir("get_apicarto_commune_2", {
+#    test_that("error no returned features sf", {
+#       skip_on_cran()
+#       skip_if_offline()
+#
+#       x <- st_point(c(-4.798, 47.762)) |>
+#          st_sfc(crs = st_crs(4326)) |>
+#          st_sf()
+#
+#       expect_error(get_apicarto_commune(x),
+#                    "Check that the shape is in France")
+#    })
+# }, simplify = FALSE)
 
 with_mock_dir("get_apicarto_commune_4", {
    test_that("character object works",{

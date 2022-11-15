@@ -15,7 +15,7 @@ test_that("nb_pixel_bbox", {
    shape <- st_sfc(shape, crs = st_crs(4326))
 
    expect_equal(nb_pixel_bbox(shape, resolution = 10, crs = 4326), c(13,20))
-   expect_equal(nb_pixel_bbox(shape, resolution = 0.1, crs = 4326), c(1283, 1958))
+   expect_equal(nb_pixel_bbox(shape, resolution = 0.1, crs = 4326), c(1287, 1957))
    expect_type(nb_pixel_bbox(shape, resolution = 10, crs = 4326), "double")
    expect_equal(length(nb_pixel_bbox(shape, resolution = 10, crs = 4326)), 2)
 })

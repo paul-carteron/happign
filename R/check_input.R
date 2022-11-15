@@ -24,6 +24,7 @@ check_get_wms_raster_input <- function(shape, apikey, layer_name, resolution, fi
    assert(check_class(shape, "sf"),
           check_class(shape, "sfc"))
 
+
    # apikey should be one from get_apikeys() but also character corresponding
    # to scan user key
    assert(check_choice(apikey, get_apikeys()),
@@ -43,7 +44,19 @@ check_get_wms_raster_input <- function(shape, apikey, layer_name, resolution, fi
    assert(check_character(filename),
           check_null(filename))
 
-   # crs : can take any crs object
+   if (!is.null(filename)){
+      filename_ext <- strsplit(basename(filename), split="\\.")[[1]] # split one point
+      filename_ext <- filename_ext[length(filename_ext)] # get last element of the list
+      ext <- c("tif", "png", "vrt", "ntf", "toc", "xml", "img", "gff")
+
+      if(!(filename_ext %in% ext) ){
+         stop("filename extension should be one of ",
+              paste(ext, collapse = ", "), ".", call. = FALSE)
+      }
+
+   }
+
+  # crs : can take any crs object
    tryCatch({st_crs(crs)},
             error = function(cnd){stop("Invalid crs : ", crs, call. = FALSE)},
             warning = function(cns){stop("Invalid crs : ", crs, call. = FALSE)})

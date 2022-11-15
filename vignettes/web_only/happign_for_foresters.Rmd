@@ -169,8 +169,8 @@ layers_name <- get_layers_metadata("altimetrie", "wms")
 MNT_name <- layers_name[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
 MNS_name <- layers_name[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
-MNT <- get_wms_raster(borders, "altimetrie", resolution = 5, unlist(MNT_name), filename = "MNT")
-MNS <- get_wms_raster(borders, "altimetrie", resolution = 5, unlist(MNS_name), filename = "MNS")
+MNT <- get_wms_raster(borders, "altimetrie", resolution = 5, MNT_name, filename = "MNT.tif")
+MNS <- get_wms_raster(borders, "altimetrie", resolution = 5, MNS_name, filename = "MNS.tif")
 
 level_curve <- get_wfs(borders, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe") %>% 
    st_intersection(borders)
@@ -214,7 +214,7 @@ IRC <- get_wms_raster(shape = biggest_parcels,
                       apikey = "ortho",
                       resolution = 0.2,
                       layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC",
-                      filename = "IRC")
+                      filename = "IRC.tif")
 IRC <- st_as_stars(IRC) # Needed for quick plotting
 
 infrared <- IRC %>% slice(band, 1)
@@ -320,11 +320,11 @@ The "Etat-major" map is a general map of France made, in its first version, in t
 ```{r}
 etat_major <- get_wms_raster(shape = borders,
                             apikey = "cartes",
-                            resolution = 1,
+                            resolution = 0.8,
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
-                            filename = "etat_major")
+                            filename = "etat_major.tif")
 
-etat_major <- st_as_stars(etat_major, ignore_file = TRUE)
+etat_major <- st_as_stars(etat_major, ignore_file = TRUE) # Needed for quick plotting
 
 tm_shape(etat_major)+
    tm_rgb()+
