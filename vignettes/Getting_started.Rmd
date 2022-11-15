@@ -81,7 +81,7 @@ penmarch_point <- st_sfc(st_point(c(-4.370, 47.800)), crs = 4326)
 penmarch_borders <- get_wfs(shape = penmarch_point,
                             apikey = "administratif",
                             layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
-#> Features downloaded : 1
+#> 1/1 downloaded
 
 # Checking result
 tm_shape(penmarch_borders) + # Borders of penmarch
@@ -108,7 +108,7 @@ Now you have to rely on your curiosity to explore the multiple possibilities tha
 dikes <- get_wfs(shape = penmarch_borders,
                  apikey = get_apikeys()[6],
                  layer_name = "BDCARTO_BDD_WLD_WGS84G:noeud_routier")
-#> Features downloaded : 220
+#> 1/1 downloaded
 
 dikes <- st_intersection(penmarch_borders, dikes)
 #> Warning: attribute variables are assumed to be spatially constant
@@ -145,7 +145,7 @@ mnt <- get_wms_raster(shape = penmarch_borders,
                       crs = 4326)
 #> 1/1 downloading...
 #> Raster is saved at :
-#> D:\TMP\RtmpOquyvF\file36483eba7e30.tif
+#> D:\Personnel\Programmation\R\Packages Perso\happign\vignettes\ELEVATION_ELEVATIONGRIDCOVERAGE_25m.tif
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
