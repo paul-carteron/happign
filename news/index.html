@@ -62,7 +62,11 @@
 <li>Catch error from <code>get_raw_lidar</code>
 </li>
 <li>Change and complete vignette “happign for forester” on website</li>
-<li>Testing as much as possible</li>
+<li>Handling errors with tryCatch</li>
+<li>
+<code>get_apicarto_plu()</code> is now <code><a href="../reference/get_apicarto_gpu.html">get_apicarto_gpu()</a></code> : it can handle complex shape and acces all ressources from <a href="https://apicarto.ign.fr/api/doc/gpu" class="external-link">APIcarto GPU</a>
+</li>
+<li>For more consistency, it is now necessary to add drivers to filename in get_wms_raster just like in get_wfs. The automatic addition of resolution has been removed for simplicity.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.6" id="happign-016">happign 0.1.6<a class="anchor" aria-label="anchor" href="#happign-016"></a></h2><p class="text-muted">CRAN release: 2022-09-16</p>
@@ -88,7 +92,7 @@
 <li>remove dependency to <code>httr</code> by <code>httr2</code>
 </li>
 <li>add <code><a href="../reference/get_wms_info.html">get_wms_info()</a></code> to find metadata of a layer</li>
-<li>add <code><a href="../reference/get_apicarto_plu.html">get_apicarto_plu()</a></code> (Plan Local d’Urbanisme)</li>
+<li>add <code>get_apicarto_plu()</code> (Plan Local d’Urbanisme)</li>
 <li>Rework of <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code>
 </li>
 <li>Adding new apikey “ocsge”</li>

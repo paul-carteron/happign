@@ -104,22 +104,40 @@
 <div class="section level2">
 <h2 id="brief-presentation">Brief presentation<a class="anchor" aria-label="anchor" href="#brief-presentation"></a>
 </h2>
-<p>Even if almost all IGN data are available to the general public, some layers are distributed within a stricter framework of use. The SCAN 25®, SCAN 100® and SCAN OACI (and associated online services) are distributed under license conditions that can be consulted [here](<a href="https://geoservices.ign.fr/cgu-licences#licence" class="external-link uri">https://geoservices.ign.fr/cgu-licences#licence</a> . The final use in a professional or associative context is free without exception, according to the terms of this license. The final use for the general public is free of charge up to a certain threshold, then paying, according to the appropriate general <a href="https://geoservices.ign.fr/cgu-licences#cgu" class="external-link">conditions</a>. All infos can be found <a href="https://geoservices.ign.fr/services-web-issus-des-scans-ign" class="external-link">here</a>.</p>
+<p>Even if almost all IGN data are available to the general public, some
+layers are distributed within a stricter framework of use. The SCAN 25®,
+SCAN 100® and SCAN OACI (and associated online services) are distributed
+under license conditions that can be consulted [here](<a href="https://geoservices.ign.fr/cgu-licences#licence" class="external-link uri">https://geoservices.ign.fr/cgu-licences#licence</a> . The
+final use in a professional or associative context is free without
+exception, according to the terms of this license. The final use for the
+general public is free of charge up to a certain threshold, then paying,
+according to the appropriate general <a href="https://geoservices.ign.fr/cgu-licences#cgu" class="external-link">conditions</a>. All
+infos can be found <a href="https://geoservices.ign.fr/services-web-issus-des-scans-ign" class="external-link">here</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="what-are-they">What are they ?<a class="anchor" aria-label="anchor" href="#what-are-they"></a>
 </h2>
 <ul>
-<li><p>The SCAN 25® is a unique reference, recognized for its topographic richness, and offers an exemplary representation of the territory (1/25 000)</p></li>
-<li><p>The SCAN 100® is a perfect compromise between a rather rich topographic representation and a global visualization of the territory (1/100 000</p></li>
-<li><p>The SCAN OACI corresponds to the aeronautical reference maps in the field of civil aviation</p></li>
+<li><p>The SCAN 25® is a unique reference, recognized for its
+topographic richness, and offers an exemplary representation of the
+territory (1/25 000)</p></li>
+<li><p>The SCAN 100® is a perfect compromise between a rather rich
+topographic representation and a global visualization of the territory
+(1/100 000</p></li>
+<li><p>The SCAN OACI corresponds to the aeronautical reference maps in
+the field of civil aviation</p></li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="how-to-use-them-with-happign">How to use them with happign ?<a class="anchor" aria-label="anchor" href="#how-to-use-them-with-happign"></a>
 </h2>
-<p>These layers are WMS raster, so you just have to use the <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> function with a personal apikey. To do this, you need to create an account on the <a href="https://geoservices.ign.fr/" class="external-link">geoservice site</a> and then request a key in the “My keys” section of your account. It should look like this : “abc12efghi34j5k678lmnopq” (obviously, this is a fake key).</p>
-<p>Then you choose the layer you want at the <a href="https://geoservices.ign.fr/services-web-issus-des-scans-ign" class="external-link">Web services from IGN SCANs</a> and it’s done !</p>
+<p>These layers are WMS raster, so you just have to use the
+<code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> function with a personal apikey. To do
+this, you need to create an account on the <a href="https://geoservices.ign.fr/" class="external-link">geoservice site</a> and then request
+a key in the “My keys” section of your account. It should look like this
+: “abc12efghi34j5k678lmnopq” (obviously, this is a fake key).</p>
+<p>Then you choose the layer you want at the <a href="https://geoservices.ign.fr/services-web-issus-des-scans-ign" class="external-link">Web
+services from IGN SCANs</a> and it’s done !</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create or import a shape</span></span>
 <span><span class="va">shape</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4.373937</span>, <span class="fl">47.79859</span>,</span>
