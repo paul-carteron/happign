@@ -64,9 +64,9 @@
 <li>Change and complete vignette “happign for forester” on website</li>
 <li>Handling errors with tryCatch</li>
 <li>
-<code>get_apicarto_plu()</code> is now <code><a href="../reference/get_apicarto_gpu.html">get_apicarto_gpu()</a></code> : it can handle complex shape and acces all ressources from <a href="https://apicarto.ign.fr/api/doc/gpu" class="external-link">APIcarto GPU</a>
+<code>get_apicarto_plu()</code> is now <code><a href="../reference/get_apicarto_gpu.html">get_apicarto_gpu()</a></code> : it can handle complex shape and access all ressources from <a href="https://apicarto.ign.fr/api/doc/gpu" class="external-link">APIcarto GPU</a>
 </li>
-<li>For more consistency, it is now necessary to add drivers to filename in get_wms_raster just like in get_wfs. The automatic addition of resolution has been removed for simplicity.</li>
+<li>For more consistency, it is now necessary to add drivers to filename in <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> function just like in get_wfs. The automatic addition of resolution has been removed for simplicity.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.6" id="happign-016">happign 0.1.6<a class="anchor" aria-label="anchor" href="#happign-016"></a></h2><p class="text-muted">CRAN release: 2022-09-16</p>
@@ -127,8 +127,7 @@
 <h2 class="pkg-version" data-toc-text="0.1.2" id="happign-012">happign 0.1.2<a class="anchor" aria-label="anchor" href="#happign-012"></a></h2><p class="text-muted">CRAN release: 2022-02-01</p>
 <ul><li>adding a <code>filename</code> argument to <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> and <code><a href="../reference/get_wfs.html">get_wfs()</a></code> allowing to save data on disk. This new feature also overcomes the problem of connection to some WMS with GDAL <a href="https://github.com/paul-carteron/happign/issues/1" class="external-link">#1</a>
 </li>
-<li>Automatic weekly detection of http errors for all WFS and WMS APIs. Layers not readable by <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code><a href="https://github.com/paul-carteron/happign/issues/1" class="external-link">#1</a> are also listed. The automatic report is published on the <a href="https://paul-carteron.github.io/happign/articles/web_only/Non_functional_APIs.html"><code>happign</code> site</a>
-</li>
+<li>Automatic weekly detection of http errors for all WFS and WMS APIs. Layers not readable by <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code><a href="https://github.com/paul-carteron/happign/issues/1" class="external-link">#1</a> are also listed.</li>
 <li>adding data license of IGN (etalab 2.0) to readme</li>
 </ul></div>
     <div class="section level2">
