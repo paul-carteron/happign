@@ -10,15 +10,19 @@
 
 `check_for_cran()`
 
-── happign 0.1.6: NOTE
+Build ID: 	happign_0.1.7.tar.gz-e4f9078879654c598705baaa10d82a24
+Platform: 	Fedora Linux, R-devel, clang, gfortran
+Submitted: 	2 hours 33 minutes 31.3 seconds ago
+Build time: 	2 hours 33 minutes 26.2 seconds
 
-  Build ID:   happign_0.1.6.tar.gz-f0b1934467a64b8d8f78435e0ebd49c6
-  Platform:   Windows Server 2022, R-devel, 64 bit
-  Submitted:  14m 40.5s ago
-  Build time: 6m 6.4s
-
-❯ checking for detritus in the temp directory ... NOTE
-  Found the following files/directories:
-    'lastMiKTeXException'
+❯ checking HTML version of manual ... NOTE
+Skipping checking HTML validation: no command 'tidy' found
 
 0 errors ✔ | 0 warnings ✔ | 1 note ✖
+
+Build ID: 	happign_0.1.7.tar.gz-568d3570c6f34e40b4557e86fb0bf9b6
+Platform: 	Ubuntu Linux 20.04.1 LTS, R-release, GCC
+Submitted: 	2 hours 34 minutes 37.4 seconds ago
+Build time: 	2 hours 34 minutes 26.9 seconds
+
+0 errors ✔ | 0 warnings ✔ | 0 note ✖

@@ -8,9 +8,10 @@ to retrieve last news.
 * Change and complete vignette "happign for forester" on website
 * Handling errors with tryCatch
 * `get_apicarto_plu()` is now `get_apicarto_gpu()` : it can handle complex shape 
-and acces all ressources from [APIcarto GPU](https://apicarto.ign.fr/api/doc/gpu)
-* For more consistency, it is now necessary to add drivers to filename in get_wms_raster just 
-like in get_wfs. The automatic addition of resolution has been removed for simplicity.
+and access all ressources from [APIcarto GPU](https://apicarto.ign.fr/api/doc/gpu)
+* For more consistency, it is now necessary to add drivers to filename in `get_wms_raster()`
+function just like in get_wfs. The automatic addition of resolution has been removed
+for simplicity.
 
 # happign 0.1.6
 * `get_wms_raster()` use gdal with `sf::gdal_utils()` for downloading and `terra::vrt()` for
@@ -57,7 +58,7 @@ merging for quiet faster results. `stars` package is not used anymore.
 # happign 0.1.2
 
 * adding a `filename` argument to `get_wms_raster()` and `get_wfs()` allowing to save data on disk. This new feature also overcomes the problem of connection to some WMS with GDAL [#1](https://github.com/paul-carteron/happign/issues/1)
-* Automatic weekly detection of http errors for all WFS and WMS APIs. Layers not readable by `get_wms_raster()`[#1](https://github.com/paul-carteron/happign/issues/1) are also listed. The automatic report is published on the [`happign` site](https://paul-carteron.github.io/happign/articles/web_only/Non_functional_APIs.html)
+* Automatic weekly detection of http errors for all WFS and WMS APIs. Layers not readable by `get_wms_raster()`[#1](https://github.com/paul-carteron/happign/issues/1) are also listed.
 * adding data license of IGN (etalab 2.0) to readme
 
 # happign 0.1.1

@@ -1,7 +1,7 @@
 #' Retrieve additional information for wms layer
 #'
 #' For some wms layer more information can be found with GetFeatureInfo request.
-#' This function first chechk if info are available. If not, available layers
+#' This function first check if info are available. If not, available layers
 #' are returned.
 #'
 #' #' @usage

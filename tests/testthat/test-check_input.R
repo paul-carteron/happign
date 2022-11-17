@@ -10,15 +10,15 @@ test_that("multiplication works", {
    )))
    shape <- st_sfc(shape, crs = st_crs(4326))
 
-   apikey = "altimetrie"
-   layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
-   resolution = 5
-   filename = NULL
-   crs = 2154
-   overwrite = FALSE
-   version = "1.3.0"
-   styles = ""
-   interactive = FALSE
+   apikey <- "altimetrie"
+   layer_name <- "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
+   resolution <- 5
+   filename <- NULL
+   crs <- 2154
+   overwrite <- FALSE
+   version <- "1.3.0"
+   styles <- ""
+   interactive <- FALSE
 
    res <- check_get_wms_raster_input(shape, apikey, layer_name, resolution, filename,
                               crs, overwrite, version, styles, interactive)

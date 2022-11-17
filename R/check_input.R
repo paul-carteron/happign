@@ -17,8 +17,16 @@
 #'
 #' @noRd
 #'
-check_get_wms_raster_input <- function(shape, apikey, layer_name, resolution, filename,
-                                       crs, overwrite, version, styles, interactive){
+check_get_wms_raster_input <- function(shape,
+                                       apikey,
+                                       layer_name,
+                                       resolution,
+                                       filename,
+                                       crs,
+                                       overwrite,
+                                       version,
+                                       styles,
+                                       interactive){
 
    # shape should be from sf package class
    assert(check_class(shape, "sf"),
@@ -28,7 +36,8 @@ check_get_wms_raster_input <- function(shape, apikey, layer_name, resolution, fi
    # apikey should be one from get_apikeys() but also character corresponding
    # to scan user key
    assert(check_choice(apikey, get_apikeys()),
-          check_character(apikey, pattern = "^[[:alnum:]]{24}$"))
+          check_character(apikey,
+                          pattern = "^[[:alnum:]]{24}$"))
 
    # layer_name
    assert_character(layer_name)
@@ -36,7 +45,8 @@ check_get_wms_raster_input <- function(shape, apikey, layer_name, resolution, fi
    # resolution
    assert_numeric(resolution)
    if(resolution < 0.20){
-      warning("resolution param is less than 0.2 cm, not many ressources are that precise.",
+      warning("resolution param is less than 0.2 cm, not many",
+              "ressources are that precise.",
               call. = F)
    }
 
