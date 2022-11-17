@@ -127,7 +127,7 @@ get_wms_raster <- function(shape,
    shape <- st_make_valid(shape) %>%
       st_transform(st_crs(crs))
 
-   # create grid needed because of 2048 pixel restriction
+   # create needed grid because of 2048 pixel restriction
    grid_for_shp <- grid(shape,
                         resolution,
                         crs)
@@ -219,7 +219,7 @@ construct_urls <- function(grid, apikey, version, layer_name, styles, crs, resol
    width_height <- nb_pixel_bbox(st_bbox(grid[[1]]), resolution, crs)
 
 
-  base_url <- paste0("https://wxs.ign.fr/",
+   base_url <- paste0("https://wxs.ign.fr/",
                      apikey,
                      "/geoportail/r/wms?",
                      "version=", version,
@@ -317,7 +317,8 @@ combine_tiles <- function(tiles_list, filename, apikey) {
    #    source = tmp,
    #    destination = filename)
 
-   # Another way with terra
+   # Another way inspire from ropensci/terrainr package
+   # https://github.com/ropensci/terrainr/blob/main/R/merge_rasters.R
    # gdal_utils(
    #    util = "warp",
    #    source = normalizePath(tiles_list),
