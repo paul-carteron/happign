@@ -45,6 +45,10 @@
 #'
 get_raw_lidar <- function(shape, destfile = ".", grid_path = ".", quiet = F){
 
+   default <- options("timeout")
+   options("timeout" = 3600)
+   on.exit(options(default))
+
    grid <- get_lidar_grid(grid_path, quiet = quiet)
    shape <- st_transform(shape, 2154)
 
