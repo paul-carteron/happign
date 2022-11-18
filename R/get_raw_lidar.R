@@ -45,7 +45,7 @@
 #'
 get_raw_lidar <- function(shape, destfile = ".", grid_path = ".", quiet = F){
 
-   grid <- get_lidar_grid(grid_path)
+   grid <- get_lidar_grid(grid_path, quiet = quiet)
    shape <- st_transform(shape, 2154)
 
    urls <- grid %>%
@@ -93,12 +93,12 @@ download_extract_7z <- function(url, destfile = ".", quiet = quiet){
 #' @param destfile folder path where data are downloaded. By default set to "." e.g. the current
 #'  directory
 #' @noRd
-get_lidar_grid <- function(destfile = ".", grid_path = "."){
+get_lidar_grid <- function(destfile = ".", grid_path = ".", quiet = quiet){
 
    tryCatch({
       if (length(list.files(destfile, pattern = "lidarhd.shp$")) == 0){
          url <- "https://pcrs.ign.fr/download/lidar/shp"
-         invisible(download_extract_7z(url, destfile))
+         invisible(download_extract_7z(url, destfile, quiet = quiet))
       }
    },
    error = function(cnd){
