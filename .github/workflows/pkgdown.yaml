@@ -1,14 +1,14 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
+  schedule:
+   # At 12:00 AM, only on Monday
+     - cron: '0 0 * * 1'
+
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
-
- # schedule:
- # #At 12:00 AM, only on Monday
- #   - cron: '0 0 * * 1'
 
 name: pkgdown
 
