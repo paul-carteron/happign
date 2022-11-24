@@ -62,7 +62,8 @@ all_road_osm <- oe_get("Savoie",
                        provider = "openstreetmap_fr",
                        stringsAsFactors = FALSE,
                        force_download = TRUE, 
-                       force_vectortranslate = TRUE)
+                       force_vectortranslate = TRUE,
+                       quiet = TRUE)
 
 road_osm <- st_intersection(all_road_osm, pnr) |>
    filter(highway %in% c("primary", "primary_link", "secondary","secondary_link", 
@@ -78,7 +79,7 @@ road_osm <- st_intersection(all_road_osm, pnr) |>
 The data set provided by osmextract contains 4 times more linear than the BDCARTO of the ign. Be careful however, the osmextract data requires more verifications than the IGN data : 25% of the OSM dataset are unqualified roads (highway == NA).
 
 ```{r echo=TRUE}
-# Compare linear
+# who has the biggest ?
 sum(st_length(road_ign))
 sum(st_length(road_osm))
 
