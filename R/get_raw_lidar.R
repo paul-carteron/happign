@@ -61,7 +61,7 @@ get_raw_lidar <- function(shape, destfile = ".", grid_path = ".", quiet = F){
    }
 
    already_dowload <- paste(list.files(destfile, pattern = "LIDARHD"), collapse = "|")
-   urls <- urls[!grepl(already_dowload, urls)]
+   urls <- urls[!(urls %in% already_dowload)]
 
    # allow 1h of downloadin
    default <- options("timeout")
