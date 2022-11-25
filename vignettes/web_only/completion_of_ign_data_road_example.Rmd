@@ -78,8 +78,9 @@ road_osm <- st_intersection(all_road_osm, pnr) |>
 
 The data set provided by osmextract contains 4 times more linear than the BDCARTO of the ign. Be careful however, the osmextract data requires more verifications than the IGN data : 25% of the OSM dataset are unqualified roads (highway == NA).
 
-```{r echo=TRUE}
-# who has the biggest ?
+```{r echo=TRUE, message=FALSE}
+
+# who has the longest ?
 sum(st_length(road_ign))
 sum(st_length(road_osm))
 

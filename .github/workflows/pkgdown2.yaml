@@ -14,7 +14,7 @@ name: pkgdown
 
 jobs:
   pkgdown:
-    runs-on: windows-latest
+    runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       GDAL_SKIP: DODS
@@ -27,8 +27,8 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
-      # - name: Install spatial dependencies
-      #   run: brew install gdal proj
+      - name: Install spatial dependencies
+        run: brew install gdal proj
 
       - name: Query dependencies
         run: |
@@ -48,6 +48,7 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           install.packages("pkgdown", type = "binary")
+          install.packages("osmextract", type = "binary")
         shell: Rscript {0}
 
       - name: Install package
