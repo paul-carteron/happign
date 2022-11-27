@@ -106,11 +106,6 @@ get_wfs <- function(shape,
    assert(check_character(filename, max.len = 1),
           check_null(filename))
 
-   # Allow 1 hour long downloading
-   default <- options("timeout")
-   options("timeout" = 3600)
-   on.exit(options(default))
-
    # Looping because length of request is limited to 1000
    shape <- st_make_valid(shape)
 

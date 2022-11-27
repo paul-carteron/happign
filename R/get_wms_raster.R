@@ -256,11 +256,6 @@ construct_urls <- function(grid, apikey, version, layer_name, styles, crs, resol
 #'
 download_tiles <- function(urls, crs) {
 
-   # allow 1h of downloading before error
-   default <- options("timeout")
-   options("timeout" = 3600)
-   on.exit(options(default))
-
    # GDAL_HTTP_UNSAFESSL is used to avoid safe SSL host / certificate verification
    # which can be problematic when using professional computer
    # GDAL_SKIP is needed for GDAL < 3.5,
