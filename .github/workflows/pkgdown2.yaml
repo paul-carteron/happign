@@ -49,6 +49,10 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           install.packages("pkgdown", type = "binary")
           install.packages("osmextract", type = "binary")
+          install.packages("ggplot2", type = "binary")
+          install.packages("stars", type = "binary")
+          install.packages("purrr", type = "binary")
+          install.packages("terra", type = "binary")
         shell: Rscript {0}
 
       - name: Install package

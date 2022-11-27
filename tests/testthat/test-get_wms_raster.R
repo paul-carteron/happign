@@ -103,7 +103,7 @@ test_that("the whole function", {
    expect_equal(dim(mnt), c(8, 6, 1))
 
    expect_message(get_wms_raster(shape = shape, resolution = 25, filename = filename),
-                  "File exists at")
+                  "File already exists at")
 
 })
 

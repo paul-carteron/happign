@@ -150,7 +150,8 @@ get_wms_raster <- function(shape,
    # if filename exist and overwrite is set to FALSE, raster is imported
    if (file.exists(filename) && !overwrite) {
       raster_final <- rast(filename)
-      message("File exists at ", filename," and overwrite is set to FALSE.")
+      message("File already exists at ", filename," therefore is loaded.\n",
+              "Set overwrite to TRUE to download it again.")
    # if it's not the case download is done
    }else{
       tiles_list <- download_tiles(urls, crs)

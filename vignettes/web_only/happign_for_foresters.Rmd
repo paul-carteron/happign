@@ -25,6 +25,7 @@ library(dplyr)
 library(ggplot2);sf_use_s2(FALSE) # Avoid problem with spherical geometry
 library(purrr)
 library(stars)
+library(terra)
 ```
 
 ## First choose a zone of interest
@@ -166,28 +167,32 @@ It's always good to know a more about terrain topologie. IGN offers MNT and MNS 
 
 ```{r}
 layers_name <- get_layers_metadata("altimetrie", "wms")
-MNT_name <- layers_name[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
-MNS_name <- layers_name[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
+mnt_name <- layers_name[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
+mns_name <- layers_name[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
-MNT <- get_wms_raster(borders, "altimetrie", resolution = 5, MNT_name, filename = "MNT.tif")
-MNS <- get_wms_raster(borders, "altimetrie", resolution = 5, MNS_name, filename = "MNS.tif")
+mnt <- get_wms_raster(borders, "altimetrie", resolution = 5, mnt_name)
+mns <- get_wms_raster(borders, "altimetrie", resolution = 5, mns_name)
 
 level_curve <- get_wfs(borders, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe") %>% 
    st_intersection(borders)
 
-MNH <- MNS - MNT
-MNH[MNH < 0] <- NA  # Remove negative value 
-MNH[MNH > 50] <- NA # Remove height more than 50m
 
-tm_shape(MNH)+
-   tm_raster()+
+# Calculate digital height model i.e. tree height
+mnh <- mns - mnt
+mnh[mnh < 0] <- NA  # Remove negative value 
+mnh[mnh > 50] <- 40 # Remove height more than 50m
+
+tm_shape(mnh) +
+  tm_raster(style = "cont", 
+            title = "Height",
+            palette = "-Spectral",
+            colorNA = "grey",
+            showNA = F) +
 tm_shape(level_curve)+
    tm_lines(col = "darkgrey")+
 tm_shape(borders)+
-   tm_borders(lwd = 2)
+   tm_borders(lwd = 2, col = "red")
 
-file.remove(list.files()[grep("^MNT",list.files())]) # I don't want to keep MNT on disk because this is vignette
-file.remove(list.files()[grep("^MNS",list.files())])# I don't want to keep MNS on disk because this is vignette
 ```
 
 ## NDVI
@@ -210,33 +215,36 @@ biggest_parcels <- parcellaire %>%
    mutate(area = st_area(.)) %>% 
    slice_max(area)
 
-IRC <- get_wms_raster(shape = biggest_parcels,
+irc <- get_wms_raster(shape = biggest_parcels,
                       apikey = "ortho",
                       resolution = 0.2,
-                      layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC",
-                      filename = "IRC.tif")
-IRC <- st_as_stars(IRC) # Needed for quick plotting
+                      layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC")
 
-infrared <- IRC %>% slice(band, 1)
-red <- IRC %>% slice(band, 2)
+# calculate ndvi from near_infrared and infrared
+ndvi_fun <- function(nir, red){
+  (nir - red) / (nir + red)
+}
 
-NDVI <- (infrared-red)/(infrared+red)
+ndvi <- lapp(irc[[c(1, 2)]],
+            fun = ndvi_fun)
+
+# palette for plotting
+breaks_ndvi <- c(-1,-0.2,-0.1,0,0.025 ,0.05,0.075,0.1,0.125,0.15,0.175,0.2 ,0.25 ,0.3 ,0.35,0.4,0.45,0.5,0.55,0.6,1)
    
-breaks_NDVI <- c(-1,-0.2,-0.1,0,0.025 ,0.05,0.075,0.1,0.125,0.15,0.175,0.2 ,0.25 ,0.3 ,0.35,0.4,0.45,0.5,0.55,0.6,1)
-   
-palette_NDVI <- c("#BFBFBF","#DBDBDB","#FFFFE0","#FFFACC","#EDE8B5","#DED99C","#CCC782","#BDB86B","#B0C261","#A3CC59","#91BF52","#80B347","#70A340","#619636","#4F8A2E","#407D24","#306E1C","#216112","#0F540A","#004500")
+palette_ndvi <- c("#BFBFBF","#DBDBDB","#FFFFE0","#FFFACC","#EDE8B5","#DED99C","#CCC782","#BDB86B","#B0C261","#A3CC59","#91BF52","#80B347","#70A340","#619636","#4F8A2E","#407D24","#306E1C","#216112","#0F540A","#004500")
 
 tm_shape(borders)+
    tm_borders(lwd = 2, col = "red")+
-tm_shape(NDVI)+
+tm_shape(ndvi)+
    tm_raster(stretch.palette = F,
-             breaks = breaks_NDVI,
-             palette = palette_NDVI,
+             style = "cont",
+             title = "NDVI",
+             breaks = breaks_ndvi,
+             palette = palette_ndvi,
              colorNA = NULL)+
 tm_shape(biggest_parcels, is.master = TRUE)+
    tm_borders(lwd = 2, col = "blue")
 
-file.remove(list.files()[grep("^IRC",list.files())]) # I don't want to keep IRC on disk because this is vignette
 ```
 
 ### Info on raster
@@ -245,13 +253,13 @@ For some resources, it is essential to have additional information in order to u
 
 ```{r}
 
-# info_sup <- get_wms_info(shape = borders,
-#                          apikey = "ortho",
-#                          layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO")
-# info_sup
+info_sup <- get_wms_info(shape = borders,
+                         apikey = "ortho",
+                         layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO")
+info_sup
 ```
 
-The call to the function `get_wms_info` indicates that this orthophoto was taken in 2021.
+The call to the function `get_wms_info` indicates that this orthophoto was taken the 2019-05-15.
 
 __*Rq :*__
 
@@ -263,13 +271,19 @@ __*Rq :*__
 The gloss index represents the average of the image glosses. This index is therefore sensitive to the brightness of the soil, related to its moisture and the presence of salts on the surface. It characterizes especially the albedo (solar radiation that is reflected back to the atmosphere). The gloss index allows us to estimate whether the observed surface feature is light or dark.
 
 ```{r}
+# calculate gloss_index from near_infrared and infrared
+gloss_fun <- function(nir, red){
+  sqrt(red^2 + nir^2)
+}
 
-gloss_index <- sqrt(red^2 + infrared^2)
+gloss_index <- lapp(irc[[c(1, 2)]],
+            fun = gloss_fun)
 
 tm_shape(borders)+
    tm_borders(lwd = 2, col = "red")+
 tm_shape(gloss_index)+
-   tm_raster()+
+   tm_raster(style = "cont", 
+             title = "GLOSS INDEX")+
 tm_shape(biggest_parcels, is.master = T)+
    tm_borders(lwd = 2, col = "blue")
 
@@ -320,17 +334,16 @@ The "Etat-major" map is a general map of France made, in its first version, in t
 ```{r}
 etat_major <- get_wms_raster(shape = borders,
                             apikey = "cartes",
-                            resolution = 0.8,
-                            layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40",
-                            filename = "etat_major.tif")
+                            resolution = 1,
+                            layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40")
 
-etat_major <- st_as_stars(etat_major, ignore_file = TRUE) # Needed for quick plotting
+# raster is very large and tmap cannot plot it. Convert to stars as below allow for quick plotting
+# saving raster to disk allow full resolution : writeRaster(etat_major, "test.tif") 
+etat_major <- st_as_stars(etat_major, ignore_file = TRUE)
 
 tm_shape(etat_major)+
    tm_rgb()+
 tm_shape(borders)+
    tm_borders(lwd = 3, col = "red")
-
-file.remove(list.files()[grep("^etat_major",list.files())])
 
 ```
