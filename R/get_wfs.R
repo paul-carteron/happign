@@ -54,13 +54,12 @@
 #' library(sf)
 #' library(tmap)
 #'
-#' # One point from the best town in France
-#' shape <- st_point(c(-4.373937, 47.79859))
-#' shape <- st_sfc(shape, crs = st_crs(4326))
+#' # shape from the best town in France
+#' penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 #'
 #' # For quick testing, use interactive = TRUE
-#' shape_of_my_choice <- get_wfs(shape = shape,
-#'                               interactive = TRUE)
+#' shape <- get_wfs(shape = penmarch,
+#'                  interactive = TRUE)
 #'
 #' # For specific use, choose apikey with get_apikey() and layer_name with get_layers_metadata()
 #' ## Getting borders of best town in France
@@ -69,12 +68,12 @@
 #' layer_name <- as.character(metadata_table[32,1])
 #'
 #' # Downloading borders
-#' borders <- get_wfs(shape, apikey, layer_name)
+#' borders <- get_wfs(penmarch, apikey, layer_name)
 #'
 #' # Plotting result
 #' qtm(borders, fill = NULL, borders = "firebrick") # easy map
 #'
-#' ## Get forest_area of the best town in France
+#' # Get forest_area of the best town in France
 #' forest_area <- get_wfs(shape = borders,
 #'                        apikey = "environnement",
 #'                        layer_name = "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape")

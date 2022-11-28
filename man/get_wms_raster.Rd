@@ -79,16 +79,10 @@ library(sf)
 library(tmap)
 
 # shape from the best town in France
-shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
-                                 -4.375615, 47.79738,
-                                 -4.375147, 47.79683,
-                                 -4.373898, 47.79790,
-                                 -4.373937, 47.79859),
-                                 ncol = 2, byrow = TRUE)))
-shape <- st_sfc(shape, crs = st_crs(4326))
+penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
 # For quick testing, use interactive = TRUE
-raster <- get_wms_raster(shape = shape, interactive = TRUE, filename = tempfile())
+raster <- get_wms_raster(shape = penmarch, interactive = TRUE)
 
 # For specific use, choose apikey with get_apikey() and layer_name with get_layers_metadata()
 apikey <- get_apikeys()[4]  # altimetrie
@@ -96,14 +90,17 @@ metadata_table <- get_layers_metadata(apikey, "wms") # all layers for altimetrie
 layer_name <- as.character(metadata_table[2,1]) # ELEVATION.ELEVATIONGRIDCOVERAGE
 
 # Downloading digital elevation model from IGN
-mnt <- get_wms_raster(shape, apikey, layer_name, resolution = 25, filename = tempfile())
+mnt <- get_wms_raster(penmarch, apikey, layer_name, resolution = 25)
 
 # Preparing raster for plotting
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
 
-qtm(mnt)+
-qtm(shape, fill = NULL, borders.lwd = 3)
+# Plotting result
+tm_shape(mnt)+
+   tm_raster(legend.show = FALSE)+
+tm_shape(penmarch)+
+   tm_borders(col = "blue", lwd  = 3)
 }
 }
 \seealso{

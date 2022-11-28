@@ -1,3 +1,10 @@
+# happign 0.1.8
+* Correction of get_raw_lidar()
+* New vignette "completion_of_ign_data_road_example"
+* Precomputation of cran vignette
+* Apply DRY principle to option("timeout") handling
+* Add "penmarch.shp" as internal data for test and example
+
 # happign 0.1.7
 * Correct bug preventing `get_apicarto_commune` to work with dep and insee code
 * Adding 1 hour of downloading to `get_wfs()` for big shape
