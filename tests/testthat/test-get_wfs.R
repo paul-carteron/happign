@@ -1,10 +1,11 @@
+penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
+
 test_that("hit_api_wfs format bbox from sf object", {
 
-   shape_sf <- read_sf(system.file("shape/nc.shp", package = "sf"))
-   expect_s3_class(shape_sf, "sf")
-   expect_equal(dim(shape_sf), c(100, 15))
+   expect_s3_class(penmarch, "sf")
+   expect_equal(dim(penmarch), c(1, 4))
 
-   bbox <- st_bbox(st_transform(shape_sf, 4326))
+   bbox <- st_bbox(st_transform(penmarch, 4326))
    expect_s3_class(bbox, "bbox")
    expect_length(bbox, 4)
 
@@ -14,15 +15,15 @@ test_that("hit_api_wfs format bbox from sf object", {
    expect_type(formated_bbox, "character")
    expect_length(formated_bbox, 1)
    expect_equal(length(gregexpr(",",formated_bbox, fixed = TRUE)[[1]]), 4)
-
 })
+
 test_that("hit_api_wfs format bbox from sfc object", {
 
-   shape_sfc <- st_as_sfc(read_sf(system.file("shape/nc.shp", package = "sf")))
-   expect_s3_class(shape_sfc, "sfc")
-   expect_equal(length(shape_sfc), 100)
+   penmarch <- st_as_sfc(penmarch)
+   expect_s3_class(penmarch, "sfc")
+   expect_equal(length(penmarch), 1)
 
-   bbox <- st_bbox(st_transform(shape_sfc, 4326))
+   bbox <- st_bbox(st_transform(penmarch, 4326))
    expect_s3_class(bbox, "bbox")
    expect_length(bbox, 4)
 
@@ -62,7 +63,6 @@ test_that("hit_api_wfs build request properly", {
 
 })
 test_that("hit_api_wfs error", {
-   shape_sf <- read_sf(system.file("shape/nc.shp", package = "sf"))
    layer_name <- "no_need"
 
    expect_error(hit_api_wfs("a"))
@@ -70,40 +70,38 @@ test_that("hit_api_wfs error", {
    expect_error(hit_api_wfs(shape, layer_name,  1000)) # Don't forget the apikey !
    expect_error(hit_api_wfs("parcellaire", shape, layer_name,  1000)) # Forbidden
 })
+
 with_mock_dir("hit_api_wfs perform request", {
    #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
    test_that("hit_api_wfs perform request", {
-      shape <- st_polygon(list(matrix(c(-4.373, -4.373, -4.372, -4.372, -4.373, 47.798,
-                                            47.799, 47.799, 47.798, 47.798), ncol = 2)))
-      shape <- st_sfc(shape, crs = st_crs(4326))
 
       apikey <- "parcellaire"
       layer_name <- "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
 
-      resp <- hit_api_wfs(shape, apikey, layer_name, startindex = 0)
+      resp <- hit_api_wfs(penmarch, apikey, layer_name, startindex = 0)
       expect_s3_class(resp, "sf")
    })
 }, simplify = FALSE)
+
 with_mock_dir("get_wfs simple request", {
    #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
    test_that("get_wfs", {
       skip_on_cran()
       skip_if_offline()
-      shape <- st_polygon(list(matrix(c(-4.373, -4.373, -4.372, -4.372, -4.373, 47.798,
-                                        47.799, 47.799, 47.798, 47.798), ncol = 2)))
-      shape <- st_sfc(shape, crs = st_crs(4326))
-      apikey <- "cartovecto"
-      layer_name <- "BDCARTO_BDD_WLD_WGS84G:troncon_route"
 
-      filename <- file.path(tempdir(), "troncon_route.shp")
+      apikey <- "administratif"
+      layer_name <- "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:canton"
 
-      layer <- get_wfs(shape = shape,
+      filename <- file.path(tempdir(), "test_name.shp")
+
+      layer <- get_wfs(shape = penmarch,
                        apikey = apikey,
                        layer_name = layer_name,
-                       file = filename)
+                       overwrite = TRUE,
+                       filename = filename)
 
       expect_s3_class(layer, "sf")
-      expect_match(list.files(tempdir()), "troncon_route", fixed = TRUE, all = FALSE)
+      expect_match(list.files(tempdir()), "test_name", fixed = TRUE, all = FALSE)
 
    })
 }, simplify = FALSE)

@@ -65,22 +65,25 @@ test_that("download_tiles", {
 
 })
 
-test_that("the whole function", {
-   skip_on_cran()
-   skip_if_offline()
+with_mock_dir("get_wms_whole_function", {
+   #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
+   test_that("the whole function", {
+      skip_on_cran()
+      skip_if_offline()
 
-   unlink(tempfile(), recursive = T)
+      unlink(tempfile(), recursive = T)
 
-   # Need creat save filename as var to test for code checking if rater exist
-   filename <-  tempfile(fileext = ".tif")
+      # Need creat save filename as var to test for code checking if rater exist
+      filename <-  tempfile(fileext = ".tif")
 
-   mnt <- get_wms_raster(shape = shape, resolution = 25, filename = filename)
+      mnt <- get_wms_raster(shape = shape, resolution = 25, filename = filename)
 
-   expect_s4_class(mnt, "SpatRaster")
-   expect_equal(dim(mnt), c(34, 31, 1))
+      expect_s4_class(mnt, "SpatRaster")
+      expect_equal(dim(mnt), c(34, 31, 1))
 
-   expect_message(get_wms_raster(shape = shape, resolution = 25, filename = filename),
-                  "File already exists at")
+      expect_message(get_wms_raster(shape = shape, resolution = 25, filename = filename),
+                     "File already exists at")
+})},
+simplify = FALSE)
 
-})
 

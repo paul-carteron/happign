@@ -38,16 +38,11 @@
 #' \dontrun{
 #' library(sf)
 #'
-#' shape <- st_polygon(list(matrix(c(-4.373937, 47.79859,
-#'                                  -4.375615, 47.79738,
-#'                                  -4.375147, 47.79683,
-#'                                  -4.373898, 47.79790,
-#'                                  -4.373937, 47.79859),
-#'                                  ncol = 2, byrow = TRUE)))
-#' shape <- st_sfc(shape, crs = st_crs(4326))
+#' penmarch <- system.file("extdata/penmarch.shp", package = "happign")
 #'
-#' wms_info <- get_wms_info(shape, "ortho", "ORTHOIMAGERY.ORTHOPHOTOS")
+#' wms_info <- get_wms_info(penmarch, "ortho", "ORTHOIMAGERY.ORTHOPHOTOS")
 #'
+#' # orthophoto is from summer 2021
 #' wms_info
 #'
 #' }
