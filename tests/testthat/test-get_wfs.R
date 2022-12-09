@@ -101,7 +101,6 @@ with_mock_dir("get_wfs simple request", {
                        filename = filename)
 
       expect_s3_class(layer, "sf")
-      expect_match(list.files(tempdir()), "test_name", fixed = TRUE, all = FALSE)
 
    })
 }, simplify = FALSE)

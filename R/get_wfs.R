@@ -108,44 +108,53 @@ get_wfs <- function(shape,
    # Looping because length of request is limited to 1000
    shape <- st_make_valid(shape)
 
-   res <- hit_api_wfs(shape, apikey, layer_name, startindex = 0)
-   message("Features downloaded : ", nrow(res), appendLF = F)
+   resp <- hit_api_wfs(shape, apikey, layer_name, startindex = 0)
+   message("Features downloaded : ", nrow(resp), appendLF = F)
 
    i <- 1000
-   res_temp <- res
-   while(nrow(res_temp) == 1000){
+   temp <- resp
+   while(nrow(temp) == 1000){
       message("...", appendLF = F)
-      res_temp <- hit_api_wfs(shape, apikey, layer_name, startindex = i)
-      res <- rbind(res, res_temp)
-      message(nrow(res), appendLF = F)
+      temp <- hit_api_wfs(shape, apikey, layer_name, startindex = i)
+      resp <- rbind(resp, temp)
+      message(nrow(resp), appendLF = F)
       i <- i + 1000
    }
    cat("\n")
    # Cleaning list column from features
-   res <- res[ , !sapply(res, is.list)]
+   resp <- resp[ , !sapply(resp, is.list)]
 
    # Saving file
    if (!is.null(filename)) {
       path <- normalizePath(filename, mustWork = FALSE)
       path <- enc2utf8(path)
 
-      if (sum(nchar(names(res))>10) > 1){
-         st_write(res, sub("\\.[^.]*$", ".gpkg", path),
-                  layer = gsub("[^[:alnum:]]", '_', layer_name),
-                  layer_options = paste0("OVERWRITE=",ifelse(overwrite, "YES", "NO")))
-         message("Some variables names are more than 10 character so .gpkg format is used.")
-      }else{
-         st_write(res, path, append = !overwrite)
-
+      tryCatch({
+         st_write(resp, path, delete_dsn = overwrite)
+      },
+      error = function(cnd){
+         if (grepl("Dataset already exists", cnd)){
+            stop("Dataset already exists at :\n", filename, call. = F)
+         }},
+      warning = function(cnd) {
+         if (grepl("abbreviated", cnd)) {
+            more_than_10_char <- names(resp)[nchar(names(resp)) > 10]
+            warning(
+               " Field names '",
+               paste(more_than_10_char, collapse = ', '),
+               "' abbreviated for ESRI Shapefile driver. ",
+               "Use .gpkg extension to avoid this.",
+               call. = F
+            )
+         }
+      })
       }
-   }
 
-   # Returned empty geometry if no features returned
-   if (nrow(res) == 0){
+   if (nrow(resp) == 0){
       warning("No features find.", call. = FALSE)
    }
 
-  return(res)
+  return(resp)
 }
 
 #' format url and request it
@@ -174,12 +183,19 @@ hit_api_wfs <- function(shape, apikey, layer_name, startindex = 0) {
       count = 1000
    )
 
-   request <- request("https://wxs.ign.fr") %>%
+   tryCatch({
+      request <- request("https://wxs.ign.fr") %>%
       req_url_path_append(apikey) %>%
       req_url_path_append("geoportail/wfs") %>%
       req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
       req_url_query(!!!params) %>%
       req_perform() %>%
       resp_body_string() %>%
-      read_sf()
-}
+      read_sf()},
+      error = function(cnd){
+         stop("Please check that layer_name is valid by checking ",
+              "`get_layers_metadata(\"", apikey, "\", \"wms\")`\n",
+              call. = F)
+      })
+
+   }
