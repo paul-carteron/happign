@@ -48,10 +48,10 @@ test_that("combine_tiles", {
 
    filename <- tempfile(pattern = "combined", fileext = ".tif")
 
-   rast <- combine_tiles(tiles_list, filename)
+   rast <- combine_tiles(tiles_list, filename, apikey = "altimetrie", crs = 4326)
 
    expect_s4_class(rast, "SpatRaster")
-   expect_equal(dim(rast), c(20, 10, 1))
+   expect_equal(dim(rast), c(20,10,1))
 })
 
 test_that("download_tiles", {
@@ -71,10 +71,8 @@ with_mock_dir("get_wms_whole_function", {
       skip_on_cran()
       skip_if_offline()
 
-      unlink(tempfile(), recursive = T)
-
       # Need creat save filename as var to test for code checking if rater exist
-      filename <-  tempfile(fileext = ".tif")
+      filename <- tempfile(fileext = ".tif")
 
       mnt <- get_wms_raster(shape = shape, resolution = 25, filename = filename)
 

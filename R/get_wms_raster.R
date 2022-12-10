@@ -58,7 +58,7 @@
 #' * All GDAL supported drivers can be found [here](https://gdal.org/drivers/raster/index.html)
 #' @export
 #'
-#' @importFrom terra rast vrt writeRaster
+#' @importFrom terra rast
 #' @importFrom sf gdal_utils st_as_sf st_as_sfc st_axis_order st_bbox st_crs
 #' st_filter st_is_longlat st_length st_linestring st_make_grid
 #' st_make_valid st_set_precision st_sfc st_intersects st_transform
@@ -152,7 +152,7 @@ get_wms_raster <- function(shape,
    # if it's not the case download is done
    }else{
       tiles_list <- download_tiles(urls, crs)
-      raster_final <- combine_tiles(tiles_list, filename, apikey)
+      raster_final <- combine_tiles(tiles_list, filename, apikey, crs)
    }
    return(raster_final)
 }
@@ -293,34 +293,17 @@ download_tiles <- function(urls, crs) {
 #' @param tiles_list list of tiles from download_tiles
 #' @param filename name of file or connection
 #' @param apikey apikey from get_apikeys() for error message
+#' @param crs crs from mother function
 #' @noRd
 #'
-combine_tiles <- function(tiles_list, filename, apikey) {
-
-   # Another way of acheving the same goal
-   # tmp <- tempfile(fileext = ".vrt")
-   #
-   # gdal_utils(
-   #    util = "buildvrt",
-   #    source = unlist(tiles_list),
-   #    destination = tmp)
-   #
-   # gdal_utils(
-   #    util = "translate",
-   #    source = tmp,
-   #    destination = filename)
-
-   # Another way inspire from ropensci/terrainr package
-   # https://github.com/ropensci/terrainr/blob/main/R/merge_rasters.R
-   # gdal_utils(
-   #    util = "warp",
-   #    source = normalizePath(tiles_list),
-   #    destination = filename)
-
+combine_tiles <- function(tiles_list, filename, apikey, crs) {
 
    tryCatch({
-      tiles_list <- normalizePath(tiles_list)
-      writeRaster(vrt(tiles_list, overwrite = TRUE), filename)
+      gdal_utils(util = "warp",
+                 source = normalizePath(tiles_list),
+                 destination = filename,
+                 options = c("-t_srs", st_crs(crs)$input))
+
    },error = function(cnd){
       stop("Please check that :\n",
            "- layer_name is valid by running `get_layers_metadata(\"", apikey, "\", \"wms\")[,1]`\n",
@@ -335,4 +318,3 @@ combine_tiles <- function(tiles_list, filename, apikey) {
    return(rast)
 
 }
-

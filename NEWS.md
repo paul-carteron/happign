@@ -4,6 +4,7 @@
 * Precomputation of cran vignette
 * Apply DRY principle to option("timeout") handling
 * Add "penmarch.shp" as internal data for test and example
+* Better handling of filename saving for `get_wfs()`
 
 # happign 0.1.7
 * Correct bug preventing `get_apicarto_commune` to work with dep and insee code
