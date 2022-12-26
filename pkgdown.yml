@@ -1,5 +1,5 @@
 pandoc: 2.19.2
-pkgdown: 2.0.6
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   Getting_started: Getting_started.html
@@ -7,7 +7,7 @@ articles:
   completion_of_ign_data_road_example: web_only/completion_of_ign_data_road_example.html
   happign_for_foresters: web_only/happign_for_foresters.html
   resolution_for_raster: web_only/resolution_for_raster.html
-last_built: 2022-12-12T02:01Z
+last_built: 2022-12-26T01:35Z
 urls:
   reference: https://paul-carteron.github.io/happign/reference
   article: https://paul-carteron.github.io/happign/articles
