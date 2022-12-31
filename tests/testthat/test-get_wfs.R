@@ -43,7 +43,7 @@ with_mock_dir("build_wfs", {
                    "WITHIN(the_geom, POINT (47.79967 -4.369559)) AND ecql_filter1 OR ecql_filter2",
                    fixed = T)
    })
-})
+}, simplify = FALSE)
 
 with_mock_dir("wfs_intersect", {
    test_that("wfs_intersect", {

@@ -15,6 +15,7 @@ test_that("st_as_text_happign", {
                 "POLYGON ((149318.2 6769650", fixed = TRUE)
 
 })
+
 with_mock_dir("spatial_filter",{
    test_that("spatial_filter", {
       skip_on_cran()
@@ -43,4 +44,4 @@ with_mock_dir("spatial_filter",{
                    fixed = T)
 
    })
-})
+}, simplify = FALSE)

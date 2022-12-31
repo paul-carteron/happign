@@ -1,5 +1,5 @@
 structure(list(method = "GET", url = "https://wxs.ign.fr/ortho/geoportail/r/wms?service=wms&version=1.3.0&request=GetCapabilities&sections=FeatureTypeList", 
-    status_code = 200L, headers = structure(list(date = "Sat, 31 Dec 2022 13:25:50 GMT", 
+    status_code = 200L, headers = structure(list(date = "Sat, 31 Dec 2022 14:59:10 GMT", 
         `content-type` = "text/xml;charset=utf-8", `transfer-encoding` = "chunked", 
         `wl-original-content-type` = "text/xml;charset=utf-8", 
         `cache-control` = "public, max-age=1814400", `access-control-allow-methods` = "GET, POST", 

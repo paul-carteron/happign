@@ -2,7 +2,7 @@ shape <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
 test_that("nb_pixel_bbox", {
    expect_equal(nb_pixel_bbox(shape, resolution = 10, crs = 4326), c(76, 80))
-   expect_equal(nb_pixel_bbox(shape, resolution = 0.1, crs = 4326), c(7545, 7940))
+   expect_equal(nb_pixel_bbox(shape, resolution = 0.1, crs = 4326), c(7568, 7940))
    expect_type(nb_pixel_bbox(shape, resolution = 10, crs = 4326), "double")
    expect_equal(length(nb_pixel_bbox(shape, resolution = 10, crs = 4326)), 2)
 })
