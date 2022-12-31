@@ -39,9 +39,6 @@ get_wms_info(shape,
 apikey = "ortho",
 layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
 version = "1.3.0"
-
-The function use the centroid of the shape to return info because sometime
-there's multiple tile.
 }
 \examples{
 \dontrun{

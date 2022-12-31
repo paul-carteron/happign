@@ -4,10 +4,12 @@
 \alias{get_wfs}
 \title{Download WFS layer}
 \usage{
-get_wfs(shape,
-        apikey = "cartovecto",
-        layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route",
+get_wfs(shape = NULL,
+        apikey = NULL,
+        layer_name = NULL,
         filename = NULL,
+        spatial_filter = "intersects",
+        ecql_filter = NULL,
         overwrite = FALSE,
         interactive = FALSE)
 }
@@ -25,6 +27,12 @@ or directly from
 \item{filename}{Either a character string naming a file or a connection open
 for writing. (ex : "test.shp" or "~/test.shp")}
 
+\item{spatial_filter}{Character corresponding to a spatial predicate from ECQL language.
+See detail and examples for more info.}
+
+\item{ecql_filter}{Character corresponding to an ECQL query. See detail and examples
+for more info.}
+
 \item{overwrite}{If TRUE, file is overwrite}
 
 \item{interactive}{if set to TRUE, no need to specify \code{apikey} and \code{layer_name}, you'll be ask.}
@@ -40,12 +48,17 @@ and the name of layer. You can find those information from
 }
 \details{
 \itemize{
-\item IGN limits the number of shapes downloaded at the same time to 1000.
-get_wfs allows to override this limit by making repeated requests but if very
-large input areas is used (ex : all of France), depending on the resource,
-this can be time consuming;
-\item By default, when \code{filename} is set, shape are saved as .shp but if names are too
-long, .gpkg is used.
+\item \code{get_wfs} use ECQL language : a query language created by the OpenGeospatial Consortium.
+It provide multiple spatial filter : "intersects", "disjoint", "contains", "within", "touches",
+"crosses", "overlaps", "equals", "relate", "beyond", "dwithin". For "relate", "beyond",
+"dwithin", argument can be provide using vector like :
+spatial_filter = c("dwithin", distance, units). More info about ECQL language
+\href{https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html}{here}.
+Be aware that "dwithin" is broken and it doesn't accept units properly. Only degrees can be used.
+To avoid this, I recommend to use compute a buffer and use "within" instead od "dwithin".
+\item ECQL query can be provided to \code{ecql_filter}. This allows direct query of the IGN's WFS
+geoservers. If \code{shape} is set, then the \code{ecql_filter} comes in addition to the
+\code{spatial_filter}. More info for writing ECQL \href{https://docs.geoserver.org/latest/en/user/tutorials/cql/cql_tutorial.html}{here}
 }
 }
 \examples{
@@ -78,6 +91,25 @@ forest_area <- get_wfs(shape = borders,
                        layer_name = "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape")
 
 qtm(forest_area, fill = "libelle")
+
+# using ECQL filters to query IGN server
+
+# find all commune's name starting by "plou".
+# First you need the name of the attribute to filter
+names(borders) # In our case "nom_m" is what we need
+
+attribute_name <- names(get_wfs(penmarch,apikey, layer_name))
+plou_borders <- get_wfs(shape = NULL, # When shape is NULL, all France is query
+                        apikey = "administratif",
+                        layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+                        ecql_filter = "nom_m LIKE 'PLOU\%'")
+
+# it's also possible to combine ecql_filter
+plou_borders <- get_wfs(shape = NULL, # When shape is NULL, all France is query
+                        apikey = "administratif",
+                        layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+                        ecql_filter = "nom_m LIKE 'PLOU\%' AND population < 2000")
+
 
 }
 }

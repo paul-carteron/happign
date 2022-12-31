@@ -148,12 +148,12 @@ get_apicarto_gpu <- function(x,
 #' @noRd
 hit_api <- function(ressource, param){
 
-   req <- request("https://apicarto.ign.fr/api/gpu") %>%
-      req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
-      req_url_path_append(ressource) %>%
-      req_url_query(!!!param) %>%
-      req_perform() %>%
-      resp_body_string() %>%
+   req <- request("https://apicarto.ign.fr/api/gpu") |>
+      req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
+      req_url_path_append(ressource) |>
+      req_url_query(!!!param) |>
+      req_perform() |>
+      resp_body_string() |>
       st_read()
 
    return(req)
@@ -164,9 +164,9 @@ hit_api <- function(ressource, param){
 #' @param dTolerance tolerance for simplifying
 #' @noRd
 prepare_shape <- function(x, dTolerance){
-   res <- x %>%
-      st_make_valid() %>%
-      st_union() %>%
-      st_transform(4326) %>%
+   res <- x |>
+      st_make_valid() |>
+      st_union() |>
+      st_transform(4326) |>
       st_simplify(dTolerance = dTolerance)
 }

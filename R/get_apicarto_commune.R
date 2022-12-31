@@ -82,9 +82,9 @@ get_apicarto_commune <- function(x, source = "PCI"){
    }
 
    if(methods::is(x, "sfc")){
-      geom <- x %>%
-         st_make_valid() %>%
-         st_transform(4326) %>%
+      geom <- x |>
+         st_make_valid() |>
+         st_transform(4326) |>
          sfc_geojson()
    }
 
@@ -98,16 +98,16 @@ get_apicarto_commune <- function(x, source = "PCI"){
    }
 
    # Request
-   res <- request("https://apicarto.ign.fr") %>%
-      req_url_path("api/cadastre/commune") %>%
+   res <- request("https://apicarto.ign.fr") |>
+      req_url_path("api/cadastre/commune") |>
       req_url_query(
          code_insee = code_insee,
          code_dep = code_dep,
          geom = geom,
          source = source
-      ) %>%
-      req_perform() %>%
-      resp_body_string() %>%
+      ) |>
+      req_perform() |>
+      resp_body_string() |>
       read_sf(quiet = TRUE)
 
    if (dim(res)[1] == 0) {

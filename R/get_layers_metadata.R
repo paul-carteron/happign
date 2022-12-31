@@ -47,21 +47,24 @@ get_layers_metadata <- function(apikey,
 
    path <- switch(data_type,
                   "wms" = "r",
-                  "wfs" = "")
+                  "wfs" = NULL)
+
 
    tryCatch({
-      req <- request("https://wxs.ign.fr/") %>%
-         req_url_path(apikey,"geoportail", path, data_type) %>%
+      req <- request("https://wxs.ign.fr/") |>
+         req_url_path(apikey,"geoportail", path) |>
+         req_url_path_append(data_type) |>
          req_url_query(service = data_type,
                        version = version,
-                       request = "GetCapabilities") %>%
-         req_perform() %>%
+                       request = "GetCapabilities",
+                       sections = "FeatureTypeList") |>
+         req_perform() |>
          resp_body_xml()
 
       raw_metadata <- switch(data_type,
-                             "wms" = xml_child(req, "d1:Capability") %>% xml_child("d1:Layer") %>%
+                             "wms" = xml_child(req, "d1:Capability") |> xml_child("d1:Layer") |>
                                 xml_find_all("d1:Layer"),
-                             "wfs" = xml_child(req, "d1:FeatureTypeList") %>% xml_children())
+                             "wfs" = xml_child(req, "d1:FeatureTypeList") |> xml_children())
 
       clean_metadata <- suppressWarnings(
          as.data.frame(do.call(rbind, as_list(raw_metadata)))[, 1:3])

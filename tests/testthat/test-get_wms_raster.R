@@ -65,9 +65,8 @@ test_that("download_tiles", {
 
 })
 
-with_mock_dir("get_wms_whole_function", {
-   #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
-   test_that("the whole function", {
+with_mock_dir("get_wms_all", {
+   test_that("get_wms_all", {
       skip_on_cran()
       skip_if_offline()
 
@@ -81,7 +80,8 @@ with_mock_dir("get_wms_whole_function", {
 
       expect_message(get_wms_raster(shape = shape, resolution = 25, filename = filename),
                      "File already exists at")
-})},
-simplify = FALSE)
+   })
+})
+
 
 

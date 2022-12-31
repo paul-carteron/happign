@@ -22,7 +22,6 @@ Imports:
     dplyr,
     geojsonsf,
     httr2,
-    magrittr,
     methods,
     sf (>= 1.0-7),
     terra,

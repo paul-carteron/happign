@@ -146,16 +146,16 @@ download_cadastre <- function(query_parameter){
                              function(x){if(is.null(x)){list(NULL)}else{x}})
 
    # Obliger de feinter httr2 pour convertir le geojson en format lisible par url
-   urls <- expand.grid(vectorized_query) %>%
-      rowwise() %>%
-      mutate(url = list(request("https://apicarto.ign.fr") %>%
-                            req_url_path("api/cadastre/parcelle") %>%
+   urls <- expand.grid(vectorized_query) |>
+      rowwise() |>
+      mutate(url = list(request("https://apicarto.ign.fr") |>
+                            req_url_path("api/cadastre/parcelle") |>
                             req_url_query(code_insee = code_insee,
                                                section = section,
                                                numero = numero,
                                                geom = geom,
                                                code_abs = code_abs,
-                                               source_ign = source_ign))) %>%
+                                               source_ign = source_ign))) |>
       mutate(url = url[[1]])
 
    nb_loop <- lapply(urls$url,
@@ -170,13 +170,13 @@ download_cadastre <- function(query_parameter){
    bind_resp <- function(x, urls){
       cat("Request ", x, "/", length(urls),
           " downloading...\n", sep = "")
-      resp <- request(urls[x]) %>%
-         req_perform() %>%
-         resp_body_string() %>%
+      resp <- request(urls[x]) |>
+         req_perform() |>
+         resp_body_string() |>
          read_sf(quiet = TRUE)
    }
 
-   parcelles <- lapply(seq_along(urls), bind_resp, urls) %>%
+   parcelles <- lapply(seq_along(urls), bind_resp, urls) |>
       bind_rows()
 
    return(parcelles)

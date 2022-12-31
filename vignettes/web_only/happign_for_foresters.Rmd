@@ -45,6 +45,14 @@ tm_shape(borders)+
 
 ```
 
+An other way of getting borders without apicarto is to use ECQL language to directly query IGN WFS geoservers; it could be longer.
+
+```{r}
+borders2 <- get_wfs(apikey = "administratif",
+                    layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+                    ecql_filter = "nom_m LIKE 'CAMORS'")
+```
+
 ## Download cadastral parcel
 
 Cadastral parcels are essential for any forest management. Here how to download it with `get_wfs`.
@@ -57,9 +65,7 @@ name_parcellaire_layer <- layer_name[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRE
 
 parcellaire <- get_wfs(shape = borders,
                        apikey = apikey,
-                       layer_name = name_parcellaire_layer) %>% 
-   st_transform(st_crs(borders)) %>% 
-   st_intersection(borders)
+                       layer_name = name_parcellaire_layer)
 
 tm_shape(borders)+
    tm_borders(col = "red", lwd = 2)+
@@ -79,16 +85,11 @@ The first interesting layer for forester is the "BD Forêt" which is all vegetat
 ```{r warning=FALSE}
 apikey <- "environnement"
 layer_name <- get_layers_metadata(apikey, "wfs")
-name_BDV1 <- layer_name[1,1]
+   name_BDV1 <- layer_name[1,1]
 name_BDV2 <- layer_name[2,1]
 
-BDV1 <- get_wfs(borders, apikey, name_BDV1) %>% 
-   st_transform(st_crs(borders)) %>% 
-   st_intersection(borders)
-
-BDV2 <- get_wfs(borders, apikey, name_BDV2) %>%
-   st_transform(st_crs(borders)) %>%
-   st_intersection(borders)
+BDV1 <- get_wfs(borders, apikey, name_BDV1)
+BDV2 <- get_wfs(borders, apikey, name_BDV2)
 
 tm_shape(BDV1) +
    tm_polygons(col = "libelle",
@@ -106,12 +107,12 @@ tm_shape(borders) +
 More calculations can be done as you can see below :
 
 ```{r warning=FALSE}
-forest_type_BDV2 <- BDV2 %>%
-  mutate(area = as.numeric(st_area(geometry))) %>%
-  st_drop_geometry() %>%
-  group_by(essence) %>%
-  summarise(sum_area = sum(area)/10000) %>%
-  arrange(desc(sum_area)) %>%
+forest_type_BDV2 <- BDV2 |>
+  mutate(area = as.numeric(st_area(geometry))) |>
+  st_drop_geometry() |>
+  group_by(essence) |>
+  summarise(sum_area = sum(area)/10000) |>
+  arrange(desc(sum_area)) |>
   mutate(essence = as.factor(essence))
 
 ggplot()+
@@ -136,13 +137,13 @@ Again, you can click on map, point and shape for more informations.
 
 ```{r message=FALSE, warning=FALSE}
 apikey <- "environnement"
-protected_area_names <- get_layers_metadata(apikey, "wfs") %>% 
-   filter(grepl("^PROTECTED", Name)) %>% 
+protected_area_names <- get_layers_metadata(apikey, "wfs") |> 
+   filter(grepl("^PROTECTED", Name)) |> 
    pull(Name)
 
 all_protected_area <- map(.x = protected_area_names,
-                          .f = ~ try(get_wfs(borders, apikey, .x), silent = TRUE)) %>% 
-   set_names(protected_area_names) %>% 
+                          .f = ~ try(get_wfs(borders, apikey, .x), silent = TRUE)) |> 
+   set_names(protected_area_names) |> 
    discard(~ dim(.)[2] == 1)
 
 # Plot the result
@@ -173,7 +174,7 @@ mns_name <- layers_name[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 mnt <- get_wms_raster(borders, "altimetrie", resolution = 5, mnt_name)
 mns <- get_wms_raster(borders, "altimetrie", resolution = 5, mns_name)
 
-level_curve <- get_wfs(borders, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe") %>% 
+level_curve <- get_wfs(borders, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe") |> 
    st_intersection(borders)
 
 # Calculate digital height model i.e. tree height
@@ -210,8 +211,8 @@ Categories are somewhat arbitrary, and you can find various rules of thumb, such
 
 ```{r}
 # To show the possibility of 20cm resolution for IRC, let's take only the biggest parcels
-biggest_parcels <- parcellaire %>% 
-   mutate(area = st_area(.)) %>% 
+biggest_parcels <- parcellaire |> 
+   mutate(area = st_area(.)) |> 
    slice_max(area)
 
 irc <- get_wms_raster(shape = biggest_parcels,
@@ -306,14 +307,14 @@ BD topo from IGN covers in a coherent way all the geographical and administrativ
 For the example below I choose to download all water-related data :
 
 ```{r}
-cour_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:cours_d_eau") %>% 
+cour_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:cours_d_eau") |> 
    st_intersection(borders)
 
-detail_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:detail_hydrographique")  %>% 
+detail_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:detail_hydrographique")  |> 
    st_intersection(borders)
 
 # water detected by satellite
-surf_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:surface_hydrographique")  %>% 
+surf_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:surface_hydrographique")  |> 
    st_intersection(borders)
 
 tm_shape(cour_eau)+

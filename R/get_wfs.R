@@ -6,10 +6,12 @@
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
 #'
 #' @usage
-#' get_wfs(shape,
-#'         apikey = "cartovecto",
-#'         layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route",
+#' get_wfs(shape = NULL,
+#'         apikey = NULL,
+#'         layer_name = NULL,
 #'         filename = NULL,
+#'         spatial_filter = "intersects",
+#'         ecql_filter = NULL,
 #'         overwrite = FALSE,
 #'         interactive = FALSE)
 #'
@@ -22,6 +24,10 @@
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
 #' @param filename Either a character string naming a file or a connection open
 #' for writing. (ex : "test.shp" or "~/test.shp")
+#' @param spatial_filter Character corresponding to a spatial predicate from ECQL language.
+#' See detail and examples for more info.
+#' @param ecql_filter Character corresponding to an ECQL query. See detail and examples
+#' for more info.
 #' @param overwrite If TRUE, file is overwrite
 #' @param interactive if set to TRUE, no need to specify `apikey` and `layer_name`, you'll be ask.
 #'
@@ -30,21 +36,25 @@
 #'
 #' @export
 #'
-#' @importFrom sf read_sf st_bbox st_make_valid st_point st_sf st_sfc st_transform
-#'st_write
-#' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent
-#' request resp_body_string
+#' @importFrom sf read_sf st_make_valid st_write
+#' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request
+#' resp_body_string req_body_form
 #' @importFrom checkmate assert assert_character check_character
 #' check_class check_null
 #' @importFrom utils menu
 #'
 #' @details
-#' * IGN limits the number of shapes downloaded at the same time to 1000.
-#' get_wfs allows to override this limit by making repeated requests but if very
-#' large input areas is used (ex : all of France), depending on the resource,
-#'  this can be time consuming;
-#' * By default, when `filename` is set, shape are saved as .shp but if names are too
-#' long, .gpkg is used.
+#' * `get_wfs` use ECQL language : a query language created by the OpenGeospatial Consortium.
+#' It provide multiple spatial filter : "intersects", "disjoint", "contains", "within", "touches",
+#' "crosses", "overlaps", "equals", "relate", "beyond", "dwithin". For "relate", "beyond",
+#' "dwithin", argument can be provide using vector like :
+#' spatial_filter = c("dwithin", distance, units). More info about ECQL language
+#' [here](https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html).
+#' Be aware that "dwithin" is broken and it doesn't accept units properly. Only degrees can be used.
+#' To avoid this, I recommend to use compute a buffer and use "within" instead od "dwithin".
+#' * ECQL query can be provided to `ecql_filter`. This allows direct query of the IGN's WFS
+#' geoservers. If `shape` is set, then the `ecql_filter` comes in addition to the
+#' `spatial_filter`. More info for writing ECQL [here](https://docs.geoserver.org/latest/en/user/tutorials/cql/cql_tutorial.html)
 #'
 #' @seealso
 #' [get_apikeys()], [get_layers_metadata()]
@@ -80,15 +90,39 @@
 #'
 #' qtm(forest_area, fill = "libelle")
 #'
+#' # using ECQL filters to query IGN server
+#'
+#' # find all commune's name starting by "plou".
+#' # First you need the name of the attribute to filter
+#' names(borders) # In our case "nom_m" is what we need
+#'
+#' attribute_name <- names(get_wfs(penmarch,apikey, layer_name))
+#' plou_borders <- get_wfs(shape = NULL, # When shape is NULL, all France is query
+#'                         apikey = "administratif",
+#'                         layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+#'                         ecql_filter = "nom_m LIKE 'PLOU%'")
+#'
+#' # it's also possible to combine ecql_filter
+#' plou_borders <- get_wfs(shape = NULL, # When shape is NULL, all France is query
+#'                         apikey = "administratif",
+#'                         layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+#'                         ecql_filter = "nom_m LIKE 'PLOU%' AND population < 2000")
+#'
+#'
 #' }
-get_wfs <- function(shape,
-                    apikey = "cartovecto",
-                    layer_name = "BDCARTO_BDD_WLD_WGS84G:troncon_route",
+get_wfs <- function(shape = NULL,
+                    apikey = NULL,
+                    layer_name = NULL,
                     filename = NULL,
+                    spatial_filter = "intersects",
+                    ecql_filter = NULL,
                     overwrite = FALSE,
                     interactive = FALSE){
 
-   # Rewrite apikey and layer_name with interactive session
+   check_get_wfs_input(shape, spatial_filter)
+   if (!is.null(shape)){shape <- st_make_valid(shape)}
+
+   # interactively hoose apikey and layer_name
    if (interactive){
       apikeys <- get_apikeys()
       apikey <- apikeys[menu(apikeys)]
@@ -97,25 +131,19 @@ get_wfs <- function(shape,
       layer_name <- layers[menu(layers)]
    }
 
-   # Check input parameter
-   assert(check_class(shape, "sf"),
-          check_class(shape, "sfc"))
-   assert_character(apikey, max.len = 1)
-   assert_character(layer_name, max.len = 1)
-   assert(check_character(filename, max.len = 1),
-          check_null(filename))
-
-   # Looping because length of request is limited to 1000
-   shape <- st_make_valid(shape)
-
-   resp <- hit_api_wfs(shape, apikey, layer_name, startindex = 0)
+   # hit api and loop if there more than 1000 features
+   req <- build_wfs_req(shape, apikey, layer_name, spatial_filter,
+                        ecql_filter, startindex = 0)
+   resp <- hit_api_wfs(req, ecql_filter, apikey)
    message("Features downloaded : ", nrow(resp), appendLF = F)
 
    i <- 1000
    temp <- resp
    while(nrow(temp) == 1000){
       message("...", appendLF = F)
-      temp <- hit_api_wfs(shape, apikey, layer_name, startindex = i)
+      url <- build_wfs_req(shape, apikey, layer_name, spatial_filter,
+                           ecql_filter, startindex = i)
+      temp <- hit_api_wfs(url, ecql_filter, apikey)
       resp <- rbind(resp, temp)
       message(nrow(resp), appendLF = F)
       i <- i + 1000
@@ -124,52 +152,45 @@ get_wfs <- function(shape,
    # Cleaning list column from features
    resp <- resp[ , !sapply(resp, is.list)]
 
-   # Saving file
-   if (!is.null(filename)) {
-      path <- normalizePath(filename, mustWork = FALSE)
-      path <- enc2utf8(path)
-
-      tryCatch({
-         st_write(resp, path, delete_dsn = overwrite)
-      },
-      error = function(cnd){
-         if (grepl("Dataset already exists", cnd)){
-            stop("Dataset already exists at :\n", filename, call. = F)
-         }},
-      warning = function(cnd) {
-         if (grepl("abbreviated", cnd)) {
-            more_than_10_char <- names(resp)[nchar(names(resp)) > 10]
-            warning(
-               " Field names '",
-               paste(more_than_10_char, collapse = ', '),
-               "' abbreviated for ESRI Shapefile driver. ",
-               "Use .gpkg extension to avoid this.",
-               call. = F
-            )
-         }
-      })
-      }
-
-   if (nrow(resp) == 0){
+   feature_exist <- (nrow(resp) != 0)
+   if (!feature_exist){
       warning("No features find.", call. = FALSE)
    }
 
-  return(resp)
+   # properly saving file
+   filename_exist <- !is.null(filename)
+   if (filename_exist & feature_exist){
+      save_wfs(filename, resp, overwrite)
+   }
+
+   return(resp)
 }
 
-#' format url and request it
-#' @param apikey API key from `get_apikeys()`
+#' construct url
 #' @param shape Object of class `sf`. Needs to be located in France.
+#' @param apikey API key from `get_apikeys()`
 #' @param layer_name Name of the layer
-#' @param startindex startindex for features returned limit
+#' @param spatial_filter See ?get_wfs
+#' @param ecql_filter See ?get_wfs
+#' @param startindex startindex for looping when more than 1000 features are returned
 #' @noRd
 #'
-hit_api_wfs <- function(shape, apikey, layer_name, startindex = 0) {
+build_wfs_req <- function(shape,
+                          apikey,
+                          layer_name,
+                          spatial_filter,
+                          ecql_filter = NULL,
+                          startindex = 0){
 
-   bbox <- st_bbox(st_transform(shape, 4326))
-   formated_bbox <- paste(bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"],
-                          "epsg:4326",
-                          sep = ",")
+   shape_exits <- !is.null(shape)
+   spatial_filter_exist <- !is.null(spatial_filter)
+   if (shape_exits & spatial_filter_exist){
+      spatial_filter <- construct_spatial_filter(shape, spatial_filter, apikey, layer_name)
+   }else{
+      spatial_filter <- NULL
+   }
+
+   all_filter <- paste(c(spatial_filter, ecql_filter), collapse = " AND ")
 
    params <- list(
       service = "WFS",
@@ -178,24 +199,92 @@ hit_api_wfs <- function(shape, apikey, layer_name, startindex = 0) {
       outputFormat = "json",
       srsName = "EPSG:4326",
       typeName = layer_name,
-      bbox = formated_bbox,
       startindex = startindex,
       count = 1000
    )
 
-   tryCatch({
-      request <- request("https://wxs.ign.fr") %>%
-      req_url_path_append(apikey) %>%
-      req_url_path_append("geoportail/wfs") %>%
-      req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
-      req_url_query(!!!params) %>%
-      req_perform() %>%
-      resp_body_string() %>%
-      read_sf()},
-      error = function(cnd){
-         stop("Please check that layer_name is valid by checking ",
-              "`get_layers_metadata(\"", apikey, "\", \"wms\")`\n",
-              call. = F)
-      })
+   request <- request("https://wxs.ign.fr") |>
+      req_url_path_append(apikey) |>
+      req_url_path_append("geoportail/wfs") |>
+      req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
+      req_url_query(!!!params) |>
+      req_body_form(cql_filter=all_filter)
 
+   return(request)
+}
+
+#' format url and request it
+#' @param request httr2 request from `build_wfs_req`
+#' @param ecql_filter see `?get_wfs`
+#' @param apikey see `?get_wfs`
+#' @noRd
+#'
+hit_api_wfs <- function(request,
+                        ecql_filter,
+                        apikey) {
+
+   tryCatch({
+      resp <- req_perform(request) |>
+         resp_body_string()
+      features <- read_sf(resp)
+      },
+      error = function(cnd){
+         if (!is.null(ecql_filter)){
+            stop("Check that `ecql_filter` is properly set.", call. = F)
+         }else{
+            stop("Please check that layer_name is valid by checking ",
+                 "`get_layers_metadata(\"", apikey, "\", \"wfs\")`\n",
+                 call. = F)
+         }})
+
+   return(features)
+}
+
+#' save wfs
+#' @param filename Either a character string naming a file or a connection open
+#' for writing. (ex : "test.shp" or "~/test.shp")
+#' @param resp response from hit_api_wfs request
+#' @param overwrite If TRUE, file is overwrite
+#' @noRd
+save_wfs <- function(filename, resp, overwrite){
+
+   path <- normalizePath(filename, mustWork = FALSE)
+   path <- enc2utf8(path)
+
+   tryCatch({
+      st_write(resp, path, delete_dsn = overwrite)
+   },
+   error = function(cnd){
+      if (grepl("Dataset already exists", cnd)){
+         stop("Dataset already exists at :\n", filename, call. = F)
+      }else{
+         stop(cnd)
+      }
+   })
+}
+
+#' save check_get_wfs_input
+#' @param shape Object of class `sf` or `sfc`
+#' @param spatial_filter spatial operator from ecql language
+#' @noRd
+check_get_wfs_input <- function(shape, spatial_filter){
+   # Check input parameter
+   ## shape
+   is_sf_or_sfc <- inherits(shape, c("sf", "sfc", "NULL"))
+   if (!is_sf_or_sfc){
+      stop("`shape` should have class `sf`, `sfc` or `NULL` if `ecql_filter` are set.",
+           call. = FALSE)
    }
+
+   ## spatial_filter
+   if(!is.null(spatial_filter)){
+      spatial_predicate <- c("INTERSECTS", "DISJOINT", "CONTAINS", "WITHIN", "TOUCHES", "BBOX",
+                             "CROSSES", "OVERLAPS", "EQUALS", "RELATE", "DWITHIN", "BEYOND")
+
+      is_valid_predicate <- is.element(toupper(spatial_filter[1]), spatial_predicate)
+      if (!is_valid_predicate){
+         stop("`spatial_filter` should be one of : ",
+              paste0(spatial_predicate, collapse =", "), call. = FALSE)
+      }
+   }
+}

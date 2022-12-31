@@ -9,7 +9,6 @@
 #'
 #' @importFrom httr2 request req_perform resp_body_xml resp_is_error req_options
 #' @importFrom xml2 as_list xml_find_all
-#' @importFrom magrittr `%>%`
 #'
 #' @return message
 #' @export
@@ -21,8 +20,8 @@
 #'
 get_last_news <- function(){
 
-   req <- request("http://geoservices.ign.fr/actualites/rss.xml") %>%
-      req_options(ssl_verifypeer = 0) %>%
+   req <- request("http://geoservices.ign.fr/actualites/rss.xml") |>
+      req_options(ssl_verifypeer = 0) |>
       req_perform()
 
    if (resp_is_error(req)){
@@ -32,9 +31,9 @@ get_last_news <- function(){
                                    "information at ",
                                    "<https://geoservices.ign.fr/actualites>."))
    }else{
-      req <- req %>%
-         resp_body_xml(check_type = FALSE) %>%
-         xml_find_all("//item") %>%
+      req <- req |>
+         resp_body_xml(check_type = FALSE) |>
+         xml_find_all("//item") |>
          as_list()
 
       last_actu <- paste0("Last news from IGN website : ",

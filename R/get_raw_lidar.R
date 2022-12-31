@@ -20,7 +20,6 @@
 #'
 #' @importFrom sf read_sf st_crs st_filter st_transform st_crs<-
 #' @importFrom archive archive archive_extract
-#' @importFrom dplyr pull
 #' @importFrom utils download.file
 #'
 #' @examples
@@ -45,19 +44,15 @@
 #'
 get_raw_lidar <- function(shape, destfile = ".", grid_path = ".", quiet = F){
 
-   default <- options("timeout")
-   options("timeout" = 3600)
-   on.exit(options(default))
-
    grid <- get_lidar_grid(grid_path, quiet = quiet)
    shape <- st_transform(shape, 2154)
 
-   urls <- grid %>%
-      st_filter(shape, .predicate = st_intersects) %>%
-      pull("url_telech")
+   urls <- grid |>
+      st_filter(shape, .predicate = st_intersects)
+   urls <- urls$url_telech
 
    if (identical(urls, character(0))){
-      return(warning("There is no lidar data on this area"))
+      return(warning("There is no lidar data on this area."))
    }
 
    already_dowload <- paste(list.files(destfile, pattern = "LIDARHD"), collapse = "|")

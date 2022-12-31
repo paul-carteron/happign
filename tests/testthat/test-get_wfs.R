@@ -1,106 +1,95 @@
 penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
-test_that("hit_api_wfs format bbox from sf object", {
+test_that("chek_wfs_input", {
+   expect_error(check_get_wfs_input("bad_input", "intersects"),
+                "`shape` should have class `sf`, `sfc` or `NULL`")
+   expect_error(check_get_wfs_input(penmarch, "bad_input"),
+                "`spatial_filter` should be one of : ")
+   expect_no_error(check_get_wfs_input(penmarch, "intersects"))
+   expect_no_error(check_get_wfs_input(penmarch, "INTERSECTS"))
+   expect_no_error(check_get_wfs_input(penmarch, c("intersects")))
+   expect_no_error(check_get_wfs_input(penmarch, c("intersects", NULL)))
+   expect_no_error(check_get_wfs_input(penmarch, c("dwithin", 50, "meters")))
+})
+test_that("save_wfs", {
 
-   expect_s3_class(penmarch, "sf")
-   expect_equal(dim(penmarch), c(1, 4))
+   filename <- tempfile(fileext = ".shp")
 
-   bbox <- st_bbox(st_transform(penmarch, 4326))
-   expect_s3_class(bbox, "bbox")
-   expect_length(bbox, 4)
+   warn_resp <- penmarch[,1]
+   names(warn_resp)[1] <- "longerthant10char"
 
-   formated_bbox <- paste(bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"],
-                          "epsg:4326",
-                          sep = ",")
-   expect_type(formated_bbox, "character")
-   expect_length(formated_bbox, 1)
-   expect_equal(length(gregexpr(",",formated_bbox, fixed = TRUE)[[1]]), 4)
+   expect_no_warning(save_wfs(filename, penmarch[,1], F))
+   expect_error(save_wfs(filename, penmarch[,1], F),
+                "Dataset already exists")
+   expect_warning(save_wfs(filename, warn_resp, T),
+                  "abbreviated for ESRI Shapefile driver")
+
 })
 
-test_that("hit_api_wfs format bbox from sfc object", {
+with_mock_dir("build_wfs", {
+   test_that("build_wfs_req", {
+      skip_on_cran()
+      skip_if_offline()
 
-   penmarch <- st_as_sfc(penmarch)
-   expect_s3_class(penmarch, "sfc")
-   expect_equal(length(penmarch), 1)
-
-   bbox <- st_bbox(st_transform(penmarch, 4326))
-   expect_s3_class(bbox, "bbox")
-   expect_length(bbox, 4)
-
-   formated_bbox <- paste(bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"],
-                          "epsg:4326",
-                          sep = ",")
-   expect_type(formated_bbox, "character")
-   expect_length(formated_bbox, 1)
-   expect_equal(length(gregexpr(",",formated_bbox, fixed = TRUE)[[1]]), 4)
-
-})
-test_that("hit_api_wfs build request properly", {
-
-   params <- list(
-      service = "WFS",
-      version = "2.0.0",
-      request = "GetFeature",
-      outputFormat = "json",
-      srsName = "EPSG:4326",
-      typeName = "layer_name",
-      bbox = "formated_bbox",
-      startindex = "startindex",
-      count = 1000
-   )
-
-   apikey <- "VERIF"
-
-   request <- request("https://wxs.ign.fr") %>%
-      req_url_path_append(apikey) %>%
-      req_url_path_append("geoportail/wfs") %>%
-      req_user_agent("happign (https://paul-carteron.github.io/happign/)") %>%
-      req_url_query(!!!params)
-
-   expect_s3_class(request, "httr2_request")
-   expect_equal(nchar(request$url), 194)
-   expect_match(request$url, "VERIF")
-
-})
-test_that("hit_api_wfs error", {
-   layer_name <- "no_need"
-
-   expect_error(hit_api_wfs("a"))
-   expect_error(hit_api_wfs())
-   expect_error(hit_api_wfs(shape, layer_name,  1000)) # Don't forget the apikey !
-   expect_error(hit_api_wfs("parcellaire", shape, layer_name,  1000)) # Forbidden
-})
-
-with_mock_dir("hit_api_wfs perform request", {
-   #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
-   test_that("hit_api_wfs perform request", {
-
-      apikey <- "parcellaire"
-      layer_name <- "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
-
-      resp <- hit_api_wfs(penmarch, apikey, layer_name, startindex = 0)
-      expect_s3_class(resp, "sf")
+      point <- suppressWarnings(st_centroid(penmarch))
+      expect_match(build_wfs_req(point, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe","within")$body$data$cql_filter,
+                   "WITHIN(the_geom, POINT (47.79967 -4.369559))", fixed = T)
+      # no shape = no spatial filter
+      expect_match(build_wfs_req(NULL, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe","within")$body$data$cql_filter,
+                   "")
+      # combine spatial and ecql filter
+      expect_match(build_wfs_req(point, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe","within",
+                                 "ecql_filter1 OR ecql_filter2")$body$data$cql_filter,
+                   "WITHIN(the_geom, POINT (47.79967 -4.369559)) AND ecql_filter1 OR ecql_filter2",
+                   fixed = T)
    })
-}, simplify = FALSE)
+})
 
-with_mock_dir("get_wfs simple request", {
-   #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
-   test_that("get_wfs", {
+with_mock_dir("wfs_intersect", {
+   test_that("wfs_intersect", {
       skip_on_cran()
       skip_if_offline()
 
       apikey <- "administratif"
-      layer_name <- "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:canton"
+      layer_name <- "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"
+      spatial_filter <- "intersects"
 
-      filename <- file.path(tempdir(), "test_name.shp")
+      resp <- get_wfs(penmarch, apikey, layer_name, NULL, spatial_filter)
+      expect_s3_class(resp, "sf")
+      expect_equal(dim(resp), c(1,12))
+      expect_true(st_drop_geometry(resp)[1,3] == "PENMARCH")
+   })},
+simplify = FALSE)
 
-      layer <- get_wfs(shape = penmarch,
-                       apikey = apikey,
-                       layer_name = layer_name,
-                       overwrite = TRUE,
-                       filename = filename)
+with_mock_dir("wfs_ecql_filter", {
+   test_that("get_wfs_ecql", {
+      skip_on_cran()
+      skip_if_offline()
 
-      expect_s3_class(layer, "sf")
+      apikey <- "administratif"
+      layer_name <- "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"
+      spatial_filter <- NULL
+      ecql_filter <- "nom_m LIKE 'PEN%RCH' AND population < 6000"
 
-   })
-}, simplify = FALSE)
+      resp <- get_wfs(penmarch, apikey, layer_name, NULL, spatial_filter, ecql_filter)
+      expect_s3_class(resp, "sf")
+      expect_equal(dim(resp), c(1,12))
+      expect_true(st_drop_geometry(resp)[1,3] == "PENMARCH")
+})},
+simplify = FALSE)
+
+with_mock_dir("wfs_empty", {
+   test_that("get_wfs empty_features", {
+      skip_on_cran()
+      skip_if_offline()
+
+      apikey <- "administratif"
+      layer_name <- "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"
+      ecql_filter <- "nom_m LIKE 'BADNAME'"
+
+      expect_warning(get_wfs(apikey = apikey,
+                              layer_name = layer_name,
+                              ecql_filter = ecql_filter),
+                     "No features find.")
+})},
+simplify = FALSE)
