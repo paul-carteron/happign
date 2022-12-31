@@ -58,7 +58,8 @@ with_mock_dir("wfs_intersect", {
       expect_s3_class(resp, "sf")
       expect_equal(dim(resp), c(1,12))
       expect_true(st_drop_geometry(resp)[1,3] == "PENMARCH")
-   })})
+   })},
+   simplify = FALSE)
 
 with_mock_dir("wfs_ecql_filter", {
    test_that("get_wfs_ecql", {
