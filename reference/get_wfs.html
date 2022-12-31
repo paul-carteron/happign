@@ -70,10 +70,12 @@ and the name of layer. You can find those information from
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_wfs</span><span class="op">(</span><span class="va">shape</span>,</span>
-<span>        apikey <span class="op">=</span> <span class="st">"cartovecto"</span>,</span>
-<span>        layer_name <span class="op">=</span> <span class="st">"BDCARTO_BDD_WLD_WGS84G:troncon_route"</span>,</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_wfs</span><span class="op">(</span>shape <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>        apikey <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>        layer_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>        filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>        spatial_filter <span class="op">=</span> <span class="st">"intersects"</span>,</span>
+<span>        ecql_filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>        overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>        interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -101,6 +103,16 @@ or directly from
 for writing. (ex : "test.shp" or "~/test.shp")</p></dd>
 
 
+<dt>spatial_filter</dt>
+<dd><p>Character corresponding to a spatial predicate from ECQL language.
+See detail and examples for more info.</p></dd>
+
+
+<dt>ecql_filter</dt>
+<dd><p>Character corresponding to an ECQL query. See detail and examples
+for more info.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>If TRUE, file is overwrite</p></dd>
 
@@ -120,12 +132,17 @@ for writing. (ex : "test.shp" or "~/test.shp")</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     
-<ul><li><p>IGN limits the number of shapes downloaded at the same time to 1000.
-get_wfs allows to override this limit by making repeated requests but if very
-large input areas is used (ex : all of France), depending on the resource,
-this can be time consuming;</p></li>
-<li><p>By default, when <code>filename</code> is set, shape are saved as .shp but if names are too
-long, .gpkg is used.</p></li>
+<ul><li><p><code>get_wfs</code> use ECQL language : a query language created by the OpenGeospatial Consortium.
+It provide multiple spatial filter : "intersects", "disjoint", "contains", "within", "touches",
+"crosses", "overlaps", "equals", "relate", "beyond", "dwithin". For "relate", "beyond",
+"dwithin", argument can be provide using vector like :
+spatial_filter = c("dwithin", distance, units). More info about ECQL language
+<a href="https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html" class="external-link">here</a>.
+Be aware that "dwithin" is broken and it doesn't accept units properly. Only degrees can be used.
+To avoid this, I recommend to use compute a buffer and use "within" instead od "dwithin".</p></li>
+<li><p>ECQL query can be provided to <code>ecql_filter</code>. This allows direct query of the IGN's WFS
+geoservers. If <code>shape</code> is set, then the <code>ecql_filter</code> comes in addition to the
+<code>spatial_filter</code>. More info for writing ECQL <a href="https://docs.geoserver.org/latest/en/user/tutorials/cql/cql_tutorial.html" class="external-link">here</a></p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -163,6 +180,25 @@ long, .gpkg is used.</p></li>
 <span class="r-in"><span>                       layer_name <span class="op">=</span> <span class="st">"LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">forest_area</span>, fill <span class="op">=</span> <span class="st">"libelle"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># using ECQL filters to query IGN server</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># find all commune's name starting by "plou".</span></span></span>
+<span class="r-in"><span><span class="co"># First you need the name of the attribute to filter</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">borders</span><span class="op">)</span> <span class="co"># In our case "nom_m" is what we need</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">attribute_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">get_wfs</span><span class="op">(</span><span class="va">penmarch</span>,<span class="va">apikey</span>, <span class="va">layer_name</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">plou_borders</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span>shape <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># When shape is NULL, all France is query</span></span></span>
+<span class="r-in"><span>                        apikey <span class="op">=</span> <span class="st">"administratif"</span>,</span></span>
+<span class="r-in"><span>                        layer_name <span class="op">=</span> <span class="st">"LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"</span>,</span></span>
+<span class="r-in"><span>                        ecql_filter <span class="op">=</span> <span class="st">"nom_m LIKE 'PLOU%'"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># it's also possible to combine ecql_filter</span></span></span>
+<span class="r-in"><span><span class="va">plou_borders</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span>shape <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># When shape is NULL, all France is query</span></span></span>
+<span class="r-in"><span>                        apikey <span class="op">=</span> <span class="st">"administratif"</span>,</span></span>
+<span class="r-in"><span>                        layer_name <span class="op">=</span> <span class="st">"LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"</span>,</span></span>
+<span class="r-in"><span>                        ecql_filter <span class="op">=</span> <span class="st">"nom_m LIKE 'PLOU%' AND population &lt; 2000"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
