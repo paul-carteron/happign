@@ -1,5 +1,5 @@
 structure(list(method = "GET", url = "https://wxs.ign.fr/administratif/geoportail/wfs?service=wfs&version=2.0.0&request=GetCapabilities&sections=FeatureTypeList", 
-    status_code = 200L, headers = structure(list(date = "Sat, 31 Dec 2022 14:59:17 GMT", 
+    status_code = 200L, headers = structure(list(date = "Sat, 31 Dec 2022 15:17:09 GMT", 
         `content-type` = "application/xml", `transfer-encoding` = "chunked", 
         `wl-original-content-type` = "application/xml", `cache-control` = "public, max-age=1814400", 
         `access-control-allow-methods` = "GET, POST", `access-control-max-age` = "43200", 

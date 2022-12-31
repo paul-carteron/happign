@@ -42,8 +42,8 @@ with_mock_dir("build_wfs", {
                                  "ecql_filter1 OR ecql_filter2")$body$data$cql_filter,
                    "WITHIN(the_geom, POINT (47.79967 -4.369559)) AND ecql_filter1 OR ecql_filter2",
                    fixed = T)
-   })
-}, simplify = FALSE)
+   })},
+   simplify = FALSE)
 
 with_mock_dir("wfs_intersect", {
    test_that("wfs_intersect", {
@@ -59,7 +59,7 @@ with_mock_dir("wfs_intersect", {
       expect_equal(dim(resp), c(1,12))
       expect_true(st_drop_geometry(resp)[1,3] == "PENMARCH")
    })},
-   simplify = FALSE)
+simplify = FALSE)
 
 with_mock_dir("wfs_ecql_filter", {
    test_that("get_wfs_ecql", {
