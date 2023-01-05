@@ -178,7 +178,7 @@ get_wfs <- function(shape = NULL,
 build_wfs_req <- function(shape,
                           apikey,
                           layer_name,
-                          spatial_filter,
+                          spatial_filter = NULL,
                           ecql_filter = NULL,
                           startindex = 0){
 

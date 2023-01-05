@@ -32,18 +32,29 @@ get_wfs_default_crs = function(apikey, layer_name){
 #' @description flip X and Y coord for ECQL filter
 #' @param shape object of class sf or sfc
 #' @importFrom sf st_axis_order st_geometry st_transform st_as_text
+#' @importFrom dplyr summarize
 #' @return ecql string
 #' @noRd
 #'
 st_as_text_happign <- function(shape, crs){
 
-   if (crs == 4326){
+   if(crs == 4326 & st_crs(shape)$epsg == 4326){
       on.exit(st_axis_order(F))
       st_axis_order(T)
-      crs <- "CRS:84"
+      shape <- st_transform(shape, "CRS:84")
+   }else if (crs == 4326 & st_crs(shape)$epsg != 4326){
+      on.exit(st_axis_order(F))
+      st_axis_order(T)
+      shape <- st_transform(shape, 4326)
+   }else{
+      shape <- st_transform(shape, crs)
    }
 
-   geom <- st_as_text(st_geometry(st_transform(shape, crs)))
+   if (methods::is(shape, "sfc")){
+      shape <- st_as_sf(shape)
+   }
+
+   geom <- st_as_text(st_geometry(summarize(shape)))
 
    return(geom)
 }

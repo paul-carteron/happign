@@ -32,7 +32,7 @@ with_mock_dir("build_wfs", {
       skip_if_offline()
 
       point <- suppressWarnings(st_centroid(penmarch))
-      expect_match(build_wfs_req(point, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe","within")$body$data$cql_filter,
+      expect_match(build_wfs_req(point,"altimetrie", "ELEVATION.CONTOUR.LINE:courbe","within")$body$data$cql_filter,
                    "WITHIN(the_geom, POINT (47.79967 -4.369559))", fixed = T)
       # no shape = no spatial filter
       expect_match(build_wfs_req(NULL, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe","within")$body$data$cql_filter,
@@ -93,3 +93,4 @@ with_mock_dir("wfs_empty", {
                      "No features find.")
 })},
 simplify = FALSE)
+
