@@ -7,6 +7,7 @@
 * Better handling of filename saving for `get_wfs()`
 * Adding support for spatial and ecql filter to `get_wfs()`
 * Remove dependecy to magritrr pipe `%>%` by `|>`
+* Add internal shape for testing `point`, `multipoint`, `line`, `multiline`, `poly`, `multipoly`
 
 # happign 0.1.7
 * Correct bug preventing `get_apicarto_commune` to work with dep and insee code
@@ -19,8 +20,8 @@ to retrieve last news.
 * Handling errors with tryCatch
 * `get_apicarto_plu()` is now `get_apicarto_gpu()` : it can handle complex shape 
 and access all ressources from [APIcarto GPU](https://apicarto.ign.fr/api/doc/gpu)
-* For more consistency, it is now necessary to add drivers to filename in `get_wms_raster()`
-function just like in get_wfs. The automatic addition of resolution has been removed
+* For consistency, it is now necessary to add drivers to filename in `get_wms_raster()`
+ like `get_wfs()`. The automatic addition of resolution to `filename` has been removed
 for simplicity.
 
 # happign 0.1.6
