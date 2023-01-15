@@ -62,12 +62,13 @@ st_as_text_happign <- function(shape, crs){
 #' @description construct ecql spatial filter string
 #' @param shape object of class sf or sfc
 #' @param spatial_filter list containing spatial operation and other argument
+#' @param crs epsg character from `get_wfs_default_crs`
 #' @param apikey character from `get_apikeys()`
 #' @importFrom sf st_bbox
 #' @return ecql string
 #' @noRd
 #'
-construct_spatial_filter <- function(shape, spatial_filter, apikey, layer_name){
+construct_spatial_filter <- function(shape, spatial_filter, crs, apikey){
 
    # Test for units
    units <- c("feet", "meters", "statute miles", "nautical miles", "kilometers")
@@ -80,17 +81,16 @@ construct_spatial_filter <- function(shape, spatial_filter, apikey, layer_name){
    }
 
    # particular case for bbox
-   is_bbox <- toupper(spatial_filter[1]) == "BBOX"
+   is_bbox <- (spatial_filter[1] == "bbox")
    if (is_bbox){
       bbox <- st_bbox(shape)
       spatial_filter <- c(spatial_filter,
                           bbox["xmin"], bbox["ymin"], bbox["xmax"], bbox["ymax"],
                           sprintf("'EPSG:%s'", st_crs(shape)$epsg))
-      geom <- NULL
-   }else{
-      crs <- get_wfs_default_crs(apikey, layer_name)
-      geom <- st_as_text_happign(shape, crs)
    }
+
+   # if is "bbox", geom is null
+   geom <- switch(is_bbox + 1, st_as_text_happign(shape, crs), NULL)
 
    # Build final spatial filter
    spatial_filter <- sprintf("%s(%s, %s)",

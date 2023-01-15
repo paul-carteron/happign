@@ -131,9 +131,15 @@ get_wfs <- function(shape = NULL,
       layer_name <- layers[menu(layers)]
    }
 
+   # When spatial filter "bbox" isn't used, crs are needed
+   is_bbox <- sum(spatial_filter == "bbox") == 1
+   if(!is_bbox){
+      crs <- get_wfs_default_crs(apikey, layer_name)
+   }
+
    # hit api and loop if there more than 1000 features
    req <- build_wfs_req(shape, apikey, layer_name, spatial_filter,
-                        ecql_filter, startindex = 0)
+                        ecql_filter, startindex = 0, crs)
    resp <- hit_api_wfs(req, ecql_filter, apikey)
    message("Features downloaded : ", nrow(resp), appendLF = F)
 
@@ -142,7 +148,7 @@ get_wfs <- function(shape = NULL,
    while(nrow(temp) == 1000){
       message("...", appendLF = F)
       url <- build_wfs_req(shape, apikey, layer_name, spatial_filter,
-                           ecql_filter, startindex = i)
+                           ecql_filter, startindex = i, crs)
       temp <- hit_api_wfs(url, ecql_filter, apikey)
       resp <- rbind(resp, temp)
       message(nrow(resp), appendLF = F)
@@ -173,6 +179,7 @@ get_wfs <- function(shape = NULL,
 #' @param spatial_filter See ?get_wfs
 #' @param ecql_filter See ?get_wfs
 #' @param startindex startindex for looping when more than 1000 features are returned
+#' @param crs epsg character from `get_wfs_default_crs`
 #' @noRd
 #'
 build_wfs_req <- function(shape,
@@ -180,17 +187,19 @@ build_wfs_req <- function(shape,
                           layer_name,
                           spatial_filter = NULL,
                           ecql_filter = NULL,
-                          startindex = 0){
+                          startindex = 0,
+                          crs = NULL){
 
-   shape_exits <- !is.null(shape)
+   shape_exist <- !is.null(shape)
    spatial_filter_exist <- !is.null(spatial_filter)
-   if (shape_exits & spatial_filter_exist){
-      spatial_filter <- construct_spatial_filter(shape, spatial_filter, apikey, layer_name)
-   }else{
-      spatial_filter <- NULL
+   spatial_predicate <- NULL
+
+   if (shape_exist & spatial_filter_exist){
+      spatial_predicate <- construct_spatial_filter(shape, spatial_filter,
+                                                    crs, apikey)
    }
 
-   all_filter <- paste(c(spatial_filter, ecql_filter), collapse = " AND ")
+   all_filter <- paste(c(spatial_predicate, ecql_filter), collapse = " AND ")
 
    params <- list(
       service = "WFS",
@@ -226,7 +235,7 @@ hit_api_wfs <- function(request,
    tryCatch({
       resp <- req_perform(request) |>
          resp_body_string()
-      features <- read_sf(resp)
+      features <- read_sf(resp, quiet = T)
       },
       error = function(cnd){
          if (!is.null(ecql_filter)){
