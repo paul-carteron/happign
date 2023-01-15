@@ -54,7 +54,7 @@ st_as_text_happign <- function(shape, crs){
       shape <- st_as_sf(shape)
    }
 
-   geom <- st_as_text(st_geometry(summarize(shape)))
+   geom <- suppressMessages(st_as_text(st_geometry(summarize(shape))))
 
    return(geom)
 }

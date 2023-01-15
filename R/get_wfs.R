@@ -140,8 +140,9 @@ get_wfs <- function(shape = NULL,
    # hit api and loop if there more than 1000 features
    req <- build_wfs_req(shape, apikey, layer_name, spatial_filter,
                         ecql_filter, startindex = 0, crs)
+   message("Features downloaded : ",appendLF = F)
    resp <- hit_api_wfs(req, ecql_filter, apikey)
-   message("Features downloaded : ", nrow(resp), appendLF = F)
+   message(nrow(resp), appendLF = F)
 
    i <- 1000
    temp <- resp

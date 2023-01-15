@@ -45,7 +45,7 @@ tm_shape(borders)+
 
 ```
 
-An other way of getting borders without apicarto is to use ECQL language to directly query IGN WFS geoservers; it could be longer.
+An other way of getting borders without apicarto is to use ECQL language to directly query IGN WFS geoservers.
 
 ```{r}
 borders2 <- get_wfs(apikey = "administratif",
@@ -66,10 +66,8 @@ name_parcellaire_layer <- layer_name[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRE
 
 parcellaire <- get_wfs(shape = borders,
                        apikey = apikey,
-                       spatial_filter = "bbox",
+                       spatial_filter = "intersects",
                        layer_name = name_parcellaire_layer)
-
-parcellaire <- st_filter(parcellaire, borders)
 
 tm_shape(borders)+
    tm_borders(col = "red", lwd = 2)+
