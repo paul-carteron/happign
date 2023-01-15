@@ -50,6 +50,7 @@ An other way of getting borders without apicarto is to use ECQL language to dire
 ```{r}
 borders2 <- get_wfs(apikey = "administratif",
                     layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+                    spatial_filter = "intersects",
                     ecql_filter = "nom_m LIKE 'CAMORS'")
 ```
 
@@ -65,7 +66,10 @@ name_parcellaire_layer <- layer_name[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRE
 
 parcellaire <- get_wfs(shape = borders,
                        apikey = apikey,
+                       spatial_filter = "bbox",
                        layer_name = name_parcellaire_layer)
+
+parcellaire <- st_filter(parcellaire, borders)
 
 tm_shape(borders)+
    tm_borders(col = "red", lwd = 2)+
@@ -88,8 +92,8 @@ layer_name <- get_layers_metadata(apikey, "wfs")
 name_BDV1 <- layer_name[1,1]
 name_BDV2 <- layer_name[2,1]
 
-BDV1 <- get_wfs(borders, apikey, name_BDV1)
-BDV2 <- get_wfs(borders, apikey, name_BDV2)
+BDV1 <- get_wfs(borders, apikey, name_BDV1, spatial_filter = "intersects")
+BDV2 <- get_wfs(borders, apikey, name_BDV2, spatial_filter = "intersects")
 
 tm_shape(BDV1) +
    tm_polygons(col = "libelle",
@@ -142,7 +146,7 @@ protected_area_names <- get_layers_metadata(apikey, "wfs") |>
    pull(Name)
 
 all_protected_area <- map(.x = protected_area_names,
-                          .f = ~ try(get_wfs(borders, apikey, .x), silent = TRUE)) |> 
+                          .f = ~ try(get_wfs(borders, apikey, .x, spatial_filter = "intersects"), silent = TRUE)) |> 
    set_names(protected_area_names) |> 
    discard(~ dim(.)[2] == 1)
 
@@ -168,7 +172,8 @@ mns_name <- layers_name[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 mnt <- get_wms_raster(borders, "altimetrie", resolution = 5, mnt_name)
 mns <- get_wms_raster(borders, "altimetrie", resolution = 5, mns_name)
 
-level_curve <- get_wfs(borders, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe") |> 
+level_curve <- get_wfs(borders, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe",
+                       spatial_filter = "intersects") |> 
    st_intersection(borders)
 
 # Calculate digital height model i.e. tree height
@@ -183,7 +188,7 @@ tm_shape(mnh) +
             colorNA = "grey",
             showNA = F) +
 tm_shape(level_curve)+
-   tm_lines(col = "darkgrey")+
+   tm_lines(col = "black")+
 tm_shape(borders)+
    tm_borders(lwd = 2, col = "red")
 
@@ -301,10 +306,13 @@ BD topo from IGN covers in a coherent way all the geographical and administrativ
 For the example below I choose to download all water-related data :
 
 ```{r}
-cour_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:cours_d_eau") 
-detail_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:detail_hydrographique")
+cour_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:cours_d_eau") |> 
+   st_intersection(borders) 
+detail_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:detail_hydrographique") |> 
+   st_intersection(borders) 
 # water detected by satellite
-surf_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:surface_hydrographique") 
+surf_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:surface_hydrographique") |> 
+   st_intersection(borders) 
 
 tm_shape(cour_eau)+
    tm_lines(col = "blue")+
@@ -327,7 +335,7 @@ etat_major <- get_wms_raster(shape = borders,
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40")
 
 # raster is very large and tmap cannot plot it. Convert to stars as below allow for quick plotting
-# saving raster to disk allow full resolution : writeRaster(etat_major, "test.tif") 
+# saving raster to disk allow full resolution visualisation : writeRaster(etat_major, "test.tif") 
 etat_major <- st_as_stars(etat_major, ignore_file = TRUE)
 
 tm_shape(etat_major)+
