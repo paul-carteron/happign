@@ -224,17 +224,17 @@ build_wfs_req <- function(shape,
 }
 
 #' format url and request it
-#' @param request httr2 request from `build_wfs_req`
+#' @param req httr2 request from `build_wfs_req`
 #' @param ecql_filter see `?get_wfs`
 #' @param apikey see `?get_wfs`
 #' @noRd
 #'
-hit_api_wfs <- function(request,
+hit_api_wfs <- function(req,
                         ecql_filter,
                         apikey) {
 
    tryCatch({
-      resp <- req_perform(request) |>
+      resp <- req_perform(req) |>
          resp_body_string()
       features <- read_sf(resp, quiet = T)
       },
