@@ -127,37 +127,6 @@ allows to simplify them. See <code><a href="https://r-spatial.github.io/sf/refer
 <li><p><code>"generateur-sup-p"</code> :</p></li>
 </ul></div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">point</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.4950188466302029</span>, <span class="fl">45.428039987269926</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># If you know the partition, all GPU features are returned, geom is override</span></span></span>
-<span class="r-in"><span><span class="va">partition</span> <span class="op">&lt;-</span> <span class="st">"DU_17345"</span></span></span>
-<span class="r-in"><span><span class="va">poly</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_gpu</span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, ressource <span class="op">=</span> <span class="st">"zone-urba"</span>, partition <span class="op">=</span> <span class="va">partition</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">poly</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">point</span>, symbols.col <span class="op">=</span> <span class="st">"red"</span>, symbols.size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># If you don't know partition (only intersection between geom and GPU features is returned)</span></span></span>
-<span class="r-in"><span><span class="va">poly</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_gpu</span><span class="op">(</span>x <span class="op">=</span> <span class="va">point</span>, ressource <span class="op">=</span> <span class="st">"zone-urba"</span>, partition <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">poly</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">point</span>, symbols.col <span class="op">=</span> <span class="st">"red"</span>, symbols.size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># If you wanna find partition</span></span></span>
-<span class="r-in"><span><span class="va">document</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_gpu</span><span class="op">(</span><span class="va">point</span>, ressource <span class="op">=</span> <span class="st">"document"</span>, partition <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">partition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">document</span><span class="op">$</span><span class="va">partition</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Get all prescription : /!\ prescription is different than zone-urba</span></span></span>
-<span class="r-in"><span><span class="va">partition</span> <span class="op">&lt;-</span> <span class="st">"DU_17345"</span></span></span>
-<span class="r-in"><span><span class="va">ressources</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"prescription-surf"</span>, <span class="st">"prescription-lin"</span>, <span class="st">"prescription-pct"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">all_prescription</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span>.x <span class="op">=</span> <span class="va">ressources</span>,</span></span>
-<span class="r-in"><span>                        .f <span class="op">=</span> <span class="op">~</span> <span class="fu">get_apicarto_gpu</span><span class="op">(</span><span class="va">point</span>, <span class="va">.x</span>, <span class="va">partition</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
