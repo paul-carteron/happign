@@ -58,32 +58,3 @@ All resssources description :
 \item \code{"generateur-sup-p"} :
 }
 }
-\examples{
-\dontrun{
-library(tmap)
-library(sf)
-point <- st_sfc(st_point(c(-0.4950188466302029, 45.428039987269926)), crs = 4326)
-
-# If you know the partition, all GPU features are returned, geom is override
-partition <- "DU_17345"
-poly <- get_apicarto_gpu(x = NULL, ressource = "zone-urba", partition = partition)
-qtm(poly)+qtm(point, symbols.col = "red", symbols.size = 2)
-
-# If you don't know partition (only intersection between geom and GPU features is returned)
-poly <- get_apicarto_gpu(x = point, ressource = "zone-urba", partition = NULL)
-qtm(poly)+qtm(point, symbols.col = "red", symbols.size = 2)
-
-# If you wanna find partition
-document <- get_apicarto_gpu(point, ressource = "document", partition = NULL)
-partition <- unique(document$partition)
-
-# Get all prescription : /!\ prescription is different than zone-urba
-partition <- "DU_17345"
-ressources <- c("prescription-surf", "prescription-lin", "prescription-pct")
-
-library(purrr)
-all_prescription <- map(.x = ressources,
-                        .f = ~ get_apicarto_gpu(point, .x, partition))
-}
-
-}

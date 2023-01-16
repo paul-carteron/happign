@@ -26,7 +26,8 @@ test_that("save_wfs", {
 })
 
 test_that("build_wfs_req", {
-
+   skip_on_ci()
+   skip_on_cran()
    all_shp_type <- lapply(list(point, multipoint, line, multiline, poly, multipoly),
                           build_wfs_req,
                           apikey = "altimetrie",

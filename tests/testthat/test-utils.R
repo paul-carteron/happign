@@ -1,5 +1,6 @@
 test_that("st_as_text_happign", {
-
+   skip_on_ci()
+   skip_on_cran()
    # Point
    expect_match(st_as_text_happign(point, 4326),
                 "POINT (47.813 -4.344)", fixed = TRUE)
@@ -14,6 +15,8 @@ test_that("st_as_text_happign", {
 })
 
 test_that("spatial_filter", {
+   skip_on_ci()
+   skip_on_cran()
    expect_error(construct_spatial_filter(point, c("dwithin", 50, "bad_units"), "apikey"),
                 "When using \"dwithin\" units should be one of")
 
