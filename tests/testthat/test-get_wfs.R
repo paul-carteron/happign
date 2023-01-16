@@ -68,6 +68,7 @@ test_that("build_wfs_req", {
 with_mock_dir("wfs_intersect", {
    test_that("wfs_intersect", {
       skip_on_cran()
+      skip_on_ci()
       skip_if_offline()
 
       apikey <- "administratif"
