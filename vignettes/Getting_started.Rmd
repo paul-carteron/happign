@@ -1,7 +1,7 @@
 ---
 title: "Getting started with happign"
 author: "Paul Carteron"
-date: "2022-11-15"
+date: "2023-01-18"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting started with happign}
@@ -24,20 +24,20 @@ library(tmap)
 
 # WFS and WMS service
 
-`happign` use two data type from IGN web service :
+`happign` use two web service from IGN :
 
-*  WMS raster : data in raster format which are images (.jpg, .png, .tif)
+*  WMS raster : data in raster format (.jpg, .png, .tif)
 *  WFS : data in shape format (.shp).
 
 More detailed information are available [here](https://www.ogc.org/standards/wms) for WMS and [here](https://www.ogc.org/standards/wfs) for WFS.
 
-To download data you need :
+To download data from web services at least three elements are needed :
 
-* API key corresponding to the layer you want ;
-* The layer's name ;
+* An API key;
+* A layer name ;
 * A shape read by [`sf`]( https://CRAN.R-project.org/package=sf) package
 
-## API keys
+## API key
 
 API keys can be directly retrieved on the [IGN website in the expert web services](https://geoservices.ign.fr/services-web-experts) (I recommend you at this point to go and have a look) or with `get_apikeys()` function.
 
@@ -66,37 +66,35 @@ administratif_wms <- get_layers_metadata(apikey = "administratif", data_type = "
 
 ## Downloading the data
 
-Now that we know how to get an API key and layer name, it only takes a few lines to get plethora of resources. For the example we will look at the beautiful town of Penmarch in France.
-
-### WFS
-
-First, we are going to get borders of the Penmarch. Since it's a shape object, `get_wfs()` will be used.
+Now that we know how to get an API key and layer name, it only takes a few lines to get plethora of resources. For the example we will look at the beautiful town of Penmarch in France. A part of this town is stored as a shape in happign.
 
 
 ```r
-# First retrieve create a point inside Penmarc'h
-penmarch_point <- st_sfc(st_point(c(-4.370, 47.800)), crs = 4326)
-
-# Then download borders
-penmarch_borders <- get_wfs(shape = penmarch_point,
-                            apikey = "administratif",
-                            layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
-#> 1/1 downloaded
-
-# Checking result
-tm_shape(penmarch_borders) + # Borders of penmarch
-   tm_polygons(alpha = 0, lwd = 2) +
-tm_shape(penmarch_point) + # Point use to retrieve data
-   tm_dots(col = "red", size = 2) +
-   tm_add_legend(type = "symbol", label = "lat : -4.370, long : 47.800",
-                 col = "red", size = 1) +
-   tm_layout(main.title = "Penmarch borders from IGN",
-             main.title.position = "center",
-             legend.position = c("right", "bottom"),
-             frame = FALSE)
+penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 ```
 
-<img src="Getting_started-unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;" />
+### WFS
+
+`get_wfs` can be used to download borders :
+
+
+```r
+
+penmarch_borders <- get_wfs(shape = penmarch,
+                            apikey = "administratif",
+                            layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
+#> Features downloaded : 1
+
+# Checking result
+tm_shape(penmarch_borders)+
+   tm_polygons(alpha = 0, lwd = 2)+
+tm_shape(penmarch)+
+   tm_polygons(col = "red")+
+   tm_layout(main.title = "Penmarch borders from IGN",
+             main.title.position = "center")
+```
+
+<img src="Getting_started-unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" />
 
 It's as simple as that!
 Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many road junctions there are in Penmarch?
@@ -107,26 +105,23 @@ Now you have to rely on your curiosity to explore the multiple possibilities tha
 ```r
 dikes <- get_wfs(shape = penmarch_borders,
                  apikey = get_apikeys()[6],
-                 layer_name = "BDCARTO_BDD_WLD_WGS84G:noeud_routier")
-#> 1/1 downloaded
-
-dikes <- st_intersection(penmarch_borders, dikes)
-#> Warning: attribute variables are assumed to be spatially constant
-#> throughout all geometries
+                 layer_name = "BDCARTO_BDD_WLD_WGS84G:noeud_routier",
+                 spatial_filter = "intersects")
+#> Features downloaded : 192
 
 # Checking result
 tm_shape(penmarch_borders) + # Borders of penmarch
    tm_borders(lwd = 2) +
 tm_shape(dikes) + # Point use to retrieve data
-   tm_dots(col = "red") +
-   tm_add_legend(type = "symbol", label = "Road junction", col = "red") +
+   tm_symbols(col = "red", shape = 13, size = 0.3) +
+   tm_add_legend(type = "symbol", shape = 13, label = "Road junction", col = "red") +
    tm_layout(main.title = "Road nodes recorded by the IGN in Penmarch",
              main.title.position = "center",
              legend.position = c("right", "bottom"),
              frame = FALSE)
 ```
 
-<img src="Getting_started-unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" />
+<img src="Getting_started-unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" />
 
 ### WMS raster
 
@@ -136,7 +131,7 @@ For raster, the process is the same but with the function `get_wms_raster()`. Th
 
 ```r
 layers_metadata <- get_layers_metadata("altimetrie", "wms")
-dem_layer_name <- layers_metadata[2, 1]
+dem_layer_name <- layers_metadata[2, 1] #LEVATION.ELEVATIONGRIDCOVERAGE
 
 mnt <- get_wms_raster(shape = penmarch_borders,
                       apikey = "altimetrie",
@@ -145,24 +140,22 @@ mnt <- get_wms_raster(shape = penmarch_borders,
                       crs = 4326)
 #> 1/1 downloading...
 #> Raster is saved at :
-#> D:\Personnel\Programmation\R\Packages Perso\happign\vignettes\ELEVATION_ELEVATIONGRIDCOVERAGE_25m.tif
+#> D:\TMP\RtmpE3Kxya\file43083d052c3b.tif
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
-names(mnt) <- "Elevation [m]" # Rename raster ie the title legend
 
 tm_shape(mnt) +
-   tm_raster(colorNA = NULL) +
+   tm_raster(title = "Elevation [m]") +
 tm_shape(penmarch_borders)+
    tm_borders(lwd = 2)+
 tm_layout(main.title = "DEM of Penmarch",
           main.title.position = "center",
           legend.position = c("right", "bottom"),
-          legend.bg.color = "white", legend.bg.alpha = 0.7,
-          frame = FALSE)
+          legend.bg.color = "white", legend.bg.alpha = 0.7)
 ```
 
-<img src="Getting_started-unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" />
+<img src="Getting_started-unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" />
 
 __*Rq :*__
 
- * *Raster from `get_wms_raster()` are `SpatRaster` object from the `terra` package. To learn more about conversion between other raster type in R go [check this out](https://geocompr.github.io/post/2021/spatial-classes-conversion/).*
+ * *Raster from `get_wms_raster()` are `SpatRaster` object from the `terra` package. To learn more about conversion between other raster type in R go [check this out](https://geocompx.org/post/2021/spatial-classes-conversion/).*

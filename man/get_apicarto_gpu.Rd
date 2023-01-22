@@ -35,26 +35,54 @@ A object of class \code{sf}
 Apicarto module Geoportail de l'urbanisme
 }
 \details{
-For the moment the API cannot returned more than 5000 features.
+\strong{/!\ For the moment the API cannot returned more than 5000 features.}
 
-All resssources description :
+All existing parameters for \code{ressource}  :
 \itemize{
-\item \verb{"municipality} : information on the communes (commune with RNU, merged commune)
-\item \verb{"document'} : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)
-\item \code{"zone-urba"} : zoning of urban planning documents,
-\item \code{"secteur-cc"} : communal map sectors
-\item \code{"prescription-surf"} : surface prescriptions like Classified wooded area, Area contributing to the green and blue framework, Landscape element to be protected or created, Protected open space, ...
-\item \code{"prescription-lin"} : linear prescription like pedestrian path, bicycle path, hedges or tree lines to be protected, ...
-\item \code{"prescription-pct"} : punctual prescription like Building of architectural interest, Building to protect, Remarkable tree, Protected pools, ...
-\item \code{"info-surf"} : surface information perimeters of urban planning documents like Protection of drinking water catchments, archaeological sector, noise classification, ...
-\item \code{"info-lin"} : linear information perimeters of urban planning documents like Bicycle path to be created, Long hike, Façade and/or roof protected as historical monuments, ...
-\item \code{"info-pct"} : punctual information perimeters of urban planning documents like Archaeological heritage, Listed or classified historical monument, Underground cavity, ...
-\item \code{"acte-sup"} :
-\item \code{"assiette-sup-s"} :
-\item \code{"assiette-sup-l"} :
-\item \code{"assiette-sup-p"} :
-\item \code{"generateur-sup-s"} :
-\item \code{"generateur-sup-l"} :
-\item \code{"generateur-sup-p"} :
+\item "municipality : information on the communes (commune with RNU, merged commune)
+\item "document' : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)
+\item "zone-urba" : zoning of urban planning documents,
+\item "secteur-cc" : communal map sectors
+\item "prescription-surf" : surface prescriptions like Classified wooded area, Area contributing to the green and blue framework, Landscape element to be protected or created, Protected open space, ...
+\item "prescription-lin" : linear prescription like pedestrian path, bicycle path, hedges or tree lines to be protected, ...
+\item "prescription-pct" : punctual prescription like Building of architectural interest, Building to protect, Remarkable tree, Protected pools, ...
+\item "info-surf" : surface information perimeters of urban planning documents like Protection of drinking water catchments, archaeological sector, noise classification, ...
+\item "info-lin" : linear information perimeters of urban planning documents like Bicycle path to be created, Long hike, Façade and/or roof protected as historical monuments, ...
+\item "info-pct" : punctual information perimeters of urban planning documents like Archaeological heritage, Listed or classified historical monument, Underground cavity, ...
+\item "acte-sup" :
+\item "assiette-sup-s" :
+\item "assiette-sup-l" :
+\item "assiette-sup-p" :
+\item "generateur-sup-s" :
+\item "generateur-sup-l" :
+\item "generateur-sup-p" :
+}
+}
+\examples{
+\dontrun{
+library(tmap)
+library(sf)
+library(dplyr)
+
+# If you know the partition, all GPU features are returned, geom is override
+partition <- "DU_75056"
+zone_urba <- get_apicarto_gpu(x = NULL, ressource = "zone-urba", partition = partition)
+qtm(zone_urba)
+
+# If you don't know partition, only GPU features intersecting shape are returned
+point <- st_sfc(st_point(c(2.354, 48.866)), crs = 4326)
+zone_urba <- get_apicarto_gpu(x = point, ressource = "zone-urba", partition = NULL)
+qtm(zone_urba)+qtm(point)
+
+# If you wanna find partition
+document <- get_apicarto_gpu(point, ressource = "document", partition = NULL)
+partition <- unique(document$partition)
+
+# Get all prescription : /!\ prescription is different than zone-urba
+partition <- "DU_75056"
+ressources <- c("prescription-surf", "prescription-lin", "prescription-pct")
+
+all_prescription <- lapply(ressources, get_apicarto_gpu, x = NULL, partition = partition) |>
+                    bind_rows()
 }
 }

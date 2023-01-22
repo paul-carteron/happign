@@ -21,26 +21,26 @@
 #' allows to simplify them. See `?sf::st_simplify`
 #'
 #' @details
-#' For the moment the API cannot returned more than 5000 features.
+#' **/!\ For the moment the API cannot returned more than 5000 features.**
 #'
-#' All resssources description :
-#' * `"municipality` : information on the communes (commune with RNU, merged commune)
-#' * `"document'` : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)
-#' * `"zone-urba"` : zoning of urban planning documents,
-#' * `"secteur-cc"` : communal map sectors
-#' * `"prescription-surf"` : surface prescriptions like Classified wooded area, Area contributing to the green and blue framework, Landscape element to be protected or created, Protected open space, ...
-#' * `"prescription-lin"` : linear prescription like pedestrian path, bicycle path, hedges or tree lines to be protected, ...
-#' * `"prescription-pct"` : punctual prescription like Building of architectural interest, Building to protect, Remarkable tree, Protected pools, ...
-#' * `"info-surf"` : surface information perimeters of urban planning documents like Protection of drinking water catchments, archaeological sector, noise classification, ...
-#' * `"info-lin"` : linear information perimeters of urban planning documents like Bicycle path to be created, Long hike, Façade and/or roof protected as historical monuments, ...
-#' * `"info-pct"` : punctual information perimeters of urban planning documents like Archaeological heritage, Listed or classified historical monument, Underground cavity, ...
-#' * `"acte-sup"` :
-#' * `"assiette-sup-s"` :
-#' * `"assiette-sup-l"` :
-#' * `"assiette-sup-p"` :
-#' * `"generateur-sup-s"` :
-#' * `"generateur-sup-l"` :
-#' * `"generateur-sup-p"` :
+#' All existing parameters for `ressource`  :
+#' * "municipality : information on the communes (commune with RNU, merged commune)
+#' * "document' : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)
+#' * "zone-urba" : zoning of urban planning documents,
+#' * "secteur-cc" : communal map sectors
+#' * "prescription-surf" : surface prescriptions like Classified wooded area, Area contributing to the green and blue framework, Landscape element to be protected or created, Protected open space, ...
+#' * "prescription-lin" : linear prescription like pedestrian path, bicycle path, hedges or tree lines to be protected, ...
+#' * "prescription-pct" : punctual prescription like Building of architectural interest, Building to protect, Remarkable tree, Protected pools, ...
+#' * "info-surf" : surface information perimeters of urban planning documents like Protection of drinking water catchments, archaeological sector, noise classification, ...
+#' * "info-lin" : linear information perimeters of urban planning documents like Bicycle path to be created, Long hike, Façade and/or roof protected as historical monuments, ...
+#' * "info-pct" : punctual information perimeters of urban planning documents like Archaeological heritage, Listed or classified historical monument, Underground cavity, ...
+#' * "acte-sup" :
+#' * "assiette-sup-s" :
+#' * "assiette-sup-l" :
+#' * "assiette-sup-p" :
+#' * "generateur-sup-s" :
+#' * "generateur-sup-l" :
+#' * "generateur-sup-p" :
 #'
 #' @importFrom checkmate assert assert_choice check_character check_class check_null
 #' @importFrom sf read_sf st_simplify st_union
@@ -76,7 +76,7 @@
 #'
 #' all_prescription <- lapply(ressources, get_apicarto_gpu, x = NULL, partition = partition) |>
 #'                     bind_rows()
-#'
+#'}
 get_apicarto_gpu <- function(x,
                              ressource = "zone-urba",
                              partition = NULL,

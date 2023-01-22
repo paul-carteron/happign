@@ -14,7 +14,7 @@ test_that("save_wfs", {
 
    filename <- tempfile(fileext = ".shp")
 
-   expect_no_warning(save_wfs(filename, point, F))
+   expect_no_error(save_wfs(filename, point, F))
    expect_error(save_wfs(filename, point, F),
                 "Dataset already exists")
 
