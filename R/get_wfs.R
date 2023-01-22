@@ -75,7 +75,7 @@
 #' ## Getting borders of best town in France
 #' apikey <- get_apikeys()[1]
 #' metadata_table <- get_layers_metadata(apikey, "wfs")
-#' layer_name <- as.character(metadata_table[32,1])
+#' layer_name <- metadata_table[32,1])
 #'
 #' # Downloading borders
 #' borders <- get_wfs(penmarch, apikey, layer_name)

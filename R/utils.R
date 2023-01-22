@@ -68,7 +68,10 @@ st_as_text_happign <- function(shape, crs){
 #' @return ecql string
 #' @noRd
 #'
-construct_spatial_filter <- function(shape, spatial_filter, crs, apikey){
+construct_spatial_filter <- function(shape = NULL,
+                                     spatial_filter = NULL,
+                                     crs = NULL,
+                                     apikey = NULL){
 
    # Test for units
    units <- c("feet", "meters", "statute miles", "nautical miles", "kilometers")
