@@ -86,7 +86,7 @@
                         <h4 data-toc-skip class="author">Paul
 Carteron</h4>
             
-            <h4 data-toc-skip class="date">2022-11-15</h4>
+            <h4 data-toc-skip class="date">2023-01-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/paul-carteron/happign/blob/HEAD/vignettes/Getting_started.Rmd" class="external-link"><code>vignettes/Getting_started.Rmd</code></a></small>
       <div class="d-none name"><code>Getting_started.Rmd</code></div>
@@ -107,22 +107,22 @@ packages we will need.</p>
 <div class="section level2">
 <h2 id="wfs-and-wms-service">WFS and WMS service<a class="anchor" aria-label="anchor" href="#wfs-and-wms-service"></a>
 </h2>
-<p><code>happign</code> use two data type from IGN web service :</p>
+<p><code>happign</code> use two web service from IGN :</p>
 <ul>
-<li>WMS raster : data in raster format which are images (.jpg, .png,
-.tif)</li>
+<li>WMS raster : data in raster format (.jpg, .png, .tif)</li>
 <li>WFS : data in shape format (.shp).</li>
 </ul>
 <p>More detailed information are available <a href="https://www.ogc.org/standards/wms" class="external-link">here</a> for WMS and <a href="https://www.ogc.org/standards/wfs" class="external-link">here</a> for WFS.</p>
-<p>To download data you need :</p>
+<p>To download data from web services at least three elements are needed
+:</p>
 <ul>
-<li>API key corresponding to the layer you want ;</li>
-<li>The layer’s name ;</li>
+<li>An API key;</li>
+<li>A layer name ;</li>
 <li>A shape read by <a href="https://CRAN.R-project.org/package=sf" class="external-link"><code>sf</code></a>
 package</li>
 </ul>
 <div class="section level3">
-<h3 id="api-keys">API keys<a class="anchor" aria-label="anchor" href="#api-keys"></a>
+<h3 id="api-key">API key<a class="anchor" aria-label="anchor" href="#api-key"></a>
 </h3>
 <p>API keys can be directly retrieved on the <a href="https://geoservices.ign.fr/services-web-experts" class="external-link">IGN website in
 the expert web services</a> (I recommend you at this point to go and
@@ -156,59 +156,51 @@ be used for WMS and WFS :</p>
 </h3>
 <p>Now that we know how to get an API key and layer name, it only takes
 a few lines to get plethora of resources. For the example we will look
-at the beautiful town of Penmarch in France.</p>
+at the beautiful town of Penmarch in France. A part of this town is
+stored as a shape in happign.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">penmarch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/penmarch.shp"</span>, package <span class="op">=</span> <span class="st">"happign"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="wfs">WFS<a class="anchor" aria-label="anchor" href="#wfs"></a>
 </h4>
-<p>First, we are going to get borders of the Penmarch. Since it’s a
-shape object, <code><a href="../reference/get_wfs.html">get_wfs()</a></code> will be used.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># First retrieve create a point inside Penmarc'h</span></span>
-<span><span class="va">penmarch_point</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4.370</span>, <span class="fl">47.800</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Then download borders</span></span>
-<span><span class="va">penmarch_borders</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch_point</span>,</span>
+<p><code>get_wfs</code> can be used to download borders :</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">penmarch_borders</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch</span>,</span>
 <span>                            apikey <span class="op">=</span> <span class="st">"administratif"</span>,</span>
 <span>                            layer_name <span class="op">=</span> <span class="st">"LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 1/1 downloaded</span></span>
+<span><span class="co">#&gt; Features downloaded : 1</span></span>
 <span></span>
 <span><span class="co"># Checking result</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Borders of penmarch</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_point</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Point use to retrieve data</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_symbols.html" class="external-link">tm_dots</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"red"</span>, size <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"symbol"</span>, label <span class="op">=</span> <span class="st">"lat : -4.370, long : 47.800"</span>,</span>
-<span>                 col <span class="op">=</span> <span class="st">"red"</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span><span class="op">+</span></span>
+<span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">+</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch</span><span class="op">)</span><span class="op">+</span></span>
+<span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span><span class="op">+</span></span>
 <span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>main.title <span class="op">=</span> <span class="st">"Penmarch borders from IGN"</span>,</span>
-<span>             main.title.position <span class="op">=</span> <span class="st">"center"</span>,</span>
-<span>             legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"bottom"</span><span class="op">)</span>,</span>
-<span>             frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Getting_started-unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5" style="display: block; margin: auto;"></p>
+<span>             main.title.position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Getting_started-unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;"></p>
 <p>It’s as simple as that! Now you have to rely on your curiosity to
 explore the multiple possibilities that IGN offers. For example, who has
 never wondered how many road junctions there are in Penmarch?</p>
 <p><em>Spoiler : there are 192 of them</em></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dikes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch_borders</span>,</span>
 <span>                 apikey <span class="op">=</span> <span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">6</span><span class="op">]</span>,</span>
-<span>                 layer_name <span class="op">=</span> <span class="st">"BDCARTO_BDD_WLD_WGS84G:noeud_routier"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 1/1 downloaded</span></span>
-<span></span>
-<span><span class="va">dikes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html" class="external-link">st_intersection</a></span><span class="op">(</span><span class="va">penmarch_borders</span>, <span class="va">dikes</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant</span></span>
-<span><span class="co">#&gt; throughout all geometries</span></span>
+<span>                 layer_name <span class="op">=</span> <span class="st">"BDCARTO_BDD_WLD_WGS84G:noeud_routier"</span>,</span>
+<span>                 spatial_filter <span class="op">=</span> <span class="st">"intersects"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Features downloaded : 192</span></span>
 <span></span>
 <span><span class="co"># Checking result</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Borders of penmarch</span></span>
 <span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">dikes</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Point use to retrieve data</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_symbols.html" class="external-link">tm_dots</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"symbol"</span>, label <span class="op">=</span> <span class="st">"Road junction"</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_symbols.html" class="external-link">tm_symbols</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"red"</span>, shape <span class="op">=</span> <span class="fl">13</span>, size <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"symbol"</span>, shape <span class="op">=</span> <span class="fl">13</span>, label <span class="op">=</span> <span class="st">"Road junction"</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>main.title <span class="op">=</span> <span class="st">"Road nodes recorded by the IGN in Penmarch"</span>,</span>
 <span>             main.title.position <span class="op">=</span> <span class="st">"center"</span>,</span>
 <span>             legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"bottom"</span><span class="op">)</span>,</span>
 <span>             frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Getting_started-unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;"></p>
+<p><img src="Getting_started-unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level4">
 <h4 id="wms-raster">WMS raster<a class="anchor" aria-label="anchor" href="#wms-raster"></a>
@@ -219,9 +211,9 @@ inside <a href="https://geoservices.ign.fr/services-web-experts-altimetrie" clas
 category</a>. A basic one is the Digital Elevation Model (DEM or MNT in
 French). Borders of Penmarch are used as shape for downloading the
 DEM.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">layers_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="st">"altimetrie"</span>, <span class="st">"wms"</span><span class="op">)</span></span>
-<span><span class="va">dem_layer_name</span> <span class="op">&lt;-</span> <span class="va">layers_metadata</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">dem_layer_name</span> <span class="op">&lt;-</span> <span class="va">layers_metadata</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">]</span> <span class="co">#LEVATION.ELEVATIONGRIDCOVERAGE</span></span>
 <span></span>
 <span><span class="va">mnt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wms_raster.html">get_wms_raster</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch_borders</span>,</span>
 <span>                      apikey <span class="op">=</span> <span class="st">"altimetrie"</span>,</span>
@@ -230,26 +222,24 @@ DEM.</p>
 <span>                      crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 1/1 downloading...</span></span>
 <span><span class="co">#&gt; Raster is saved at :</span></span>
-<span><span class="co">#&gt; D:\Personnel\Programmation\R\Packages Perso\happign\vignettes\ELEVATION_ELEVATIONGRIDCOVERAGE_25m.tif</span></span>
+<span><span class="co">#&gt; D:\TMP\RtmpE3Kxya\file43083d052c3b.tif</span></span>
 <span></span>
 <span><span class="va">mnt</span><span class="op">[</span><span class="va">mnt</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co"># remove negative values in case of singularity</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Elevation [m]"</span> <span class="co"># Rename raster ie the title legend</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span>colorNA <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
+<span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Elevation [m]"</span><span class="op">)</span> <span class="op">+</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span><span class="op">+</span></span>
 <span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>main.title <span class="op">=</span> <span class="st">"DEM of Penmarch"</span>,</span>
 <span>          main.title.position <span class="op">=</span> <span class="st">"center"</span>,</span>
 <span>          legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"bottom"</span><span class="op">)</span>,</span>
-<span>          legend.bg.color <span class="op">=</span> <span class="st">"white"</span>, legend.bg.alpha <span class="op">=</span> <span class="fl">0.7</span>,</span>
-<span>          frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Getting_started-unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;"></p>
+<span>          legend.bg.color <span class="op">=</span> <span class="st">"white"</span>, legend.bg.alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Getting_started-unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;"></p>
 <p><strong><em>Rq :</em></strong></p>
 <ul>
 <li><em>Raster from <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> are
 <code>SpatRaster</code> object from the <code>terra</code> package. To
-learn more about conversion between other raster type in R go <a href="https://geocompr.github.io/post/2021/spatial-classes-conversion/" class="external-link">check
+learn more about conversion between other raster type in R go <a href="https://geocompx.org/post/2021/spatial-classes-conversion/" class="external-link">check
 this out</a>.</em></li>
 </ul>
 </div>

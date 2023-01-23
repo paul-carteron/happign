@@ -151,57 +151,7 @@ geoservers. If <code>shape</code> is set, then the <code>ecql_filter</code> come
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># shape from the best town in France</span></span></span>
-<span class="r-in"><span><span class="va">penmarch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/penmarch.shp"</span>, package <span class="op">=</span> <span class="st">"happign"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># For quick testing, use interactive = TRUE</span></span></span>
-<span class="r-in"><span><span class="va">shape</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch</span>,</span></span>
-<span class="r-in"><span>                 interactive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># For specific use, choose apikey with get_apikey() and layer_name with get_layers_metadata()</span></span></span>
-<span class="r-in"><span><span class="co">## Getting borders of best town in France</span></span></span>
-<span class="r-in"><span><span class="va">apikey</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">metadata_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="va">apikey</span>, <span class="st">"wfs"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">layer_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">metadata_table</span><span class="op">[</span><span class="fl">32</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Downloading borders</span></span></span>
-<span class="r-in"><span><span class="va">borders</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span><span class="va">penmarch</span>, <span class="va">apikey</span>, <span class="va">layer_name</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Plotting result</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">borders</span>, fill <span class="op">=</span> <span class="cn">NULL</span>, borders <span class="op">=</span> <span class="st">"firebrick"</span><span class="op">)</span> <span class="co"># easy map</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Get forest_area of the best town in France</span></span></span>
-<span class="r-in"><span><span class="va">forest_area</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span>shape <span class="op">=</span> <span class="va">borders</span>,</span></span>
-<span class="r-in"><span>                       apikey <span class="op">=</span> <span class="st">"environnement"</span>,</span></span>
-<span class="r-in"><span>                       layer_name <span class="op">=</span> <span class="st">"LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">forest_area</span>, fill <span class="op">=</span> <span class="st">"libelle"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># using ECQL filters to query IGN server</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># find all commune's name starting by "plou".</span></span></span>
-<span class="r-in"><span><span class="co"># First you need the name of the attribute to filter</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">borders</span><span class="op">)</span> <span class="co"># In our case "nom_m" is what we need</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">attribute_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">get_wfs</span><span class="op">(</span><span class="va">penmarch</span>,<span class="va">apikey</span>, <span class="va">layer_name</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">plou_borders</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span>shape <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># When shape is NULL, all France is query</span></span></span>
-<span class="r-in"><span>                        apikey <span class="op">=</span> <span class="st">"administratif"</span>,</span></span>
-<span class="r-in"><span>                        layer_name <span class="op">=</span> <span class="st">"LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"</span>,</span></span>
-<span class="r-in"><span>                        ecql_filter <span class="op">=</span> <span class="st">"nom_m LIKE 'PLOU%'"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># it's also possible to combine ecql_filter</span></span></span>
-<span class="r-in"><span><span class="va">plou_borders</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span>shape <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># When shape is NULL, all France is query</span></span></span>
-<span class="r-in"><span>                        apikey <span class="op">=</span> <span class="st">"administratif"</span>,</span></span>
-<span class="r-in"><span>                        layer_name <span class="op">=</span> <span class="st">"LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"</span>,</span></span>
-<span class="r-in"><span>                        ecql_filter <span class="op">=</span> <span class="st">"nom_m LIKE 'PLOU%' AND population &lt; 2000"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-</code></pre></div>
+    
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

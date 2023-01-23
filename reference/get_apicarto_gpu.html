@@ -107,26 +107,56 @@ allows to simplify them. See <code><a href="https://r-spatial.github.io/sf/refer
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>For the moment the API cannot returned more than 5000 features.</p>
-<p>All resssources description :</p><ul><li><p><code>"municipality</code> : information on the communes (commune with RNU, merged commune)</p></li>
-<li><p><code>"document'</code> : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)</p></li>
-<li><p><code>"zone-urba"</code> : zoning of urban planning documents,</p></li>
-<li><p><code>"secteur-cc"</code> : communal map sectors</p></li>
-<li><p><code>"prescription-surf"</code> : surface prescriptions like Classified wooded area, Area contributing to the green and blue framework, Landscape element to be protected or created, Protected open space, ...</p></li>
-<li><p><code>"prescription-lin"</code> : linear prescription like pedestrian path, bicycle path, hedges or tree lines to be protected, ...</p></li>
-<li><p><code>"prescription-pct"</code> : punctual prescription like Building of architectural interest, Building to protect, Remarkable tree, Protected pools, ...</p></li>
-<li><p><code>"info-surf"</code> : surface information perimeters of urban planning documents like Protection of drinking water catchments, archaeological sector, noise classification, ...</p></li>
-<li><p><code>"info-lin"</code> : linear information perimeters of urban planning documents like Bicycle path to be created, Long hike, Façade and/or roof protected as historical monuments, ...</p></li>
-<li><p><code>"info-pct"</code> : punctual information perimeters of urban planning documents like Archaeological heritage, Listed or classified historical monument, Underground cavity, ...</p></li>
-<li><p><code>"acte-sup"</code> :</p></li>
-<li><p><code>"assiette-sup-s"</code> :</p></li>
-<li><p><code>"assiette-sup-l"</code> :</p></li>
-<li><p><code>"assiette-sup-p"</code> :</p></li>
-<li><p><code>"generateur-sup-s"</code> :</p></li>
-<li><p><code>"generateur-sup-l"</code> :</p></li>
-<li><p><code>"generateur-sup-p"</code> :</p></li>
+    <p><strong>/!\ For the moment the API cannot returned more than 5000 features.</strong></p>
+<p>All existing parameters for <code>ressource</code>  :</p><ul><li><p>"municipality : information on the communes (commune with RNU, merged commune)</p></li>
+<li><p>"document' : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)</p></li>
+<li><p>"zone-urba" : zoning of urban planning documents,</p></li>
+<li><p>"secteur-cc" : communal map sectors</p></li>
+<li><p>"prescription-surf" : surface prescriptions like Classified wooded area, Area contributing to the green and blue framework, Landscape element to be protected or created, Protected open space, ...</p></li>
+<li><p>"prescription-lin" : linear prescription like pedestrian path, bicycle path, hedges or tree lines to be protected, ...</p></li>
+<li><p>"prescription-pct" : punctual prescription like Building of architectural interest, Building to protect, Remarkable tree, Protected pools, ...</p></li>
+<li><p>"info-surf" : surface information perimeters of urban planning documents like Protection of drinking water catchments, archaeological sector, noise classification, ...</p></li>
+<li><p>"info-lin" : linear information perimeters of urban planning documents like Bicycle path to be created, Long hike, Façade and/or roof protected as historical monuments, ...</p></li>
+<li><p>"info-pct" : punctual information perimeters of urban planning documents like Archaeological heritage, Listed or classified historical monument, Underground cavity, ...</p></li>
+<li><p>"acte-sup" :</p></li>
+<li><p>"assiette-sup-s" :</p></li>
+<li><p>"assiette-sup-l" :</p></li>
+<li><p>"assiette-sup-p" :</p></li>
+<li><p>"generateur-sup-s" :</p></li>
+<li><p>"generateur-sup-l" :</p></li>
+<li><p>"generateur-sup-p" :</p></li>
 </ul></div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If you know the partition, all GPU features are returned, geom is override</span></span></span>
+<span class="r-in"><span><span class="va">partition</span> <span class="op">&lt;-</span> <span class="st">"DU_75056"</span></span></span>
+<span class="r-in"><span><span class="va">zone_urba</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_gpu</span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, ressource <span class="op">=</span> <span class="st">"zone-urba"</span>, partition <span class="op">=</span> <span class="va">partition</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">zone_urba</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If you don't know partition, only GPU features intersecting shape are returned</span></span></span>
+<span class="r-in"><span><span class="va">point</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.354</span>, <span class="fl">48.866</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">zone_urba</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_gpu</span><span class="op">(</span>x <span class="op">=</span> <span class="va">point</span>, ressource <span class="op">=</span> <span class="st">"zone-urba"</span>, partition <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">zone_urba</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">point</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If you wanna find partition</span></span></span>
+<span class="r-in"><span><span class="va">document</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_gpu</span><span class="op">(</span><span class="va">point</span>, ressource <span class="op">=</span> <span class="st">"document"</span>, partition <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">partition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">document</span><span class="op">$</span><span class="va">partition</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Get all prescription : /!\ prescription is different than zone-urba</span></span></span>
+<span class="r-in"><span><span class="va">partition</span> <span class="op">&lt;-</span> <span class="st">"DU_75056"</span></span></span>
+<span class="r-in"><span><span class="va">ressources</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"prescription-surf"</span>, <span class="st">"prescription-lin"</span>, <span class="st">"prescription-pct"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">all_prescription</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">ressources</span>, <span class="va">get_apicarto_gpu</span>, x <span class="op">=</span> <span class="cn">NULL</span>, partition <span class="op">=</span> <span class="va">partition</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>                    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
