@@ -8,6 +8,7 @@
 * Adding support for spatial and ecql filter to `get_wfs()`
 * Remove dependecy to magritrr pipe `%>%` by `|>`
 * Add internal shape for testing `point`, `multipoint`, `line`, `multiline`, `poly`, `multipoly`
+* add `get_wfs_attributes()` function
 
 # happign 0.1.7
 * Correct bug preventing `get_apicarto_commune` to work with dep and insee code
