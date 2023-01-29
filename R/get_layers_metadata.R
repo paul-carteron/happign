@@ -50,35 +50,36 @@ get_layers_metadata <- function(apikey,
                   "wfs" = NULL)
 
 
-   tryCatch({
-      req <- request("https://wxs.ign.fr/") |>
-         req_url_path(apikey,"geoportail", path) |>
-         req_url_path_append(data_type) |>
-         req_url_query(service = data_type,
-                       version = version,
-                       request = "GetCapabilities",
-                       sections = "FeatureTypeList") |>
-         req_perform() |>
-         resp_body_xml()
+   req <- request("https://wxs.ign.fr/") |>
+      req_url_path(apikey,"geoportail", path) |>
+      req_url_path_append(data_type) |>
+      req_url_query(service = data_type,
+                    version = version,
+                    request = "GetCapabilities",
+                    sections = "FeatureTypeList")
 
-      raw_metadata <- switch(data_type,
-                             "wms" = xml_child(req, "d1:Capability") |> xml_child("d1:Layer") |>
-                                xml_find_all("d1:Layer"),
-                             "wfs" = xml_child(req, "d1:FeatureTypeList") |> xml_children())
+   resp <- req_perform(req) |>
+      resp_body_xml()
 
-      clean_metadata <- suppressWarnings(
-         as.data.frame(do.call(rbind, as_list(raw_metadata)))[, 1:3])
-      clean_metadata <-
-         as.data.frame(apply(clean_metadata, c(1, 2), unlist))
-   },
-   error = function(cond){
-      if (grepl("parse", cond)){
-         stop("IGN Web service are unavailable for the moment. Try get_last_news() for more info.",
-              call. = F)
-      }else{
-         stop("There's no ", data_type, " resources for apikey ", apikey, call. = F)
-      }
-   })
+   raw_metadata <- switch(data_type,
+                          "wms" = xml_child(resp, "d1:Capability") |>
+                             xml_child("d1:Layer") |>
+                             xml_find_all("d1:Layer"),
+                          "wfs" = xml_child(resp, "d1:FeatureTypeList") |>
+                             xml_children())
 
+   no_layer_name_found = (length(raw_metadata) == 0)
+   if (no_layer_name_found){
+      warning("There's no ", data_type, " resources for apikey '", apikey,
+              "', NULL is returned.", call. = F)
+      return(NULL)
+   }
+
+   clean_metadata <- suppressWarnings(
+      as.data.frame(do.call(rbind, as_list(raw_metadata)))[, 1:3])
+   clean_metadata <-
+      as.data.frame(apply(clean_metadata, c(1, 2), unlist))
+
+   return(clean_metadata)
 }
 

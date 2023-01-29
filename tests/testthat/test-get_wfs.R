@@ -119,7 +119,7 @@ with_mock_dir("wfs_empty", {
       expect_warning(get_wfs(apikey = apikey,
                               layer_name = layer_name,
                               ecql_filter = ecql_filter),
-                     "No features find.")
+                     "No data found, NULL is returned.")
 })},
 simplify = FALSE)
 

@@ -66,22 +66,24 @@
 #'
 get_apicarto_commune <- function(x, source = "PCI"){
 
-   # Initialisation
+   # initialisation
    geom <- code_insee <- code_dep <- NULL
 
-   # Input class verification
-   match.arg(source, c("BDP", "PCI"))
-
-   if (sum(class(x) %in% c("sf", "sfc", "character")) == 0) { # x can have 3 class
-      stop("x must be character, sf or sfc; not ", class(x))
+   # check x input
+   if (!inherits(x, c("character", "sf", "sfc"))) { # x can have 3 class
+      stop("x must be of class character, sf or sfc.")
    }
 
-   # Deal with sf or sfc object
-   if(methods::is(x, "sf")){
+   # check source input
+   match.arg(source, c("BDP", "PCI"))
+
+   # Deal with sf object
+   if(inherits(x, "sf")){
       x <- st_as_sfc(x)
    }
 
-   if(methods::is(x, "sfc")){
+   # Deal with sfc object
+   if(inherits(x, "sfc")){
       geom <- x |>
          st_make_valid() |>
          st_transform(4326) |>
@@ -89,7 +91,7 @@ get_apicarto_commune <- function(x, source = "PCI"){
    }
 
    # Deal with character
-   if(methods::is(x, "character")){
+   if(inherits(x, "character")){
       switch(as.character(nchar(x)),
              "2" = {code_dep <- x},
              "3" = {code_dep <- x},  #DOM-TOM
@@ -98,24 +100,27 @@ get_apicarto_commune <- function(x, source = "PCI"){
    }
 
    # Request
-   res <- request("https://apicarto.ign.fr") |>
+   req <- request("https://apicarto.ign.fr") |>
       req_url_path("api/cadastre/commune") |>
       req_url_query(
          code_insee = code_insee,
          code_dep = code_dep,
          geom = geom,
-         source = source
-      ) |>
-      req_perform() |>
+         source = source)
+
+   resp <- req_perform(req) |>
       resp_body_string() |>
       read_sf(quiet = TRUE)
 
-   if (dim(res)[1] == 0) {
-      stop("No results is returned by API.\nCheck that",
-           switch(substr(class(x), 1, 3)[1],
-                  "sfc" = " the shape is in France",
-                  "cha" = " insee or department code exists. Running data(cog_2022) can help."),
-           call. = FALSE)}
+   no_borders_exits <- (nrow(resp) == 0)
+   if (no_borders_exits){
+      warning("No data found, NULL is returned. This could be due to :\n",
+              "- shape outside of France\n",
+              "- non-existent insee or department code\n",
+              "- existing code but not recognized by apicarto.\n",
+              "Running data(cog_2022) can help find all insee code.", .call = FALSE)
+      return(NULL)
+   }
 
-   return(res)
+   return(resp)
 }

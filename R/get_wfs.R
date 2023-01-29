@@ -75,7 +75,7 @@
 #' ## Getting borders of best town in France
 #' apikey <- get_apikeys()[1]
 #' metadata_table <- get_layers_metadata(apikey, "wfs")
-#' layer_name <- metadata_table[32,1])
+#' layer_name <- metadata_table[32,1]
 #'
 #' # Downloading borders
 #' borders <- get_wfs(penmarch, apikey, layer_name)
@@ -140,9 +140,16 @@ get_wfs <- function(shape = NULL,
    # hit api and loop if there more than 1000 features
    req <- build_wfs_req(shape, apikey, layer_name, spatial_filter,
                         ecql_filter, startindex = 0, crs)
-   message("Features downloaded : ",appendLF = F)
    resp <- hit_api_wfs(req, ecql_filter, apikey)
-   message(nrow(resp), appendLF = F)
+
+   # Succesful request but no feature found
+   feature_exist <- (nrow(resp) != 0)
+   if (!feature_exist){
+      warning("No data found, NULL is returned.", call. = FALSE)
+      return(NULL)
+   }
+
+   message("Features downloaded : ", nrow(resp), appendLF = F)
 
    i <- 1000
    temp <- resp
@@ -158,11 +165,6 @@ get_wfs <- function(shape = NULL,
    cat("\n")
    # Cleaning list column from features
    resp <- resp[ , !sapply(resp, is.list)]
-
-   feature_exist <- (nrow(resp) != 0)
-   if (!feature_exist){
-      warning("No features find.", call. = FALSE)
-   }
 
    # properly saving file
    filename_exist <- !is.null(filename)
@@ -242,7 +244,9 @@ hit_api_wfs <- function(req,
          if (!is.null(ecql_filter)){
             stop("Check that `ecql_filter` is properly set.", call. = F)
          }else{
-            stop("Please check that layer_name is valid by checking ",
+            stop("Please check that :\n",
+                 "- shape is not empty ;\n",
+                 "- layer_name is valid by running ",
                  "`get_layers_metadata(\"", apikey, "\", \"wfs\")`\n",
                  call. = F)
          }})
