@@ -9,6 +9,7 @@
 * Remove dependecy to magritrr pipe `%>%` by `|>`
 * Add internal shape for testing `point`, `multipoint`, `line`, `multiline`, `poly`, `multipoly`
 * add `get_wfs_attributes()` function
+* NULL is returned when no data found
 
 # happign 0.1.7
 * Correct bug preventing `get_apicarto_commune` to work with dep and insee code
