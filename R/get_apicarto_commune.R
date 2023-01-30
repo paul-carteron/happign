@@ -112,8 +112,7 @@ get_apicarto_commune <- function(x, source = "PCI"){
       resp_body_string() |>
       read_sf(quiet = TRUE)
 
-   no_borders_exits <- (nrow(resp) == 0)
-   if (no_borders_exits){
+   if (is_empty(resp)){
       warning("No data found, NULL is returned. This could be due to :\n",
               "- shape outside of France\n",
               "- non-existent insee or department code\n",

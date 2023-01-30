@@ -68,8 +68,7 @@ get_layers_metadata <- function(apikey,
                           "wfs" = xml_child(resp, "d1:FeatureTypeList") |>
                              xml_children())
 
-   no_layer_name_found = (length(raw_metadata) == 0)
-   if (no_layer_name_found){
+   if (is_empty(raw_metadata)){
       warning("There's no ", data_type, " resources for apikey '", apikey,
               "', NULL is returned.", call. = F)
       return(NULL)

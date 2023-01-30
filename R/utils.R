@@ -103,3 +103,13 @@ construct_spatial_filter <- function(shape = NULL,
 
    return(spatial_filter)
 }
+
+#' @description check if an object is empty ie when no data is found from API
+#' @param x sf, sfc or list
+#' @return TRUE if there is no data
+#' @noRd
+#'
+is_empty <- function(x){
+   # length(x) is used for checking empty xml response from `get_layers_metadata`
+   identical(nrow(x), 0L) | identical(length(x), 0L)
+}

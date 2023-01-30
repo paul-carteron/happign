@@ -143,8 +143,7 @@ get_wfs <- function(shape = NULL,
    resp <- hit_api_wfs(req, ecql_filter, apikey)
 
    # Succesful request but no feature found
-   feature_exist <- (nrow(resp) != 0)
-   if (!feature_exist){
+   if (is_empty(resp)){
       warning("No data found, NULL is returned.", call. = FALSE)
       return(NULL)
    }
@@ -168,7 +167,7 @@ get_wfs <- function(shape = NULL,
 
    # properly saving file
    filename_exist <- !is.null(filename)
-   if (filename_exist & feature_exist){
+   if (filename_exist & !is_empty(resp)){
       save_wfs(filename, resp, overwrite)
    }
 
