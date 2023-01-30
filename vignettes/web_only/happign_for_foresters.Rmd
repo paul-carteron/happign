@@ -144,9 +144,10 @@ protected_area_names <- get_layers_metadata(apikey, "wfs") |>
    pull(Name)
 
 all_protected_area <- map(.x = protected_area_names,
-                          .f = ~ try(get_wfs(borders, apikey, .x, spatial_filter = "intersects"), silent = TRUE)) |> 
+                          .f = ~ try(get_wfs(borders, apikey, .x, 
+                                          spatial_filter = "intersects"), silent = TRUE)) |> 
    set_names(protected_area_names) |> 
-   discard(~ dim(.)[2] == 1)
+   discard(~ identical(length(.), 0L))
 
 # Plot the result
 tm_shape(all_protected_area[[1]])+
@@ -207,7 +208,7 @@ Categories are somewhat arbitrary, and you can find various rules of thumb, such
 
 
 ```{r}
-# To show the possibility of 20cm resolution for IRC, let's take only the biggest parcels
+# To show the 20cm resolution possibility for IRC, let's take only the biggest parcels
 biggest_parcels <- parcellaire |> 
    mutate(area = st_area(geometry)) |> 
    slice_max(area)
