@@ -1,42 +1,45 @@
 #' Apicarto Cadastre
 #'
-#' Implementation of the cadastre module of the
+#' Implementation of the cadastre module from the
 #'  [IGN's apicarto](https://apicarto.ign.fr/api/doc/cadastre)
 #'
-#' #' @usage
+#' @usage
 #' get_apicarto_cadastre(x,
-#'                       section = NULL,
-#'                       numero = NULL,
-#'                       code_abs = NULL,
-#'                       source_ign = "PCI")
+#'                       type = "parcelle",
+#'                       source = "PCI",
+#'                       section = list(NULL),
+#'                       numero = list(NULL),
+#'                       code_arr = list(NULL),
+#'                       code_abs = list(NULL),
+#'                       code_com = list(NULL))
 #'
-#' @param x It can be a shape or multiple insee code :
-#' * Shape : all the cadastral parcels contained in it are downloaded. It should
-#'  be an object of class `sf` or `sfc`.
-#' * Code insee : filter the response on the INSEE code entered (must be a
-#'  `character` or a vector of `character`)
-#' @param section A `character` or a vector of `character` to filter the
-#'  response on the cadastral section code entered (on 2 characters)
-#' @param numero A `character` or a vector of `character` to filter the answers
+#' @param x It can be a shape, insee codes or departement codes :
+#' * Shape : must be an object of class `sf` or `sfc`.
+#' * Code insee : must be a 5 letters `character`
+#' * Code departement : must be a 2  or 3 letters `character`
+#' @param type A `character` from "parcelle", "commune", "feuille", "division"
+#' @param source Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
+#' See detail for more info.
+#' @param section A `character` corresponding to cadastral section
+#' @param numero A `character` corresponding to cadastral number
 #' on the entered parcel number (on 4 characters)
-#' @param code_abs A `character` or a vector of `character` to filter the
-#' answers on the code of absorbed commune. This prefix is useful to
-#'  differentiate between communes that have merged
-#' @param source_ign Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire
-#' express. The BD Parcellaire is a discontinued product. Its use is no longer
+#' @param code_arr A `character` corresponding to district code for Paris, Lyon, Marseille
+#' @param code_abs A `character` corresponding to the code of absorbed commune.
+#' This prefix is useful to differentiate between communes that have merged
+#' @param code_com A `character` corresponding to the commune code. Only use with
+#' `type = "division"` or `type = "feuille"`
+
+#' @details
+#' `source`: BD Parcellaire is a discontinued product. Its use is no longer
 #'  recommended because it is no longer updated. The use of PCI Express is
 #'  strongly recommended and will become mandatory. More information on the
 #'  comparison of this two products can be found
 #'  [here](https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf)
 #'
-#' @return `get_apicarto_cadastre`return an object of class `sf`
+#' @return Object of class `sf`
 #' @export
 #'
-#' @importFrom sf st_as_sfc st_transform read_sf
-#' @importFrom httr2 req_url_path req_perform req_url_query request
-#' resp_body_json resp_body_string
-#' @importFrom dplyr bind_rows mutate rowwise
-#' @importFrom utils globalVariables
+#' @importFrom sf st_as_sfc st_make_valid st_transform
 #' @importFrom geojsonsf sfc_geojson
 #'
 #' @examples
@@ -44,141 +47,74 @@
 #' library(sf)
 #' library(tmap)
 #'
-#' # line from the best town in France
-#' line <- st_linestring(matrix(c(-4.372215, -4.365177, 47.803943, 47.79772),
-#'                              ncol = 2))
-#' line <- st_sfc(line, crs = st_crs(4326))
-#'
-#' PCI_shape <- get_apicarto_cadastre(shape, section = c("AX", "AV"))
-#' BDP_Code <- get_apicarto_cadastre("29158", section = c("AX", "BR"),
-#'                                   source_ign = "BDP")
-#'
-#' tm_shape(PCI_shape)+
-#'    tm_borders()+
-#' tm_shape(line)+
-#'    tm_lines(col = "red")
-#'
-#' tm_shape(BDP_Code)+
-#'    tm_polygons(col = "section", border.col = "black")
-#'
 #' }
 #' @name get_apicarto_cadastre
 #' @export
 #'
-globalVariables(c("code_insee", "section", "numero", "geom", "code_abs",
-                  "source_ign", "cog_2022"))
-#'
 get_apicarto_cadastre <- function(x,
-                                  section = NULL,
-                                  numero = NULL,
-                                  code_abs = NULL,
-                                  source_ign = "PCI") {
-   UseMethod("get_apicarto_cadastre")
-}
-#' @name get_apicarto_cadastre
-#' @export
-get_apicarto_cadastre.sf <- function(x,
-                                     section = NULL,
-                                     numero = NULL,
-                                     code_abs = NULL,
-                                     source_ign = "PCI") {
-   match.arg(source_ign, c("BDP", "PCI"))
-   x <- st_transform(x, 4326)
-   x <- st_as_sfc(x)
-   geojson_geom <- sfc_geojson(x)
+                                  type = "parcelle",
+                                  source = "PCI",
+                                  section = list(NULL),
+                                  numero = list(NULL),
+                                  code_arr = list(NULL),
+                                  code_abs = list(NULL),
+                                  code_com = list(NULL)){
 
-   query_parameter <- list(geom = geojson_geom,
-                           code_insee = NULL,
-                           section = section,
-                           numero = numero,
-                           code_abs = code_abs,
-                           source_ign = source_ign)
-
-   download_cadastre(query_parameter)
-}
-#' @name get_apicarto_cadastre
-#' @export
-get_apicarto_cadastre.sfc <- function(x,
-                                      section = NULL,
-                                      numero = NULL,
-                                      code_abs = NULL,
-                                      source_ign = "PCI") {
-   match.arg(source_ign, c("BDP", "PCI"))
-   x <- st_transform(x, 4326)
-   geojson_geom <- sfc_geojson(x)
-
-   query_parameter <- list(geom = geojson_geom,
-                           code_insee = NULL,
-                           section = section,
-                           numero = numero,
-                           code_abs = code_abs,
-                           source_ign = source_ign)
-
-   download_cadastre(query_parameter)
-}
-#' @name get_apicarto_cadastre
-#' @export
-get_apicarto_cadastre.character <- function(x,
-                                            section = NULL,
-                                            numero = NULL,
-                                            code_abs = NULL,
-                                            source_ign = "PCI") {
-
-   match.arg(source_ign, c("BDP", "PCI"))
-   stopifnot("x is not a valid INSEE code (check insee database here : <https://www.insee.fr/fr/information/2560452>)" = x %in% cog_2022$COM)
-
-   query_parameter <- list(geom = NULL,
-                           code_insee = x,
-                           section = section,
-                           numero = numero,
-                           code_abs = code_abs,
-                           source_ign = source_ign)
-
-   download_cadastre(query_parameter)
-
-}
-#' Download cadastre event if there more than 1000 features
-#' @param query_parameter List with parameters for apicarto API
-#' @noRd
-download_cadastre <- function(query_parameter){
-
-   vectorized_query <- lapply(query_parameter,
-                             function(x){if(is.null(x)){list(NULL)}else{x}})
-
-   # Obliger de feinter httr2 pour convertir le geojson en format lisible par url
-   urls <- expand.grid(vectorized_query) |>
-      rowwise() |>
-      mutate(url = list(request("https://apicarto.ign.fr") |>
-                            req_url_path("api/cadastre/parcelle") |>
-                            req_url_query(code_insee = code_insee,
-                                               section = section,
-                                               numero = numero,
-                                               geom = geom,
-                                               code_abs = code_abs,
-                                               source_ign = source_ign))) |>
-      mutate(url = url[[1]])
-
-   nb_loop <- lapply(urls$url,
-                     function(x){resp_body_json(req_perform(
-                           request(x[[1]])))$totalFeatures %/% 1000 + 1})
-
-
-   urls <- paste0(rep(urls$url, nb_loop),
-                  "&_start=",
-                  unlist(lapply(nb_loop, function(x) seq(0, x-1) * 1000)))
-
-   bind_resp <- function(x, urls){
-      cat("Request ", x, "/", length(urls),
-          " downloading...\n", sep = "")
-      resp <- request(urls[x]) |>
-         req_perform() |>
-         resp_body_string() |>
-         read_sf(quiet = TRUE)
+   # check x input
+   if (!inherits(x, c("character", "sf", "sfc"))) { # x can have 3 class
+      stop("x must be of class character, sf or sfc.")
    }
 
-   parcelles <- lapply(seq_along(urls), bind_resp, urls) |>
-      bind_rows()
+   # check type and source input
+   match.arg(type, c("parcelle", "commune", "feuille", "division"))
+   match.arg(source, c("BDP", "PCI"))
 
-   return(parcelles)
+   # deal with sf object
+   if(inherits(x, "sf")){
+      x <- st_as_sfc(x)
+   }
 
+   # deal with sfc object
+   if(inherits(x, "sfc")){
+      geom <- x |>
+         st_make_valid() |>
+         st_transform(4326) |>
+         sfc_geojson()
+   }
+
+   # deal with character
+   if(inherits(x, "character")){
+      switch(as.character(nchar(x[1])),
+             "5" = {code_insee <- x},
+             "2" = {code_dep <- x},
+             stop("x must be length 5; not ", nchar(x)))
+   }
+
+   # hit api and loop if there more than 1000 features
+   resp <- Map(
+      loop_api,
+      path = paste0("api/cadastre/", type),
+      limit = 1000,
+      "code_insee" = code_insee,
+      "section" = section,
+      "numero" = numero,
+      "geom" = geom,
+      "code_abs" = code_abs,
+      "code_arr" = code_arr,
+      "source_ign" = source
+   )
+
+   # bind rows of each Map call
+   resp <- do.call(rbind, resp)
+   # Cleaning list column from features
+   resp <- resp[ , !sapply(resp, is.list)]
+
+   if (is_empty(resp)){
+      warning("No data found, NULL is returned. This could be due to :\n",
+              "- shape outside of France\n",
+              "- non-existent insee or department code\n",
+              "- existing code but not recognized by apicarto.\n",
+              "Running data(cog_2022) can help find all insee code.", .call = FALSE)
+      return(NULL)
+   }
 }

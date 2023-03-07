@@ -18,8 +18,8 @@ Depends:
     R (>= 3.3.0)
 Imports: 
     archive,
-    checkmate,
     dplyr,
+    checkmate,
     geojsonsf,
     httr2,
     methods,
