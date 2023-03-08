@@ -15,21 +15,24 @@
 #'
 #' @param x It can be a shape, insee codes or departement codes :
 #' * Shape : must be an object of class `sf` or `sfc`.
-#' * Code insee : must be a 5 letters `character`
-#' * Code departement : must be a 2  or 3 letters `character`
-#' @param type A `character` from "parcelle", "commune", "feuille", "division"
+#' * Code insee : must be a `character` of length 5
+#' * Code departement : must be a `character` of length  2 or 3 (DOM-TOM)
+#' @param type A `character` from `"parcelle"`, `"commune"`, `"feuille"`, `"division"`
 #' @param source Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
 #' See detail for more info.
-#' @param section A `character` corresponding to cadastral section
-#' @param numero A `character` corresponding to cadastral number
-#' on the entered parcel number (on 4 characters)
-#' @param code_arr A `character` corresponding to district code for Paris, Lyon, Marseille
+#' @param section A `character` of length 2
+#' @param numero A `character` of length 4
+#' @param code_arr A `character` corresponding to district code for Paris,
+#' Lyon, Marseille
 #' @param code_abs A `character` corresponding to the code of absorbed commune.
 #' This prefix is useful to differentiate between communes that have merged
-#' @param code_com A `character` corresponding to the commune code. Only use with
+#' @param code_com A `character` of length 5 corresponding to the commune code. Only use with
 #' `type = "division"` or `type = "feuille"`
 
 #' @details
+#' `x`, `section`, `numero`, `code_arr`, `code_abs`, `code_com` can take vector of character.
+#' In this case vector recycling is done. See the example section below.
+#'
 #' `source`: BD Parcellaire is a discontinued product. Its use is no longer
 #'  recommended because it is no longer updated. The use of PCI Express is
 #'  strongly recommended and will become mandatory. More information on the
@@ -45,9 +48,45 @@
 #' @examples
 #' \dontrun{
 #' library(sf)
-#' library(tmap)
 #'
-#' }
+#' # shape from the town of penmarch
+#' penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
+#'
+#' # get commune borders
+#' ## from shape
+#' penmarch_borders <- get_apicarto_cadastre(penmarch, type = "commune")
+#'
+#' ## from insee_code
+#' border <- get_apicarto_cadastre("29158", type = "commune")
+#' borders <- get_apicarto_cadastre(c("29158", "29165"), type = "commune")
+#'
+#' # get cadastral parcels
+#' ## from shape
+#' parcels <- get_apicarto_cadastre(penmarch, section = "AX")
+#'
+#' ## from insee code
+#' parcels <- get_apicarto_cadastre("29158")
+#'
+#' # Use parameter recycling
+#' ## get sections "AX" parcels from multiple insee_code
+#' parcels <- get_apicarto_cadastre(c("29158", "29165"), section = "AX")
+#'
+#' ## get parcels numbered "0001", "0010" of section "AX" and "BR"
+#' section <- c("AX", "BR")
+#' numero <- rep(c("0001", "0010"), each = 2)
+#' parcels <- get_apicarto_cadastre("29158", section = section, numero = numero)
+#'
+#' ## generalization with expand.grid
+#' params <- expand.grid(code_insee = c("29158", "29165"),
+#'                       section = c("AX", "BR"),
+#'                       numero = c("0001", "0010"),
+#'                       stringsAsFactors = FALSE)
+#' parcels <- get_apicarto_cadastre(params$code_insee,
+#'                                  section = params$section,
+#'                                  numero = params$numero)
+#'
+#'}
+#'
 #' @name get_apicarto_cadastre
 #' @export
 #'
@@ -59,6 +98,9 @@ get_apicarto_cadastre <- function(x,
                                   code_arr = list(NULL),
                                   code_abs = list(NULL),
                                   code_com = list(NULL)){
+
+   # initialisation
+   geom <- code_insee <- code_dep <- list(NULL)
 
    # check x input
    if (!inherits(x, c("character", "sf", "sfc"))) { # x can have 3 class
@@ -117,4 +159,6 @@ get_apicarto_cadastre <- function(x,
               "Running data(cog_2022) can help find all insee code.", .call = FALSE)
       return(NULL)
    }
+
+   return(resp)
 }
