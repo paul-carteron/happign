@@ -17,7 +17,8 @@
 #' * Shape : must be an object of class `sf` or `sfc`.
 #' * Code insee : must be a `character` of length 5
 #' * Code departement : must be a `character` of length  2 or 3 (DOM-TOM)
-#' @param type A `character` from `"parcelle"`, `"commune"`, `"feuille"`, `"division"`
+#' @param type A `character` from `"parcelle"`, `"commune"`, `"feuille"`,
+#'  `"division"`, `"localisant"`
 #' @param source Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
 #' See detail for more info.
 #' @param section A `character` of length 2
@@ -108,7 +109,7 @@ get_apicarto_cadastre <- function(x,
    }
 
    # check type and source input
-   match.arg(type, c("parcelle", "commune", "feuille", "division"))
+   match.arg(type, c("parcelle", "commune", "feuille", "division", "localisant"))
    match.arg(source, c("BDP", "PCI"))
 
    # deal with sf object
@@ -128,6 +129,7 @@ get_apicarto_cadastre <- function(x,
    if(inherits(x, "character")){
       switch(as.character(nchar(x[1])),
              "5" = {code_insee <- x},
+             "3" = {code_dep <- x},
              "2" = {code_dep <- x},
              stop("x must be length 5; not ", nchar(x)))
    }
@@ -138,6 +140,7 @@ get_apicarto_cadastre <- function(x,
       path = paste0("api/cadastre/", type),
       limit = 1000,
       "code_insee" = code_insee,
+      "code_dep" = code_dep,
       "section" = section,
       "numero" = numero,
       "geom" = geom,
