@@ -3,6 +3,7 @@
 export(.onAttach)
 export(are_queryable)
 export(get_apicarto_cadastre)
+export(get_apicarto_codes_postaux)
 export(get_apicarto_commune)
 export(get_apicarto_gpu)
 export(get_apikeys)
