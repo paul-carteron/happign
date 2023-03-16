@@ -89,12 +89,14 @@ get_apicarto_gpu <- function(x,
           check_null(x))
    assert(check_character(partition, pattern = "(?:DU|PSMW)_(?:[0-9])+$"),
           check_null(partition))
-   assert_choice(ressource, c("document","zone-urba", "secteur-cc", "prescription-surf",
-                              "prescription-lin", "prescription-pct",
-                              "info-surf", "info-lin", "info-pct", "acte-sup",
-                              "assiette-sup-s", "assiette-sup-l", "assiette-sup-p",
-                              "generateur-sup-s", "generateur-sup-l", "generateur-sup-p"))
    assert_numeric(dTolerance, lower = 0)
+
+   match.arg(ressource,
+             c("document","zone-urba", "secteur-cc", "prescription-surf",
+               "prescription-lin", "prescription-pct",
+               "info-surf", "info-lin", "info-pct", "acte-sup",
+               "assiette-sup-s", "assiette-sup-l", "assiette-sup-p",
+               "generateur-sup-s", "generateur-sup-l", "generateur-sup-p"))
 
    if (!is.null(partition)){
       x <- NULL
@@ -104,60 +106,28 @@ get_apicarto_gpu <- function(x,
       x <- st_as_sfc(x)
    }
 
-   param <- list(
-      geom = switch(is.null(x) + 1, sfc_geojson(prepare_shape(x, dTolerance)), NULL),
-      partition = partition,
-      categorie = categorie
-      # startindex = 0
-   )
-
-   # When start parameter will appear im prepared
-   # res <- NULL
-   # i <- 0
-   #
-   # while(length(res) == 5000){
-   #    res <- hit_api(ressource, param)
-   #    res <- rbind(res)
-   #    i <- i + 5000
-   # }
-
    tryCatch({
-      res <- hit_api(ressource, param)
+      message("Features downloaded : ", appendLF = F)
+      res <- build_req_hit_api(path = paste0("/api/gpu/", ressource),
+                               geom = switch(is.null(x) + 1, sfc_geojson(prepare_shape(x, dTolerance)), NULL),
+                               partition = partition,
+                               categorie = categorie)
       },
       error = function(cnd){
 
          if (grepl("Send failure: Connection was reset", cnd)){
             stop("Send failure: Connection was reset\n",
-                 "May be due to an overly complex shape. Try again with the argument dTolerance set to 10, 20, ... Be warned that the stronger the argument, the simpler the shape will be.",
+                 "May be due to an overly complex shape. Try again with the argument `dTolerance` set to 10, 20, ... the bigger the argument, the simpler the shape.",
                  call. = F)
-         }else{
-            stop("New error case, please submit an issue to https://github.com/paul-carteron/happign/issues.")
          }
 
-      })
+         stop("New error case, please submit an issue to https://github.com/paul-carteron/happign/issues.")
 
-   message("Features downloaded : ", nrow(res))
+      })
 
    return(res)
 
 }
-#' format url and request it
-#' @param ressource name of ressource you want
-#' @param param liste of param for hitting API
-#' @noRd
-hit_api <- function(ressource, param){
-
-   req <- request("https://apicarto.ign.fr/api/gpu") |>
-      req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
-      req_url_path_append(ressource) |>
-      req_url_query(!!!param) |>
-      req_perform() |>
-      resp_body_string() |>
-      read_sf()
-
-   return(req)
-}
-
 #' prepare shape for geojson conversion
 #' @param x objet of class sf or sfc
 #' @param dTolerance tolerance for simplifying

@@ -69,49 +69,16 @@ is_empty <- function(x){
    identical(nrow(x), 0L) | identical(length(x), 0L)
 }
 
-#' @description loop over api when limit exist
-#' @param path path of the api
-#' @param limit max number of feature api can returned
-#' @param ... request parameters
-#' @return sf object
+#' @description trhow error if class is wrong
+#' @param x object to test for class
+#' @return error if FALSE, nothing if TRUE
 #' @noRd
 #'
-loop_api <- function(path, limit, ...){
+class_check <- function(x, class){
 
-   # function factories
-   build_req <- function(path, ...) {
-      params <- list(...)
-      req <- request("https://apicarto.ign.fr") |>
-         req_url_path(path) |>
-         req_url_query(!!!params)
-
+   if (!inherits(x, class)) {
+      stop(sprintf("Must inherit from class '%s', but has class '%s'",
+                     class, class(x)))
    }
-   hit_api <- function(req){
-      resp <- req_perform(req) |>
-         resp_body_string() |>
-         read_sf(quiet = TRUE)
-   }
-
-   # init
-   message("Features downloaded : ", appendLF = F)
-   req <- build_req(path = path, "_start" = 0, ...)
-   resp <- hit_api(req)
-   message(nrow(resp), appendLF = F)
-
-   # if more features than the limit are matched, it loop until everything is downloaded
-   i <- limit
-   temp <- resp
-   while(nrow(temp) == limit){
-      message("...", appendLF = F)
-      req <- build_req(path = path, "_start" = i, ...)
-      temp <- hit_api(req)
-      resp <- rbind(resp, temp)
-      message(nrow(resp), appendLF = F)
-      i <- i + limit
-   }
-
-   cat("\n")
-
-   return(resp)
-
 }
+

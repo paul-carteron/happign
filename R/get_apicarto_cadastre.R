@@ -149,11 +149,6 @@ get_apicarto_cadastre <- function(x,
       "source_ign" = source
    )
 
-   # bind rows of each Map call
-   resp <- do.call(rbind, resp)
-   # Cleaning list column from features
-   resp <- resp[ , !sapply(resp, is.list)]
-
    if (is_empty(resp)){
       warning("No data found, NULL is returned. This could be due to :\n",
               "- shape outside of France\n",
@@ -162,6 +157,11 @@ get_apicarto_cadastre <- function(x,
               "Running data(cog_2022) can help find all insee code.", .call = FALSE)
       return(NULL)
    }
+
+   # bind rows of each Map call
+   resp <- do.call(rbind, resp)
+   # Cleaning list column from features
+   resp <- resp[ , !sapply(resp, is.list)]
 
    return(resp)
 }

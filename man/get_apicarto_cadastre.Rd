@@ -21,7 +21,8 @@ get_apicarto_cadastre(x,
 \item Code departement : must be a \code{character} of length  2 or 3 (DOM-TOM)
 }}
 
-\item{type}{A \code{character} from \code{"parcelle"}, \code{"commune"}, \code{"feuille"}, \code{"division"}}
+\item{type}{A \code{character} from \code{"parcelle"}, \code{"commune"}, \code{"feuille"},
+\code{"division"}, \code{"localisant"}}
 
 \item{source}{Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
 See detail for more info.}
