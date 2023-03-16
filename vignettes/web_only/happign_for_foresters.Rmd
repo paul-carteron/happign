@@ -37,7 +37,7 @@ data("cog_2022")
 
 insee_code <- cog_2022[grepl("^Camors", cog_2022$LIBELLE),1]
 
-borders <- get_apicarto_commune(insee_code)
+borders <- get_apicarto_cadastre(insee_code, type = "commune")
 
 tm_shape(borders)+
    tm_borders()+
@@ -59,7 +59,6 @@ borders2 <- get_wfs(apikey = "administratif",
 Cadastral parcels are essential for any forest management. Here how to download it with `get_wfs`.
 
 ```{r}
-
 apikey <- "parcellaire"
 layer_name <- get_layers_metadata(apikey, "wfs")
 name_parcellaire_layer <- layer_name[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
@@ -87,8 +86,8 @@ The first interesting layer for forester is the "BD Forêt" which is all vegetat
 ```{r warning=FALSE}
 apikey <- "environnement"
 layer_name <- get_layers_metadata(apikey, "wfs")
-name_BDV1 <- layer_name[1,1]
-name_BDV2 <- layer_name[2,1]
+name_BDV1 <- layer_name[2,1]
+name_BDV2 <- layer_name[3,1]
 
 BDV1 <- get_wfs(borders, apikey, name_BDV1, spatial_filter = "intersects")
 BDV2 <- get_wfs(borders, apikey, name_BDV2, spatial_filter = "intersects")
