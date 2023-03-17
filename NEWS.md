@@ -1,4 +1,4 @@
-# happign 0.1.8
+# happign 0.1.9
 * Correction of get_raw_lidar()
 * New vignette "completion_of_ign_data_road_example"
 * Precomputation of cran vignette
