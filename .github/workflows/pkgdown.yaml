@@ -17,7 +17,6 @@ jobs:
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      GDAL_SKIP: DODS
       GDAL_HTTP_UNSAFESSL: YES
 
     steps:
@@ -25,6 +24,8 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
       - uses: r-lib/actions/setup-pandoc@v2
 
+      - name: Install spatial dependencies
+        run: brew install gdal proj
 
       - name: Query dependencies
         run: |
@@ -33,7 +34,7 @@ jobs:
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
 
-      - name: Cache R packages
+      - name: Restore R package cache
         uses: actions/cache@v2
         with:
           path: ${{ env.R_LIBS_USER }}
@@ -42,9 +43,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          options("pkgType" = "binary")
           remotes::install_deps(dependencies = TRUE)
-          install.packages("pkgdown")
+          install.packages("pkgdown", type = "binary")
+          install.packages("osmextract", type = "binary")
+          install.packages("ggplot2", type = "binary")
+          install.packages("stars", type = "binary")
+          install.packages("purrr", type = "binary")
+          install.packages("terra", type = "binary")
         shell: Rscript {0}
 
       - name: Install package
@@ -54,4 +59,4 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE, examples = FALSE)'
+          Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE)'
