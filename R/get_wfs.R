@@ -16,7 +16,7 @@
 #'         interactive = FALSE)
 #'
 #' @param shape Object of class `sf`. Needs to be located in
-#' France. Bbox of shape is used to intersect features.
+#' France.
 #' @param apikey API key from `get_apikeys()` or directly
 #' from [IGN website](https://geoservices.ign.fr/services-web-experts)
 #' @param layer_name Name of the layer from `get_layers_metadata(apikey, "wfs")`

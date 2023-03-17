@@ -14,7 +14,8 @@ Object of class \code{data.frame}
 }
 \description{
 Implementation of the "Codes Postaux" module from the
-\href{https://apicarto.ign.fr/api/doc/codes-postaux}{IGN's apicarto}
+\href{https://apicarto.ign.fr/api/doc/codes-postaux}{IGN's apicarto}. This
+API give information about commune from postal code.
 }
 \examples{
 \dontrun{

@@ -29,8 +29,6 @@
 
 get_apicarto_codes_postaux <- function(code_post){
 
-   class_check(code_post, "character")
-
    hit_code_post <- function(code_post){
       resp <- build_req(path = paste0("api/codes-postaux/communes/",
                                       code_post)) |>

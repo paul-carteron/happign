@@ -15,7 +15,7 @@ get_wfs(shape = NULL,
 }
 \arguments{
 \item{shape}{Object of class \code{sf}. Needs to be located in
-France. Bbox of shape is used to intersect features.}
+France.}
 
 \item{apikey}{API key from \code{get_apikeys()} or directly
 from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
