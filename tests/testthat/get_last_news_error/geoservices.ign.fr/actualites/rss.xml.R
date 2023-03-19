@@ -1,11 +1,5 @@
-structure(list(method = "GET", url = "https://geoservices.ign.fr/actualites/rss.xml",
-    status_code = 404L, headers = structure(list(date = "Thu, 29 Dec 2022 08:51:12 GMT",
-        `strict-transport-security` = "max-age=63072000", `x-content-type-options` = "nosniff",
-        `cache-control` = "must-revalidate, no-cache, private",
-        `x-drupal-dynamic-cache` = "MISS", `x-ua-compatible` = "IE=edge",
-        `content-language` = "fr", `x-content-type-options` = "nosniff",
-        `x-frame-options` = "SAMEORIGIN", expires = "Sun, 19 Nov 1978 05:00:00 GMT",
-        `x-generator` = "Drupal 8 (https://www.drupal.org)",
-        `x-drupal-cache` = "HIT", vary = "Accept-Encoding", `content-encoding` = "gzip",
-        `content-length` = "2559", `content-type` = "application/rss+xml; charset=utf-8",
-        `set-cookie` = "REDACTED"), class = "httr2_headers")), class = "httr2_response")
+structure(list(method = "GET", url = "https://geoservices.ign.fr/actualites/rss.xml", 
+    status_code = 503L, headers = structure(list(`cache-control` = "no-store", 
+        `content-length` = "191", `content-type` = "application/json", 
+        connection = "close", Date = "Sun, 19 Mar 2023 11:23:15 UTC"), class = "httr2_headers"), 
+    body = charToRaw("{ \"errors\" : [ { \"status\" : \"503\", \"title\" : \"Service unavailable\", \"detail\" : \"No server is available to handle this request. Unique ID: D8A35C8D7FAADC81C086880B01BB6416F0A019A754122F\" } ] }")), class = "httr2_response")
