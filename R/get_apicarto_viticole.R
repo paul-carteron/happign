@@ -36,21 +36,12 @@
 
 get_apicarto_viticole <- function(x){
 
-   # deal with sf object
-   if(inherits(x, "sf")){
-      x <- st_as_sfc(x)
-   }
-
-   # deal with sfc object
-   if(inherits(x, "sfc")){
-      geom <- x |>
-         st_make_valid() |>
-         st_transform(4326) |>
-         sfc_geojson()
+   if (!inherits(x, c("sf", "sfc"))) { # x can have 3 class
+      stop("x must be of class sf or sfc.")
    }
 
    resp <- build_req(path = "api/aoc/appellation-viticole",
-                             "geom" = geom) |>
+                             "geom" = shp_to_geojson(x)) |>
       req_method("POST") |>
       req_perform() |>
       resp_body_string() |>

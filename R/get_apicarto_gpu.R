@@ -42,7 +42,6 @@
 #' * "generateur-sup-l" :
 #' * "generateur-sup-p" :
 #'
-#' @importFrom checkmate assert assert_choice check_character check_class check_null
 #' @importFrom sf read_sf st_simplify st_union
 #' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request resp_body_json resp_body_string
 #' @importFrom geojsonsf sfc_geojson geojson_sf
@@ -83,14 +82,26 @@ get_apicarto_gpu <- function(x,
                              categorie = NULL,
                              dTolerance = 0){
 
-   # Test input values
-   assert(check_class(x, "sf"),
-          check_class(x, "sfc"),
-          check_null(x))
-   assert(check_character(partition, pattern = "(?:DU|PSMW)_(?:[0-9])+$"),
-          check_null(partition))
-   assert_numeric(dTolerance, lower = 0)
+   # check x input
+   if (!inherits(x, c("NULL", "sf", "sfc"))) {
+      stop("x must be of class NULL, sf or sfc.")
+   }
 
+   # check partition input
+   bad_partition <- inherits(partition, "character") &
+      !grepl(pattern = "(?:DU|PSMW)_(?:[0-9])+$", partition)
+   if (bad_partition) {
+      stop(sprintf("%s isn't a valid format for `partition`.", partition))
+   }
+
+   # check dTolerance input
+   bad_dTolerance <- inherits(dTolerance, "numeric") &
+      dTolerance < 0
+   if (bad_dTolerance) {
+      stop("dTolerance must be a positive numeric.")
+   }
+
+   # check ressource input
    match.arg(ressource,
              c("document","zone-urba", "secteur-cc", "prescription-surf",
                "prescription-lin", "prescription-pct",

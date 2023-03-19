@@ -69,7 +69,7 @@ is_empty <- function(x){
    identical(nrow(x), 0L) | identical(length(x), 0L)
 }
 
-#' @description trhow error if class is wrong
+#' @description throw error if class is wrong
 #' @param x object to test for class
 #' @return error if FALSE, nothing if TRUE
 #' @noRd
@@ -81,4 +81,31 @@ class_check <- function(x, class){
                      class, class(x)))
    }
 }
+
+#' @description convert sf or sfc object to geojson
+#' @param x object of class `sf` or `sfc`
+#' @importFrom geojsonsf sf_geojson sfc_geojson
+#' @return geojson object
+#' @noRd
+#'
+shp_to_geojson <- function(x){
+
+   x <- x |>
+      st_make_valid() |>
+      st_transform(4326)
+
+   # deal with sf object
+   if(inherits(x, "sf")){
+      x <- sf_geojson(x)
+      return(x)
+   }
+
+   # deal with sfc object
+   if(inherits(x, "sfc")){
+      x <- sfc_geojson(x)
+      return(x)
+   }
+}
+
+
 

@@ -2,17 +2,16 @@
 % Please edit documentation in R/get_last_news.R
 \name{get_last_news}
 \alias{get_last_news}
-\title{Print latest news from geoservice}
+\title{Print latest news from geoservice website}
 \usage{
 get_last_news()
 }
 \value{
-message
+message or error
 }
 \description{
-This function connects directly to the RSS feed of the
-geoservice site to get the latest information. This allows
-to understand why some resources are sometimes not available.
+This function is a wrapper around the RSS feed of the
+geoservice site to get the latest information.
 }
 \examples{
 \dontrun{

@@ -112,17 +112,9 @@ get_apicarto_cadastre <- function(x,
    match.arg(type, c("parcelle", "commune", "feuille", "division", "localisant"))
    match.arg(source, c("BDP", "PCI"))
 
-   # deal with sf object
-   if(inherits(x, "sf")){
-      x <- st_as_sfc(x)
-   }
-
-   # deal with sfc object
-   if(inherits(x, "sfc")){
-      geom <- x |>
-         st_make_valid() |>
-         st_transform(4326) |>
-         sfc_geojson()
+   # deal with spatial object
+   if(inherits(x, c("sf", "sfc"))){
+      geom <- shp_to_geojson(x)
    }
 
    # deal with character

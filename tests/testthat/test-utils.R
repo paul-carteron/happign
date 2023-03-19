@@ -13,7 +13,6 @@ test_that("st_as_text_happign", {
                 "POLYGON ((151147 6771387", fixed = TRUE)
 
 })
-
 test_that("spatial_filter", {
    skip_on_ci()
    skip_on_cran()
@@ -43,3 +42,42 @@ test_that("spatial_filter", {
                 "BBOX(the_geom, -4.347, 47.811, -4.344, 47.815, 'EPSG:4326')", fixed = T)
 
 })
+test_that("sfc_to_geojson", {
+   expect_s3_class(shp_to_geojson(point), "geojson")
+   expect_equal(nchar(shp_to_geojson(point)), 70)
+
+   expect_s3_class(shp_to_geojson(multipoint), "geojson")
+   expect_equal(nchar(shp_to_geojson(multipoint)), 134)
+
+   expect_s3_class(shp_to_geojson(line), "geojson")
+   expect_equal(nchar(shp_to_geojson(line)), 134)
+
+   expect_s3_class(shp_to_geojson(multiline), "geojson")
+   expect_equal(nchar(shp_to_geojson(multiline)), 203)
+
+   expect_s3_class(shp_to_geojson(poly), "geojson")
+   expect_equal(nchar(shp_to_geojson(poly)), 162)
+
+   expect_s3_class(shp_to_geojson(multipoly), "geojson")
+   expect_equal(nchar(shp_to_geojson(multipoly)), 272)
+})
+test_that("sf_to_geojson", {
+   expect_s3_class(shp_to_geojson(st_as_sf(point)), "geojson")
+   expect_equal(nchar(shp_to_geojson(st_as_sf(point))), 70)
+
+   expect_s3_class(shp_to_geojson(st_as_sf(multipoint)), "geojson")
+   expect_equal(nchar(shp_to_geojson(st_as_sf(multipoint))), 134)
+
+   expect_s3_class(shp_to_geojson(st_as_sf(line)), "geojson")
+   expect_equal(nchar(shp_to_geojson(st_as_sf(line))), 134)
+
+   expect_s3_class(shp_to_geojson(st_as_sf(multiline)), "geojson")
+   expect_equal(nchar(shp_to_geojson(st_as_sf(multiline))), 203)
+
+   expect_s3_class(shp_to_geojson(st_as_sf(poly)), "geojson")
+   expect_equal(nchar(shp_to_geojson(st_as_sf(poly))), 162)
+
+   expect_s3_class(shp_to_geojson(st_as_sf(multipoly)), "geojson")
+   expect_equal(nchar(shp_to_geojson(st_as_sf(multipoly))), 272)
+})
+
