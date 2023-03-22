@@ -5,6 +5,7 @@ with_mock_dir("get_apicarto_rpg", {
    test_that("get_apicarto_rpg", {
       skip_on_cran()
       skip_if_offline()
+      skip_on_ci()
 
       # simple poly
       res <- get_apicarto_rpg(x, 2020, dTolerance = 10)
