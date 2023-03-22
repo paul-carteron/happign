@@ -19,9 +19,6 @@
     <loc>https://paul-carteron.github.io/happign/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://paul-carteron.github.io/happign/articles/web_only/completion_of_ign_data_road_example.html</loc>
-  </url>
-  <url>
     <loc>https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html</loc>
   </url>
   <url>
@@ -56,6 +53,12 @@
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_gpu.html</loc>
+  </url>
+  <url>
+    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_rpg.html</loc>
+  </url>
+  <url>
+    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_viticole.html</loc>
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_apikeys.html</loc>
