@@ -30,7 +30,6 @@ hit_api <- function(req){
 build_req_hit_api <- function(path, ...){
    req <- build_req(path = path, ...)
    resp <- hit_api(req)
-   message(nrow(resp), appendLF = F)
 
    return(resp)
 }
@@ -47,6 +46,7 @@ loop_api <- function(path, limit, ...){
    # init
    message("Features downloaded : ", appendLF = F)
    resp <- build_req_hit_api(path, "_start" = 0, ...)
+   message(nrow(resp), appendLF = F)
 
    # if more features than the limit are matched, it loop until everything is downloaded
    i <- limit
@@ -55,6 +55,7 @@ loop_api <- function(path, limit, ...){
       message("...", appendLF = F)
       temp <- build_req_hit_api(path, "_start" = i, ...)
       resp <- rbind(resp, temp)
+      message(nrow(resp), appendLF = F)
       i <- i + limit
    }
 

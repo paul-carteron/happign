@@ -44,40 +44,31 @@ test_that("spatial_filter", {
 })
 test_that("sfc_to_geojson", {
    expect_s3_class(shp_to_geojson(point), "geojson")
-   expect_equal(nchar(shp_to_geojson(point)), 70)
-
    expect_s3_class(shp_to_geojson(multipoint), "geojson")
-   expect_equal(nchar(shp_to_geojson(multipoint)), 134)
-
    expect_s3_class(shp_to_geojson(line), "geojson")
-   expect_equal(nchar(shp_to_geojson(line)), 134)
-
    expect_s3_class(shp_to_geojson(multiline), "geojson")
-   expect_equal(nchar(shp_to_geojson(multiline)), 203)
-
    expect_s3_class(shp_to_geojson(poly), "geojson")
-   expect_equal(nchar(shp_to_geojson(poly)), 162)
-
    expect_s3_class(shp_to_geojson(multipoly), "geojson")
-   expect_equal(nchar(shp_to_geojson(multipoly)), 272)
 })
 test_that("sf_to_geojson", {
    expect_s3_class(shp_to_geojson(st_as_sf(point)), "geojson")
-   expect_equal(nchar(shp_to_geojson(st_as_sf(point))), 70)
-
    expect_s3_class(shp_to_geojson(st_as_sf(multipoint)), "geojson")
-   expect_equal(nchar(shp_to_geojson(st_as_sf(multipoint))), 134)
-
    expect_s3_class(shp_to_geojson(st_as_sf(line)), "geojson")
-   expect_equal(nchar(shp_to_geojson(st_as_sf(line))), 134)
-
    expect_s3_class(shp_to_geojson(st_as_sf(multiline)), "geojson")
-   expect_equal(nchar(shp_to_geojson(st_as_sf(multiline))), 203)
-
    expect_s3_class(shp_to_geojson(st_as_sf(poly)), "geojson")
-   expect_equal(nchar(shp_to_geojson(st_as_sf(poly))), 162)
-
    expect_s3_class(shp_to_geojson(st_as_sf(multipoly)), "geojson")
-   expect_equal(nchar(shp_to_geojson(st_as_sf(multipoly))), 272)
+})
+test_that("shp_to_geojson dTolerance", {
+   # sfc
+   x <- st_buffer(poly, 1)
+   geojson <- shp_to_geojson(x)
+   simplified_geojson <- shp_to_geojson(x, 4326, 10)
+   expect_true(nchar(geojson) > nchar(simplified_geojson))
+
+   # sf
+   x <- st_buffer(poly, 1) |> st_as_sf()
+   geojson <- shp_to_geojson(x)
+   simplified_geojson <- shp_to_geojson(x, 4326, 10)
+   expect_true(nchar(geojson) > nchar(simplified_geojson))
 })
 

@@ -84,15 +84,22 @@ class_check <- function(x, class){
 
 #' @description convert sf or sfc object to geojson
 #' @param x object of class `sf` or `sfc`
+#' @param crs target coordinate reference system: object of class 'crs',
+#' or input string for st_crs
+#' @param dTolerance numeric; tolerance parameter. The value of `dTolerance`
+#' must be specified in meters.
 #' @importFrom geojsonsf sf_geojson sfc_geojson
+#' @importFrom sf st_make_valid st_transform st_geometry
 #' @return geojson object
 #' @noRd
 #'
-shp_to_geojson <- function(x){
+shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
 
    x <- x |>
       st_make_valid() |>
-      st_transform(4326)
+      st_transform(crs) |>
+      st_simplify(dTolerance = dTolerance) |>
+      st_geometry()
 
    # deal with sf object
    if(inherits(x, "sf")){

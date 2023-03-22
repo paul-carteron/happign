@@ -1,4 +1,10 @@
 # happign 0.1.9
+* add `get_apicarto_viticole()`
+* add `get_apicarto_codes_postaux()`
+* depreciation of `get_apicarto_commune()` now supported by `get_apicarto_cadastre()`
+* rework of `get_last_news()`
+
+# happign 0.1.8
 * Correction of get_raw_lidar()
 * New vignette "completion_of_ign_data_road_example"
 * Precomputation of cran vignette
