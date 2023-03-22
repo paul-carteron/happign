@@ -1,6 +1,7 @@
 # happign 0.1.9
 * add `get_apicarto_viticole()`
 * add `get_apicarto_codes_postaux()`
+* add `get_apicarto_rpg()`
 * depreciation of `get_apicarto_commune()` now supported by `get_apicarto_cadastre()`
 * rework of `get_last_news()`
 

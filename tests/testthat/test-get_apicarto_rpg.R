@@ -17,7 +17,7 @@ with_mock_dir("get_apicarto_rpg", {
       expect_s3_class(res, "sf")
 
       # multiple years from different version
-      res <- get_apicarto_rpg(x, c(2010, 2021), dTolerance = 10)
+      res <- suppressWarnings(get_apicarto_rpg(x, c(2010, 2021), dTolerance = 10))
       expect_equal(class(res), "list")
       expect_equal(length(res), 2)
 
