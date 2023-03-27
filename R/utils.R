@@ -89,7 +89,7 @@ class_check <- function(x, class){
 #' @param dTolerance numeric; tolerance parameter. The value of `dTolerance`
 #' must be specified in meters.
 #' @importFrom geojsonsf sf_geojson sfc_geojson
-#' @importFrom sf st_make_valid st_transform st_geometry
+#' @importFrom sf st_make_valid st_transform st_geometry st_simplify
 #' @return geojson object
 #' @noRd
 #'

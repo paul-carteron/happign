@@ -6,30 +6,25 @@
 \usage{
 get_apicarto_gpu(x,
                  ressource = "zone-urba",
-                 partition = NULL,
-                 categorie = NULL,
+                 categorie = list(NULL),
                  dTolerance = 0)
 }
 \arguments{
-\item{x}{An object of class \code{sf} or \code{sfc}. If NULL, \code{partition} must be filled
-by partition of GPU.}
+\item{x}{An object of class \code{sf} or \code{sfc} for geometric intersection. Otherwise
+a \code{character} corresponding to \strong{GPU partition} or
+\strong{insee code} when \code{ressource} is set to \code{municipality}.}
 
 \item{ressource}{A character from this list : "document", "zone-urba",
 "secteur-cc", "prescription-surf", "prescription-lin", "prescription-pct",
 "info-surf", "info-lin", "info-pct". See detail for more info.}
 
-\item{partition}{A character corresponding to GPU partition (can be retrieve
-using \code{get_apicarto_gpu(x, "document", partition = NULL)}). If \code{partition}
-is explicitly set, all GPU features are returned and \code{geom} is override}
-
 \item{categorie}{public utility easement according to the
-national nomenclature ("http://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html")}
+\href{http://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html}{national nomenclature}}
 
-\item{dTolerance}{To complex shape cannot be handle by API; using dTolerance allow
-allows to simplify them. See \code{?sf::st_simplify}}
+\item{dTolerance}{numeric; Complex shape cannot be handle by API; using \code{dTolerance} allow to simplify them. See \code{?sf::st_simplify}}
 }
 \value{
-A object of class \code{sf}
+A object of class \code{sf} or \code{df}
 }
 \description{
 Apicarto module Geoportail de l'urbanisme
@@ -37,52 +32,58 @@ Apicarto module Geoportail de l'urbanisme
 \details{
 \strong{/!\ For the moment the API cannot returned more than 5000 features.}
 
-All existing parameters for \code{ressource}  :
+All existing parameters for \code{ressource} :
 \itemize{
 \item "municipality : information on the communes (commune with RNU, merged commune)
 \item "document' : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)
 \item "zone-urba" : zoning of urban planning documents,
 \item "secteur-cc" : communal map sectors
-\item "prescription-surf" : surface prescriptions like Classified wooded area, Area contributing to the green and blue framework, Landscape element to be protected or created, Protected open space, ...
-\item "prescription-lin" : linear prescription like pedestrian path, bicycle path, hedges or tree lines to be protected, ...
-\item "prescription-pct" : punctual prescription like Building of architectural interest, Building to protect, Remarkable tree, Protected pools, ...
-\item "info-surf" : surface information perimeters of urban planning documents like Protection of drinking water catchments, archaeological sector, noise classification, ...
-\item "info-lin" : linear information perimeters of urban planning documents like Bicycle path to be created, Long hike, Façade and/or roof protected as historical monuments, ...
-\item "info-pct" : punctual information perimeters of urban planning documents like Archaeological heritage, Listed or classified historical monument, Underground cavity, ...
-\item "acte-sup" :
-\item "assiette-sup-s" :
-\item "assiette-sup-l" :
-\item "assiette-sup-p" :
-\item "generateur-sup-s" :
-\item "generateur-sup-l" :
-\item "generateur-sup-p" :
+\item "prescription-surf", "prescription-lin", "prescription-pct" : its's a constraint or a possibility indicated in an urban planning document (PLU, PLUi, ...)
+\item "info-surf", "info-lin", "info-pct" : its's an information indicated in an urban planning document (PLU, PLUi, ...)
+\item "acte-sup" : act establishing the SUP
+\item "generateur-sup-s", "generateur-sup-l", "generateur-sup-p" : an entity (site or monument, watercourse, water catchment, electricity or gas distribution of electricity or gas, etc.) which generates on the surrounding SUP  (of passage, alignment, protection, land reservation, etc.)
+\item "assiette-sup-s", "assiette-sup-l", "assiette-sup-p" : spatial area to which SUP it applies.
 }
 }
 \examples{
 \dontrun{
-library(tmap)
 library(sf)
-library(dplyr)
 
-# If you know the partition, all GPU features are returned, geom is override
-partition <- "DU_75056"
-zone_urba <- get_apicarto_gpu(x = NULL, ressource = "zone-urba", partition = partition)
-qtm(zone_urba)
+# find if commune is under the RNU (national urbanism regulation)
+rnu <- get_apicarto_gpu("93014", "municipality")
+rnu$is_rnu
 
-# If you don't know partition, only GPU features intersecting shape are returned
-point <- st_sfc(st_point(c(2.354, 48.866)), crs = 4326)
-zone_urba <- get_apicarto_gpu(x = point, ressource = "zone-urba", partition = NULL)
-qtm(zone_urba)+qtm(point)
+# get urbanism document
+x <- get_apicarto_cadastre("93014", "commune")
+document <- get_apicarto_gpu(x, ressource = "document")
+partition <- document$partition
 
-# If you wanna find partition
-document <- get_apicarto_gpu(point, ressource = "document", partition = NULL)
-partition <- unique(document$partition)
+# get gpu features
+## from shape
+gpu <- get_apicarto_gpu(x, ressource = "zone-urba")
 
-# Get all prescription : /!\ prescription is different than zone-urba
-partition <- "DU_75056"
-ressources <- c("prescription-surf", "prescription-lin", "prescription-pct")
+## from partition
+gpu <- get_apicarto_gpu("DU_93014", ressource = "zone-urba")
 
-all_prescription <- lapply(ressources, get_apicarto_gpu, x = NULL, partition = partition) |>
-                    bind_rows()
+# example : all prescriptions
+ressources <- c("prescription-surf",
+                "prescription-lin",
+                "prescription-pct")
+prescriptions <- get_apicarto_gpu("DU_93014",
+                                  ressource = ressources)
+
+# example : public utility servitude (SUP) assiette
+assiette_sup_s <- get_apicarto_gpu(x, ressource = "assiette-sup-s")
+protection_forest <- get_apicarto_gpu(x,
+                                      ressource = "assiette-sup-s",
+                                      categorie = "A7")
+
+# example : public utility servitude (SUP) generateur
+## /!\ a generator can justify several assiette
+ressources <- c("generateur-sup-p",
+                "generateur-sup-l",
+                "generateur-sup-s")
+all_gen <- get_apicarto_gpu(x, ressource = ressources)
+
 }
 }

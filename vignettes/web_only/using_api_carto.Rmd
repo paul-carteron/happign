@@ -16,7 +16,8 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(happign)
-library(tmap); tmap_mode("view")
+library(dplyr)
+library(tmap); tmap_mode("view"); tmap_options(check.and.fix = TRUE)
 ```
 
 # Presentation
@@ -78,7 +79,92 @@ tm_shape(parcels)+
                                
 ```
 
+## API carto RPG
+
+The graphic parcel register (RPG) is a geographic information system (GIS) allowing the identification of agricultural parcels. It is useful to the authorities working on agricultural development and land management (community of municipalities, watershed syndicate, etc.) when they need information on the characterization and evolution of the agricultural area.
+
+### Usage
+
+Let's start by finding RPG from Penmarc'h town for years 2015. One of the limitations of the APIcarto RPG is that complex geometries, such as the precise contours of a commune, are not supported. To get around this problem, `get_apicarto_rpg` allows to simplify the shape with the `dTolerance` parameter The method is illustrated below.
+
+```{r}
+penmarch  <- get_apicarto_cadastre("29158", type = "commune")
+rpg <- get_apicarto_rpg(penmarch, annee = 2015, dTolerance = 5) 
+
+# plot result
+tm_shape(penmarch)+
+   tm_borders()+
+tm_shape(rpg)+
+   tm_polygons("code_cultu")
+```
+The function is vectorized, which mean that query several years at the same time is possible. However, since 2014 the format of the RPG has changed. The function will therefore return a list with the parcels before and after 2014. Below an example showing evolution of RPG from 2010 to 2021.
+
+```{r}
+all_years_rpg <- get_apicarto_rpg(penmarch, annee = 2010:2021, dTolerance = 5) 
+
+combine_rpg <- bind_rows(all_years_rpg)
+
+# plot evolution of rpg since 2010
+tm_shape(penmarch)+
+   tm_borders()+
+tm_shape(combine_rpg)+
+   tm_polygons()+
+tm_facets(by = "annee")
+```
+
+It is also possible to query from the culture code. Again, there are changes before and after 2014; [The user documentation](https://apicarto.ign.fr/api/doc/pdf/docUser_moduleRPG.pdf) explains:
+
+" For RPG version 1 (before 2014) the value to be entered corresponds to the number contained in the CODE_CULTU attribute of the ILOTS_ANONYMS class with a value ranging from **01 to 28** (0 is mandatory for values less than 10). The list of crop codes can be consulted in [the content description of the RPG version 1.0](https://geoservices.ign.fr/sites/default/files/2021-07/DC_DL_RPG_1-0.pdf).
+For the RPG version 2 the value to be entered corresponds to the trigram contained in the attribute CODE_CULTU of the class PARCELLES_GRAPHIQUES by respecting the case (upper case). The list of crop codes can be found in the [content description of the GPR version 2.0.](https://geoservices.ign.fr/sites/default/files/2021-07/DC_DL_RPG_2-0.pdf) "
+
+For this example, let's find all potatoes, carrots and leeks.
+
+```{r}
+rpg <- get_apicarto_rpg(penmarch,
+                        annee = 2020,
+                        code_cultu = c("PTC", "CAR", "POR"),
+                        dTolerance = 5) 
+
+tm_shape(rpg)+
+   tm_polygons("code_cultu",
+               palette = c("orange", "springgreen", "gold"))
+```
+## API carto urbanism
 
 
- 
+## API carto "Appellations viticoles"
 
+This api returns from a shape :
+* "Appellation d'origine contrôlée" (AOC)
+* Protected geographical indication areas (IGP)
+* Wine growing areas without geographical indication (VSIG)
+
+This function is quite simple to use, only shape is needed. 
+
+```{r}
+viticole <- get_apicarto_viticole(st_simplify(penmarch, 10))
+
+# plot result
+tm_shape(viticole)+
+   tm_borders()
+
+```
+
+Let's find how many wine appellations are there in Finistère, France (spoiler, there only VSIG, we prefer microbreweries).
+
+```{r}
+finistere <- get_wfs(penmarch,
+                    "administratif",
+                    "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:departement")
+
+# finistere borders are quite complex, so convex hull is used for query
+convex_finistere <- st_convex_hull(finistere)
+viticole <- get_apicarto_viticole(convex_finistere)
+
+# plot result
+tm_shape(viticole)+
+   tm_fill("appellation")+
+tm_shape(finistere)+
+   tm_borders()
+
+```

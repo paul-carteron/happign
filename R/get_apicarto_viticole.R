@@ -7,9 +7,12 @@
 #' and wine growing areas without geographical indications (VSIG)
 #'
 #' @usage
-#' get_apicarto_viticole(x)
+#' get_apicarto_viticole(x,
+#'                       dTolerance = 0)
 #'
 #' @param x Object of class `sf`. Needs to be located in France.
+#' @param dTolerance numeric; tolerance parameter. The value of `dTolerance`
+#' must be specified in meters, see `?sf::st_simplify` for more info.
 #'
 #' @importFrom sf st_as_sfc st_make_valid st_transform read_sf
 #' @importFrom geojsonsf sfc_geojson
@@ -34,14 +37,16 @@
 #' @export
 #'
 
-get_apicarto_viticole <- function(x){
+get_apicarto_viticole <- function(x, dTolerance = 0){
 
    if (!inherits(x, c("sf", "sfc"))) { # x can have 3 class
       stop("x must be of class sf or sfc.")
    }
 
    resp <- build_req(path = "api/aoc/appellation-viticole",
-                             "geom" = shp_to_geojson(x)) |>
+                     "geom" = shp_to_geojson(x,
+                                             crs = 4326,
+                                             dTolerance = dTolerance)) |>
       req_method("POST") |>
       req_perform() |>
       resp_body_string() |>

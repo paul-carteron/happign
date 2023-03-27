@@ -4,6 +4,8 @@ test_that("error", {
 
 with_mock_dir("get_api_codes_postaux", {
    test_that("get_api_codes_postaux", {
+      skip_on_cran()
+      skip_if_offline()
 
       simple_req <- get_apicarto_codes_postaux("29760")
       multi_req <- get_apicarto_codes_postaux(c("29760", "29160"))

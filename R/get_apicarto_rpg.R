@@ -70,7 +70,7 @@ get_apicarto_rpg <- function(x, annee, code_cultu = list(NULL), dTolerance = 0){
 
    # check parameter : annee
    if (!all(annee %in% 2010:2021)){
-      stop("annee must be betwenne 2010 and 2021.")
+      stop("annee must be between 2010 and 2021.")
    }
 
    # deal with changement of api path before and after 2014
@@ -91,7 +91,8 @@ get_apicarto_rpg <- function(x, annee, code_cultu = list(NULL), dTolerance = 0){
    }
 
    # add years to each polygon
-   resp <- mapply(cbind, resp, "annee"= annee, SIMPLIFY=F)
+   names(resp) <- annee
+   resp <- mapply(cbind, resp, "annee" = annee, SIMPLIFY = F)
 
    tryCatch({
       # bind rows of each Map call

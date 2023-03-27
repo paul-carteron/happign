@@ -4,10 +4,14 @@
 \alias{get_apicarto_viticole}
 \title{Apicarto Appellations viticoles}
 \usage{
-get_apicarto_viticole(x)
+get_apicarto_viticole(x,
+                      dTolerance = 0)
 }
 \arguments{
 \item{x}{Object of class \code{sf}. Needs to be located in France.}
+
+\item{dTolerance}{numeric; tolerance parameter. The value of \code{dTolerance}
+must be specified in meters, see \code{?sf::st_simplify} for more info.}
 }
 \value{
 Object of class \code{sf}

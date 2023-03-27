@@ -17,10 +17,26 @@ build_req <- function(path, ...) {
 #' @noRd
 #'
 hit_api <- function(req){
-   resp <- req_perform(req) |>
-      resp_body_string() |>
-      read_sf(quiet = TRUE)
+   tryCatch({
+      resp <- req_perform(req) |>
+         resp_body_string() |>
+         read_sf(quiet = TRUE)
+   },
+   error = function(cnd){
+
+      error1 <- "Send failure: Connection was reset"
+      error2 <- "Failure when receiving data from the peer"
+      if (grepl(error1, cnd) | grepl(error2, cnd)){
+         stop("\n",
+              "May be due to an overly complex shape : try increase `dTolerance` parameter.",
+              call. = F)
+      }
+
+      stop(cnd)
+
+   })
 }
+
 #'
 #' @description combine build_req and hit_api
 #' @inheritParams build_req

@@ -3,150 +3,217 @@
 #' @usage
 #' get_apicarto_gpu(x,
 #'                  ressource = "zone-urba",
-#'                  partition = NULL,
-#'                  categorie = NULL,
+#'                  categorie = list(NULL),
 #'                  dTolerance = 0)
 #'
-#' @param x An object of class `sf` or `sfc`. If NULL, `partition` must be filled
-#' by partition of GPU.
+#' @param x An object of class `sf` or `sfc` for geometric intersection. Otherwise
+#' a `character` corresponding to __GPU partition__ or
+#' __insee code__ when `ressource` is set to `municipality`.
 #' @param ressource A character from this list : "document", "zone-urba",
 #' "secteur-cc", "prescription-surf", "prescription-lin", "prescription-pct",
 #' "info-surf", "info-lin", "info-pct". See detail for more info.
-#' @param partition A character corresponding to GPU partition (can be retrieve
-#' using `get_apicarto_gpu(x, "document", partition = NULL)`). If `partition`
-#' is explicitly set, all GPU features are returned and `geom` is override
 #' @param categorie public utility easement according to the
-#' national nomenclature ("http://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html")
-#' @param dTolerance To complex shape cannot be handle by API; using dTolerance allow
-#' allows to simplify them. See `?sf::st_simplify`
+#' [national nomenclature](http://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html)
+#' @param dTolerance numeric; Complex shape cannot be handle by API; using `dTolerance` allow to simplify them. See `?sf::st_simplify`
 #'
 #' @details
 #' **/!\ For the moment the API cannot returned more than 5000 features.**
 #'
-#' All existing parameters for `ressource`  :
+#' All existing parameters for `ressource` :
 #' * "municipality : information on the communes (commune with RNU, merged commune)
 #' * "document' : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)
 #' * "zone-urba" : zoning of urban planning documents,
 #' * "secteur-cc" : communal map sectors
-#' * "prescription-surf" : surface prescriptions like Classified wooded area, Area contributing to the green and blue framework, Landscape element to be protected or created, Protected open space, ...
-#' * "prescription-lin" : linear prescription like pedestrian path, bicycle path, hedges or tree lines to be protected, ...
-#' * "prescription-pct" : punctual prescription like Building of architectural interest, Building to protect, Remarkable tree, Protected pools, ...
-#' * "info-surf" : surface information perimeters of urban planning documents like Protection of drinking water catchments, archaeological sector, noise classification, ...
-#' * "info-lin" : linear information perimeters of urban planning documents like Bicycle path to be created, Long hike, Façade and/or roof protected as historical monuments, ...
-#' * "info-pct" : punctual information perimeters of urban planning documents like Archaeological heritage, Listed or classified historical monument, Underground cavity, ...
-#' * "acte-sup" :
-#' * "assiette-sup-s" :
-#' * "assiette-sup-l" :
-#' * "assiette-sup-p" :
-#' * "generateur-sup-s" :
-#' * "generateur-sup-l" :
-#' * "generateur-sup-p" :
+#' * "prescription-surf", "prescription-lin", "prescription-pct" : its's a constraint or a possibility indicated in an urban planning document (PLU, PLUi, ...)
+#' * "info-surf", "info-lin", "info-pct" : its's an information indicated in an urban planning document (PLU, PLUi, ...)
+#' * "acte-sup" : act establishing the SUP
+#' * "generateur-sup-s", "generateur-sup-l", "generateur-sup-p" : an entity (site or monument, watercourse, water catchment, electricity or gas distribution of electricity or gas, etc.) which generates on the surrounding SUP  (of passage, alignment, protection, land reservation, etc.)
+#' * "assiette-sup-s", "assiette-sup-l", "assiette-sup-p" : spatial area to which SUP it applies.
 #'
-#' @importFrom sf read_sf st_simplify st_union
-#' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request resp_body_json resp_body_string
-#' @importFrom geojsonsf sfc_geojson geojson_sf
-#'
-#' @return A object of class `sf`
+#' @return A object of class `sf` or `df`
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' library(tmap)
 #' library(sf)
-#' library(dplyr)
 #'
-#' # If you know the partition, all GPU features are returned, geom is override
-#' partition <- "DU_75056"
-#' zone_urba <- get_apicarto_gpu(x = NULL, ressource = "zone-urba", partition = partition)
-#' qtm(zone_urba)
+#' # find if commune is under the RNU (national urbanism regulation)
+#' rnu <- get_apicarto_gpu("93014", "municipality")
+#' rnu$is_rnu
 #'
-#' # If you don't know partition, only GPU features intersecting shape are returned
-#' point <- st_sfc(st_point(c(2.354, 48.866)), crs = 4326)
-#' zone_urba <- get_apicarto_gpu(x = point, ressource = "zone-urba", partition = NULL)
-#' qtm(zone_urba)+qtm(point)
+#' # get urbanism document
+#' x <- get_apicarto_cadastre("93014", "commune")
+#' document <- get_apicarto_gpu(x, ressource = "document")
+#' partition <- document$partition
 #'
-#' # If you wanna find partition
-#' document <- get_apicarto_gpu(point, ressource = "document", partition = NULL)
-#' partition <- unique(document$partition)
+#' # get gpu features
+#' ## from shape
+#' gpu <- get_apicarto_gpu(x, ressource = "zone-urba")
 #'
-#' # Get all prescription : /!\ prescription is different than zone-urba
-#' partition <- "DU_75056"
-#' ressources <- c("prescription-surf", "prescription-lin", "prescription-pct")
+#' ## from partition
+#' gpu <- get_apicarto_gpu("DU_93014", ressource = "zone-urba")
 #'
-#' all_prescription <- lapply(ressources, get_apicarto_gpu, x = NULL, partition = partition) |>
-#'                     bind_rows()
+#' # example : all prescriptions
+#' ressources <- c("prescription-surf",
+#'                 "prescription-lin",
+#'                 "prescription-pct")
+#' prescriptions <- get_apicarto_gpu("DU_93014",
+#'                                   ressource = ressources)
+#'
+#' # example : public utility servitude (SUP) assiette
+#' assiette_sup_s <- get_apicarto_gpu(x, ressource = "assiette-sup-s")
+#' protection_forest <- get_apicarto_gpu(x,
+#'                                       ressource = "assiette-sup-s",
+#'                                       categorie = "A7")
+#'
+#' # example : public utility servitude (SUP) generateur
+#' ## /!\ a generator can justify several assiette
+#' ressources <- c("generateur-sup-p",
+#'                 "generateur-sup-l",
+#'                 "generateur-sup-s")
+#' all_gen <- get_apicarto_gpu(x, ressource = ressources)
+#'
 #'}
 get_apicarto_gpu <- function(x,
                              ressource = "zone-urba",
-                             partition = NULL,
-                             categorie = NULL,
+                             categorie = list(NULL),
                              dTolerance = 0){
 
-   # check x input
-   if (!inherits(x, c("NULL", "sf", "sfc"))) {
-      stop("x must be of class NULL, sf or sfc.")
+   # initialisation
+   geom <- partition <- insee <- list(NULL)
+
+   # check input ----
+   # x
+   if (!inherits(x, c("character", "sf", "sfc"))) { # x can have 3 class
+      stop("x must be of class character, sf or sfc.")
    }
 
-   # check partition input
-   bad_partition <- inherits(partition, "character") &
-      !grepl(pattern = "(?:DU|PSMW)_(?:[0-9])+$", partition)
-   if (bad_partition) {
-      stop(sprintf("%s isn't a valid format for `partition`.", partition))
-   }
+   # ressource
+   match.arg(ressource,
+             c("municipality", "document","zone-urba", "secteur-cc", "prescription-surf",
+               "prescription-lin", "prescription-pct",
+               "info-surf", "info-lin", "info-pct", "acte-sup",
+               "assiette-sup-s", "assiette-sup-l", "assiette-sup-p",
+               "generateur-sup-s", "generateur-sup-l", "generateur-sup-p"),
+             several.ok = TRUE)
 
-   # check dTolerance input
+   # dTolerance
    bad_dTolerance <- inherits(dTolerance, "numeric") &
       dTolerance < 0
    if (bad_dTolerance) {
       stop("dTolerance must be a positive numeric.")
    }
 
-   # check ressource input
-   match.arg(ressource,
-             c("document","zone-urba", "secteur-cc", "prescription-surf",
-               "prescription-lin", "prescription-pct",
-               "info-surf", "info-lin", "info-pct", "acte-sup",
-               "assiette-sup-s", "assiette-sup-l", "assiette-sup-p",
-               "generateur-sup-s", "generateur-sup-l", "generateur-sup-p"))
-
-   if (!is.null(partition)){
-      x <- NULL
+   # if ressource == acte-sup, x can't be geometry
+   if (any(ressource == "acte-sup") & inherits(x, c("sf", "sfc"))){
+      stop("geometry can't be used when `ressource = \"acte-sup\"`.",
+           " Use partition instead.",
+           call. = F)
    }
 
-   if (methods::is(x, "sf")){
-      x <- st_as_sfc(x)
+   # prepare x to request ----
+   # spatial object ie geom
+   if(inherits(x, c("sf", "sfc"))){
+      geom <- shp_to_geojson(x, 4326, dTolerance)
    }
 
+   # character object : partition
+   is_partition <- all(inherits(x, "character") & nchar(x) > 5)
+   if (is_partition){
+      # municipality only used with geom or insee code
+      if (any(ressource == "municipality")){
+         stop("partition can't be used when `ressource = \"municipality\"`.",
+              " Use insee code instead.",
+              call. = F)
+      }
+
+      # test format of partition
+      if (all(incorrect_partition(x))) {
+         stop(sprintf("\"%s\" isn't a valid format for `partition`.",
+                      paste(x, collapse = "\" or \"")),
+              call. = F)
+      }
+
+      partition <- x
+
+   }
+
+   # character object : insee code
+   is_insee_code <- all(inherits(x, "character") & nchar(x) == 5)
+   if (is_insee_code){
+      insee <- x
+      if(any(ressource != "municipality")){
+         stop("insee code can only be used when `ressource = \"municipality\"`.",
+              call. = F)
+      }
+   }
+
+   # hit api ----
+   message("Features downloaded : ", appendLF = F)
+   resp <- Map(build_req_hit_api,
+       path = paste0("/api/gpu/", ressource),
+       "geom" = geom,
+       "partition" = partition,
+       "insee" = insee,
+       "categorie" = categorie)
+
+   # processing result ----
+   if (all(is_empty(unlist(resp)))){
+      warning("No data found, NULL is returned.", call. = FALSE)
+      return(NULL)
+   }
+
+   # bind rows of each Map call
    tryCatch({
-      message("Features downloaded : ", appendLF = F)
-      res <- build_req_hit_api(path = paste0("/api/gpu/", ressource),
-                               geom = switch(is.null(x) + 1, sfc_geojson(prepare_shape(x, dTolerance)), NULL),
-                               partition = partition,
-                               categorie = categorie)
-      },
-      error = function(cnd){
+      resp <- suppressWarnings(do.call(rbind, resp))
+      # Cleaning list column from features
+      resp <- resp[ , !sapply(resp, is.list)]
+      message(nrow(resp), appendLF = F)
 
-         if (grepl("Send failure: Connection was reset", cnd)){
-            stop("Send failure: Connection was reset\n",
-                 "May be due to an overly complex shape. Try again with the argument `dTolerance` set to 10, 20, ... the bigger the argument, the simpler the shape.",
-                 call. = F)
-         }
+   }, error = function(cnd){
+      message(length(resp), appendLF = T)
+      warning("Resources have different attributes and cannot be",
+              " joined. List is returned.",
+              call. = FALSE)
+   })
 
-         stop("New error case, please submit an issue to https://github.com/paul-carteron/happign/issues.")
-
-      })
-
-   return(res)
+   return(resp)
 
 }
-#' prepare shape for geojson conversion
-#' @param x objet of class sf or sfc
-#' @param dTolerance tolerance for simplifying
+
+#' @description test partition parameter format from `get_apicarto_gpu`
+#' @param x character
+#' @return logical
 #' @noRd
-prepare_shape <- function(x, dTolerance){
-   res <- x |>
-      st_make_valid() |>
-      st_union() |>
-      st_transform(4326) |>
-      st_simplify(dTolerance = dTolerance)
+#'
+incorrect_partition <- function(x){
+
+   # see : https://apicarto.ign.fr/api/doc/pdf/docUser_moduleUrbanisme.pdf
+
+   # DU_<codeINSEE> : "DU_93014" (POS, PLU, CC)
+   # DU_<codeSIREN> : "DU_200057867" (PLUi)
+   pattern1 <- "(?:DU)_(?:\\d{5}|\\d{9})$"
+
+   # PSMV_<codeINSEE> : PSMV_78646 (PSMV)
+   pattern2 <- "(?:PSMV)_(?:\\d){5}$"
+
+   # {<idGest>_}SUP_<codeGeo>_<categorie> :
+   ## "130007123_SUP_93_A7"
+   ## "130007123_SUP_934_A7"
+   ## "130007123_SUP_93014_A7"
+   ## "SUP_93_A7"
+   pattern3 <- "(?:\\d{9}_)?SUP_(?:\\d{2}|\\d{3}|\\d{5})_(?:\\w{2,6})$"
+
+   # if one is FALSE then is incorrect partition
+   !c(all(grepl(pattern1, x)),
+      all(grepl(pattern2, x)),
+      all(grepl(pattern3, x)))
+
 }
+
+
+
+
+
+
+
