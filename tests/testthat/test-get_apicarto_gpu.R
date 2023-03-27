@@ -38,6 +38,7 @@ with_mock_dir("api_gpu_x_input", {
    test_that("api_gpu_x_input", {
       skip_on_cran()
       skip_if_offline()
+      skip_on_os("mac")
 
       # geom
       res <- get_apicarto_gpu(x, ressource = "document")
