@@ -50,7 +50,7 @@ Because `get_apicaro_cadastre` is a vectorized function, it's possible to set mu
 If you do not know insee codes, you can consult existing codes from the internal 
 dataframe `cog_2022`.
 
-```{r message=FALSE}
+```{r message=TRUE}
 # all town starting with plou
 plou_insee_code <- cog_2022[startsWith(cog_2022$LIBELLE, "Plou"), "COM"]
 plou_borders <- get_apicarto_cadastre(plou_insee_code, type = "commune")
@@ -85,7 +85,7 @@ The graphic parcel register (RPG) is a geographic information system (GIS) allow
 
 ### Usage
 
-Let's start by finding RPG from Penmarc'h town for years 2015. One of the limitations of the APIcarto RPG is that complex geometries, such as the precise contours of a commune, are not supported. To get around this problem, `get_apicarto_rpg` allows to simplify the shape with the `dTolerance` parameter The method is illustrated below.
+Let's start by finding RPG from Penmarc'h town for years 2015. One of the limitations of the APIcarto RPG is that complex geometries, such as the precise contours of a commune, are not supported. To get around this problem, `get_apicarto_rpg` allows to simplify the shape with the `dTolerance` parameter. The method is illustrated below.
 
 ```{r}
 penmarch  <- get_apicarto_cadastre("29158", type = "commune")
@@ -131,6 +131,78 @@ tm_shape(rpg)+
 ```
 ## API carto urbanism
 
+The GPU query service allows you to obtain urban planning information intersecting a geometry. Beware, not all municipalities are in the geoportal of urbanism!
+
+### RNU
+First of all, you can check if a commune is under the National Urbanism Regulation from is insee code. The RNU fully apply in the communes that have neither a local map nor a local urban plan (PLU, PLUi) nor a document in replacement of a PLU.
+
+```{r}
+is_rnu <- get_apicarto_gpu("29158", ressource = "municipality")
+is_rnu$is_rnu 
+
+# Penmarch is under the RNU and therefore has a document of urbanism
+
+is_rnu <- get_apicarto_gpu("23004", ressource = "municipality")
+is_rnu$is_rnu 
+
+# Anzeme is under the RNU and therefore has a town planning document
+```
+
+### PLU, PLUi, POS, CC, PSMV
+
+Urban planning documents can take several forms:
+* PLU : Local Urbanism Plan
+* PLUi : Intercommunal Local Urbanism Plan
+* POS : Land use plan
+* PSMV : Plan of Safeguarding and Development
+* CC : Communal map
+
+The first step is to find out if urban planning document are available if it is the case, find the document's partition i.e. its ID :
+
+```{r}
+# find out if documents are available from geometry intersection
+penmarch <- get_apicarto_cadastre("29158", "commune")
+doc <- get_apicarto_gpu(penmarch, "document", dTolerance = 5) # complex geometry handle with dTolerance
+# Because NULL is returned, it means that penmarch dont have available urban planning document
+
+lanildut <- get_apicarto_cadastre("29112", "commune")
+doc <- get_apicarto_gpu(penmarch, "document",  dTolerance = 2) # complex geometry handle with dTolerance
+# Six documents are available inside the geometry.
+# In reality, only one document exists for the commune of lanildut but because borders are not coherent with urban planning document, several communes are returned.
+
+partition <- doc |> 
+   filter(grid_title == "LANILDUT") |> 
+   pull(partition)
+```
+
+Now that the partition is recovered, it is possible to obtain several resources for a specific document. The different resources available are specified in the documentation of the function `?get_apicarto_gpu()`
+
+```{r}
+zone_urba <- get_apicarto_gpu(partition, ressource = "zone-urba")
+
+# click on polygon for legend
+tm_shape(zone_urba)+
+   tm_polygons("libelong",  legend.show = FALSE)
+
+```
+
+Because `get_apicarto_gpu` is vectorized, many resources can be returned at the same time. This allows to identify all the prescriptions at once for example :
+
+```{r}
+ressources <- c("prescription-surf",
+                "prescription-lin",
+                "prescription-pct")
+prescriptions <- get_apicarto_gpu(partition,
+                                  ressource = ressources)
+
+tm_shape(prescriptions[[1]])+
+   tm_polygons("libelle",  legend.show = FALSE)+
+tm_shape(prescriptions[[2]])+
+   tm_lines("libelle", legend.col.show = FALSE, lwd = 2)+
+tm_shape(prescriptions[[3]])+
+   tm_dots("libelle",  legend.show = FALSE, size = 0.1)
+
+```
 
 ## API carto "Appellations viticoles"
 
