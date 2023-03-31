@@ -56,7 +56,7 @@ borders2 <- get_wfs(apikey = "administratif",
 
 ## Download cadastral parcel
 
-Cadastral parcels are essential for any forest management. Here how to download it with `get_wfs`.
+Cadastral parcels are essential for any forest manager Here how to download it with `get_wfs`.
 
 ```{r}
 apikey <- "parcellaire"

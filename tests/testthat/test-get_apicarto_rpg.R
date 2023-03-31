@@ -39,5 +39,3 @@ with_mock_dir("get_apicarto_rpg", {
 
    })
 }, simplify = FALSE)
-
-

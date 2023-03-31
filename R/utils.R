@@ -89,11 +89,15 @@ class_check <- function(x, class){
 #' @param dTolerance numeric; tolerance parameter. The value of `dTolerance`
 #' must be specified in meters.
 #' @importFrom geojsonsf sf_geojson sfc_geojson
-#' @importFrom sf st_make_valid st_transform st_geometry st_simplify
+#' @importFrom sf st_make_valid st_transform st_geometry st_simplify sf_use_s2
 #' @return geojson object
 #' @noRd
 #'
 shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
+
+   default_s2 <- suppressMessages(sf_use_s2())
+   suppressMessages(sf_use_s2(TRUE))
+   on.exit(suppressMessages(sf_use_s2(default_s2)))
 
    x <- x |>
       st_make_valid() |>
@@ -112,6 +116,8 @@ shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
       x <- sfc_geojson(x)
       return(x)
    }
+
+
 }
 
 

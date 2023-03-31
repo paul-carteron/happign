@@ -43,14 +43,13 @@ get_apicarto_viticole <- function(x, dTolerance = 0){
       stop("x must be of class sf or sfc.")
    }
 
-   resp <- build_req(path = "api/aoc/appellation-viticole",
+   req <- build_req(path = "api/aoc/appellation-viticole",
                      "geom" = shp_to_geojson(x,
                                              crs = 4326,
                                              dTolerance = dTolerance)) |>
-      req_method("POST") |>
-      req_perform() |>
-      resp_body_string() |>
-      read_sf(quiet = TRUE)
+      req_method("POST")
+
+   resp <- hit_api(req)
 
    return(resp)
 }

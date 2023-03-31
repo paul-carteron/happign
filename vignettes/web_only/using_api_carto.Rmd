@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 library(happign)
 library(dplyr)
 library(tmap); tmap_mode("view"); tmap_options(check.and.fix = TRUE)
+library(sf)
 ```
 
 # Presentation
@@ -166,7 +167,7 @@ doc <- get_apicarto_gpu(penmarch, "document", dTolerance = 5) # complex geometry
 # Because NULL is returned, it means that penmarch dont have available urban planning document
 
 lanildut <- get_apicarto_cadastre("29112", "commune")
-doc <- get_apicarto_gpu(penmarch, "document",  dTolerance = 2) # complex geometry handle with dTolerance
+doc <- get_apicarto_gpu(lanildut, "document",  dTolerance = 5) # complex geometry handle with dTolerance
 # Six documents are available inside the geometry.
 # In reality, only one document exists for the commune of lanildut but because borders are not coherent with urban planning document, several communes are returned.
 
@@ -214,7 +215,7 @@ This api returns from a shape :
 This function is quite simple to use, only shape is needed. 
 
 ```{r}
-viticole <- get_apicarto_viticole(st_simplify(penmarch, 10))
+viticole <- get_apicarto_viticole(penmarch, dTolerance = 5)
 
 # plot result
 tm_shape(viticole)+
@@ -229,13 +230,15 @@ finistere <- get_wfs(penmarch,
                     "administratif",
                     "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:departement")
 
-# finistere borders are quite complex, so convex hull is used for query
+# finistere borders are quite complex, and dTolerance cant be used. In this case convex hull of shape 
+# can be used with intersection of the results 
 convex_finistere <- st_convex_hull(finistere)
-viticole <- get_apicarto_viticole(convex_finistere)
+viticole <- get_apicarto_viticole(convex_finistere) |> 
+   st_intersection(finistere)
 
 # plot result
 tm_shape(viticole)+
-   tm_fill("appellation")+
+   tm_polygons("appellation")+
 tm_shape(finistere)+
    tm_borders()
 
