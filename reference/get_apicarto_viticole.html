@@ -35,7 +35,6 @@ and wine growing areas without geographical indications (VSIG)"><meta property="
     <a class="dropdown-item" href="../articles/Getting_started.html">Getting started with happign</a>
     <a class="dropdown-item" href="../articles/SCAN_25_SCAN_100_SCAN_OACI.html">SCAN 25, SCAN 100 et SCAN OACI</a>
     <a class="dropdown-item" href="../articles/web_only/happign_for_foresters.html">happign for foresters</a>
-    <a class="dropdown-item" href="../articles/web_only/resolution_for_raster.html">Resolution for raster</a>
     <a class="dropdown-item" href="../articles/web_only/using_api_carto.html">Using API Carto</a>
   </div>
 </li>
@@ -73,13 +72,19 @@ and wine growing areas without geographical indications (VSIG)</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_apicarto_viticole</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_apicarto_viticole</span><span class="op">(</span><span class="va">x</span>,</span>
+<span>                      dTolerance <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>Object of class <code>sf</code>. Needs to be located in France.</p></dd>
+
+
+<dt>dTolerance</dt>
+<dd><p>numeric; tolerance parameter. The value of <code>dTolerance</code>
+must be specified in meters, see <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">?sf::st_simplify</a></code> for more info.</p></dd>
 
 </dl></div>
     <div class="section level2">

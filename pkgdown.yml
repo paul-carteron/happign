@@ -5,9 +5,8 @@ articles:
   Getting_started: Getting_started.html
   SCAN_25_SCAN_100_SCAN_OACI: SCAN_25_SCAN_100_SCAN_OACI.html
   happign_for_foresters: web_only/happign_for_foresters.html
-  resolution_for_raster: web_only/resolution_for_raster.html
   using_api_carto: web_only/using_api_carto.html
-last_built: 2023-03-27T00:43Z
+last_built: 2023-03-31T14:43Z
 urls:
   reference: https://paul-carteron.github.io/happign/reference
   article: https://paul-carteron.github.io/happign/articles

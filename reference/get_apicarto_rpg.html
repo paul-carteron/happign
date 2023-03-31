@@ -31,7 +31,6 @@ is a wrapper around version 1 and 2 of the API."><meta property="og:image" conte
     <a class="dropdown-item" href="../articles/Getting_started.html">Getting started with happign</a>
     <a class="dropdown-item" href="../articles/SCAN_25_SCAN_100_SCAN_OACI.html">SCAN 25, SCAN 100 et SCAN OACI</a>
     <a class="dropdown-item" href="../articles/web_only/happign_for_foresters.html">happign for foresters</a>
-    <a class="dropdown-item" href="../articles/web_only/resolution_for_raster.html">Resolution for raster</a>
     <a class="dropdown-item" href="../articles/web_only/using_api_carto.html">Using API Carto</a>
   </div>
 </li>
@@ -120,24 +119,24 @@ found in <code>sf::st_simlplify</code>.</p>
 <span class="r-in"><span><span class="co"># failure with too complex geom</span></span></span>
 <span class="r-in"><span><span class="va">rpg</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">penmarch</span>, <span class="fl">2020</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># parcel from 2020</span></span></span>
-<span class="r-in"><span><span class="va">rpg</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">penmarch</span>, <span class="fl">2020</span>, dTolerance <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># avoid complex data by setting dTolerance</span></span></span>
+<span class="r-in"><span><span class="va">rpg</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">penmarch</span>, <span class="fl">2020</span>, dTolerance <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># multiple years after 2014</span></span></span>
-<span class="r-in"><span><span class="va">rpg</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">x</span>, <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span>, dTolerance <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rpg</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">x</span>, <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span>, dTolerance <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># years before and after 2014</span></span></span>
-<span class="r-in"><span><span class="co"># list is returned because attribut are different</span></span></span>
+<span class="r-in"><span><span class="co"># list is returned because attributs are different</span></span></span>
 <span class="r-in"><span><span class="va">rpg</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>, <span class="fl">2021</span><span class="op">)</span>, dTolerance <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># filter by code_cultu</span></span></span>
 <span class="r-in"><span><span class="va">rpg</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">x</span>, <span class="fl">2021</span>, code_cultu <span class="op">=</span> <span class="st">"MIE"</span>, dTolerance <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># all "MIE" from 2020 and all "PPH" from 2021</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">x</span>, <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span>, code_cultu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MIE"</span>, <span class="st">"PPH"</span><span class="op">)</span>, dTolerance <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rpg</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">x</span>, <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span>, code_cultu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MIE"</span>, <span class="st">"PPH"</span><span class="op">)</span>, dTolerance <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># vectorization : all "MIE" from 2020 and 2021</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">x</span>, <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span>, code_cultu <span class="op">=</span> <span class="st">"MIE"</span>, dTolerance <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rpg</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">x</span>, <span class="fl">2020</span><span class="op">:</span><span class="fl">2021</span>, code_cultu <span class="op">=</span> <span class="st">"MIE"</span>, dTolerance <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
