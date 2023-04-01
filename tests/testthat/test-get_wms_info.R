@@ -1,9 +1,3 @@
-test_that("are_queryable return error", {
-   expect_error(are_queryable("notanapikey"), "administratif")
-   expect_error(are_queryable(1), "administratif")
-   expect_error(are_queryable(NULL), "administratif")
-})
-
 with_mock_dir("are_queryable works", {
    test_that("are_queryable works",{
       skip_on_cran()

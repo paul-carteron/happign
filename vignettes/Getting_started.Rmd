@@ -1,7 +1,7 @@
 ---
 title: "Getting started with happign"
 author: "Paul Carteron"
-date: "2023-03-17"
+date: "2023-04-01"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting started with happign}
@@ -29,7 +29,7 @@ library(tmap)
 *  WMS raster : data in raster format (.jpg, .png, .tif)
 *  WFS : data in shape format (.shp).
 
-More detailed information are available [here](https://www.ogc.org/standards/wms/) for WMS and [here](https://www.ogc.org/standards/wfs/) for WFS.
+More detailed information are available [here](https://www.ogc.org/standard/wms/) for WMS and [here](https://www.ogc.org/standard/wfs/) for WFS.
 
 To download data from web services at least three elements are needed :
 
@@ -94,7 +94,7 @@ tm_shape(penmarch)+
              main.title.position = "center")
 ```
 
-<img src="Getting_started-unnamed-chunk-31-1.png" alt="plot of chunk unnamed-chunk-31" style="display: block; margin: auto;" />
+<img src="Getting_started-unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" />
 
 It's as simple as that!
 Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many road junctions there are in Penmarch?
@@ -119,12 +119,9 @@ tm_shape(dikes) + # Point use to retrieve data
              main.title.position = "center",
              legend.position = c("right", "bottom"),
              frame = FALSE)
-#> legend.postion is used for plot mode. Use view.legend.position in tm_view to set the legend position in view mode.
-#> Symbol shapes other than circles or icons are not supported in view mode.
-#> only legends of type "fill" supported in view mode
 ```
 
-<img src="Getting_started-unnamed-chunk-32-1.png" alt="plot of chunk unnamed-chunk-32" style="display: block; margin: auto;" />
+<img src="Getting_started-unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" />
 
 ### WMS raster
 
@@ -141,11 +138,9 @@ mnt <- get_wms_raster(shape = penmarch_borders,
                       layer_name = dem_layer_name,
                       resolution = 25,
                       crs = 4326)
-#> although coordinates are longitude/latitude, st_intersects assumes
-#> that they are planar
 #> 1/1 downloading...
 #> Raster is saved at :
-#> D:\TMP\Rtmp69qUMl\filef904c0f33a2.tif
+#> D:\TMP\RtmpC8sCbg\file325c11774ffb.tif
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 
@@ -157,10 +152,9 @@ tm_layout(main.title = "DEM of Penmarch",
           main.title.position = "center",
           legend.position = c("right", "bottom"),
           legend.bg.color = "white", legend.bg.alpha = 0.7)
-#> legend.postion is used for plot mode. Use view.legend.position in tm_view to set the legend position in view mode.
 ```
 
-<img src="Getting_started-unnamed-chunk-33-1.png" alt="plot of chunk unnamed-chunk-33" style="display: block; margin: auto;" />
+<img src="Getting_started-unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" />
 
 __*Rq :*__
 

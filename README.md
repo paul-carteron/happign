@@ -3,7 +3,7 @@
 
 # happign <a href="https://paul-carteron.github.io/happign/"><img src="man/figures/logo.png" align="right" height="139" /></a>
 
-# happign - IGN API for R
+# happign - IGN data from R
 
 <!-- badges: start -->
 
@@ -21,21 +21,22 @@ The goal of happign is to facilitate the use of Web Services and API
 from the IGN (French National Institute of Geographic and Forestry
 Information). `happign` allow downloading of :
 
--   Shapefile via use of WFS service and APIcarto
--   Raster via use of WMS raster service
+- Shapefile via use of WFS service and
+  [APIcarto](https://apicarto.ign.fr/api/doc/) ;
+- Raster via use of WMS raster service
 
 ### Context
 
 Since January 1, 2021, the French National Institute for Geographic and
-Forestry Information (IGN) has made its public data on French
+Forestry Information (IGN) has opened access to their data on French
 topography, infrastructure, and terrain freely available. The opening of
 IGN data under the Etalab 2.0 open license means free access and use for
 all.
 
-To facilitate access to this data, IGN has implemented a set of APIs and
-Web services based on OGC standards. In spite of a well supplied
-documentation, the use of APIs and Web services remains complex to set
-up in R. The `happign` package has been created to facilitate this.
+To facilitate accessibility, IGN has implemented a set of APIs and Web
+services based on OGC standards. Despite a well supplied documentation,
+the use of APIs and Web services remains complex to set up in R. The
+`happign` package has been created to make it easier.
 
 ### Rights of use for IGN data
 
@@ -70,34 +71,30 @@ devtools::install_github("paul-carteron/happign")
 
 Package vignettes :
 
--   [Getting started with
-    happign](https://paul-carteron.github.io/happign/articles/Getting_started.html)
-    : A brief intro to happign world ;
--   [happign for
-    foresters](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html)
-    : happign can be used in many ways but here I focus on forestry.
--   [SCAN 25, SCAN 100 et SCAN
-    OACI](https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html)
-    : How to download the only Scan 25, Scan 100 and Scan OACI
--   [Resolution for
-    raster](https://paul-carteron.github.io/happign/articles/web_only/resolution_for_raster.html)
-    : IGN tiles are limited to 2064x2064 pixel. `happign` happign allows
-    you to get around this limitation. The process is explained in this
-    vignette.
+- [Getting started with
+  happign](https://paul-carteron.github.io/happign/articles/Getting_started.html)
+  : A brief intro to happign world ;
+- [happign for
+  foresters](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html)
+  : A focus on the possibilities offered by happign for forestry ;
+- [API
+  carto](https://paul-carteron.github.io/happign/articles/web_only/api_carto.html)
+  : How to use all API Carto with happign ;
+- [SCAN 25, SCAN 100 et SCAN
+  OACI](https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html)
+  : How to download Scan 25, Scan 100 and Scan OACI
 
 ### Future features
 
 IGN offers other services. Their implementation in R is under
 development :
 
--   Implement all REST API Carto compatible with the OpenAPI
-    specification (easy and quick downloading for WFS)
--   Implement isochrone and isodistance calculation
+- Implement isochrone and isodistance calculation
 
 ### Problems and Issues
 
--   Please report any issues or bugs you may encounter on the [dedicated
-    page on github](https://github.com/paul-carteron/happign/issues).
+- Please report any issues or bugs you may encounter on the [dedicated
+  page on github](https://github.com/paul-carteron/happign/issues).
 
 ### System Requirements
 
@@ -107,12 +104,11 @@ development :
 
 This project is - obviously - called happign; here’s why :
 
--   “ign” stand for… IGN : the acronym of the institute ;
--   “api” stand for… API : one of the interface used to retrieve the
-    data;
--   and the addition of an “h” and another “p” for the pun with “happy”.
-    Besides the fact that I love this kind of humor, the simplified use
-    of APIs is a real source of happiness, trust me.
+- “ign” stand for… IGN : the acronym of the institute ;
+- “api” stand for… API : one of the interface used to retrieve the data;
+- and the addition of an “h” and another “p” for the pun with “happy”.
+  Besides the fact that I love this kind of humor, the simplified use of
+  APIs is a real source of happiness, trust me.
 
 Also, for the most attentive to details, you can see on the logo a green
 leaf stuck between the teeth of the charming smile. It is none other

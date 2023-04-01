@@ -28,7 +28,6 @@
 #' req_user_agent req_url_query
 #' @importFrom sf st_bbox st_centroid st_buffer
 #' @importFrom xml2 xml_child xml_find_all xml_has_attr as_list
-#' @importFrom checkmate assert check_class assert_character
 #'
 #' @examples
 #' \dontrun{
@@ -47,13 +46,32 @@ get_wms_info <- function(shape,
                          layer_name = "ORTHOIMAGERY.ORTHOPHOTOS",
                          version = "1.3.0"){
 
-   assert(check_class(shape, "sf"),
-          check_class(shape, "sfc"))
-   assert_character(apikey, max.len = 1)
-   assert_character(layer_name, max.len = 1)
-   assert_character(version, max.len = 1)
+   # check input ----
+   # check parameter : shape
+   if (!inherits(shape, c("sf", "sfc"))) {
+      stop("`shape` must be of class sf or sfc.")
+   }
 
-   # test if layer is queryable
+   # check parameter : apikey
+   is_apikey <- apikey %in% get_apikeys()
+   if (!is_apikey) {
+      stop("`apikey` must be a character from `get_apikey()`.")
+   }
+
+   # check parameter : layer_name
+   if (!inherits(layer_name, "character")) {
+      stop("`layer_name` must be of class character.")
+   }
+
+   # check parameter : version
+   if (!inherits(version, c("character"))) {
+      stop("`version` must be of class character.")
+   }
+   if (!grepl("^[0-9]{1}\\.[0-9]{1}\\.[0-9]{1}$", version)) {
+      stop("`version` is is badly formatted.")
+   }
+
+   # test if layer is queryable ----
    queryable_layers <- are_queryable(apikey)
    if(!(layer_name %in% queryable_layers)){
       stop("The layer ", layer_name, " doesn't have additional information. You can try with ",
@@ -69,6 +87,7 @@ get_wms_info <- function(shape,
    #    st_buffer(10) |>
    #    st_transform(4326)
 
+   # request ----
    bbox <- st_bbox(shape)
    bbox <- paste(bbox["ymin"], bbox["xmin"], bbox["ymax"], bbox["xmax"], sep = ",")
 
@@ -116,11 +135,8 @@ get_wms_info <- function(shape,
 #' @importFrom httr2 request req_perform resp_body_xml req_url_path_append
 #' req_user_agent req_url_query
 #' @importFrom xml2 xml_child xml_find_all xml_has_attr as_list
-#' @importFrom checkmate assert_choice
 #'
 are_queryable <- function(apikey){
-
-   assert_choice(apikey, get_apikeys())
 
    request <- request("https://wxs.ign.fr") |>
       req_url_path_append(apikey) |>

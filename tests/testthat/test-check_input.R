@@ -1,15 +1,12 @@
-test_that("multiplication works", {
+test_that("check input", {
 
-   shape <- st_polygon(list(matrix(
-      c(-4.373937,47.79859,
-         -4.375615,47.79738,
-         -4.375147,47.79683,
-         -4.373898,47.79790,
-         -4.373937,47.79859),
-      ncol = 2,byrow = TRUE
-   )))
-   shape <- st_sfc(shape, crs = st_crs(4326))
+   wrap_fun <- function(){
+      check_get_wms_raster_input(shape, apikey, layer_name,
+                                 resolution, filename, crs, overwrite,
+                                 version, styles, interactive)
+   }
 
+   shape <- poly
    apikey <- "altimetrie"
    layer_name <- "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
    resolution <- 5
@@ -20,10 +17,25 @@ test_that("multiplication works", {
    styles <- ""
    interactive <- FALSE
 
-   res <- check_get_wms_raster_input(shape, apikey, layer_name, resolution, filename,
-                              crs, overwrite, version, styles, interactive)
+   # everything good
+   expect_null(wrap_fun())
 
-   # If res is false it means everything works, if not res will be an error
-   expect_false(res)
+   # shape
+   shape <- NULL
+   expect_null(wrap_fun())
+
+   # bad apikey
+   apikey <- "bad_apikey"
+   expect_error(wrap_fun(),
+                "`apikey` must be a character from")
+
+   # personnal key
+   apikey <- "abcdefghijklmno123456789"
+   expect_null(wrap_fun())
+
+   # resolution
+   resolution <- 0.01
+   expect_warning(wrap_fun(),
+                  "`resolution` param is less than 0.2 cm")
 
 })

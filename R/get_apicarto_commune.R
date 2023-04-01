@@ -66,6 +66,8 @@
 #'
 get_apicarto_commune <- function(x, source = "PCI"){
 
+   warning("`get_apicarto_commune()` is deprecated in happign 0.1.9 and it will be removed",
+           " Please use `get_apicarto_cadastre()` instead.", call. = F)
    # initialisation
    geom <- code_insee <- code_dep <- NULL
 

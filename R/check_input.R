@@ -11,8 +11,6 @@
 #' @param styles see get_wms_raster
 #' @param interactive see get_wms_raster
 #'
-#' @importFrom checkmate assert assert_character assert_choice assert_numeric
-#' check_character check_class check_null check_choice
 #' @importFrom sf st_crs
 #'
 #' @noRd
@@ -28,31 +26,36 @@ check_get_wms_raster_input <- function(shape,
                                        styles,
                                        interactive){
 
-   # shape should be from sf package class
-   assert(check_class(shape, "sf"),
-          check_class(shape, "sfc"))
+   # shape
+   if (!inherits(shape, c("sf", "sfc", "NULL"))) {
+      stop("`shape` must be of class sf, sfc or NULL.")
+   }
 
-
-   # apikey should be one from get_apikeys() but also character corresponding
-   # to scan user key
-   assert(check_choice(apikey, get_apikeys()),
-          check_character(apikey,
-                          pattern = "^[[:alnum:]]{24}$"))
+   # apikey
+   is_apikey <- apikey %in% get_apikeys()
+   is_personal_key <- grepl("^[[:alnum:]]{24}$", apikey)
+   if (!any(is_apikey, is_personal_key)) {
+      stop("`apikey` must be a character from `get_apikey()` or a personal key.")
+   }
 
    # layer_name
-   assert_character(layer_name)
+   if (!inherits(layer_name, "character")) {
+      stop("`layer_name` must be of class character.")
+   }
 
    # resolution
-   assert_numeric(resolution)
+   if (!inherits(resolution, "numeric")) {
+      stop("`resolution` must be of class numeric.")
+   }
    if(resolution < 0.20){
-      warning("resolution param is less than 0.2 cm, not many",
-              "ressources are that precise.",
-              call. = F)
+      warning("`resolution` param is less than 0.2 cm, not many",
+              "ressources are that precise.", call. = F)
    }
 
    # filename
-   assert(check_character(filename),
-          check_null(filename))
+   if (!inherits(filename, c("character", "NULL"))) {
+      stop("`filename` must be of class character or NULL.")
+   }
 
    if (!is.null(filename)){
       filename_ext <- strsplit(basename(filename), split="\\.")[[1]] # split one point
@@ -72,12 +75,26 @@ check_get_wms_raster_input <- function(shape,
             warning = function(cns){stop("Invalid crs : ", crs, call. = FALSE)})
 
    # version
-   assert_character(version, pattern = "^[0-9]{1}\\.[0-9]{1}\\.[0-9]{1}$")
+   if (!inherits(version, c("character"))) {
+      stop("`version` must be of class character.")
+   }
+   if (!grepl("^[0-9]{1}\\.[0-9]{1}\\.[0-9]{1}$", version)) {
+      stop("`version` is is badly formatted.")
+   }
 
    # style
-   assert_character(styles)
-   # overwrite
-   assert_choice(overwrite, c(TRUE, FALSE))
+   if (!inherits(styles, c("character"))) {
+      stop("`styles` must be of class character.")
+   }
 
+   # overwrite
+   if (!inherits(overwrite, c("logical"))) {
+      stop("`overwrite` must be of class logical.")
+   }
+
+   # interactive
+   if (!inherits(interactive, c("logical"))) {
+      stop("`interactive` must be of class logical.")
+   }
 }
 

@@ -39,8 +39,6 @@
 #' @importFrom sf read_sf st_make_valid st_write
 #' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request
 #' resp_body_string req_body_form
-#' @importFrom checkmate assert assert_character check_character
-#' check_class check_null
 #' @importFrom utils menu
 #'
 #' @details
