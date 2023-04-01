@@ -2,8 +2,10 @@
 * add `get_apicarto_viticole()`
 * add `get_apicarto_codes_postaux()`
 * add `get_apicarto_rpg()`
+* rework of `get_apicarto_gpu()`
 * depreciation of `get_apicarto_commune()` now supported by `get_apicarto_cadastre()`
 * rework of `get_last_news()`
+* remove dependency to `checkmate`
 
 # happign 0.1.8
 * Correction of get_raw_lidar()
@@ -60,7 +62,7 @@ merging for quiet faster results. `stars` package is not used anymore.
 
 # happign 0.1.4
 
-* Fix resolution for `get_wms_raster()`. Depending on shape and resolution, multiple tile are downloaded and combine to get the right resolution. Also adding vignette [Resolution for raster](https://paul-carteron.github.io/happign/articles/web_only/resolution_for_raster.html) for further explanation
+* Fix resolution for `get_wms_raster()`. Depending on shape and resolution, multiple tile are downloaded and combine to get the right resolution. Also adding vignette Resolution for raster for further explanation
 * New start up message based on RSS flux of IGN website to warn user if there issues (slowdown, shutdown) or news resources
 *`get_wms_raster()` now fix S2 geometry problems
 * adding `method` and `mode` argument of `download.file()` to have more freedom on the type of download with `get_wms_raster()`
