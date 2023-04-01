@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(happign)
 library(dplyr)
 library(tmap); tmap_mode("view"); tmap_options(check.and.fix = TRUE)
@@ -32,15 +33,17 @@ APIs carto were developed to automatically retrieve certain spatial information 
 Documentation : [https://apicarto.ign.fr/api/doc/cadastre](https://apicarto.ign.fr/api/doc/cadastre)
 
 The API carto cadastre provides the following information :
- * the boundaries of a town (`type = "commune"`)
- * the parcel sections or divisions (`type = "section"` or `type = "division"`)
- * the cadastral parcels (`type = "cadastre"`)
- * information on non-vectorized parcels (`type = "localisant"`)
+
+* the boundaries of a town (`type = "commune"`)
+* the parcel sections or divisions (`type = "section"` or `type = "division"`)
+* the cadastral parcels (`type = "cadastre"`)
+* information on non-vectorized parcels (`type = "localisant"`)
 
 At least three parameters must be set :
- * `x` : An indication about the location. Could be a shape, an insee code or a departement code
- * `type` : What service do you want to use? (see above)
- * `source` : The data source `"PCI"` for "Parcellaire Express" or `"BDP"` for "BD Parcellaire". The BD Parcellaire product is a historical product that is no longer updated. It is therefore strongly recommended to use the Parcellaire Express product which is updated every six months.
+
+* `x` : An indication about the location. Could be a shape, an insee code or a departement code
+* `type` : What service do you want to use? (see above)
+* `source` : The data source `"PCI"` for "Parcellaire Express" or `"BDP"` for "BD Parcellaire". The BD Parcellaire product is a historical product that is no longer updated. It is therefore strongly recommended to use the Parcellaire Express product which is updated every six months.
  
 All other parameters are used to refine the query.
 
@@ -51,7 +54,7 @@ Because `get_apicaro_cadastre` is a vectorized function, it's possible to set mu
 If you do not know insee codes, you can consult existing codes from the internal 
 dataframe `cog_2022`.
 
-```{r message=TRUE}
+```{r message=FALSE}
 # all town starting with plou
 plou_insee_code <- cog_2022[startsWith(cog_2022$LIBELLE, "Plou"), "COM"]
 plou_borders <- get_apicarto_cadastre(plou_insee_code, type = "commune")
@@ -63,7 +66,7 @@ tm_shape(plou_borders)+
 
 Another common case consists in recovering the geometry of the parcels from a "cadastral matrix extract". The latter lists for each owner all his built and unbuilt properties owned in a commune. It is a private information and to obtain one it is necessary to ask for an extract top the Center of the Land taxes. In this example a false simplified cadastral matrix is used.
 
-```{r}
+```{r message=FALSE}
 cad_mat <- data.frame(CODE_DEP = rep("29", 10),
                       CODE_COM = rep("158", 10),
                       SECTION = rep(c("AX", "AV"), each = 5),
@@ -98,10 +101,11 @@ tm_shape(penmarch)+
 tm_shape(rpg)+
    tm_polygons("code_cultu")
 ```
-The function is vectorized, which mean that query several years at the same time is possible. However, since 2014 the format of the RPG has changed. The function will therefore return a list with the parcels before and after 2014. Below an example showing evolution of RPG from 2010 to 2021.
 
-```{r}
-all_years_rpg <- get_apicarto_rpg(penmarch, annee = 2010:2021, dTolerance = 5) 
+The function is vectorized, which mean that query several years at the same time is possible. However, since 2014 the format of the RPG has changed. The function will therefore return a list with the parcels before and after 2014. Below an example showing evolution of RPG from 2013 to 2018
+
+```{r message=FALSE}
+all_years_rpg <- get_apicarto_rpg(penmarch, annee = 2013:2018, dTolerance = 5) 
 
 combine_rpg <- bind_rows(all_years_rpg)
 
@@ -113,6 +117,7 @@ tm_shape(combine_rpg)+
 tm_facets(by = "annee")
 ```
 
+
 It is also possible to query from the culture code. Again, there are changes before and after 2014; [The user documentation](https://apicarto.ign.fr/api/doc/pdf/docUser_moduleRPG.pdf) explains:
 
 " For RPG version 1 (before 2014) the value to be entered corresponds to the number contained in the CODE_CULTU attribute of the ILOTS_ANONYMS class with a value ranging from **01 to 28** (0 is mandatory for values less than 10). The list of crop codes can be consulted in [the content description of the RPG version 1.0](https://geoservices.ign.fr/sites/default/files/2021-07/DC_DL_RPG_1-0.pdf).
@@ -120,7 +125,7 @@ For the RPG version 2 the value to be entered corresponds to the trigram contain
 
 For this example, let's find all potatoes, carrots and leeks.
 
-```{r}
+```{r message=FALSE}
 rpg <- get_apicarto_rpg(penmarch,
                         annee = 2020,
                         code_cultu = c("PTC", "CAR", "POR"),
@@ -160,8 +165,8 @@ Urban planning documents can take several forms:
 
 The first step is to find out if urban planning document are available if it is the case, find the document's partition i.e. its ID :
 
-```{r}
-# find out if documents are available from geometry intersection
+```{r message=FALSE}
+# find out if documents are available
 penmarch <- get_apicarto_cadastre("29158", "commune")
 doc <- get_apicarto_gpu(penmarch, "document", dTolerance = 5) # complex geometry handle with dTolerance
 # Because NULL is returned, it means that penmarch dont have available urban planning document
@@ -178,7 +183,7 @@ partition <- doc |>
 
 Now that the partition is recovered, it is possible to obtain several resources for a specific document. The different resources available are specified in the documentation of the function `?get_apicarto_gpu()`
 
-```{r}
+```{r message=FALSE}
 zone_urba <- get_apicarto_gpu(partition, ressource = "zone-urba")
 
 # click on polygon for legend
@@ -189,7 +194,7 @@ tm_shape(zone_urba)+
 
 Because `get_apicarto_gpu` is vectorized, many resources can be returned at the same time. This allows to identify all the prescriptions at once for example :
 
-```{r}
+```{r message=FALSE}
 ressources <- c("prescription-surf",
                 "prescription-lin",
                 "prescription-pct")
@@ -214,7 +219,7 @@ This api returns from a shape :
 
 This function is quite simple to use, only shape is needed. 
 
-```{r}
+```{r message=FALSE}
 viticole <- get_apicarto_viticole(penmarch, dTolerance = 5)
 
 # plot result
@@ -225,7 +230,7 @@ tm_shape(viticole)+
 
 Let's find how many wine appellations are there in Finistère, France (spoiler, there only VSIG, we prefer microbreweries).
 
-```{r}
+```{r message=FALSE}
 finistere <- get_wfs(penmarch,
                     "administratif",
                     "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:departement")
