@@ -41,7 +41,7 @@
     
     <a class="navbar-brand me-2" href="index.html">happign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,8 +58,8 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="articles/Getting_started.html">Getting started with happign</a>
     <a class="dropdown-item" href="articles/SCAN_25_SCAN_100_SCAN_OACI.html">SCAN 25, SCAN 100 et SCAN OACI</a>
+    <a class="dropdown-item" href="articles/web_only/api_carto.html">API Carto</a>
     <a class="dropdown-item" href="articles/web_only/happign_for_foresters.html">happign for foresters</a>
-    <a class="dropdown-item" href="articles/web_only/using_api_carto.html">Using API Carto</a>
   </div>
 </li>
 <li class="nav-item">
@@ -92,20 +92,20 @@
 </div>
 </div>
 <div class="section level1">
-<h1 id="happign---ign-api-for-r">happign - IGN API for R<a class="anchor" aria-label="anchor" href="#happign---ign-api-for-r"></a>
+<h1 id="happign---ign-data-from-r">happign - IGN data from R<a class="anchor" aria-label="anchor" href="#happign---ign-data-from-r"></a>
 </h1>
 <!-- badges: start -->
 
 <p>The goal of happign is to facilitate the use of Web Services and API from the IGN (French National Institute of Geographic and Forestry Information). <code>happign</code> allow downloading of :</p>
 <ul>
-<li>Shapefile via use of WFS service and APIcarto</li>
+<li>Shapefile via use of WFS service and <a href="https://apicarto.ign.fr/api/doc/" class="external-link">APIcarto</a> ;</li>
 <li>Raster via use of WMS raster service</li>
 </ul>
 <div class="section level3">
 <h3 id="context">Context<a class="anchor" aria-label="anchor" href="#context"></a>
 </h3>
-<p>Since January 1, 2021, the French National Institute for Geographic and Forestry Information (IGN) has made its public data on French topography, infrastructure, and terrain freely available. The opening of IGN data under the Etalab 2.0 open license means free access and use for all.</p>
-<p>To facilitate access to this data, IGN has implemented a set of APIs and Web services based on OGC standards. In spite of a well supplied documentation, the use of APIs and Web services remains complex to set up in R. The <code>happign</code> package has been created to facilitate this.</p>
+<p>Since January 1, 2021, the French National Institute for Geographic and Forestry Information (IGN) has opened access to their data on French topography, infrastructure, and terrain freely available. The opening of IGN data under the Etalab 2.0 open license means free access and use for all.</p>
+<p>To facilitate accessibility, IGN has implemented a set of APIs and Web services based on OGC standards. Despite a well supplied documentation, the use of APIs and Web services remains complex to set up in R. The <code>happign</code> package has been created to make it easier.</p>
 </div>
 <div class="section level3">
 <h3 id="rights-of-use-for-ign-data">Rights of use for IGN data<a class="anchor" aria-label="anchor" href="#rights-of-use-for-ign-data"></a>
@@ -131,11 +131,11 @@
 <li>
 <a href="https://paul-carteron.github.io/happign/articles/Getting_started.html">Getting started with happign</a> : A brief intro to happign world ;</li>
 <li>
-<a href="https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html">happign for foresters</a> : happign can be used in many ways but here I focus on forestry.</li>
+<a href="https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html">happign for foresters</a> : A focus on the possibilities offered by happign for forestry ;</li>
 <li>
-<a href="https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html">SCAN 25, SCAN 100 et SCAN OACI</a> : How to download the only Scan 25, Scan 100 and Scan OACI</li>
+<a href="https://paul-carteron.github.io/happign/articles/web_only/api_carto.html">API carto</a> : How to use all API Carto with happign ;</li>
 <li>
-<a href="https://paul-carteron.github.io/happign/articles/web_only/resolution_for_raster.html">Resolution for raster</a> : IGN tiles are limited to 2064x2064 pixel. <code>happign</code> happign allows you to get around this limitation. The process is explained in this vignette.</li>
+<a href="https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html">SCAN 25, SCAN 100 et SCAN OACI</a> : How to download Scan 25, Scan 100 and Scan OACI</li>
 </ul>
 </div>
 <div class="section level3">
@@ -143,7 +143,6 @@
 </h3>
 <p>IGN offers other services. Their implementation in R is under development :</p>
 <ul>
-<li>Implement all REST API Carto compatible with the OpenAPI specification (easy and quick downloading for WFS)</li>
 <li>Implement isochrone and isodistance calculation</li>
 </ul>
 </div>

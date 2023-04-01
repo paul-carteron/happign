@@ -4,9 +4,9 @@ pkgdown_sha: ~
 articles:
   Getting_started: Getting_started.html
   SCAN_25_SCAN_100_SCAN_OACI: SCAN_25_SCAN_100_SCAN_OACI.html
+  api_carto: web_only/api_carto.html
   happign_for_foresters: web_only/happign_for_foresters.html
-  using_api_carto: web_only/using_api_carto.html
-last_built: 2023-03-31T14:43Z
+last_built: 2023-04-01T09:21Z
 urls:
   reference: https://paul-carteron.github.io/happign/reference
   article: https://paul-carteron.github.io/happign/articles
