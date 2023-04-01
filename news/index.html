@@ -61,9 +61,13 @@
 </li>
 <li>add <code><a href="../reference/get_apicarto_rpg.html">get_apicarto_rpg()</a></code>
 </li>
+<li>rework of <code><a href="../reference/get_apicarto_gpu.html">get_apicarto_gpu()</a></code>
+</li>
 <li>depreciation of <code><a href="../reference/get_apicarto_commune.html">get_apicarto_commune()</a></code> now supported by <code><a href="../reference/get_apicarto_cadastre.html">get_apicarto_cadastre()</a></code>
 </li>
 <li>rework of <code><a href="../reference/get_last_news.html">get_last_news()</a></code>
+</li>
+<li>remove dependency to <code>checkmate</code>
 </li>
 </ul></div>
     <div class="section level2">
@@ -138,7 +142,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.4" id="happign-014">happign 0.1.4<a class="anchor" aria-label="anchor" href="#happign-014"></a></h2><p class="text-muted">CRAN release: 2022-04-25</p>
-<ul><li>Fix resolution for <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code>. Depending on shape and resolution, multiple tile are downloaded and combine to get the right resolution. Also adding vignette <a href="https://paul-carteron.github.io/happign/articles/web_only/resolution_for_raster.html">Resolution for raster</a> for further explanation</li>
+<ul><li>Fix resolution for <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code>. Depending on shape and resolution, multiple tile are downloaded and combine to get the right resolution. Also adding vignette Resolution for raster for further explanation</li>
 <li>New start up message based on RSS flux of IGN website to warn user if there issues (slowdown, shutdown) or news resources *<code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> now fix S2 geometry problems</li>
 <li>adding <code>method</code> and <code>mode</code> argument of <code><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file()</a></code> to have more freedom on the type of download with <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code>
 </li>
