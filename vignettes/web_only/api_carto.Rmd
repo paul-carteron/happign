@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(happign)
 library(dplyr)
 library(tmap); tmap_mode("view"); tmap_options(check.and.fix = TRUE)
@@ -102,26 +101,28 @@ tm_shape(rpg)+
    tm_polygons("code_cultu")
 ```
 
-The function is vectorized, which mean that query several years at the same time is possible. However, since 2014 the format of the RPG has changed. The function will therefore return a list with the parcels before and after 2014. Below an example showing evolution of RPG from 2013 to 2018
+The function is vectorized, which mean that query several years at the same time is possible. However, since 2014 the format of the RPG has changed. The function will therefore return a list with the parcels before and after 2014. Below an example showing evolution of RPG from 2013 to 2016.
 
 ```{r message=FALSE}
-all_years_rpg <- get_apicarto_rpg(penmarch, annee = 2013:2018, dTolerance = 5) 
-
-combine_rpg <- bind_rows(all_years_rpg)
+all_years_rpg <- get_apicarto_rpg(penmarch, annee = 2013:2016, dTolerance = 5) 
 
 # plot evolution of rpg since 2010
 tm_shape(penmarch)+
    tm_borders()+
-tm_shape(combine_rpg)+
-   tm_polygons()+
-tm_facets(by = "annee")
+tm_shape(all_years_rpg[["2013"]])+
+   tm_polygons(group = "2013")+
+tm_shape(all_years_rpg[["2014"]])+
+   tm_polygons(group = "2014")+
+tm_shape(all_years_rpg[["2015"]])+
+   tm_polygons(group = "2015")+
+tm_shape(all_years_rpg[["2016"]])+
+   tm_polygons(group = "2016")
 ```
-
 
 It is also possible to query from the culture code. Again, there are changes before and after 2014; [The user documentation](https://apicarto.ign.fr/api/doc/pdf/docUser_moduleRPG.pdf) explains:
 
-" For RPG version 1 (before 2014) the value to be entered corresponds to the number contained in the CODE_CULTU attribute of the ILOTS_ANONYMS class with a value ranging from **01 to 28** (0 is mandatory for values less than 10). The list of crop codes can be consulted in [the content description of the RPG version 1.0](https://geoservices.ign.fr/sites/default/files/2021-07/DC_DL_RPG_1-0.pdf).
-For the RPG version 2 the value to be entered corresponds to the trigram contained in the attribute CODE_CULTU of the class PARCELLES_GRAPHIQUES by respecting the case (upper case). The list of crop codes can be found in the [content description of the GPR version 2.0.](https://geoservices.ign.fr/sites/default/files/2021-07/DC_DL_RPG_2-0.pdf) "
+"For RPG version 1 (before 2014) the value to be entered corresponds to the number contained in the CODE_CULTU attribute of the ILOTS_ANONYMS class with a value ranging from **01 to 28** (0 is mandatory for values less than 10). The list of crop codes can be consulted in [the content description of the RPG version 1.0](https://geoservices.ign.fr/sites/default/files/2021-07/DC_DL_RPG_1-0.pdf).
+For the RPG version 2 the value to be entered corresponds to the trigram contained in the attribute CODE_CULTU of the class PARCELLES_GRAPHIQUES by respecting the case (upper case). The list of crop codes can be found in the [content description of the GPR version 2.0.](https://geoservices.ign.fr/sites/default/files/2021-07/DC_DL_RPG_2-0.pdf)"
 
 For this example, let's find all potatoes, carrots and leeks.
 
@@ -135,6 +136,7 @@ tm_shape(rpg)+
    tm_polygons("code_cultu",
                palette = c("orange", "springgreen", "gold"))
 ```
+
 ## API carto urbanism
 
 The GPU query service allows you to obtain urban planning information intersecting a geometry. Beware, not all municipalities are in the geoportal of urbanism!
