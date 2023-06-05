@@ -76,7 +76,7 @@ Package vignettes :
   : A brief intro to happign world ;
 - [happign for
   foresters](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html)
-  : A focus on the possibilities offered by happign for forestry ;
+  : A focus on possibilities offered by happign for forestry ;
 - [API
   carto](https://paul-carteron.github.io/happign/articles/web_only/api_carto.html)
   : How to use all API Carto with happign ;
