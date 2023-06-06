@@ -1,3 +1,6 @@
+# happign 0.1.9-1
+* update cog_2022 dataset to cog_2023
+
 # happign 0.1.9
 * add `get_apicarto_viticole()`
 * add `get_apicarto_codes_postaux()`
