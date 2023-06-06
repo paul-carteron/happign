@@ -33,9 +33,9 @@ library(terra)
 For the example we will work with the Camors forest. First of all we need the commune border that can be obtained from the insee code. Fortunately, happign provides a table containing all insee codes (`data("cog_2022")`). Then, `get_apicarto_commune` is used to download shape from Apicarto commune.
 
 ```{r}
-data("cog_2022")
+data("cog_2023")
 
-insee_code <- cog_2022[grepl("^Camors", cog_2022$LIBELLE),1]
+insee_code <- cog_2023[grepl("^Camors", cog_2023$LIBELLE),1]
 
 borders <- get_apicarto_cadastre(insee_code, type = "commune")
 
