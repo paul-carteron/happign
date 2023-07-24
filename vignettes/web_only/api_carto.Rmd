@@ -51,11 +51,11 @@ All other parameters are used to refine the query.
 We’ll start with a simple example : retrieve borders of multiple town. 
 Because `get_apicaro_cadastre` is a vectorized function, it's possible to set multiple insee code.
 If you do not know insee codes, you can consult existing codes from the internal 
-dataframe `cog_2022`.
+dataframe `cog_2023`.
 
 ```{r message=FALSE}
 # all town starting with plou
-plou_insee_code <- cog_2022[startsWith(cog_2022$LIBELLE, "Plou"), "COM"]
+plou_insee_code <- cog_2023[startsWith(cog_2023$LIBELLE, "Plou"), "COM"]
 plou_borders <- get_apicarto_cadastre(plou_insee_code, type = "commune")
 
 # result
@@ -230,7 +230,7 @@ tm_shape(viticole)+
 
 ```
 
-Let's find how many wine appellations are there in Finistère, France (spoiler, there only VSIG, we prefer microbreweries).
+Let's find how many wine appellations are there in Finistère, France (spoiler, there only VSIG ie wines without geographical indication, we prefer microbreweries).
 
 ```{r message=FALSE}
 finistere <- get_wfs(penmarch,
