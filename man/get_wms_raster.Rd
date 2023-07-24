@@ -6,8 +6,8 @@
 \usage{
 get_wms_raster(shape,
                apikey = "altimetrie",
-               layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES",
-               resolution = 5,
+               layer_name = "ELEVATION.ELEVATIONGRIDCOVERAGE",
+               res = 25,
                filename = tempfile(fileext = ".tif"),
                crs = 2154,
                overwrite = FALSE,
@@ -26,7 +26,7 @@ from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}.}
 or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}.}
 
-\item{resolution}{Cell size in meter. See detail for more information about resolution.}
+\item{res}{Cell size in meter. See detail for more information about res.}
 
 \item{filename}{Either a character string naming a file or a connection open
 for writing. (ex : "test.tif" or "~/test.tif"). If \code{NULL}, layer_name is used.
@@ -62,8 +62,8 @@ or with \code{get_apikeys()} and \code{get_layers_metadata()}.
 \details{
 \itemize{
 \item Raster tile are limited to 2048x2048 pixels so depending of the shape
-and the resolution, correct number of tiles to download is calculated.
-This mean that setting the \code{resolution} argument higher than the base resolution
+and the res, correct number of tiles to download is calculated.
+This mean that setting the \code{res} argument higher than the base resolution
 of the layer multiplies the number of pixels without increasing
 the precision. For example, the download of the BD Alti layer from
 IGN will be optimal for a resolution of 25m.
@@ -90,7 +90,7 @@ metadata_table <- get_layers_metadata(apikey, "wms") # all layers for altimetrie
 layer_name <- as.character(metadata_table[2,1]) # ELEVATION.ELEVATIONGRIDCOVERAGE
 
 # Downloading digital elevation model from IGN
-mnt <- get_wms_raster(penmarch, apikey, layer_name, resolution = 25)
+mnt <- get_wms_raster(penmarch, apikey, layer_name, res = 25)
 
 # Preparing raster for plotting
 mnt[mnt < 0] <- NA # remove negative values in case of singularity

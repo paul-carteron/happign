@@ -18,7 +18,7 @@
 #' @return No object.
 #' @export
 #'
-#' @importFrom sf read_sf st_crs st_filter st_transform st_crs<-
+#' @importFrom sf read_sf st_crs st_filter st_transform st_crs<- st_intersects
 #' @importFrom archive archive archive_extract
 #' @importFrom utils download.file
 #'

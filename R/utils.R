@@ -31,7 +31,7 @@ get_wfs_default_crs <- function(apikey, layer_name){
 
 #' @description flip X and Y coord for ECQL filter
 #' @param shape object of class sf or sfc
-#' @importFrom sf st_axis_order st_geometry st_transform st_as_text
+#' @importFrom sf st_axis_order st_geometry st_transform st_as_text st_as_sf
 #' @importFrom dplyr summarize
 #' @return ecql string
 #' @noRd
@@ -116,9 +116,4 @@ shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
       x <- sfc_geojson(x)
       return(x)
    }
-
-
 }
-
-
-
