@@ -126,11 +126,11 @@ get_apicarto_cadastre <- function(x,
              stop("x must be length 5; not ", nchar(x)))
    }
 
-   # hit api and loop if there more than 1000 features
+   # hit api and loop if there more than 500 features
    resp <- Map(
       loop_api,
       path = paste0("api/cadastre/", type),
-      limit = 1000,
+      limit = 500,
       "code_insee" = code_insee,
       "code_dep" = code_dep,
       "section" = section,
