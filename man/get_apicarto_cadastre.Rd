@@ -11,7 +11,8 @@ get_apicarto_cadastre(x,
                       numero = list(NULL),
                       code_arr = list(NULL),
                       code_abs = list(NULL),
-                      code_com = list(NULL))
+                      code_com = list(NULL),
+                      dTolerance = 0)
 }
 \arguments{
 \item{x}{It can be a shape, insee codes or departement codes :
@@ -39,6 +40,9 @@ This prefix is useful to differentiate between communes that have merged}
 
 \item{code_com}{A \code{character} of length 5 corresponding to the commune code. Only use with
 \code{type = "division"} or \code{type = "feuille"}}
+
+\item{dTolerance}{numeric; Complex shape cannot be handle by API; using \code{dTolerance}
+allow to simplify them. See \code{?sf::st_simplify}}
 }
 \value{
 Object of class \code{sf}

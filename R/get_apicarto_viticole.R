@@ -15,7 +15,6 @@
 #' must be specified in meters, see `?sf::st_simplify` for more info.
 #'
 #' @importFrom sf st_as_sfc st_make_valid st_transform read_sf
-#' @importFrom geojsonsf sfc_geojson
 #' @importFrom httr2 req_perform req_method resp_body_string
 #'
 #' @details

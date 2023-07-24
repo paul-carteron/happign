@@ -21,7 +21,7 @@ Depends:
 Imports: 
     archive,
     dplyr,
-    geojsonsf,
+    jsonlite,
     httr2,
     methods,
     sf (>= 1.0-7),

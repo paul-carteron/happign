@@ -88,32 +88,27 @@ class_check <- function(x, class){
 #' or input string for st_crs
 #' @param dTolerance numeric; tolerance parameter. The value of `dTolerance`
 #' must be specified in meters.
-#' @importFrom geojsonsf sf_geojson sfc_geojson
-#' @importFrom sf st_make_valid st_transform st_geometry st_simplify sf_use_s2
-#' @return geojson object
+#' @importFrom jsonlite toJSON
+#' @importFrom sf st_make_valid st_transform st_geometry st_simplify
+#' @return json object
 #' @noRd
 #'
 shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
 
-   default_s2 <- suppressMessages(sf_use_s2())
-   suppressMessages(sf_use_s2(TRUE))
-   on.exit(suppressMessages(sf_use_s2(default_s2)))
+   # default_s2 <- suppressMessages(sf_use_s2())
+   # suppressMessages(sf_use_s2(TRUE))
+   # on.exit(suppressMessages(sf_use_s2(default_s2)))
 
    x <- x |>
       st_make_valid() |>
       st_transform(crs) |>
       st_simplify(dTolerance = dTolerance) |>
-      st_geometry()
+      st_geometry() |>
+      toJSON()
 
-   # deal with sf object
-   if(inherits(x, "sf")){
-      x <- sf_geojson(x)
-      return(x)
-   }
+   # remove first and last bracket unless apicarto doesn't work
+   x <- gsub('^.|.$', '', x)
 
-   # deal with sfc object
-   if(inherits(x, "sfc")){
-      x <- sfc_geojson(x)
-      return(x)
-   }
+   return(x)
+
 }

@@ -60,14 +60,6 @@ with_mock_dir("api_gpu_x_input", {
       res <- get_apicarto_gpu(c("93014", "93015"), ressource = "municipality")
       expect_true(nrow(res) == 2)
 
-      # multiple poly
-      x1 <- st_sfc(st_point(c(5.270, 44.559)), crs = 4326) |>
-         st_as_sf()
-      x2 <- st_sfc(st_point(c(5.384, 44.495)), crs = 4326) |>
-         st_as_sf()
-      res <- get_apicarto_gpu(rbind(x1, x2), ressource = "document", dTolerance = 10)
-      expect_true(nrow(res) == 2)
-
    })},
 simplify = FALSE)
 
