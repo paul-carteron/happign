@@ -131,6 +131,7 @@ get_apicarto_cadastre <- function(x,
       loop_api,
       path = paste0("api/cadastre/", type),
       limit = 500,
+      "_limit" = 500,
       "code_insee" = code_insee,
       "code_dep" = code_dep,
       "section" = section,
@@ -146,7 +147,7 @@ get_apicarto_cadastre <- function(x,
               "- shape outside of France\n",
               "- non-existent insee or department code\n",
               "- existing code but not recognized by apicarto.\n",
-              "Running data(cog_2022) can help find all insee code.", .call = FALSE)
+              "Running data(cog_2023) can help find all insee code.", .call = FALSE)
       return(NULL)
    }
 
