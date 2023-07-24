@@ -2,7 +2,7 @@
 title: "API Carto"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{api_carto}
+  %\VignetteIndexEntry{API Carto}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

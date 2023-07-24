@@ -1,5 +1,8 @@
-# happign 0.1.9-1
+# happign 1.0.0
+* `get_wms_raster` the door now uses gdalwarp from `sf::gdal_utils` to avoid 
+calculation and downloading of several tiles
 * update cog_2022 dataset to cog_2023
+
 
 # happign 0.1.9
 * add `get_apicarto_viticole()`
