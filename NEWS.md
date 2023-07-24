@@ -2,7 +2,7 @@
 * `get_wms_raster` the door now uses gdalwarp from `sf::gdal_utils` to avoid 
 calculation and downloading of several tiles
 * update cog_2022 dataset to cog_2023
-
+* remove `get_apicarto_commune()` now supported by `get_apicarto_cadastre()`
 
 # happign 0.1.9
 * add `get_apicarto_viticole()`
