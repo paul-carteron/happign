@@ -70,7 +70,8 @@ IGN's apicarto"><meta property="og:image" content="https://paul-carteron.github.
 <span>                      numero <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>,</span>
 <span>                      code_arr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>,</span>
 <span>                      code_abs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>,</span>
-<span>                      code_com <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>                      code_com <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>,</span>
+<span>                      dTolerance <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -113,6 +114,11 @@ This prefix is useful to differentiate between communes that have merged</p></dd
 <dt>code_com</dt>
 <dd><p>A <code>character</code> of length 5 corresponding to the commune code. Only use with
 <code>type = "division"</code> or <code>type = "feuille"</code></p></dd>
+
+
+<dt>dTolerance</dt>
+<dd><p>numeric; Complex shape cannot be handle by API; using <code>dTolerance</code>
+allow to simplify them. See <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">?sf::st_simplify</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">
