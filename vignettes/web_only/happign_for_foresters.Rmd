@@ -30,9 +30,9 @@ library(terra)
 
 ## First choose a zone of interest
 
-For the example we will work with the Camors forest. First of all we need the commune border that can be obtained from the insee code. Fortunately, happign provides a table containing all insee codes (`data("cog_2022")`). Then, `get_apicarto_commune` is used to download shape from Apicarto commune.
+For the example we will work with the Camors forest. First of all we need the commune border that can be obtained from the insee code. Fortunately, happign provides a table containing all insee codes (`data("cog_2023")`). Then, `get_apicarto_commune` is used to download shape from Apicarto commune.
 
-```{r}
+```{r borders}
 data("cog_2023")
 
 insee_code <- cog_2023[grepl("^Camors", cog_2023$LIBELLE),1]
@@ -47,7 +47,7 @@ tm_shape(borders)+
 
 An other way of getting borders without apicarto is to use ECQL language to directly query IGN WFS geoservers.
 
-```{r}
+```{r borders2}
 borders2 <- get_wfs(apikey = "administratif",
                     layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
                     spatial_filter = "intersects",
@@ -58,7 +58,7 @@ borders2 <- get_wfs(apikey = "administratif",
 
 Cadastral parcels are essential for any forest manager Here how to download it with `get_wfs`.
 
-```{r}
+```{r cadastral_parcels}
 apikey <- "parcellaire"
 layer_name <- get_layers_metadata(apikey, "wfs")
 name_parcellaire_layer <- layer_name[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
@@ -83,7 +83,7 @@ __*Rq :*__
 
 The first interesting layer for forester is the "BD Forêt" which is all vegetation type assigned to each area greater than or equal to 0.5 ha (5,000 m²). There is two layer for forest : the old one BD Forêt V1 and the new one BD Forêt V2 that can be accessed with "burger menu" on the top left of interactive map below.
 
-```{r warning=FALSE}
+```{r bd_foret, warning=FALSE}
 apikey <- "environnement"
 layer_name <- get_layers_metadata(apikey, "wfs")
 name_BDV1 <- layer_name[2,1]
@@ -107,7 +107,7 @@ tm_shape(borders) +
 
 More calculations can be done as you can see below :
 
-```{r warning=FALSE}
+```{r bd_foret_calculation, warning=FALSE}
 forest_type_BDV2 <- BDV2 |>
   mutate(area = as.numeric(st_area(geometry))) |>
   st_drop_geometry() |>
@@ -136,7 +136,7 @@ One information you really want when you work at forest management is if your zo
 
 Again, you can click on map, point and shape for more informations.
 
-```{r message=FALSE, warning=FALSE}
+```{r protected_area, message=FALSE, warning=FALSE}
 apikey <- "environnement"
 protected_area_names <- get_layers_metadata(apikey, "wfs") |> 
    filter(grepl("^PROTECTED", Name)) |> 
@@ -162,13 +162,13 @@ tm_shape(borders,is.master = TRUE) +
 
 It's always good to know a more about terrain topologie. IGN offers MNT and MNS for download. As a reminder, the MNT corresponds to the surface of the ground and the MNS to the real surface (in our case, the trees). It is thus easy to find the height of the trees by subtracting the DTM from the MNS.
 
-```{r}
+```{r mnt_mns_mnh}
 layers_name <- get_layers_metadata("altimetrie", "wms")
 mnt_name <- layers_name[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
 mns_name <- layers_name[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
-mnt <- get_wms_raster(borders, "altimetrie", resolution = 5, mnt_name)
-mns <- get_wms_raster(borders, "altimetrie", resolution = 5, mns_name)
+mnt <- get_wms_raster(borders, "altimetrie", res = 5, mnt_name)
+mns <- get_wms_raster(borders, "altimetrie", res = 5, mns_name)
 
 level_curve <- get_wfs(borders, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe",
                        spatial_filter = "intersects") |> 
@@ -206,7 +206,7 @@ Categories are somewhat arbitrary, and you can find various rules of thumb, such
  * Very low values of NDVI (0.1 and below) correspond to water, barren areas of rock, sand, or snow. Moderate values represent shrub and grassland (0.2 to 0.3), while high values indicate temperate and tropical rainforests (0.6 to 0.8).
 
 
-```{r}
+```{r ndvi}
 # To show the 20cm resolution possibility for IRC, let's take only the biggest parcels
 biggest_parcels <- parcellaire |> 
    mutate(area = st_area(geometry)) |> 
@@ -214,7 +214,7 @@ biggest_parcels <- parcellaire |>
 
 irc <- get_wms_raster(shape = biggest_parcels,
                       apikey = "ortho",
-                      resolution = 0.2,
+                      res = 0.2,
                       layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC")
 
 # calculate ndvi from near_infrared and infrared
@@ -267,7 +267,7 @@ __*Rq :*__
 
 The gloss index represents the average of the image glosses. This index is therefore sensitive to the brightness of the soil, related to its moisture and the presence of salts on the surface. It characterizes especially the albedo (solar radiation that is reflected back to the atmosphere). The gloss index allows us to estimate whether the observed surface feature is light or dark.
 
-```{r}
+```{r gloss_index}
 # calculate gloss_index from near_infrared and infrared
 gloss_fun <- function(nir, red){
   sqrt(red^2 + nir^2)
@@ -303,7 +303,7 @@ BD topo from IGN covers in a coherent way all the geographical and administrativ
 
 For the example below I choose to download all water-related data :
 
-```{r}
+```{r bd_topo}
 cour_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:cours_d_eau") |> 
    st_intersection(borders) 
 detail_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:detail_hydrographique") |> 
@@ -326,10 +326,10 @@ tm_shape(borders)+
 
 The "Etat-major" map is a general map of France made, in its first version, in the 19th century. Here how to get it :
 
-```{r}
+```{r etat_major}
 etat_major <- get_wms_raster(shape = borders,
                             apikey = "cartes",
-                            resolution = 1,
+                            res = 1,
                             layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40")
 
 # raster is very large and tmap cannot plot it. Convert to stars as below allow for quick plotting
