@@ -185,18 +185,21 @@ download_wms <- function(shape, url, filename, res, crs, apikey) {
                  source = url,
                  destination = filename,
                  quiet = FALSE,
-                 options = c("-tr", res, res, #resolution
+                 options = c("-tr", res, res, # -tr must be in the unit of the target SRS (-t_srs)
                              "-t_srs", st_crs(crs)$input, #target crs
                              "-te", bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax,
                              "-te_srs", st_crs(crs)$input,
-                             "-overwrite")) |>
-         suppressWarnings()
+                             "-overwrite"))
+   },warning = function(w) {
+      warn <- conditionMessage(w)
 
-   },error = function(cnd){
-      stop("Please check that :\n",
-           "- layer_name is valid by running `get_layers_metadata(\"", apikey, "\", \"wms\")[,1]`\n",
-           "- styles is valid (check function description for more info)\n",
-           "- version is valid (check function description for more info)\n ", call. = FALSE)
+      # bad resolution
+      if (startsWith(warn, "GDAL Error 1: Attempt")) {
+         stop(warn, " Check that `res` is given in the same coordinate system as `crs`.", call. = F)
+         # bad layer name
+      } else if (startsWith(warn, "GDAL Error 1: GDALWMS: Unable")) {
+         stop(" Check that `layer_name` is valid",  call. = F)
+      }
    })
 
    rast <- rast(filename)

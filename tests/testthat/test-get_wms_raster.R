@@ -6,7 +6,6 @@ test_that("build_url", {
                        "VERSION=1.3.0&REQUEST=GetMap&LAYERS=layer_name&",
                        "CRS=EPSG:4326&BBOX=-90,-180,90,180"))
 })
-
 test_that("wms_base_case", {
       skip_on_cran()
       skip_if_offline()
@@ -22,7 +21,6 @@ test_that("wms_base_case", {
       expect_true(st_crs(mnt) == st_crs(2154))
       expect_equal(dim(mnt), c(18, 8, 3))
 })
-
 test_that("wms_crs", {
    skip_on_cran()
    skip_if_offline()
@@ -39,7 +37,6 @@ test_that("wms_crs", {
    expect_true(st_crs(mnt) == st_crs(27572))
    expect_equal(dim(mnt), c(18, 8, 3))
 })
-
 test_that("wms_overwrite", {
    skip_on_cran()
    skip_if_offline()
@@ -55,7 +52,6 @@ test_that("wms_overwrite", {
                               filename = filename),
                      "File already exists at")
 })
-
 test_that("wms_jpg", {
    skip_on_cran()
    skip_if_offline()
@@ -69,7 +65,6 @@ test_that("wms_jpg", {
    expect_s4_class(mnt, "SpatRaster")
    expect_equal(dim(mnt), c(18, 8, 3))
 })
-
 test_that("wms_multipoly", {
    skip_on_cran()
    skip_if_offline()
@@ -83,8 +78,7 @@ test_that("wms_multipoly", {
    expect_s4_class(mnt, "SpatRaster")
    expect_equal(dim(mnt), c(20, 29, 3))
 })
-
-test_that("wms_badname", {
+test_that("wms_bad_name", {
    skip_on_cran()
    skip_if_offline()
 
@@ -94,8 +88,20 @@ test_that("wms_badname", {
                          res = 25,
                          layer_name = "badname",
                          filename = filename,
-                         overwrite = TRUE))
+                         overwrite = TRUE),
+                " Check that `layer_name` is valid")
 })
+test_that("wms_bad_res", {
+   skip_on_cran()
+   skip_if_offline()
 
+   filename <- tempfile(fileext = ".tif")
 
+   expect_error(get_wms_raster(shape = happign:::poly,
+                               res = 1,
+                               filename = filename,
+                               crs = 4326,
+                               overwrite = TRUE),
+                "Check that `res` is given")
+})
 
