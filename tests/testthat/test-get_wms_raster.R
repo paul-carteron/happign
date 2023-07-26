@@ -19,7 +19,7 @@ test_that("wms_base_case", {
 
       expect_s4_class(mnt, "SpatRaster")
       expect_true(st_crs(mnt) == st_crs(2154))
-      expect_equal(dim(mnt), c(18, 8, 3))
+      expect_equal(dim(mnt), c(18, 8, 1))
 })
 test_that("wms_crs", {
    skip_on_cran()
@@ -35,7 +35,7 @@ test_that("wms_crs", {
 
    expect_s4_class(mnt, "SpatRaster")
    expect_true(st_crs(mnt) == st_crs(27572))
-   expect_equal(dim(mnt), c(18, 8, 3))
+   expect_equal(dim(mnt), c(18, 8, 1))
 })
 test_that("wms_overwrite", {
    skip_on_cran()
@@ -63,7 +63,7 @@ test_that("wms_jpg", {
                          filename = filename)
 
    expect_s4_class(mnt, "SpatRaster")
-   expect_equal(dim(mnt), c(18, 8, 3))
+   expect_equal(dim(mnt), c(18, 8, 1))
 })
 test_that("wms_multipoly", {
    skip_on_cran()
@@ -76,7 +76,7 @@ test_that("wms_multipoly", {
                          filename = filename)
 
    expect_s4_class(mnt, "SpatRaster")
-   expect_equal(dim(mnt), c(20, 29, 3))
+   expect_equal(dim(mnt), c(20, 29, 1))
 })
 test_that("wms_bad_name", {
    skip_on_cran()

@@ -139,6 +139,8 @@ get_wms_raster <- function(shape,
       rast <- download_wms(shape, url, filename, res, crs, apikey)
    }
 
+   rast <- rm_equal_layers(rast)
+
    return(rast)
 }
 
