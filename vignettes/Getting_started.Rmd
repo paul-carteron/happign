@@ -121,8 +121,8 @@ tm_layout(main.title = "Penmarch borders from IGN",
 ```
 
 <div class="figure" style="text-align: center">
-<img src="Getting_started-unnamed-chunk-37-1.png" alt="plot of chunk unnamed-chunk-37"  />
-<p class="caption">plot of chunk unnamed-chunk-37</p>
+<img src="Getting_started-unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6"  />
+<p class="caption">plot of chunk unnamed-chunk-6</p>
 </div>
 
 It's as simple as that!
@@ -151,8 +151,8 @@ tm_shape(dikes) + # Point use to retrieve data
 ```
 
 <div class="figure" style="text-align: center">
-<img src="Getting_started-unnamed-chunk-38-1.png" alt="plot of chunk unnamed-chunk-38"  />
-<p class="caption">plot of chunk unnamed-chunk-38</p>
+<img src="Getting_started-unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7"  />
+<p class="caption">plot of chunk unnamed-chunk-7</p>
 </div>
 
 ### WMS raster
@@ -172,7 +172,7 @@ mnt <- get_wms_raster(shape = penmarch_borders,
                       crs = 2154)
 #> 0...10...20...30...40...50...60...70...80...90...100 - done.
 #> Raster is saved at :
-#> C:\Users\PAUL\AppData\Local\Temp\RtmpOYZMmF\file3bc056113b8c.tif
+#> C:\Users\PAUL\AppData\Local\Temp\RtmpsZY6Ym\file67842bde69fa.tif
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 
@@ -187,8 +187,8 @@ tm_layout(main.title = "DEM of Penmarch",
 ```
 
 <div class="figure" style="text-align: center">
-<img src="Getting_started-unnamed-chunk-39-1.png" alt="plot of chunk unnamed-chunk-39"  />
-<p class="caption">plot of chunk unnamed-chunk-39</p>
+<img src="Getting_started-unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"  />
+<p class="caption">plot of chunk unnamed-chunk-8</p>
 </div>
 
 __*Rq :*__
