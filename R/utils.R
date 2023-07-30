@@ -1,10 +1,22 @@
-#' @description flip X and Y coord for ECQL filter
-#' @param apikey character from `get_apikeys()`
-#' @param layer_name character from `get_layers_metadata()$Name`
+# Documentation choice :
+#    - All internal function use @noRd tag wich mean no params can be inherit
+# from package function ;
+#    - param class is specified as `*`; before description ;
+#    - each param description ends with a dot ;
+#    - Description start with an upper case and end with a dot
+
+
+#' @title get_wfs_default_crs
+#' @description Get the default coordinate system for a layer.
+#'
+#' @param apikey `character`; API key from `get_apikeys()`.
+#' @param layer_name `character`; name of the layer from `get_layers_metadata(apikey, "wfs")`.
+#'
 #' @importFrom sf st_crs
 #' @importFrom xml2 xml_find_all xml_text
-#' @importFrom httr2 request req_url_path req_url_query req_perform resp_body_xml
-#' @return ecql string
+#' @importFrom httr2 req_perform req_url_path req_url_query request resp_body_xml
+#'
+#' @return An epsg code as class `integer` (e.g `4326`)
 #' @noRd
 #'
 get_wfs_default_crs <- function(apikey, layer_name){
@@ -34,11 +46,16 @@ get_wfs_default_crs <- function(apikey, layer_name){
    return(epsg)
 }
 
-#' @description flip X and Y coord for ECQL filter
-#' @param shape object of class sf or sfc
+#' @title st_as_text_happign
+#' @description Flip X and Y coord for ECQL filter.
+#'
+#' @param shape `sf` or `sfc`; needs to be located in France.
+#' @param crs `integer`; an epsg code (e.g. `4326`).
+#'
 #' @importFrom sf st_axis_order st_geometry st_transform st_as_text st_as_sf
 #' @importFrom dplyr summarize
-#' @return ecql string
+#'
+#' @return An ecql filter as class `character`
 #' @noRd
 #'
 st_as_text_happign <- function(shape, crs){
@@ -64,8 +81,11 @@ st_as_text_happign <- function(shape, crs){
    return(geom)
 }
 
-#' @description check if an object is empty ie when no data is found from API
-#' @param x sf, sfc or list
+#' @title is_empty
+#' @description Check if an object is empty ie when no data is found from API.
+#'
+#' @param x `sf`, `sfc` or `list` object.
+#'
 #' @return TRUE if there is no data
 #' @noRd
 #'
@@ -74,8 +94,11 @@ is_empty <- function(x){
    identical(nrow(x), 0L) | identical(length(x), 0L)
 }
 
-#' @description throw error if class is wrong
-#' @param x object to test for class
+#' @title class_check
+#' @description Throw error if class is wrong
+#'
+#' @param x object to test for class.
+#'
 #' @return error if FALSE, nothing if TRUE
 #' @noRd
 #'
@@ -87,15 +110,19 @@ class_check <- function(x, class){
    }
 }
 
-#' @description convert sf or sfc object to geojson
-#' @param x object of class `sf` or `sfc`
+#' @title shp_to_geojson
+#' @description Convert sf or sfc object to geojson.
+#'
+#' @param x `sf` or `sfc` object.
 #' @param crs target coordinate reference system: object of class 'crs',
-#' or input string for st_crs
-#' @param dTolerance numeric; tolerance parameter. The value of `dTolerance`
+#' or input string for `st_crs`
+#' @param dTolerance `numeric`; tolerance parameter. The value of `dTolerance`
 #' must be specified in meters.
+#'
 #' @importFrom jsonlite toJSON
 #' @importFrom sf st_make_valid st_transform st_geometry st_simplify
-#' @return json object
+#'
+#' @return A json string of class `character`
 #' @noRd
 #'
 shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
@@ -118,8 +145,11 @@ shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
 
 }
 
-#' @description remove numerically equal layers
-#' @param rast object of class `SpatRaster`
+#' @title rm_equal_layers
+#' @description Remove numerically equal layers.
+#'
+#' @param rast `SpatRaster` object.
+#'
 #' @importFrom terra minmax
 #' @return SpatRaster
 #' @noRd

@@ -85,4 +85,16 @@ test_that("shp_to_geojson dTolerance", {
    simplified_geojson <- shp_to_geojson(x, 4326, 10)
    expect_true(nchar(geojson) > nchar(simplified_geojson))
 })
+with_mock_dir("get_wfs_default_crs", {
+   test_that("get_wfs_default_crs", {
+      skip_on_cran()
+      skip_if_offline()
 
+      expect_error(get_wfs_default_crs("administratif", "badname"),
+                   "No crs found")
+
+      crs <- get_wfs_default_crs("altimetrie", "ELEVATION.CONTOUR.LINE:courbe")
+      expect_equal(crs, 4326)
+
+   })
+}, simplify = FALSE)
