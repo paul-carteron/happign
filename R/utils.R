@@ -25,6 +25,11 @@ get_wfs_default_crs <- function(apikey, layer_name){
    default_crs <- xml_find_all(req, "//d1:DefaultCRS") |> xml_text()
 
    crs <- default_crs[match(layer_name, name)]
+   no_crs <- is.na(crs)
+   if (no_crs){
+      stop("No crs found, `layer_name` does not exist.", call. = F)
+   }
+
    epsg <- st_crs(crs)$epsg
    return(epsg)
 }
