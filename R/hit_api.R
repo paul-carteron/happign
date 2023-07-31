@@ -39,20 +39,24 @@ hit_api <- function(req){
    },
    error = function(cnd){
 
-      error1 <- "Send failure: Connection was reset"
-      error2 <- "Failure when receiving data from the peer"
-      error3 <- "HTTP 404 Not Found"
-      error4 <- "HTTP 400 Bad Request"
-      error5 <- "OpenSSL SSL_read"
-      error6 <- "HTTP 431"
+      # test if cnd correspond to one error for complex shape
+      too_complex_shape <- any(
+         sapply(c("Send failure: Connection was reset",
+                  "Failure when receiving data from the peer",
+                  "OpenSSL SSL_read", #ubuntu
+                  "HTTP 431", #macos
+                  "Empty reply from server" #macos
+                  ),
+                function(x, cnd){grepl(x, cnd)},
+                cnd = cnd))
 
-      if (grepl(error1, cnd) |
-          grepl(error2, cnd) |
-          grepl(error5, cnd)|
-          grepl(error6, cnd)){
+      error6 <- "HTTP 404 Not Found"
+      error7 <- "HTTP 400 Bad Request"
+
+      if (too_complex_shape){
          stop("May be due to an overly complex shape : try increase `dTolerance` parameter.",
               call. = F)
-      }else if (grepl(error3, cnd) | grepl(error4, cnd)){
+      }else if (any(grepl(error6, cnd), grepl(error7, cnd))){
          stop(cnd, "Probably due to bad parameters.", call. = F)
       }
       stop(cnd)
