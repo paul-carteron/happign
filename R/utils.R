@@ -95,7 +95,7 @@ is_empty <- function(x){
 }
 
 #' @title class_check
-#' @description Throw error if class is wrong
+#' @description Throw error if class is wrong.
 #'
 #' @param x object to test for class.
 #'
@@ -106,7 +106,7 @@ class_check <- function(x, class){
 
    if (!inherits(x, class)) {
       stop(sprintf("Must inherit from class '%s', but has class '%s'",
-                     class, class(x)))
+                     class, class(x)), call. = F)
    }
 }
 

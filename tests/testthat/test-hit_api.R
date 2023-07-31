@@ -1,0 +1,31 @@
+test_that("build_req works", {
+
+   # normal case
+   path  <- "path_to_test"
+   res <- build_req(path, param1 = "param1")
+   expect_s3_class(res, "httr2_request")
+   expect_equal(res$url, "https://apicarto.ign.fr/path_to_test?param1=param1")
+
+   # error case
+   expect_error(build_req(path = 1234), "but has class 'numeric'")
+   expect_error(build_req(path = NA), "but has class 'logical'")
+   expect_error(build_req(path = NULL), "but has class 'NULL'")
+   expect_error(build_req(path, "test"), "All components of ... must be named")
+})
+
+
+test_that("hit_api_error", {
+      skip_on_cran()
+      skip_if_offline()
+
+      # bad path and too complex shape
+      req <- build_req(path = "api/rpg/v1",
+                       annee = 2013,
+                       geom = shp_to_geojson(st_buffer(point, 10)))
+      expect_error(hit_api(req), "overly complex shape")
+      expect_error(hit_api(NA), "`req` must be an HTTP request")
+
+      # bad param
+      req <- build_req(path = "api/rpg/v1", param1 = "param1")
+      expect_error(hit_api(req), "Probably due to bad parameters")
+})
