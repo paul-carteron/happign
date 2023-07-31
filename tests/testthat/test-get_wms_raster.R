@@ -12,7 +12,7 @@ test_that("wms_base_case", {
 
       filename <- tempfile(fileext = ".tif")
 
-      mnt <- get_wms_raster(shape = happign:::poly,
+      mnt <- get_wms_raster(happign:::poly,
                             res = 25,
                             filename = filename,
                             overwrite = TRUE)
@@ -27,7 +27,7 @@ test_that("wms_crs", {
 
    filename <- tempfile(fileext = ".tif")
 
-   mnt <- get_wms_raster(shape = happign:::poly,
+   mnt <- get_wms_raster(happign:::poly,
                          res = 25,
                          filename = filename,
                          crs = 27572,
@@ -43,14 +43,14 @@ test_that("wms_overwrite", {
 
    filename <- tempfile(fileext = ".tif")
 
-   mnt <- get_wms_raster(shape = happign:::poly,
+   mnt <- get_wms_raster(happign:::poly,
                          res = 25,
                          filename = filename)
 
-   expect_message(get_wms_raster(shape = happign:::poly,
-                              res = 25,
-                              filename = filename),
-                     "File already exists at")
+   expect_message(get_wms_raster(happign:::poly,
+                                 res = 25,
+                                 filename = filename),
+                  "File already exists at")
 })
 test_that("wms_jpg", {
    skip_on_cran()
@@ -58,7 +58,7 @@ test_that("wms_jpg", {
 
    filename <- tempfile(fileext = ".png")
 
-   mnt <- get_wms_raster(shape = happign:::poly,
+   mnt <- get_wms_raster(happign:::poly,
                          res = 25,
                          filename = filename)
 
@@ -71,7 +71,7 @@ test_that("wms_multipoly", {
 
    filename <- tempfile(fileext = ".tif")
 
-   mnt <- get_wms_raster(shape = happign:::multipoly,
+   mnt <- get_wms_raster(happign:::multipoly,
                          res = 25,
                          filename = filename)
 
@@ -84,12 +84,12 @@ test_that("wms_bad_name", {
 
    filename <- tempfile(fileext = ".tif")
 
-   expect_error(get_wms_raster(shape = happign:::poly,
-                         res = 25,
-                         layer_name = "badname",
-                         filename = filename,
-                         overwrite = TRUE),
-                " Check that `layer_name` is valid")
+   expect_error(get_wms_raster(happign:::poly,
+                               res = 25,
+                               layer = "badname",
+                               filename = filename,
+                               overwrite = TRUE),
+                " Check that `layer` is valid")
 })
 test_that("wms_bad_res", {
    skip_on_cran()
@@ -97,7 +97,7 @@ test_that("wms_bad_res", {
 
    filename <- tempfile(fileext = ".tif")
 
-   expect_error(get_wms_raster(shape = happign:::poly,
+   expect_error(get_wms_raster(happign:::poly,
                                res = 1,
                                filename = filename,
                                crs = 4326,

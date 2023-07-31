@@ -43,8 +43,13 @@ hit_api <- function(req){
       error2 <- "Failure when receiving data from the peer"
       error3 <- "HTTP 404 Not Found"
       error4 <- "HTTP 400 Bad Request"
+      error5 <- "OpenSSL SSL_read"
+      error6 <- "HTTP 431"
 
-      if (grepl(error1, cnd) | grepl(error2, cnd)){
+      if (grepl(error1, cnd) |
+          grepl(error2, cnd) |
+          grepl(error5, cnd)|
+          grepl(error6, cnd)){
          stop("May be due to an overly complex shape : try increase `dTolerance` parameter.",
               call. = F)
       }else if (grepl(error3, cnd) | grepl(error4, cnd)){

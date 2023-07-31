@@ -1,15 +1,15 @@
 test_that("check input", {
 
    wrap_fun <- function(){
-      check_get_wms_raster_input(shape, apikey, layer_name,
-                                 resolution, filename, crs, overwrite,
+      check_get_wms_raster_input(x, apikey, layer,
+                                 res, filename, crs, overwrite,
                                  version, styles, interactive)
    }
 
-   shape <- poly
+   x <- happign:::poly
    apikey <- "altimetrie"
-   layer_name <- "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
-   resolution <- 5
+   layer <- "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
+   res <- 5
    filename <- NULL
    crs <- 2154
    overwrite <- FALSE
@@ -32,10 +32,5 @@ test_that("check input", {
    # personnal key
    apikey <- "abcdefghijklmno123456789"
    expect_null(wrap_fun())
-
-   # resolution
-   resolution <- 0.01
-   expect_warning(wrap_fun(),
-                  "`resolution` param is less than 0.2 cm")
 
 })

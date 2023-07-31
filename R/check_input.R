@@ -1,9 +1,9 @@
 #' check get_wms_raster input
 #'
-#' @param shape see get_wms_raster
+#' @param x see get_wms_raster
 #' @param apikey see get_wms_raster
-#' @param layer_name see get_wms_raster
-#' @param resolution see get_wms_raster
+#' @param layer see get_wms_raster
+#' @param res see get_wms_raster
 #' @param filename see get_wms_raster
 #' @param crs see get_wms_raster
 #' @param overwrite see get_wms_raster
@@ -15,10 +15,10 @@
 #'
 #' @noRd
 #'
-check_get_wms_raster_input <- function(shape,
+check_get_wms_raster_input <- function(x,
                                        apikey,
-                                       layer_name,
-                                       resolution,
+                                       layer,
+                                       res,
                                        filename,
                                        crs,
                                        overwrite,
@@ -26,9 +26,9 @@ check_get_wms_raster_input <- function(shape,
                                        styles,
                                        interactive){
 
-   # shape
-   if (!inherits(shape, c("sf", "sfc", "NULL"))) {
-      stop("`shape` must be of class sf, sfc or NULL.")
+   # x
+   if (!inherits(x, c("sf", "sfc", "NULL"))) {
+      stop("`x` must be of class sf, sfc or NULL.")
    }
 
    # apikey
@@ -38,18 +38,14 @@ check_get_wms_raster_input <- function(shape,
       stop("`apikey` must be a character from `get_apikey()` or a personal key.")
    }
 
-   # layer_name
-   if (!inherits(layer_name, "character")) {
-      stop("`layer_name` must be of class character.")
+   # layer
+   if (!inherits(layer, "character")) {
+      stop("`layer` must be of class character.")
    }
 
    # resolution
-   if (!inherits(resolution, "numeric")) {
+   if (!inherits(res, "numeric")) {
       stop("`resolution` must be of class numeric.")
-   }
-   if(resolution < 0.20){
-      warning("`resolution` param is less than 0.2 cm, not many",
-              "ressources are that precise.", call. = F)
    }
 
    # filename
