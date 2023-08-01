@@ -84,7 +84,7 @@ get_location_info <- function(x,
                   error_no_layer), call. = F)
    }
 
-   # request location info ----
+   # build and request url ----
    # point create empty bbox so 0.001 is added to EPSG:4326 bbox
    x <- st_transform(x, 4326)
 
@@ -130,7 +130,10 @@ get_location_info <- function(x,
    return(location_info)
 
 }
-#' Check if a wms layer is queryable with GetFeatureInfo
+#' @title are_queryable
+#'
+#' @description
+#' Check if a wms layer is queryable with GetFeatureInfo.
 #'
 #' @param apikey API key from `get_apikeys()` or directly
 #' from the [IGN website](https://geoservices.ign.fr/services-web-experts)
@@ -139,7 +142,7 @@ get_location_info <- function(x,
 #' [get_location_info()]
 #'
 #' @name are_queryable
-#' @return character containing the name of the queryable layers
+#' @return `character` containing the name of the queryable layers
 #' @export
 #'
 #' @importFrom httr2 request req_url_path_append req_user_agent req_url_query

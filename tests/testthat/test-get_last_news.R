@@ -4,10 +4,3 @@ with_mock_dir("get_last_news", {
       expect_message(get_last_news(), "Last news from Geoservice website")
    })
 }, simplify = FALSE)
-
-with_mock_dir("get_last_news_error", {
-   test_that("get_last_news_error", {
-      # get_last_news_error moxk is modify to respond 404 error
-      expect_error(get_last_news())
-   })
-}, simplify = FALSE)

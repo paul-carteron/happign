@@ -1,5 +1,6 @@
-#' Print latest news from geoservice website
+#' @title Print latest news from geoservice website
 #'
+#' @description
 #' This function is a wrapper around the RSS feed of the
 #' geoservice site to get the latest information.
 #'

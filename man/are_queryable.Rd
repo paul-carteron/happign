@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_location_info.R
 \name{are_queryable}
 \alias{are_queryable}
-\title{Check if a wms layer is queryable with GetFeatureInfo}
+\title{are_queryable}
 \usage{
 are_queryable(apikey)
 }
@@ -11,10 +11,10 @@ are_queryable(apikey)
 from the \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 }
 \value{
-character containing the name of the queryable layers
+\code{character} containing the name of the queryable layers
 }
 \description{
-Check if a wms layer is queryable with GetFeatureInfo
+Check if a wms layer is queryable with GetFeatureInfo.
 }
 \seealso{
 \code{\link[=get_location_info]{get_location_info()}}
