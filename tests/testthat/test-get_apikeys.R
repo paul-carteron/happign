@@ -7,6 +7,7 @@ test_that("apikeys return good keys", {
       "cartovecto",
       "clc",
       "economie",
+      "enr",
       "environnement",
       "geodesie",
       "lambert93",
@@ -20,5 +21,5 @@ test_that("apikeys return good keys", {
       "transports"
    )
   expect_equal(get_apikeys(), apikeys)
-  expect_equal(length(get_apikeys()), 19)
+  expect_equal(length(get_apikeys()), 20)
 })

@@ -28,6 +28,7 @@ get_apikeys <- function() {
       "cartovecto",
       "clc",
       "economie",
+      "enr",
       "environnement",
       "geodesie",
       "lambert93",

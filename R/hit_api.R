@@ -11,8 +11,13 @@
 #'
 build_req <- function(path, ...) {
 
-   class_check(path, "character")
+   # check input ----
+   # check parameter : path
+   if (!inherits(path, "character")) {
+      stop("`x` must be of class character.")
+   }
 
+   # build request ---
    params <- list(...)
 
    req <- request("https://apicarto.ign.fr") |>

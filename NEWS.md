@@ -4,10 +4,12 @@ calculation and downloading of several tiles
 * update cog_2022 dataset to cog_2023
 * remove `get_apicarto_commune()` now supported by `get_apicarto_cadastre()`
 * `jsonlite` is used instead of `geojsonsf` package
-* Some `get_wms_raster` and `get_wfs` parameter names have been changed :
+* some `get_wms_raster` and `get_wfs` parameter names have been changed :
    - shape -> x
    - layer_name -> layer
    - resolution -> res
+* remove `get_wms_info` for `get_location_info`
+* apikey `"enr"` is added
 
 # happign 0.1.9
 * add `get_apicarto_viticole()`

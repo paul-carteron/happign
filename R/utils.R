@@ -94,22 +94,6 @@ is_empty <- function(x){
    identical(nrow(x), 0L) | identical(length(x), 0L)
 }
 
-#' @title class_check
-#' @description Throw error if class is wrong.
-#'
-#' @param x object to test for class.
-#'
-#' @return error if FALSE, nothing if TRUE
-#' @noRd
-#'
-class_check <- function(x, class){
-
-   if (!inherits(x, class)) {
-      stop(sprintf("Must inherit from class '%s', but has class '%s'",
-                     class, class(x)), call. = F)
-   }
-}
-
 #' @title shp_to_geojson
 #' @description Convert sf or sfc object to geojson.
 #'
