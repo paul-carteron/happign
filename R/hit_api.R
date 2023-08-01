@@ -21,6 +21,7 @@ build_req <- function(path, ...) {
    params <- list(...)
 
    req <- request("https://apicarto.ign.fr") |>
+      req_options(ssl_verifypeer = 0) |>
       req_url_path(path) |>
       req_url_query(!!!params)
 }
