@@ -1,5 +1,6 @@
-#' Metadata for one couple of apikey and data_type
+#' @title Metadata for one couple of apikey and data_type
 #'
+#' @description
 #' Metadata are retrieved using the IGN APIs. The execution time can
 #' be long depending on the size of the metadata associated with
 #' the API key and the overload of the IGN servers.
@@ -10,7 +11,7 @@
 #' information about these two Webservice formats.
 #'
 #' @importFrom httr2 req_perform req_url_path req_url_query request resp_body_xml
-#' @importFrom xml2 as_list xml_child xml_children xml_find_all
+#' @importFrom xml2 xml_find_all
 #'
 #' @seealso
 #' [get_apikeys()]
@@ -39,7 +40,18 @@ get_layers_metadata <- function(apikey,
                                 data_type) {
 
    match.arg(data_type, c("wms", "wfs"))
-   match.arg(apikey, get_apikeys())
+
+   # check input ----
+   # check parameter : apikey
+   if (length(apikey) > 1){
+      stop("Only one `apikey` must be provided instead of ", length(apikey), call. = F)
+   }
+   if (!inherits(apikey, "character")) {
+      stop("`apikey` must be of class character not ", class(apikey), call. = F)
+   }
+   if (!(apikey %in% get_apikeys())) {
+      stop("`apikey` must be one of : ", paste(get_apikeys(), collapse = ", "), call. = F)
+   }
 
    version <- switch(data_type,
                      "wms" = "1.3.0",
@@ -49,6 +61,11 @@ get_layers_metadata <- function(apikey,
                   "wms" = "r",
                   "wfs" = NULL)
 
+   xpath <- switch(data_type,
+                   "wfs" = "//d1:FeatureType",
+                   # first element is always "Cache IGN" so I remove it with position()>1
+                   # parenthesis are needed for creating a node set but I don't get it
+                   "wms" =  "(//d1:Layer)[position()>1]")
 
    req <- request("https://wxs.ign.fr/") |>
       req_url_path(apikey,"geoportail", path) |>
@@ -56,26 +73,19 @@ get_layers_metadata <- function(apikey,
       req_url_query(service = data_type,
                     version = version,
                     request = "GetCapabilities",
-                    sections = "FeatureTypeList")
+                    sections = "FeatureTypeList") |>
+      req_perform() |>
+      resp_body_xml() |>
+      xml_find_all(xpath)
 
-   resp <- req_perform(req) |>
-      resp_body_xml()
-
-   raw_metadata <- switch(data_type,
-                          "wms" = xml_child(resp, "d1:Capability") |>
-                             xml_child("d1:Layer") |>
-                             xml_find_all("d1:Layer"),
-                          "wfs" = xml_child(resp, "d1:FeatureTypeList") |>
-                             xml_children())
-
-   if (is_empty(raw_metadata)){
+   if (is_empty(req)){
       warning("There's no ", data_type, " resources for apikey '", apikey,
               "', NULL is returned.", call. = F)
       return(NULL)
    }
 
    clean_metadata <- suppressWarnings(
-      as.data.frame(do.call(rbind, as_list(raw_metadata)))[, 1:3])
+      as.data.frame(do.call(rbind, as_list(req)))[, 1:3])
    clean_metadata <-
       as.data.frame(apply(clean_metadata, c(1, 2), unlist))
 
