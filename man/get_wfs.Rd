@@ -4,9 +4,9 @@
 \alias{get_wfs}
 \title{Download WFS layer}
 \usage{
-get_wfs(shape = NULL,
+get_wfs(x = NULL,
         apikey = NULL,
-        layer_name = NULL,
+        layer = NULL,
         filename = NULL,
         spatial_filter = "bbox",
         ecql_filter = NULL,
@@ -14,35 +14,36 @@ get_wfs(shape = NULL,
         interactive = FALSE)
 }
 \arguments{
-\item{shape}{Object of class \code{sf}. Needs to be located in
+\item{x}{Object of class \code{sf} or \code{sfc}. Needs to be located in
 France.}
 
-\item{apikey}{API key from \code{get_apikeys()} or directly
+\item{apikey}{\code{character}; API key from \code{get_apikeys()} or directly
 from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{layer_name}{Name of the layer from \code{get_layers_metadata(apikey, "wfs")}
+\item{layer}{\code{character}; name of the layer from \code{get_layers_metadata(apikey, "wfs")}
 or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
 \item{filename}{Either a character string naming a file or a connection open
 for writing. (ex : "test.shp" or "~/test.shp")}
 
-\item{spatial_filter}{Character corresponding to a spatial predicate from ECQL language.
+\item{spatial_filter}{\code{character}; spatial predicate from ECQL language.
 See detail and examples for more info.}
 
-\item{ecql_filter}{Character corresponding to an ECQL query. See detail and examples
-for more info.}
+\item{ecql_filter}{\code{character}; corresponding to an ECQL query.
+See detail and examples for more info.}
 
-\item{overwrite}{If TRUE, file is overwrite}
+\item{overwrite}{\code{logical}; if TRUE, file is overwrite.}
 
-\item{interactive}{if set to TRUE, no need to specify \code{apikey} and \code{layer_name}, you'll be ask.}
+\item{interactive}{\code{character}; if TRUE, no need to specify \code{apikey}
+and \code{layer}, you'll be ask.}
 }
 \value{
-\code{get_wfs}return an object of class \code{sf}
+\code{sf} object from \code{sf} package or \code{NULL} if no data.
 }
 \description{
-Download a shapefile layer from IGN Web Feature Service (WFS).
-To do that, it need a location giving by a shape, an apikey
+Read simple features from IGN Web Feature Service (WFS).
+Three minimal info are needed : a location, an apikey
 and the name of layer. You can find those information from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}
 }
@@ -55,10 +56,11 @@ It provide multiple spatial filter : "intersects", "disjoint", "contains", "with
 spatial_filter = c("dwithin", distance, units). More info about ECQL language
 \href{https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html}{here}.
 Be aware that "dwithin" is broken and it doesn't accept units properly. Only degrees can be used.
-To avoid this, I recommend to use compute a buffer and use "within" instead od "dwithin".
+To avoid this, create a buffer and then use "within" instead od "dwithin".
 \item ECQL query can be provided to \code{ecql_filter}. This allows direct query of the IGN's WFS
-geoservers. If \code{shape} is set, then the \code{ecql_filter} comes in addition to the
-\code{spatial_filter}. More info for writing ECQL \href{https://docs.geoserver.org/latest/en/user/tutorials/cql/cql_tutorial.html}{here}
+geoservers. If \code{x} is set, then the \code{ecql_filter} comes in addition to the
+\code{spatial_filter}. More info for writing ECQL
+\href{https://docs.geoserver.org/latest/en/user/tutorials/cql/cql_tutorial.html}{here}
 }
 }
 \examples{
@@ -70,25 +72,25 @@ library(tmap)
 penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
 # For quick testing, use interactive = TRUE
-shape <- get_wfs(shape = penmarch,
+shape <- get_wfs(x = penmarch,
                  interactive = TRUE)
 
-# For specific use, choose apikey with get_apikey() and layer_name with get_layers_metadata()
+# For specific use, choose apikey with get_apikey() and layer with get_layers_metadata()
 ## Getting borders of best town in France
 apikey <- get_apikeys()[1]
 metadata_table <- get_layers_metadata(apikey, "wfs")
-layer_name <- metadata_table[32,1]
+layer <- metadata_table[32,1]
 
 # Downloading borders
-borders <- get_wfs(penmarch, apikey, layer_name)
+borders <- get_wfs(penmarch, apikey, layer)
 
 # Plotting result
 qtm(borders, fill = NULL, borders = "firebrick") # easy map
 
 # Get forest_area of the best town in France
-forest_area <- get_wfs(shape = borders,
+forest_area <- get_wfs(x = borders,
                        apikey = "environnement",
-                       layer_name = "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape")
+                       layer = "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape")
 
 qtm(forest_area, fill = "libelle")
 
@@ -98,16 +100,16 @@ qtm(forest_area, fill = "libelle")
 # First you need the name of the attribute to filter
 names(borders) # In our case "nom_m" is what we need
 
-attribute_name <- names(get_wfs(penmarch,apikey, layer_name))
-plou_borders <- get_wfs(shape = NULL, # When shape is NULL, all France is query
+attribute_name <- names(get_wfs(penmarch,apikey, layer))
+plou_borders <- get_wfs(x = NULL, # When x is NULL, all France is query
                         apikey = "administratif",
-                        layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+                        layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
                         ecql_filter = "nom_m LIKE 'PLOU\%'")
 
 # it's also possible to combine ecql_filter
-plou_borders <- get_wfs(shape = NULL, # When shape is NULL, all France is query
+plou_borders <- get_wfs(x = NULL, # When x is NULL, all France is query
                         apikey = "administratif",
-                        layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+                        layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
                         ecql_filter = "nom_m LIKE 'PLOU\%' AND population < 2000")
 
 

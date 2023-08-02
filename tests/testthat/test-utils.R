@@ -20,14 +20,14 @@ test_that("spatial_filter", {
                 "When using \"dwithin\" units should be one of")
 
    # point
-   expect_match(construct_spatial_filter(shape = point,
+   expect_match(construct_spatial_filter(x = point,
                                          spatial_filter = c("dwithin", 50, "meters"),
                                          crs = 4326,
                                          apikey = "altimetrie"),
                 "DWITHIN(the_geom, POINT (47.813 -4.344), 50, meters)", fixed = T)
 
    # polygon
-   expect_match(construct_spatial_filter(shape = poly,
+   expect_match(construct_spatial_filter(x = poly,
                                          spatial_filter = c("dwithin", 50, "meters"),
                                          crs = 4326,
                                          apikey = "altimetrie"),
@@ -35,7 +35,7 @@ test_that("spatial_filter", {
 
 
    # bbox
-   expect_match(construct_spatial_filter(shape = poly,
+   expect_match(construct_spatial_filter(x = poly,
                                          spatial_filter = "bbox",
                                          crs = 4326,
                                          apikey = "altimetrie"),

@@ -1,4 +1,7 @@
-#' get_wfs_attributes
+#' @title get_wfs_attributes
+#'
+#' @description
+#' Helper to write ecql filter. Retrieve all attributes from a layer.
 #'
 #' @inheritParams get_wfs
 #'
@@ -6,7 +9,7 @@
 #' @importFrom httr2 req_perform req_url_path_append req_url_query req_user_agent request resp_body_xml
 #' @importFrom utils menu
 #'
-#' @return character vector with layers attributes
+#' @return `character`vector with layer attributes
 #' @export
 #'
 #' @examples
@@ -19,7 +22,7 @@
 #'
 #' }
 get_wfs_attributes <- function(apikey = NULL,
-                               layer_name = NULL,
+                               layer = NULL,
                                interactive = FALSE){
 
    if (interactive){
@@ -27,10 +30,10 @@ get_wfs_attributes <- function(apikey = NULL,
       apikey <- apikeys[menu(apikeys)]
 
       layers <- get_layers_metadata(apikey, data_type = "wfs")$Name
-      layer_name <- layers[menu(layers)]
+      layer <- layers[menu(layers)]
    }
 
-   resp <- build_wfs_attributes(apikey, layer_name) |>
+   resp <- build_wfs_attributes(apikey, layer) |>
       req_perform() |>
       resp_body_xml()
 
@@ -41,13 +44,13 @@ get_wfs_attributes <- function(apikey = NULL,
    return(attr_names[1:(length(attr_names)-2)])
 }
 
-build_wfs_attributes<- function(apikey, layer_name){
+build_wfs_attributes<- function(apikey, layer){
 
    params <- list(
       service = "WFS",
       version = "2.0.0",
       request = "DescribeFeatureType",
-      typeName = layer_name
+      typeName = layer
       )
 
    request <- request("https://wxs.ign.fr") |>

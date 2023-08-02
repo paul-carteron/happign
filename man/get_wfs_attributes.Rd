@@ -7,14 +7,11 @@
 get_wfs_attributes(apikey = NULL, layer_name = NULL, interactive = FALSE)
 }
 \arguments{
-\item{apikey}{API key from \code{get_apikeys()} or directly
+\item{apikey}{\code{character}; API key from \code{get_apikeys()} or directly
 from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{layer_name}{Name of the layer from \code{get_layers_metadata(apikey, "wfs")}
-or directly from
-\href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
-
-\item{interactive}{if set to TRUE, no need to specify \code{apikey} and \code{layer_name}, you'll be ask.}
+\item{interactive}{\code{character}; if TRUE, no need to specify \code{apikey}
+and \code{layer}, you'll be ask.}
 }
 \value{
 character vector with layers attributes
