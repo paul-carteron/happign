@@ -93,23 +93,22 @@
 #'
 #' # using ECQL filters to query IGN server
 #'
-#' # find all commune's name starting by "plou".
-#' # First you need the name of the attribute to filter
-#' names(borders) # In our case "nom_m" is what we need
+#' # first find attributes of the layer
+#' attrs <- get_wfs_attributes(apikey, layer)
 #'
-#' attribute_name <- names(get_wfs(penmarch,apikey, layer))
+#' # e.g. : find all commune's name starting by "plou"
 #' plou_borders <- get_wfs(x = NULL, # When x is NULL, all France is query
 #'                         apikey = "administratif",
 #'                         layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
 #'                         ecql_filter = "nom_m LIKE 'PLOU%'")
+#' qtm(plou_borders)
 #'
-#' # it's also possible to combine ecql_filter
-#' plou_borders <- get_wfs(x = NULL, # When x is NULL, all France is query
-#'                         apikey = "administratif",
-#'                         layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
-#'                         ecql_filter = "nom_m LIKE 'PLOU%' AND population < 2000")
-#'
-#'
+#' # combining ecql_filters
+#' plou_borders_inf_2000 <- get_wfs(x = NULL, # When x is NULL, all France is query
+#'                                  apikey = "administratif",
+#'                                  layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+#'                                  ecql_filter = "nom_m LIKE 'PLOU%' AND population < 2000")
+#' qtm(plou_borders)+ qtm(plou_borders_inf_2000, fill = "red")
 #' }
 get_wfs <- function(x = NULL,
                     apikey = NULL,

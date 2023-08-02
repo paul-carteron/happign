@@ -4,20 +4,24 @@
 \alias{get_wfs_attributes}
 \title{get_wfs_attributes}
 \usage{
-get_wfs_attributes(apikey = NULL, layer_name = NULL, interactive = FALSE)
+get_wfs_attributes(apikey = NULL, layer = NULL, interactive = FALSE)
 }
 \arguments{
 \item{apikey}{\code{character}; API key from \code{get_apikeys()} or directly
 from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
+\item{layer}{\code{character}; name of the layer from \code{get_layers_metadata(apikey, "wfs")}
+or directly from
+\href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
+
 \item{interactive}{\code{character}; if TRUE, no need to specify \code{apikey}
 and \code{layer}, you'll be ask.}
 }
 \value{
-character vector with layers attributes
+\code{character}vector with layer attributes
 }
 \description{
-get_wfs_attributes
+Helper to write ecql filter. Retrieve all attributes from a layer.
 }
 \examples{
 \dontrun{
