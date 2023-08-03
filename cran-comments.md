@@ -1,29 +1,29 @@
-## Checks
+## Test environments
 
-### Local check seems fine
+* Windows Server 2022, R-devel, 64 bit
+* Ubuntu Linux 20.04.1 LTS, R-release, GCC
+* Fedora Linux, R-devel, clang, gfortran
 
-`devtools::check()` result:
+## R CMD check results
 
-0 errors √ | 0 warning x | 0 notes √
+There were no ERRORs or WARNINGs for each environnement
 
-### Online check seem fine as well :
+### Windows Server 2022, R-devel, 64 bit
 
-/!\ : IGN is a french institut and 'cadastral' is a real word
+There are 2 NOTES which can be ignored :
+- lastMiKTeXException : see https://github.com/r-hub/rhub/issues/503
+- NULL : see https://github.com/r-hub/rhub/issues/560
 
-`rhub::check_for_cran()`
-── happign 0.1.9: NOTE
+── happign 1.0.0: NOTE
 
-  Build ID:   happign_0.1.9.tar.gz-0e469a12151f4925a2950695be9198b9
+  Build ID:   happign_1.0.0.tar.gz-3f5a67511a43498bbc0b99be7af2f6df
   Platform:   Windows Server 2022, R-devel, 64 bit
-  Submitted:  17h 16m 1.8s ago
-  Build time: 6m 14.1s
+  Submitted:  48m 59.5s ago
+  Build time: 7m 21.6s
 
-❯ checking CRAN incoming feasibility ... [39s] NOTE
-  Maintainer: 'Paul Carteron <carteronpaul@gmail.com>'
-  
-  Possibly misspelled words in DESCRIPTION:
-    IGN (8:64)
-    cadastral (12:33)
+❯ checking for non-standard things in the check directory ... NOTE
+  Found the following files/directories:
+    ''NULL''
 
 ❯ checking for detritus in the temp directory ... NOTE
   Found the following files/directories:
@@ -31,37 +31,36 @@
 
 0 errors ✔ | 0 warnings ✔ | 2 notes ✖
 
-── happign 0.1.9: NOTE
+### Ubuntu Linux 20.04.1 LTS, R-release, GCC
 
-  Build ID:   happign_0.1.9.tar.gz-7ccb2ec226ad4108a48e473ac361eaa7
+There is 1 NOTE that can be ignored :
+- tidy : https://github.com/r-hub/rhub/issues/548
+
+── happign 1.0.0: NOTE
+
+  Build ID:   happign_1.0.0.tar.gz-85edc5b55e4b484cbd4c71c8a0f68332
   Platform:   Ubuntu Linux 20.04.1 LTS, R-release, GCC
-  Submitted:  17h 16m 1.8s ago
-  Build time: 4h 8m 38.1s
-
-❯ checking CRAN incoming feasibility ... NOTE
-  Maintainer: ‘Paul Carteron <carteronpaul@gmail.com>’
-  
-  Possibly misspelled words in DESCRIPTION:
-    cadastral (12:33)
-    IGN (8:64)
-
-0 errors ✔ | 0 warnings ✔ | 1 note ✖
-
-── happign 0.1.9: NOTE
-
-  Build ID:   happign_0.1.9.tar.gz-db0fa32ae37042389d6b64120191f0e2
-  Platform:   Fedora Linux, R-devel, clang, gfortran
-  Submitted:  17h 16m 1.9s ago
-  Build time: 3h 34m 36.4s
-
-❯ checking CRAN incoming feasibility ... [11s/87s] NOTE
-  Maintainer: ‘Paul Carteron <carteronpaul@gmail.com>’
-  
-  Possibly misspelled words in DESCRIPTION:
-    IGN (8:64)
-    cadastral (12:33)
+  Submitted:  48m 59.6s ago
+  Build time: 43m 54.3s
 
 ❯ checking HTML version of manual ... NOTE
   Skipping checking HTML validation: no command 'tidy' found
 
-0 errors ✔ | 0 warnings ✔ | 2 notes ✖
+0 errors ✔ | 0 warnings ✔ | 1 note ✖
+
+### Fedora Linux, R-devel, clang, gfortran
+
+There is 1 NOTE that can be ignored :
+- tidy : https://github.com/r-hub/rhub/issues/548
+
+── happign 1.0.0: NOTE
+
+  Build ID:   happign_1.0.0.tar.gz-4edc205be092475bb1d3180ac532e29a
+  Platform:   Fedora Linux, R-devel, clang, gfortran
+  Submitted:  48m 59.6s ago
+  Build time: 37m 21.6s
+
+❯ checking HTML version of manual ... NOTE
+  Skipping checking HTML validation: no command 'tidy' found
+
+0 errors ✔ | 0 warnings ✔ | 1 note ✖

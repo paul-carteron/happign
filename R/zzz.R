@@ -1,4 +1,4 @@
-#' @export
+#' @noRd
 #'
 .onAttach <- function(libname, pkgname) {
    packageStartupMessage("Please make sure you have an internet connection.")
