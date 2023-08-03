@@ -1,4 +1,4 @@
-# happign 0.2.0
+# happign 1.0.0
 * `get_wms_raster` now uses gdalwarp from `sf::gdal_utils` to avoid 
 calculation and downloading of several tiles
 * update cog_2022 dataset to cog_2023
