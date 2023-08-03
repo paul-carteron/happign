@@ -25,16 +25,16 @@ the API key and the overload of the IGN servers.
 \dontrun{
 apikey <- get_apikeys()[4]
 metadata_table <- get_layers_metadata(apikey, "wms")
-all_layer_name <- metadata_table$Name
+layers <- metadata_table$Name
 one_abstract <- metadata_table[1, "Abstract"]
 
-# list every wfs metadata (warning : it's quite long)
-list_metadata <- lapply(X = get_apikeys(),
-                       FUN = get_layers_metadata,
-                       data_type = "wfs")
+# List every wfs layers (warning : it's quite long)
+all_layers <- lapply(get_apikeys(),
+                     get_layers_metadata,
+                     data_type = "wfs")
 
-# Convert list to one single data.frame
-list_metadata <- do.call(rbind, list_metadata)
+# Convert list to data.frame
+all_layers <- do.call(rbind, list_metadata)
 }
 
 }

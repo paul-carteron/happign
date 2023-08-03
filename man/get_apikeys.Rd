@@ -7,7 +7,7 @@
 get_apikeys()
 }
 \value{
-character
+\code{character}
 }
 \description{
 All API keys are manually extract from this
@@ -21,7 +21,6 @@ get_apikeys()[1]
 
 # All API keys
 get_apikeys()
-
 }
 
 }

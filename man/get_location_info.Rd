@@ -38,13 +38,23 @@ are returned.
 \examples{
 \dontrun{
 library(sf)
+library(tmap)
 
 # from single point
 x <- st_centroid(read_sf(system.file("extdata/penmarch.shp", package = "happign")))
 location_info <- get_location_info(x, "ortho", "ORTHOIMAGERY.ORTHOPHOTOS")
+location_info$date_vol
 
 # from multiple point
+x1 <- st_sfc(st_point(c(-3.549957, 47.83396)), crs = 4326) # Carnoet forest
+x2 <- st_sfc(st_point(c(-3.745995, 47.99296)), crs = 4326) # Coatloch forest
 
+forests <- lapply(list(x1, x2),
+                  get_location_info,
+                  apikey = "environnement",
+                  layer = "FORETS.PUBLIQUES",
+                  read_sf = T)
 
+qtm(forests[[1]]) + qtm(forests[[2]])
 }
 }

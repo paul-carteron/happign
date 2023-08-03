@@ -1,9 +1,9 @@
 test_that("build_url", {
-   url <- build_url("apikey", "layer_name")
+   url <- build_url("fake_apikey", "fake_layer")
 
    expect_equal(url,
-                paste0("WMS:https://wxs.ign.fr/apikey/geoportail/r/wms?",
-                       "VERSION=1.3.0&REQUEST=GetMap&LAYERS=layer_name&",
+                paste0("WMS:https://wxs.ign.fr/fake_apikey/geoportail/r/wms?",
+                       "VERSION=1.3.0&REQUEST=GetMap&LAYERS=fake_layer&",
                        "CRS=EPSG:4326&BBOX=-90,-180,90,180"))
 })
 test_that("wms_base_case", {

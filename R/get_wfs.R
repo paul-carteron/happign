@@ -65,7 +65,7 @@
 #' library(sf)
 #' library(tmap)
 #'
-#' # shape from the best town in France
+#' # Shape from the best town in France
 #' penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 #'
 #' # For quick testing, use interactive = TRUE
@@ -76,7 +76,7 @@
 #' ## Getting borders of best town in France
 #' apikey <- get_apikeys()[1]
 #' metadata_table <- get_layers_metadata(apikey, "wfs")
-#' layer <- metadata_table[32,1]
+#' layer <- metadata_table[32,1] # LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune
 #'
 #' # Downloading borders
 #' borders <- get_wfs(penmarch, apikey, layer)
@@ -91,19 +91,18 @@
 #'
 #' qtm(forest_area, fill = "libelle")
 #'
-#' # using ECQL filters to query IGN server
-#'
-#' # first find attributes of the layer
+#' # Using ECQL filters to query IGN server
+#' ## First find attributes of the layer
 #' attrs <- get_wfs_attributes(apikey, layer)
 #'
-#' # e.g. : find all commune's name starting by "plou"
+#' ## e.g. : find all commune's name starting by "plou"
 #' plou_borders <- get_wfs(x = NULL, # When x is NULL, all France is query
 #'                         apikey = "administratif",
 #'                         layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
 #'                         ecql_filter = "nom_m LIKE 'PLOU%'")
 #' qtm(plou_borders)
 #'
-#' # combining ecql_filters
+#' ## Combining ecql_filters
 #' plou_borders_inf_2000 <- get_wfs(x = NULL, # When x is NULL, all France is query
 #'                                  apikey = "administratif",
 #'                                  layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",

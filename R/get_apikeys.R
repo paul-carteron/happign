@@ -1,11 +1,12 @@
-#' List of all API keys from IGN
+#' @title List of all API keys from IGN
 #'
+#' @description
 #' All API keys are manually extract from this
 #' [table](https://geoservices.ign.fr/documentation/services/tableau_ressources)
 #' provided by IGN.
 #'
 #' @name get_apikeys
-#' @return character
+#' @return `character`
 #' @export
 #'
 #' @examples
@@ -15,7 +16,6 @@
 #'
 #' # All API keys
 #' get_apikeys()
-#'
 #' }
 #'
 get_apikeys <- function() {

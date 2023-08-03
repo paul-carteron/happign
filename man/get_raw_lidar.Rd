@@ -4,10 +4,10 @@
 \alias{get_raw_lidar}
 \title{Download raw LIDAR data}
 \usage{
-get_raw_lidar(shape, destfile = ".", grid_path = ".", quiet = F)
+get_raw_lidar(x, destfile = ".", grid_path = ".", quiet = F)
 }
 \arguments{
-\item{shape}{Object of class \code{sf} or \code{sfc}. Needs to be located in
+\item{x}{Object of class \code{sf} or \code{sfc}. Needs to be located in
 France.}
 
 \item{destfile}{Folder path where data are downloaded. By default set to "." e.g. the current directory}
@@ -25,7 +25,7 @@ The raw LIDAR data are not classified; they correspond to a cloud point.
 }
 \details{
 \code{get_raw_lidar()} first download a grid containing the name of LIDAR tiles which is
-then intersected with \code{shape} to determine which ones will be uploaded.
+then intersected with \code{x} to determine which ones will be uploaded.
 The grid is downloaded to \code{grid_path} and lidar data to \code{destfile}. For both
 directory, function check if grid or data already exist to avoid re-downloading them.
 }
@@ -34,16 +34,16 @@ directory, function check if grid or data already exist to avoid re-downloading 
 library(sf)
 
 # Create shape
-shape <- st_polygon(list(matrix(c(8.852234, 42.55466,
+x <- st_polygon(list(matrix(c(8.852234, 42.55466,
                                   8.852234, 42.57289,
                                   8.860474, 42.57289,
                                   8.860474, 42.55466,
                                   8.852234, 42.55466),
                                  ncol = 2, byrow = TRUE)))
-shape <- st_sfc(shape, crs = st_crs(4326))
+x <- st_sfc(x, crs = st_crs(4326))
 
 # Download data to current directory
-get_raw_lidar(shape)
+get_raw_lidar(x)
 
 # Check all .laz file
 list.files(".", pattern = ".laz", recursive = TRUE)

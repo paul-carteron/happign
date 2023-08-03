@@ -3,7 +3,7 @@
 #' Check if raw LIDAR data are available at the shape location.
 #' The raw LIDAR data are not classified; they correspond to a cloud point.
 #'
-#' @param shape Object of class `sf` or `sfc`. Needs to be located in
+#' @param x Object of class `sf` or `sfc`. Needs to be located in
 #' France.
 #' @param destfile Folder path where data are downloaded. By default set to "." e.g. the current directory
 #' @param grid_path Folder path where grid is downloaded. By default set to "." e.g. the current directory
@@ -11,7 +11,7 @@
 #'
 #' @details
 #' `get_raw_lidar()` first download a grid containing the name of LIDAR tiles which is
-#' then intersected with `shape` to determine which ones will be uploaded.
+#' then intersected with `x` to determine which ones will be uploaded.
 #' The grid is downloaded to `grid_path` and lidar data to `destfile`. For both
 #' directory, function check if grid or data already exist to avoid re-downloading them.
 #'
@@ -27,28 +27,28 @@
 #' library(sf)
 #'
 #' # Create shape
-#' shape <- st_polygon(list(matrix(c(8.852234, 42.55466,
+#' x <- st_polygon(list(matrix(c(8.852234, 42.55466,
 #'                                   8.852234, 42.57289,
 #'                                   8.860474, 42.57289,
 #'                                   8.860474, 42.55466,
 #'                                   8.852234, 42.55466),
 #'                                  ncol = 2, byrow = TRUE)))
-#' shape <- st_sfc(shape, crs = st_crs(4326))
+#' x <- st_sfc(x, crs = st_crs(4326))
 #'
 #' # Download data to current directory
-#' get_raw_lidar(shape)
+#' get_raw_lidar(x)
 #'
 #' # Check all .laz file
 #' list.files(".", pattern = ".laz", recursive = TRUE)
 #' }
 #'
-get_raw_lidar <- function(shape, destfile = ".", grid_path = ".", quiet = F){
+get_raw_lidar <- function(x, destfile = ".", grid_path = ".", quiet = F){
 
    grid <- get_lidar_grid(grid_path, quiet = quiet)
-   shape <- st_transform(shape, 2154)
+   x <- st_transform(x, 2154)
 
    urls <- grid |>
-      st_filter(shape, .predicate = st_intersects)
+      st_filter(x, .predicate = st_intersects)
    urls <- urls$url_telech
 
    if (identical(urls, character(0))){
