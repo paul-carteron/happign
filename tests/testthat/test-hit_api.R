@@ -13,15 +13,6 @@ test_that("build_req works", {
    expect_error(build_req(path, "test"), "All components of ... must be named")
 })
 
-test_that("hit_api_error_offline",{
-   # bad path and too complex shape
-   req <- build_req(path = "api/rpg/v1",
-                    annee = 2013,
-                    geom = shp_to_geojson(sf::st_buffer(point, 100)))
-   expect_error(hit_api(req), "overly complex shape")
-   expect_error(hit_api(NA), "`req` must be an HTTP request")
-})
-
 with_mock_dir("hit_api_error", {
    test_that("hit_api_error_online", {
       skip_on_cran()
