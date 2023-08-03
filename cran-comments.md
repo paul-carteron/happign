@@ -1,6 +1,7 @@
 ## Test environments
 
 * Windows Server 2022, R-devel, 64 bit
+* Windows Server 2022, R-release, 32/64 bit
 * Ubuntu Linux 20.04.1 LTS, R-release, GCC
 * Fedora Linux, R-devel, clang, gfortran
 
@@ -30,6 +31,22 @@ There are 2 NOTES which can be ignored :
     'lastMiKTeXException'
 
 0 errors ✔ | 0 warnings ✔ | 2 notes ✖
+
+### Windows Server 2022, R-release, 32/64 bit
+
+There is 1 NOTE but i cannot do much because data contain accent
+
+── happign 1.0.0: NOTE
+
+Build ID: 	happign_1.0.0.tar.gz-3ecf3a4b4d2547fd9803fc834070abe9
+Platform: 	Windows Server 2022, R-release, 32/64 bit
+Submitted: 	7 minutes 52.1 seconds ago
+Build time: 	7 minutes 49.2 seconds
+
+NOTES:
+
+* checking data for non-ASCII characters ... NOTE
+  Note: found 7592 marked UTF-8 strings
 
 ### Ubuntu Linux 20.04.1 LTS, R-release, GCC
 
