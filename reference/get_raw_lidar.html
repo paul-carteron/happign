@@ -63,12 +63,12 @@ The raw LIDAR data are not classified; they correspond to a cloud point.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_raw_lidar</span><span class="op">(</span><span class="va">shape</span>, destfile <span class="op">=</span> <span class="st">"."</span>, grid_path <span class="op">=</span> <span class="st">"."</span>, quiet <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_raw_lidar</span><span class="op">(</span><span class="va">x</span>, destfile <span class="op">=</span> <span class="st">"."</span>, grid_path <span class="op">=</span> <span class="st">"."</span>, quiet <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>shape</dt>
+    <dl><dt>x</dt>
 <dd><p>Object of class <code>sf</code> or <code>sfc</code>. Needs to be located in
 France.</p></dd>
 
@@ -94,7 +94,7 @@ France.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>get_raw_lidar()</code> first download a grid containing the name of LIDAR tiles which is
-then intersected with <code>shape</code> to determine which ones will be uploaded.
+then intersected with <code>x</code> to determine which ones will be uploaded.
 The grid is downloaded to <code>grid_path</code> and lidar data to <code>destfile</code>. For both
 directory, function check if grid or data already exist to avoid re-downloading them.</p>
     </div>
@@ -105,16 +105,16 @@ directory, function check if grid or data already exist to avoid re-downloading 
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create shape</span></span></span>
-<span class="r-in"><span><span class="va">shape</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8.852234</span>, <span class="fl">42.55466</span>,</span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html" class="external-link">st_polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8.852234</span>, <span class="fl">42.55466</span>,</span></span>
 <span class="r-in"><span>                                  <span class="fl">8.852234</span>, <span class="fl">42.57289</span>,</span></span>
 <span class="r-in"><span>                                  <span class="fl">8.860474</span>, <span class="fl">42.57289</span>,</span></span>
 <span class="r-in"><span>                                  <span class="fl">8.860474</span>, <span class="fl">42.55466</span>,</span></span>
 <span class="r-in"><span>                                  <span class="fl">8.852234</span>, <span class="fl">42.55466</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                 ncol <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">shape</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="va">shape</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span><span class="va">x</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Download data to current directory</span></span></span>
-<span class="r-in"><span><span class="fu">get_raw_lidar</span><span class="op">(</span><span class="va">shape</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">get_raw_lidar</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Check all .laz file</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"."</span>, pattern <span class="op">=</span> <span class="st">".laz"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>

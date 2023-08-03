@@ -72,9 +72,9 @@ or with <code><a href="get_apikeys.html">get_apikeys()</a></code> and <code><a h
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_wms_raster</span><span class="op">(</span><span class="va">shape</span>,</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_wms_raster</span><span class="op">(</span><span class="va">x</span>,</span>
 <span>               apikey <span class="op">=</span> <span class="st">"altimetrie"</span>,</span>
-<span>               layer_name <span class="op">=</span> <span class="st">"ELEVATION.ELEVATIONGRIDCOVERAGE"</span>,</span>
+<span>               layer <span class="op">=</span> <span class="st">"ELEVATION.ELEVATIONGRIDCOVERAGE"</span>,</span>
 <span>               res <span class="op">=</span> <span class="fl">25</span>,</span>
 <span>               filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span>,</span>
 <span>               crs <span class="op">=</span> <span class="fl">2154</span>,</span>
@@ -86,38 +86,37 @@ or with <code><a href="get_apikeys.html">get_apikeys()</a></code> and <code><a h
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>shape</dt>
-<dd><p>Object of class <code>sf</code>. Needs to be located in
+    <dl><dt>x</dt>
+<dd><p>Object of class <code>sf</code> or <code>sfc</code>. Needs to be located in
 France.</p></dd>
 
 
 <dt>apikey</dt>
-<dd><p>API key from <code><a href="get_apikeys.html">get_apikeys()</a></code> or directly
+<dd><p><code>character</code>; API key from <code><a href="get_apikeys.html">get_apikeys()</a></code> or directly
 from <a href="https://geoservices.ign.fr/services-web-experts" class="external-link">IGN website</a>.</p></dd>
 
 
-<dt>layer_name</dt>
-<dd><p>Name of the layer from <code>get_layers_metadata(apikey, "wms")</code>
-or directly from
+<dt>layer</dt>
+<dd><p><code>character</code>; layer name from
+<code>get_layers_metadata(apikey, "wms")</code> or directly from
 <a href="https://geoservices.ign.fr/services-web-experts" class="external-link">IGN website</a>.</p></dd>
 
 
 <dt>res</dt>
-<dd><p>Cell size in meter. See detail for more information about res.</p></dd>
+<dd><p><code>numeric</code>; resolution in the unit of the coordinate system
+(e.g. meter for 2154). See detail for more information about <code>res</code>.</p></dd>
 
 
 <dt>filename</dt>
-<dd><p>Either a character string naming a file or a connection open
-for writing. (ex : "test.tif" or "~/test.tif"). If <code>NULL</code>, layer_name is used.
-Default drivers is ".tif" but all gdal drivers are supported, see details
-for more info. To avoid re-downloads, <code>get_wms raster</code> checks that there is
-not already a raster with that name. If it does, it is imported into R without
-further downloading if <code>overwrite</code> is set to FALSE.</p></dd>
+<dd><p><code>character</code> or <code>NULL</code>; filename or a open connection for
+writing. (ex : "test.tif" or "~/test.tif"). If <code>NULL</code>, <code>layer</code> is used as
+filename. Default drivers is ".tif" but all gdal drivers are supported,
+see details for more info.</p></dd>
 
 
 <dt>crs</dt>
-<dd><p>Numeric, character, or object of class sf or sfc. It is set to EPSG:2154
-by default. See <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs()</a></code> for more detail.</p></dd>
+<dd><p><code>numeric</code>, <code>character</code>, or object of class <code>sf</code> or <code>sfc</code>.
+It is set to EPSG:2154 by default. See <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs()</a></code> for more detail.</p></dd>
 
 
 <dt>overwrite</dt>
@@ -125,39 +124,40 @@ by default. See <code><a href="https://r-spatial.github.io/sf/reference/st_crs.h
 
 
 <dt>version</dt>
-<dd><p>The version of the service used. See detail for more
-information about <code>version</code>.</p></dd>
+<dd><p><code>character</code>; version of the service used. See details
+for more info.</p></dd>
 
 
 <dt>styles</dt>
-<dd><p>The rendering style of the layers. Set to "" by default.
-See detail for more information about <code>styles</code>.</p></dd>
+<dd><p><code>character</code>; rendering style of the layer. Set to ""
+by default. See details for more info.</p></dd>
 
 
 <dt>interactive</dt>
-<dd><p>If set to TRUE, no need to specify <code>apikey</code> and <code>layer_name</code>,
-you'll be ask.</p></dd>
+<dd><p><code>logical</code>; If TRUE, interactive menu ask for
+<code>apikey</code> and <code>layer</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p><code>get_wms_raster</code> return an object of class <code>SpatRaster</code> from <code>terra</code> package.</p>
+<p><code>SpatRaster</code> object from <code>terra</code> package.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     
-<ul><li><p>Raster tile are limited to 2048x2048 pixels so depending of the shape
-and the res, correct number of tiles to download is calculated.
-This mean that setting the <code>res</code> argument higher than the base resolution
-of the layer multiplies the number of pixels without increasing
+<ul><li><p><code>res</code> : Warning, setting <code>res</code> higher than default layer resolution
+multiplies the number of pixels without increasing
 the precision. For example, the download of the BD Alti layer from
 IGN will be optimal for a resolution of 25m.</p></li>
 <li><p><code>version</code> and <code>styles</code> arguments are detailed on
 <a href="https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc" class="external-link">IGN documentation</a></p></li>
-<li><p>Using the <code>crs</code> argument avoids post-reprojection which can be time consuming</p></li>
-<li><p>All GDAL supported drivers can be found <a href="https://gdal.org/drivers/raster/index.html" class="external-link">here</a></p></li>
+<li><p><code>filename</code> : All GDAL supported drivers can be found
+<a href="https://gdal.org/drivers/raster/index.html" class="external-link">here</a></p></li>
+<li><p><code>overwrite</code> : <code>get_wms raster</code> always checks that <code>filename</code> does not
+already exist. If it does, it is imported into R without further downloading
+unless <code>overwrite</code> is set to <code>TRUE</code>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -170,27 +170,26 @@ IGN will be optimal for a resolution of 25m.</p></li>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># shape from the best town in France</span></span></span>
+<span class="r-in"><span><span class="co"># Shape from the best town in France</span></span></span>
 <span class="r-in"><span><span class="va">penmarch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/penmarch.shp"</span>, package <span class="op">=</span> <span class="st">"happign"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># For quick testing, use interactive = TRUE</span></span></span>
-<span class="r-in"><span><span class="va">raster</span> <span class="op">&lt;-</span> <span class="fu">get_wms_raster</span><span class="op">(</span>shape <span class="op">=</span> <span class="va">penmarch</span>, interactive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">raster</span> <span class="op">&lt;-</span> <span class="fu">get_wms_raster</span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch</span>, interactive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># For specific use, choose apikey with get_apikey() and layer_name with get_layers_metadata()</span></span></span>
+<span class="r-in"><span><span class="co"># For specific data, choose apikey with get_apikey() and layer with get_layers_metadata()</span></span></span>
 <span class="r-in"><span><span class="va">apikey</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>  <span class="co"># altimetrie</span></span></span>
 <span class="r-in"><span><span class="va">metadata_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="va">apikey</span>, <span class="st">"wms"</span><span class="op">)</span> <span class="co"># all layers for altimetrie wms</span></span></span>
-<span class="r-in"><span><span class="va">layer_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">metadata_table</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="co"># ELEVATION.ELEVATIONGRIDCOVERAGE</span></span></span>
+<span class="r-in"><span><span class="va">layer</span> <span class="op">&lt;-</span> <span class="va">metadata_table</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">]</span> <span class="co"># ELEVATION.ELEVATIONGRIDCOVERAGE</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Downloading digital elevation model from IGN</span></span></span>
-<span class="r-in"><span><span class="va">mnt</span> <span class="op">&lt;-</span> <span class="fu">get_wms_raster</span><span class="op">(</span><span class="va">penmarch</span>, <span class="va">apikey</span>, <span class="va">layer_name</span>, res <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mnt_2154</span> <span class="op">&lt;-</span> <span class="fu">get_wms_raster</span><span class="op">(</span><span class="va">penmarch</span>, <span class="va">apikey</span>, <span class="va">layer</span>, res <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Preparing raster for plotting</span></span></span>
-<span class="r-in"><span><span class="va">mnt</span><span class="op">[</span><span class="va">mnt</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co"># remove negative values in case of singularity</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"Elevation [m]"</span> <span class="co"># Rename raster ie the title legend</span></span></span>
+<span class="r-in"><span><span class="co"># If crs is set to 4326, res is in degrees</span></span></span>
+<span class="r-in"><span><span class="va">mnt_4326</span> <span class="op">&lt;-</span> <span class="fu">get_wms_raster</span><span class="op">(</span><span class="va">penmarch</span>, <span class="va">apikey</span>, <span class="va">layer</span>, res <span class="op">=</span> <span class="fl">0.0005</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plotting result</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span><span class="op">+</span></span></span>
-<span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span>legend.show <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">mnt_4326</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch</span><span class="op">)</span><span class="op">+</span></span></span>
 <span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"blue"</span>, lwd  <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

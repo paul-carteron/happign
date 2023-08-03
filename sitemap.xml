@@ -67,6 +67,9 @@
     <loc>https://paul-carteron.github.io/happign/reference/get_layers_metadata.html</loc>
   </url>
   <url>
+    <loc>https://paul-carteron.github.io/happign/reference/get_location_info.html</loc>
+  </url>
+  <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_raw_lidar.html</loc>
   </url>
   <url>
@@ -74,9 +77,6 @@
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_wfs_attributes.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_wms_info.html</loc>
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_wms_raster.html</loc>
