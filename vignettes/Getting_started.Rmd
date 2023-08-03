@@ -1,7 +1,7 @@
 ---
 title: "Getting started with happign"
 author: "Paul Carteron"
-date: "2023-07-26"
+date: "2023-08-03"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting started with happign}
@@ -35,7 +35,7 @@ To download data from IGN web services at least three elements are needed :
 
 * An API key;
 * A layer name ;
-* An input shape read by [`sf`]( https://CRAN.R-project.org/package=sf) package
+* An input shape read by [`sf`]( https://CRAN.R-project.org/package=sf) package.
 
 ## API key
 
@@ -47,9 +47,9 @@ API keys can be directly retrieved on the [IGN website from the expert web servi
 get_apikeys()
 #>  [1] "administratif" "adresse"       "agriculture"   "altimetrie"   
 #>  [5] "cartes"        "cartovecto"    "clc"           "economie"     
-#>  [9] "environnement" "geodesie"      "lambert93"     "ocsge"        
-#> [13] "ortho"         "orthohisto"    "parcellaire"   "satellite"    
-#> [17] "sol"           "topographie"   "transports"
+#>  [9] "enr"           "environnement" "geodesie"      "lambert93"    
+#> [13] "ocsge"         "ortho"         "orthohisto"    "parcellaire"  
+#> [17] "satellite"     "sol"           "topographie"   "transports"
 ```
 
 ## Layer name
@@ -103,9 +103,9 @@ penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
 ```r
 
-penmarch_borders <- get_wfs(shape = penmarch,
+penmarch_borders <- get_wfs(x = penmarch,
                             apikey = "administratif",
-                            layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
+                            layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
 #> Features downloaded : 1
 
 # Checking result
@@ -113,11 +113,15 @@ tm_shape(penmarch_borders)+
    tm_polygons(alpha = 0, lwd = 2)+
 tm_shape(penmarch)+
    tm_polygons(col = "red")+
+tm_add_legend(type = "fill", border.col = "black", border.lwd =2, 
+              col = NA, labels = "border from get_wfs")+
 tm_add_legend(type = "fill", col = "red", labels = "penmarch shape from happign package")+
 tm_layout(main.title = "Penmarch borders from IGN",
           main.title.position = "center",
-          legend.position = c(0.7, 0),
+          legend.position = c(0.7, -0.1),
+          outer.margins = c(0.1, 0,0,0),
           frame = FALSE)
+#> Legend labels were too wide. The labels have been resized to 0.63. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
 ```
 
 <div class="figure" style="text-align: center">
@@ -132,9 +136,9 @@ Now you have to rely on your curiosity to explore the multiple possibilities tha
 
 
 ```r
-dikes <- get_wfs(shape = penmarch_borders,
+dikes <- get_wfs(x = penmarch_borders,
                  apikey = get_apikeys()[6], #cartovecto
-                 layer_name = "BDCARTO_BDD_WLD_WGS84G:noeud_routier",
+                 layer = "BDCARTO_BDD_WLD_WGS84G:noeud_routier",
                  spatial_filter = "intersects")
 #> Features downloaded : 192
 
@@ -163,16 +167,16 @@ For raster, the process is the same, but with the function `get_wms_raster()`, b
 
 ```r
 layers_metadata <- get_layers_metadata("altimetrie", "wms")
-dem_layer_name <- layers_metadata[2, 1] #LEVATION.ELEVATIONGRIDCOVERAGE
+dem_layer <- layers_metadata[2, 1] #LEVATION.ELEVATIONGRIDCOVERAGE
 
-mnt <- get_wms_raster(shape = penmarch_borders,
+mnt <- get_wms_raster(x = penmarch_borders,
                       apikey = "altimetrie",
-                      layer_name = dem_layer_name,
+                      layer = dem_layer,
                       res = 25,
                       crs = 2154)
 #> 0...10...20...30...40...50...60...70...80...90...100 - done.
 #> Raster is saved at :
-#> C:\Users\PAUL\AppData\Local\Temp\RtmpsZY6Ym\file67842bde69fa.tif
+#> C:\Users\PAUL\AppData\Local\Temp\RtmpK29L2a\file12e45e89658a.tif
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 

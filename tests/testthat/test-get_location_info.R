@@ -30,7 +30,7 @@ with_mock_dir("get_loc_info", {
                                          "LANDUSE.AGRICULTURE2021")
 
       expect_s3_class(location_info, "data.frame")
-      expect_equal(dim(location_info), c(1,3))
+      expect_equal(dim(location_info), c(1,5))
    })
 }, simplify = FALSE)
 
@@ -72,3 +72,4 @@ with_mock_dir("get_loc_info no data", {
 
    })
 }, simplify = FALSE)
+

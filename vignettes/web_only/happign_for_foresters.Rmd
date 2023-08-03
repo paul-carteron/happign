@@ -49,7 +49,7 @@ An other way of getting borders without apicarto is to use ECQL language to dire
 
 ```{r borders2}
 borders2 <- get_wfs(apikey = "administratif",
-                    layer_name = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+                    layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
                     spatial_filter = "intersects",
                     ecql_filter = "nom_m LIKE 'CAMORS'")
 ```
@@ -60,13 +60,13 @@ Cadastral parcels are essential for any forest manager Here how to download it w
 
 ```{r cadastral_parcels}
 apikey <- "parcellaire"
-layer_name <- get_layers_metadata(apikey, "wfs")
-name_parcellaire_layer <- layer_name[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
+layer <- get_layers_metadata(apikey, "wfs")
+name_parcellaire_layer <- layer[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
 
-parcellaire <- get_wfs(shape = borders,
+parcellaire <- get_wfs(x = borders,
                        apikey = apikey,
                        spatial_filter = "intersects",
-                       layer_name = name_parcellaire_layer)
+                       layer = name_parcellaire_layer)
 
 tm_shape(borders)+
    tm_borders(col = "red", lwd = 2)+
@@ -85,9 +85,9 @@ The first interesting layer for forester is the "BD Forêt" which is all vegetat
 
 ```{r bd_foret, warning=FALSE}
 apikey <- "environnement"
-layer_name <- get_layers_metadata(apikey, "wfs")
-name_BDV1 <- layer_name[2,1]
-name_BDV2 <- layer_name[3,1]
+layer <- get_layers_metadata(apikey, "wfs")
+name_BDV1 <- layer[2,1]
+name_BDV2 <- layer[3,1]
 
 BDV1 <- get_wfs(borders, apikey, name_BDV1, spatial_filter = "intersects")
 BDV2 <- get_wfs(borders, apikey, name_BDV2, spatial_filter = "intersects")
@@ -163,9 +163,9 @@ tm_shape(borders,is.master = TRUE) +
 It's always good to know a more about terrain topologie. IGN offers MNT and MNS for download. As a reminder, the MNT corresponds to the surface of the ground and the MNS to the real surface (in our case, the trees). It is thus easy to find the height of the trees by subtracting the DTM from the MNS.
 
 ```{r mnt_mns_mnh}
-layers_name <- get_layers_metadata("altimetrie", "wms")
-mnt_name <- layers_name[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
-mns_name <- layers_name[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
+layers <- get_layers_metadata("altimetrie", "wms")
+mnt_name <- layers[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
+mns_name <- layers[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
 mnt <- get_wms_raster(borders, "altimetrie", res = 5, mnt_name)
 mns <- get_wms_raster(borders, "altimetrie", res = 5, mns_name)
@@ -212,10 +212,10 @@ biggest_parcels <- parcellaire |>
    mutate(area = st_area(geometry)) |> 
    slice_max(area)
 
-irc <- get_wms_raster(shape = biggest_parcels,
+irc <- get_wms_raster(biggest_parcels,
                       apikey = "ortho",
                       res = 0.2,
-                      layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.IRC")
+                      layer = "ORTHOIMAGERY.ORTHOPHOTOS.IRC")
 
 # calculate ndvi from near_infrared and infrared
 ndvi_fun <- function(nir, red){
@@ -244,25 +244,6 @@ tm_shape(biggest_parcels, is.master = TRUE)+
 
 ```
 
-### Info on raster
-
-For some resources, it is essential to have additional information in order to use them properly. For example, in the forest field, the date the picture was taken is important because our object of study is dynamic. The function `get_wms_info()` allows to get, if they exist, additional information on the raster layers.
-
-```{r}
-
-# info_sup <- get_wms_info(shape = borders,
-#                          apikey = "ortho",
-#                          layer_name = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO")
-# info_sup
-```
-
-The call to the function `get_wms_info` indicates that this orthophoto was taken the 2019-05-15.
-
-__*Rq :*__
-
- * *The information returned corresponds to the centroid of the input shape*
- 
-
 ## The gloss index
 
 The gloss index represents the average of the image glosses. This index is therefore sensitive to the brightness of the soil, related to its moisture and the presence of salts on the surface. It characterizes especially the albedo (solar radiation that is reflected back to the atmosphere). The gloss index allows us to estimate whether the observed surface feature is light or dark.
@@ -284,6 +265,41 @@ tm_shape(gloss_index)+
 tm_shape(biggest_parcels, is.master = T)+
    tm_borders(lwd = 2, col = "blue")
 
+```
+
+### Info on raster
+
+For some resources, it is essential to have additional information in order to use them properly. For example, in the forest field, the date the picture was taken is important because our object of study is dynamic. The function `get_location_info()` allows to get, if they exist, additional information on the raster layers. *Warning : only point are supported.*
+
+__*Rq :*__
+
+ * *Note that the function returns a shape by default. If only the metadata is required, you can speed up the response time by setting read_sf to FALSE.*
+  * *To find all queryable layers from an apikey you can use `are_queryable(apikey)`*
+ 
+
+```{r}
+info_sup <- get_location_info(x = st_centroid(borders),
+                              apikey = "ortho",
+                              layer = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
+                              read_sf = F)
+info_sup$date_vol
+```
+
+The call to the function `get_location_info` indicates that this orthophoto was taken the 2019-05-14.
+
+In some cases, the function can be used to retrieve resources that are not explicitly available. For example, there are no vector layers of public forests, only a raster layer. However, when additional information is requested, the outline of the forest is returned.
+
+```{r get_location_info}
+x <- st_sfc(st_point(c(-3.549957, 47.83396)), crs = 4326) # Carnoet forest
+
+forest <- get_location_info(x,
+                            apikey = "environnement",
+                            layer = "FORETS.PUBLIQUES",
+                            read_sf = TRUE)
+tm_shape(forest)+
+   tm_borders()+
+tm_shape(x)+
+   tm_dots(size = 0.05, col = "red")
 ```
 
 
@@ -327,10 +343,10 @@ tm_shape(borders)+
 The "Etat-major" map is a general map of France made, in its first version, in the 19th century. Here how to get it :
 
 ```{r etat_major}
-etat_major <- get_wms_raster(shape = borders,
-                            apikey = "cartes",
-                            res = 1,
-                            layer_name = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40")
+etat_major <- get_wms_raster(x = borders,
+                             apikey = "cartes",
+                             res = 1,
+                             layer = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40")
 
 # raster is very large and tmap cannot plot it. Convert to stars as below allow for quick plotting
 # saving raster to disk allow full resolution visualisation : writeRaster(etat_major, "test.tif") 

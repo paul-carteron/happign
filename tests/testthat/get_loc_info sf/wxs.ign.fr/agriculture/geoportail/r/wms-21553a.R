@@ -1,5 +1,5 @@
 structure(list(method = "GET", url = "https://wxs.ign.fr/agriculture/geoportail/r/wms?service=wms&request=GetCapabilities", 
-    status_code = 200L, headers = structure(list(date = "Tue, 01 Aug 2023 17:06:57 GMT", 
+    status_code = 200L, headers = structure(list(date = "Thu, 03 Aug 2023 10:22:14 GMT", 
         `content-type` = "text/xml;charset=utf-8", `transfer-encoding` = "chunked", 
         `wl-original-content-type` = "text/xml;charset=utf-8", 
         `cache-control` = "public, max-age=1814400", `access-control-allow-methods` = "GET, POST", 

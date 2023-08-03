@@ -9,7 +9,7 @@
 #' get_location_info(x,
 #'                   apikey = "ortho",
 #'                   layer = "ORTHOIMAGERY.ORTHOPHOTOS",
-#'                   read_sf = FALSE,
+#'                   read_sf = TRUE,
 #'                   version = "1.3.0")
 #'
 #' @inheritParams get_wms_raster
@@ -32,12 +32,12 @@
 #' library(sf)
 #' library(tmap)
 #'
-#' # from single point
+#' # From single point
 #' x <- st_centroid(read_sf(system.file("extdata/penmarch.shp", package = "happign")))
-#' location_info <- get_location_info(x, "ortho", "ORTHOIMAGERY.ORTHOPHOTOS")
+#' location_info <- get_location_info(x, "ortho", "ORTHOIMAGERY.ORTHOPHOTOS", read_sf = F)
 #' location_info$date_vol
 #'
-#' # from multiple point
+#' # From multiple point
 #' x1 <- st_sfc(st_point(c(-3.549957, 47.83396)), crs = 4326) # Carnoet forest
 #' x2 <- st_sfc(st_point(c(-3.745995, 47.99296)), crs = 4326) # Coatloch forest
 #'
@@ -48,11 +48,14 @@
 #'                   read_sf = T)
 #'
 #' qtm(forests[[1]]) + qtm(forests[[2]])
+#'
+#' # Find all queryable layers
+#' queryable_layers <- lapply(get_apikeys(), are_queryable) |> unlist()
 #' }
 get_location_info <- function(x,
                               apikey = "ortho",
                               layer = "ORTHOIMAGERY.ORTHOPHOTOS",
-                              read_sf = FALSE,
+                              read_sf = TRUE,
                               version = "1.3.0"){
 
    # check input ----
@@ -172,6 +175,7 @@ are_queryable <- function(apikey){
       xml_find_all(".//d1:Layer[@queryable='1']/d1:Name") |> #xpath expression
       xml_text()
 
+   return(request)
    # explanation of xpath
    # .// : select nodes everywhere from the current node
    # d1: : namespace of the node (use xml_ns to find them)
