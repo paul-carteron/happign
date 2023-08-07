@@ -1,3 +1,7 @@
+# Warning :
+   I test with happign 1.0.0 but i finally decided to stay at 0.2.0. There's 
+no difference in code between both version.
+
 ## Test environments
 
 * Windows Server 2022, R-devel, 64 bit
