@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">happign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,10 +54,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.0" id="happign-100">happign 1.0.0<a class="anchor" aria-label="anchor" href="#happign-100"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="happign-020">happign 0.2.0<a class="anchor" aria-label="anchor" href="#happign-020"></a></h2>
 <ul><li>
-<code>get_wms_raster</code> now uses gdalwarp from <code><a href="https://r-spatial.github.io/sf/reference/gdal_utils.html" class="external-link">sf::gdal_utils</a></code> to avoid calculation and downloading of several tiles</li>
-<li>update cog_2022 dataset to cog_2023</li>
+<code>get_wms_raster</code> is made faster by using gdalwarp from <code><a href="https://r-spatial.github.io/sf/reference/gdal_utils.html" class="external-link">sf::gdal_utils</a></code>. There is no longer need to download several tiles.</li>
+<li>update <code>cog_2022</code> dataset to <code>cog_2023</code>
+</li>
 <li>remove <code>get_apicarto_commune()</code> now supported by <code><a href="../reference/get_apicarto_cadastre.html">get_apicarto_cadastre()</a></code>
 </li>
 <li>
