@@ -150,12 +150,21 @@ get_apicarto_gpu <- function(x,
 
    # hit api ----
    message("Features downloaded : ", appendLF = F)
-   resp <- Map(build_req_hit_api,
-       path = paste0("/api/gpu/", ressource),
-       "geom" = geom,
-       "partition" = partition,
-       "insee" = insee,
-       "categorie" = categorie)
+
+   tryCatch({
+      resp <- Map(build_req_hit_api,
+                  path = paste0("/api/gpu/", ressource),
+                  "geom" = geom,
+                  "partition" = partition,
+                  "insee" = insee,
+                  "categorie" = categorie)
+   }, error = function(cnd){
+      if (grepl(cnd, "HTTP 500")) {
+         stop(cnd,
+              "Apicarto gpu is currently unavailable, please try again later.", call. = F)
+      }
+   })
+
 
    # processing result ----
    if (all(is_empty(unlist(resp)))){
