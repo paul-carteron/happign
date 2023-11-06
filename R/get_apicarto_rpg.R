@@ -79,7 +79,7 @@ F   # check parameter : x
    # hit api and loop if there more than 1000 features
    resp <- Map(
       loop_api,
-      path = paste0("api/rpg/", version),
+      path = paste0("/api/rpg/", version),
       limit = 1000,
       "annee" = annee,
       "geom" = shp_to_geojson(x, crs = 4326, dTolerance = dTolerance),
