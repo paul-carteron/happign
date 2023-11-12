@@ -152,6 +152,9 @@ get_wms_raster <- function(x,
 #' @param x Object of class `sf` or `sfc`. Needs to be located in
 #' France.
 #'
+#' @importFrom sf st_bbox st_linestring st_length st_sfc st_crs
+#' @importFrom units drop_units
+#'
 #' @noRd
 bbox_dim <- function(x){
 
@@ -179,6 +182,8 @@ bbox_dim <- function(x){
 #' @param res `numeric`; resolution of final raster in meter
 #' @param pixels_limit `numeric`; pixel limitation of WIGN Web service
 #'
+#' @importFrom sf st_make_grid st_as_sf st_filter
+#'
 #' @noRd
 create_grid <- function(x, res, pixels_limit = 2048){
 
@@ -200,6 +205,9 @@ create_grid <- function(x, res, pixels_limit = 2048){
 #' @param x Object of class `sf` or `sfc`.
 #' @param base_url `character`; base url for https wms request
 #' @param res `numeric`; resolution of final raster in meter.
+#'
+#' @importFrom sf st_geometry st_as_sfc st_bbox
+#' @importFrom stats setNames
 #'
 #' @noRd
 create_urls <- function(x, base_url, res){
@@ -232,7 +240,8 @@ create_urls <- function(x, base_url, res){
 #' writing
 #' @param overwrite If TRUE, output raster is overwrite.
 #'
-#' @importFrom sf st_bbox gdal_utils
+#' @importFrom sf gdal_utils
+#' @importFrom terra rast
 #'
 #' @noRd
 download_wms <- function(urls, crs, filename, overwrite) {

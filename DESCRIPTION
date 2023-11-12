@@ -1,6 +1,6 @@
 Package: happign
 Title: R Interface to 'IGN' Web Services
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: 
     person("Paul", "Carteron", , "carteronpaul@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6942-6662"))
@@ -9,7 +9,7 @@ Description: Automatic open data acquisition from resources of IGN
     ('Institut National de Information Geographique et forestiere')
     (<https://www.ign.fr/>). Available datasets include various types of
     raster and vector data, such as digital elevation models, state
-    borders, spatial databases, cadastral parcels, and more.  There also
+    borders, spatial databases, cadastral parcels, and more. There also
     access to point clouds data ('LIDAR') and specifics API
     (<https://apicarto.ign.fr/api/doc/>).
 License: GPL (>= 3)
@@ -26,6 +26,7 @@ Imports:
     methods,
     sf (>= 1.0-7),
     terra,
+    units,
     xml2
 Suggests: 
     covr,
