@@ -6,7 +6,8 @@ test_that("wms_base_case", {
 
       expect_s4_class(mnt, "SpatRaster")
       expect_true(st_crs(mnt) == st_crs(2154))
-      expect_equal(dim(mnt), c(11, 15, 1))
+      expect_equal(dim(mnt), c(17, 10, 1))
+      expect_true(terra::minmax(mnt, compute=T)["max",] >= 0)
 })
 test_that("wms_crs", {
    skip_on_cran()
@@ -17,7 +18,8 @@ test_that("wms_crs", {
 
    expect_s4_class(mnt, "SpatRaster")
    expect_true(st_crs(mnt) == st_crs(27572))
-   expect_equal(dim(mnt), c(12, 15, 1))
+   expect_equal(dim(mnt), c(17, 10, 1))
+   expect_true(terra::minmax(mnt, compute=T)["max",] >= 0)
 })
 test_that("wms_overwrite", {
    skip_on_cran()
@@ -46,7 +48,8 @@ test_that("wms_png", {
                          filename = filename)
 
    expect_s4_class(mnt, "SpatRaster")
-   expect_equal(dim(mnt), c(11, 15, 3))
+   expect_equal(dim(mnt), c(17, 10, 3))
+   expect_true(terra::minmax(mnt, compute=T)["max",1] >= 0)
 })
 test_that("wms_multipoly", {
    skip_on_cran()
@@ -55,7 +58,9 @@ test_that("wms_multipoly", {
    mnt <- get_wms_raster(happign:::multipoly)
 
    expect_s4_class(mnt, "SpatRaster")
-   expect_equal(dim(mnt), c(31, 12, 1))
+   expect_equal(dim(mnt), c(20, 30, 1))
+   expect_true(terra::minmax(mnt, compute=T)["max",] >= 0)
+
 })
 test_that("wms_bad_name", {
    skip_on_cran()

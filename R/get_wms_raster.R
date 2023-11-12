@@ -137,7 +137,7 @@ get_wms_raster <- function(x,
                          "&layers=", layer,
                          "&styles=", "",
                          "&format=image/geotiff",
-                         "&crs=", st_crs(crs)$input)
+                         "&crs=EPSG:", st_crs(grid)$epsg)
       urls <- create_urls(grid, base_url, res)
 
       rast <- download_wms(urls, crs, filename, overwrite)
