@@ -63,7 +63,7 @@
 
 get_apicarto_rpg <- function(x, annee, code_cultu = list(NULL), dTolerance = 0){
 
-F   # check parameter : x
+   # check parameter : x
    if (!inherits(x, c("sf", "sfc"))) { # x can have 3 class
       stop("x must be of class sf or sfc.")
    }

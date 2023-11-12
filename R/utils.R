@@ -111,14 +111,14 @@ is_empty <- function(x){
 #'
 shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
 
-   # default_s2 <- suppressMessages(sf_use_s2())
-   # suppressMessages(sf_use_s2(TRUE))
-   # on.exit(suppressMessages(sf_use_s2(default_s2)))
+   default_s2 <- suppressMessages(sf_use_s2())
+   suppressMessages(sf_use_s2(TRUE))
+   on.exit(suppressMessages(sf_use_s2(default_s2)))
 
    x <- x |>
       st_make_valid() |>
-      st_transform(crs) |>
       st_simplify(dTolerance = dTolerance) |>
+      st_transform(crs) |>
       st_geometry() |>
       toJSON()
 
