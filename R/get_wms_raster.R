@@ -115,14 +115,6 @@ get_wms_raster <- function(x,
       layer <- layers[menu(layers)]
    }
 
-   # check input in another function for readability
-   check_get_wms_raster_input(x, apikey, layer, res, filename, crs,
-                              overwrite, version, styles, interactive)
-
-   # ensure consistency between the shape's coordinates and those requested
-   x <- st_make_valid(x) |>
-      st_transform(st_crs(crs))
-
    # if no filename provided, layer is used by removing non alphanum character
    if (is.null(filename)){
       filename <- gsub("[^[:alnum:]]", "_", layer)
@@ -134,47 +126,116 @@ get_wms_raster <- function(x,
       rast <- rast(filename)
       message("File already exists at ", filename," therefore is loaded.\n",
           "Set overwrite to TRUE to download it again.")
-   # else raster is downoaded
-   }else{
-      url <- build_url(apikey, layer)
-      rast <- download_wms(x, url, filename, res, crs, apikey)
-   }
 
-   rast <- rm_equal_layers(rast)
+   # else raster is downloaded
+   }else{
+      grid <- create_grid(x, res)
+
+      base_url <- paste0("https://wxs.ign.fr/", apikey, "/geoportail/r/wms?",
+                         "version=", "1.3.0",
+                         "&request=GetMap",
+                         "&layers=", layer,
+                         "&styles=", "",
+                         "&format=image/geotiff",
+                         "&crs=", st_crs(crs)$input)
+      urls <- create_urls(grid, base_url, res)
+
+      rast <- download_wms(urls, crs, filename, overwrite)
+   }
 
    return(rast)
 }
 
-#' @title build_url
-#' @description Build url for downloading.
+#' @title bbox_dim
+#' @description calculate bbox length of a shape in meter
 #'
-#' @param apikey `character`; from `get_apikey()`
-#' @param layer `character`; from `get_layers_metadata()`
+#' @param x Object of class `sf` or `sfc`. Needs to be located in
+#' France.
 #'
 #' @noRd
-build_url <- function(apikey, layer) {
+bbox_dim <- function(x){
 
-   # set bbox to world by default because extent is set in warp as -te
-   url <- paste0("WMS:https://wxs.ign.fr/",apikey,"/geoportail/r/wms?",
-                "VERSION=1.3.0",
-                "&REQUEST=GetMap",
-                "&LAYERS=",layer,
-                "&CRS=EPSG:4326",
-                "&BBOX=-90,-180,90,180")
+   if (!inherits(x, c("sf", "sfc"))) {
+      stop("`x` must be of class sf or sfc.", call. = F)
+   }
+
+   bb <- st_bbox(x)
+
+   width <- st_linestring(rbind(c(bb$xmin, bb$ymin), c(bb$xmax, bb$ymin)))
+   height <- st_linestring(rbind(c(bb$xmin, bb$ymin), c(bb$xmin, bb$ymax)))
+
+   width_height <- st_length(st_sfc(list(width, height), crs = st_crs(x))) |>
+      setNames(c("width", "height")) |>
+      units::drop_units()
+
+   return(width_height)
 }
+
+#' @title create_grid
+#' @description create grid from shape and res to avoid 2048 pixel limitation
+#'
+#' @param x Object of class `sf` or `sfc`. Needs to be located in
+#' France.
+#' @param res `numeric`; resolution of final raster in meter
+#' @param pixels_limit `numeric`; pixel limitation of WIGN Web service
+#'
+#' @noRd
+create_grid <- function(x, res, pixels_limit = 2048){
+
+   # shape <- st_make_valid(st_set_precision(shape, 1e6))
+
+   nb_cells <- ceiling(bbox_dim(x)/res/pixels_limit)
+
+   grid <- st_make_grid(x, n = nb_cells) |>
+      st_as_sf() |>
+      st_filter(x, .predicate = st_intersects)
+
+   return(grid)
+
+}
+
+#' @title create_urls
+#' @description creates urls for downloading tile.
+#'
+#' @param x Object of class `sf` or `sfc`.
+#' @param base_url `character`; base url for https wms request
+#' @param res `numeric`; resolution of final raster in meter.
+#'
+#' @noRd
+create_urls <- function(x, base_url, res){
+
+   if (!inherits(x, c("sf", "sfc"))) {
+      stop("`x` must be of class sf or sfc.", call. = F)
+   }
+
+   if (!inherits(res, c("numeric"))) {
+      stop("`res` must be of class numeric.", call. = F)
+   }
+
+   dims <- bbox_dim(st_geometry(x)[1])/res
+   bboxs <- lapply(st_as_sfc(x), st_bbox) |>
+      lapply(\(x) paste(x$ymin, x$xmin, x$ymax, x$xmax, sep=","))
+   urls <- paste0(base_url,
+                  "&bbox=", bboxs,
+                  "&width=", dims["width"],
+                  "&height=", dims["height"])
+   return(urls)
+}
+
 
 #' @title download_wms
 #' @description Download of raster with gdalwarp.
 #'
-#' @param filename name of file or connection
-#' @param url `character`; url from build_url
+#' @param urls `character`; urls from create_url
 #' @param crs see st_crs()
+#' @param filename `character` or `NULL`; filename or a open connection for
+#' writing
+#' @param overwrite If TRUE, output raster is overwrite.
 #'
 #' @importFrom sf st_bbox gdal_utils
 #'
 #' @noRd
-#'
-download_wms <- function(x, url, filename, res, crs, apikey) {
+download_wms <- function(urls, crs, filename, overwrite) {
 
    # GDAL_HTTP_UNSAFESSL is used to avoid safe SSL host / certificate verification
    # which can be problematic when using professional computer
@@ -187,26 +248,25 @@ download_wms <- function(x, url, filename, res, crs, apikey) {
    on.exit(Sys.setenv(GDAL_SKIP = default_gdal_skip))
    on.exit(Sys.setenv(GDAL_HTTP_UNSAFESSL = default_gdal_http_unsafessl))
 
-   bbox <- st_bbox(x)
-
    tryCatch({
+      tmp_vrt <- tempfile(fileext = ".vrt")
+      gdal_utils("buildvrt",
+                 source = urls,
+                 destination = tmp_vrt,
+                 quiet = FALSE,
+                 options = c(if (overwrite) "-overwrite" else ""))
+
       gdal_utils("warp",
-                 source = url,
+                 source = tmp_vrt,
                  destination = filename,
                  quiet = FALSE,
-                 options = c("-tr", res, res, # -tr must be in the unit of the target SRS (-t_srs)
-                             "-t_srs", st_crs(crs)$input, #target crs
-                             "-te", bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax,
-                             "-te_srs", st_crs(crs)$input,
-                             "-overwrite"))
+                 options = c("-t_srs", st_crs(crs)$input,
+                             if (overwrite) "-overwrite" else ""))
    },warning = function(w) {
       warn <- conditionMessage(w)
 
       # bad resolution
-      if (startsWith(warn, "GDAL Error 1: Attempt")) {
-         stop(warn, " Check that `res` is given in the same coordinate system as `crs`.", call. = F)
-         # bad layer name
-      } else if (startsWith(warn, "GDAL Error 1: GDALWMS: Unable")) {
+      if (startsWith(warn, "GDAL Error 1")) {
          stop(" Check that `layer` is valid",  call. = F)
       }
    })

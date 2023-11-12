@@ -81,7 +81,7 @@ library(tmap)
 # Shape from the best town in France
 penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
-# For quick testing, use interactive = TRUE
+# For quick testing use interactive = TRUE
 raster <- get_wms_raster(x = penmarch, interactive = TRUE)
 
 # For specific data, choose apikey with get_apikey() and layer with get_layers_metadata()
