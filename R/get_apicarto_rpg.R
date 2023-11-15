@@ -79,7 +79,7 @@ get_apicarto_rpg <- function(x, annee, code_cultu = list(NULL), dTolerance = 0){
    # hit api and loop if there more than 1000 features
    resp <- Map(
       loop_api,
-      path = paste0("api/rpg/", version),
+      path = paste0("/api/rpg/", version),
       limit = 1000,
       "annee" = annee,
       "geom" = shp_to_geojson(x, crs = 4326, dTolerance = dTolerance),
