@@ -104,7 +104,7 @@ is_empty <- function(x){
 #' must be specified in meters.
 #'
 #' @importFrom jsonlite toJSON
-#' @importFrom sf st_make_valid st_transform st_geometry st_simplify
+#' @importFrom sf st_make_valid st_transform st_geometry st_simplify sf_use_s2
 #'
 #' @return A json string of class `character`
 #' @noRd

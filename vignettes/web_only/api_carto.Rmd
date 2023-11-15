@@ -94,7 +94,7 @@ Let's start by finding RPG from Penmarc'h town for years 2015. One of the limita
 
 ```{r rpg}
 penmarch  <- get_apicarto_cadastre("29158", type = "commune")
-rpg <- get_apicarto_rpg(penmarch, annee = 2015, dTolerance = 5) 
+rpg <- get_apicarto_rpg(penmarch, annee = 2015, dTolerance = 10) 
 
 # plot result
 tm_shape(penmarch)+
@@ -106,7 +106,7 @@ tm_shape(rpg)+
 The function is vectorized, which mean that query several years at the same time is possible. However, since 2014 the format of the RPG has changed. The function will therefore return a list with the parcels before and after 2014. Below an example showing evolution of RPG from 2013 to 2016.
 
 ```{r rpg_vect, message=FALSE}
-all_years_rpg <- get_apicarto_rpg(penmarch, annee = 2013:2016, dTolerance = 5) 
+all_years_rpg <- get_apicarto_rpg(penmarch, annee = 2013:2016, dTolerance = 10) 
 
 # plot evolution of rpg since 2010
 tm_shape(penmarch)+
@@ -132,7 +132,7 @@ For this example, let's find all potatoes, carrots and leeks.
 rpg <- get_apicarto_rpg(penmarch,
                         annee = 2020,
                         code_cultu = c("PTC", "CAR", "POR"),
-                        dTolerance = 5) 
+                        dTolerance = 10) 
 
 tm_shape(rpg)+
    tm_polygons("code_cultu",
@@ -175,11 +175,11 @@ The first step is to find out if urban planning document are available if it is 
 ```{r get_urban_plan, message=FALSE}
 # find out if documents are available
 penmarch <- get_apicarto_cadastre("29158", "commune")
-doc <- get_apicarto_gpu(penmarch, "document", dTolerance = 5) # complex geometry handle with dTolerance
+doc <- get_apicarto_gpu(penmarch, "document", dTolerance = 10) # complex geometry handle with dTolerance
 # Because NULL is returned, it means that penmarch dont have available urban planning document
 
 lanildut <- get_apicarto_cadastre("29112", "commune")
-doc <- get_apicarto_gpu(lanildut, "document",  dTolerance = 5) # complex geometry handle with dTolerance
+doc <- get_apicarto_gpu(lanildut, "document",  dTolerance = 10) # complex geometry handle with dTolerance
 # Six documents are available inside the geometry.
 # In reality, only one document exists for the commune of lanildut but because borders are not coherent with urban planning document, several communes are returned.
 
@@ -195,7 +195,7 @@ zone_urba <- get_apicarto_gpu(partition, ressource = "zone-urba")
 
 # click on polygon for legend
 tm_shape(zone_urba)+
-   tm_polygons("libelong",  legend.show = FALSE)
+   tm_polygons("libelong", legend.show = FALSE)
 
 ```
 
@@ -229,7 +229,7 @@ This api returns from a shape :
 This function is quite simple to use, only shape is needed. 
 
 ```{r viticole_penmarch, message=FALSE}
-viticole <- get_apicarto_viticole(penmarch, dTolerance = 5)
+viticole <- get_apicarto_viticole(penmarch, dTolerance = 10)
 
 # plot result
 tm_shape(viticole)+
