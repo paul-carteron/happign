@@ -16,7 +16,7 @@ IGN website"><meta property="og:image" content="https://paul-carteron.github.io/
     
     <a class="navbar-brand me-2" href="../index.html">happign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -152,7 +152,7 @@ geoservers. If <code>x</code> is set, then the <code>ecql_filter</code> comes in
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-tmap.github.io/tmap/" class="external-link">tmap</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Shape from the best town in France</span></span></span>
 <span class="r-in"><span><span class="va">penmarch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/penmarch.shp"</span>, package <span class="op">=</span> <span class="st">"happign"</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -171,14 +171,14 @@ geoservers. If <code>x</code> is set, then the <code>ecql_filter</code> comes in
 <span class="r-in"><span><span class="va">borders</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span><span class="va">penmarch</span>, <span class="va">apikey</span>, <span class="va">layer</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plotting result</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">borders</span>, fill <span class="op">=</span> <span class="cn">NULL</span>, borders <span class="op">=</span> <span class="st">"firebrick"</span><span class="op">)</span> <span class="co"># easy map</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">borders</span>, fill <span class="op">=</span> <span class="cn">NULL</span>, borders <span class="op">=</span> <span class="st">"firebrick"</span><span class="op">)</span> <span class="co"># easy map</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get forest_area of the best town in France</span></span></span>
 <span class="r-in"><span><span class="va">forest_area</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span>x <span class="op">=</span> <span class="va">borders</span>,</span></span>
 <span class="r-in"><span>                       apikey <span class="op">=</span> <span class="st">"environnement"</span>,</span></span>
 <span class="r-in"><span>                       layer <span class="op">=</span> <span class="st">"LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">forest_area</span>, fill <span class="op">=</span> <span class="st">"libelle"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">forest_area</span>, fill <span class="op">=</span> <span class="st">"libelle"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Using ECQL filters to query IGN server</span></span></span>
 <span class="r-in"><span><span class="co">## First find attributes of the layer</span></span></span>
@@ -189,14 +189,14 @@ geoservers. If <code>x</code> is set, then the <code>ecql_filter</code> comes in
 <span class="r-in"><span>                        apikey <span class="op">=</span> <span class="st">"administratif"</span>,</span></span>
 <span class="r-in"><span>                        layer <span class="op">=</span> <span class="st">"LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"</span>,</span></span>
 <span class="r-in"><span>                        ecql_filter <span class="op">=</span> <span class="st">"nom_m LIKE 'PLOU%'"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">plou_borders</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">plou_borders</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Combining ecql_filters</span></span></span>
 <span class="r-in"><span><span class="va">plou_borders_inf_2000</span> <span class="op">&lt;-</span> <span class="fu">get_wfs</span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># When x is NULL, all France is query</span></span></span>
 <span class="r-in"><span>                                 apikey <span class="op">=</span> <span class="st">"administratif"</span>,</span></span>
 <span class="r-in"><span>                                 layer <span class="op">=</span> <span class="st">"LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"</span>,</span></span>
 <span class="r-in"><span>                                 ecql_filter <span class="op">=</span> <span class="st">"nom_m LIKE 'PLOU%' AND population &lt; 2000"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">plou_borders</span><span class="op">)</span><span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">plou_borders_inf_2000</span>, fill <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">plou_borders</span><span class="op">)</span><span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">plou_borders_inf_2000</span>, fill <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
