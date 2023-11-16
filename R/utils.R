@@ -128,31 +128,3 @@ shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
    return(x)
 
 }
-
-#' @title rm_equal_layers
-#' @description Remove numerically equal layers.
-#'
-#' @param rast `SpatRaster` object.
-#'
-#' @importFrom terra minmax
-#' @return SpatRaster
-#' @noRd
-#'
-rm_equal_layers <- function(rast){
-
-   unique_layer <- dim(rast)[3] == 1
-   if (unique_layer){
-      return(rast)
-   }
-
-   diff_rast <- rast[[1]] - rast[[2]]
-   # minmax is used to reduce number of comparison to two, see ?all.equal example
-   duplicate_layers <- all(abs(minmax(diff_rast) < 1e-7))
-
-   if (duplicate_layers){
-      return(rast[[1]])
-   }
-
-   return(rast)
-
-}

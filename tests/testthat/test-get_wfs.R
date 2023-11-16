@@ -40,12 +40,12 @@ test_that("build_wfs_req", {
 
    cql_filters <- lapply(req_by_shp, function(x){x$body$data$cql_filter})
 
-   expect_match(cql_filters[[1]], "WITHIN(the_geom, POINT (47.813 -4.34", fixed = T)
-   expect_match(cql_filters[[2]], "WITHIN(the_geom, MULTIPOINT ((47.813", fixed = T)
-   expect_match(cql_filters[[3]], "WITHIN(the_geom, LINESTRING (47.813 ", fixed = T)
-   expect_match(cql_filters[[4]], "WITHIN(the_geom, MULTILINESTRING ((4", fixed = T)
-   expect_match(cql_filters[[5]], "WITHIN(the_geom, POLYGON ((47.813 -4", fixed = T)
-   expect_match(cql_filters[[6]], "WITHIN(the_geom, MULTIPOLYGON (((47.", fixed = T)
+   expect_match(cql_filters[[1]], "WITHIN%28the_geom%2C%20POINT%20%2847", fixed = T)
+   expect_match(cql_filters[[2]], "WITHIN%28the_geom%2C%20MULTIPOINT%20", fixed = T)
+   expect_match(cql_filters[[3]], "WITHIN%28the_geom%2C%20LINESTRING%20", fixed = T)
+   expect_match(cql_filters[[4]], "WITHIN%28the_geom%2C%20MULTILINESTRI", fixed = T)
+   expect_match(cql_filters[[5]], "WITHIN%28the_geom%2C%20POLYGON%20%28", fixed = T)
+   expect_match(cql_filters[[6]], "WITHIN%28the_geom%2C%20MULTIPOLYGON%", fixed = T)
 
    # if x = NULL there cannot be any spatial filters
    req <- build_wfs_req(x = NULL,
@@ -65,7 +65,7 @@ test_that("build_wfs_req", {
                         crs = 4326)
    ecql_filter <- req$body$data$cql_filter
    expect_match(ecql_filter,
-                "WITHIN(the_geom, POINT (47.813 -4.344)) AND ecql_filter1",
+                "WITHIN%28the_geom%2C%20POINT%20%2847.813%20-4.344%29%29%20AND%20ecql_filter1",
                 fixed = T)
 })
 
