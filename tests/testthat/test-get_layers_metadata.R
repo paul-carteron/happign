@@ -15,10 +15,22 @@ with_mock_dir("get_layers_metada_wms", {
 
       res <- get_layers_metadata("ortho", "wms")
 
-      expect_equal(dim(res), c(14, 3))
+      expect_equal(dim(res), c(12, 3))
       expect_equal(names(res),
                    c("Name", "Title", "Abstract"))
       })
+})
+
+with_mock_dir("get_layers_metada_wmts", {
+   # /!\ you have to manually change encoding to "ISO-8859-1" inside .xml or .R file from mocking
+   test_that("get_layers_metada_wmts", {
+
+      res <- get_layers_metadata("administratif", "wmts")
+
+      expect_equal(dim(res), c(4, 3))
+      expect_equal(names(res),
+                   c("Title", "Abstract", "Identifier"))
+   })
 })
 
 with_mock_dir("get_layers_metada_null", {

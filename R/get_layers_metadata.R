@@ -11,7 +11,7 @@
 #' information about these two Webservice formats.
 #'
 #' @importFrom httr2 req_perform req_url_path req_url_query request resp_body_xml
-#' @importFrom xml2 xml_find_all
+#' @importFrom xml2 xml_find_all xml_name xml_text
 #'
 #' @seealso
 #' [get_apikeys()]
@@ -39,7 +39,7 @@
 get_layers_metadata <- function(apikey,
                                 data_type) {
 
-   match.arg(data_type, c("wms", "wfs"))
+   match.arg(data_type, c("wms", "wfs", "wmts"))
 
    # check input ----
    # check parameter : apikey
@@ -55,17 +55,21 @@ get_layers_metadata <- function(apikey,
 
    version <- switch(data_type,
                      "wms" = "1.3.0",
-                     "wfs" = "2.0.0")
+                     "wfs" = "2.0.0",
+                     "wmts" = "1.0.0")
 
    path <- switch(data_type,
                   "wms" = "r",
-                  "wfs" = NULL)
+                  "wfs" = NULL,
+                  "wmts" = NULL)
 
    xpath <- switch(data_type,
-                   "wfs" = "//d1:FeatureType",
+                   # /*[position() <= 3] select first three node of each selected node
+                   "wfs" = "//d1:FeatureType/*[position() <= 3]",
                    # first element is always "Cache IGN" so I remove it with position()>1
-                   # parenthesis are needed for creating a node set but I don't get it
-                   "wms" =  "(//d1:Layer)[position()>1]")
+                   # parenthesis are needed for creating a node set but
+                   "wms" =  "(//d1:Layer)[position() > 1]/*[position() <= 3]",
+                   "wmts" = "//d1:Layer/*[position() <= 2 or self::ows:Identifier]")
 
    req <- request("https://wxs.ign.fr/") |>
       req_url_path(apikey,"geoportail", path) |>
@@ -84,11 +88,9 @@ get_layers_metadata <- function(apikey,
       return(NULL)
    }
 
-   clean_metadata <- suppressWarnings(
-      as.data.frame(do.call(rbind, as_list(req)))[, 1:3])
-   clean_metadata <-
-      as.data.frame(apply(clean_metadata, c(1, 2), unlist))
+   metadata <- as.data.frame(matrix(xml_text(req), ncol = 3, byrow = T)) |>
+      setNames(xml_name(req)[1:3])
 
-   return(clean_metadata)
+   return(metadata)
 }
 
