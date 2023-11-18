@@ -1,5 +1,6 @@
 # happign 0.2.1
 * Fix `get_wms_raster()` because of [#21](https://github.com/paul-carteron/happign/issues/21)
+* Add support to wmts to `get_layers_metadata()`
 
 # happign 0.2.0
 * `get_wms_raster` is made faster by using gdalwarp from `sf::gdal_utils`. 
