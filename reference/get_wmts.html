@@ -69,10 +69,11 @@ tiles.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_wmts</span><span class="op">(</span><span class="va">x</span>,</span>
 <span>         apikey <span class="op">=</span> <span class="st">"ortho"</span>,</span>
 <span>         layer <span class="op">=</span> <span class="st">"ORTHOIMAGERY.ORTHOPHOTOS"</span>,</span>
-<span>         zoom <span class="op">=</span> <span class="fl">6L</span>,</span>
+<span>         zoom <span class="op">=</span> <span class="fl">10L</span>,</span>
 <span>         crs <span class="op">=</span> <span class="fl">2154</span>,</span>
 <span>         filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span>,</span>
-<span>         overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span>         overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>         interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -115,6 +116,11 @@ see details for more info.</p></dd>
 
 <dt>overwrite</dt>
 <dd><p>If TRUE, output raster is overwrite.</p></dd>
+
+
+<dt>interactive</dt>
+<dd><p><code>logical</code>; If TRUE, interactive menu ask for
+<code>apikey</code> and <code>layer</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
