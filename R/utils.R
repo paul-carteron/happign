@@ -128,3 +128,18 @@ shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
    return(x)
 
 }
+
+#' @title interactive_mode
+#' @description menu for selectlecting apikey and layer
+#'
+#' @return list of character with apikey and layer
+#' @noRd
+interactive_mode <- function(){
+   apikeys <- get_apikeys()
+   apikey <- apikeys[menu(apikeys)]
+
+   layers <- get_layers_metadata(apikey, data_type = "wms")$Name
+   layer <- layers[menu(layers)]
+
+   return(list("apikey" = apikey, "layer" = layer))
+}

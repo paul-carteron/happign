@@ -12,7 +12,8 @@
 #'          zoom = 10L,
 #'          crs = 2154,
 #'          filename = tempfile(fileext = ".tif"),
-#'          overwrite = FALSE)
+#'          overwrite = FALSE,
+#'          interactive = FALSE)
 #'
 #' @param x Object of class `sf` or `sfc`. Needs to be located in
 #' France.
@@ -33,6 +34,8 @@
 #' filename. Default drivers is ".tif" but all gdal drivers are supported,
 #' see details for more info.
 #' @param overwrite If TRUE, output raster is overwrite.
+#' @param interactive `logical`; If TRUE, interactive menu ask for
+#' `apikey` and `layer`.
 #'
 #' @return
 #' `SpatRaster` object from `terra` package.
@@ -55,14 +58,24 @@ get_wmts <- function(x,
                      zoom = 10L,
                      crs = 2154,
                      filename = tempfile(fileext = ".tif"),
-                     overwrite = FALSE){
+                     overwrite = FALSE,
+                     interactive = FALSE){
 
-   # check input ----
+   # check x ----
    # x
    if (!inherits(x, c("sf", "sfc"))) {
       stop("`x` must be of class sf or sfc.", call. = F)
    }
 
+   # interactive mode ----
+   # if TRUE menu ask for apikey and layer name
+   if (interactive){
+      choice <- interactive_mode()
+      apikey <- choice$apikey
+      layer <- choice$layer
+   }
+
+   # check other input ----
    # apikey
    is_apikey <- apikey %in% get_apikeys()
    is_personal_key <- grepl("^[[:alnum:]]{24}$", apikey)
@@ -84,6 +97,7 @@ get_wmts <- function(x,
       zoom <- as.integer(zoom)
    }
 
+   # overwrite ----
    # if filename exist and overwrite is set to FALSE, raster is loaded
    if (file.exists(filename) && !overwrite) {
       rast <- rast(filename)
@@ -120,7 +134,7 @@ get_wmts <- function(x,
                  config_options = c(GDAL_ENABLE_WMS_CACHE = "NO")
       )
    }, error = function(e) {
-      stop("Check that `layer` is valid",  call. = F)
+            stop("Check that `layer` is valid",  call. = F)
    })
 
    # import and set rast to RGB, so you can use plot insteead of terra::plotRGB

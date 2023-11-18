@@ -57,3 +57,4 @@ test_that("wms_multipoly", {
    expect_equal(dim(rast), c(5, 7, 4))
 
 })
+

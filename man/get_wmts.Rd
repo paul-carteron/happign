@@ -7,10 +7,11 @@
 get_wmts(x,
          apikey = "ortho",
          layer = "ORTHOIMAGERY.ORTHOPHOTOS",
-         zoom = 6L,
+         zoom = 10L,
          crs = 2154,
          filename = tempfile(fileext = ".tif"),
-         overwrite = TRUE)
+         overwrite = FALSE,
+         interactive = FALSE)
 }
 \arguments{
 \item{x}{Object of class \code{sf} or \code{sfc}. Needs to be located in
@@ -38,6 +39,9 @@ filename. Default drivers is ".tif" but all gdal drivers are supported,
 see details for more info.}
 
 \item{overwrite}{If TRUE, output raster is overwrite.}
+
+\item{interactive}{\code{logical}; If TRUE, interactive menu ask for
+\code{apikey} and \code{layer}.}
 }
 \value{
 \code{SpatRaster} object from \code{terra} package.

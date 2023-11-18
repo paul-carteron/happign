@@ -142,13 +142,12 @@ get_wfs <- function(x = NULL,
    }
 
 
-   # interactive session ----
+   # interactive mode ----
+   # if TRUE menu ask for apikey and layer name
    if (interactive){
-      apikeys <- get_apikeys()
-      apikey <- apikeys[menu(apikeys)]
-
-      layers <- get_layers_metadata(apikey, data_type = "wfs")$Name
-      layer <- layers[menu(layers)]
+      choice <- interactive_mode()
+      apikey <- choice$apikey
+      layer <- choice$layer
    }
 
    # prep url and hit api ----
