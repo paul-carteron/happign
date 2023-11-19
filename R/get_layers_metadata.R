@@ -93,4 +93,3 @@ get_layers_metadata <- function(apikey,
 
    return(metadata)
 }
-
