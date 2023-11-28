@@ -1,6 +1,6 @@
 Package: happign
 Title: R Interface to 'IGN' Web Services
-Version: 0.2.1
+Version: 0.2.1-1
 Authors@R: 
     person("Paul", "Carteron", , "carteronpaul@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6942-6662"))

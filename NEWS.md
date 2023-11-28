@@ -1,5 +1,8 @@
+# happign 0.2.1-1
+* Fix bug when creating bbox `get_wms_raster()` get request when crs isn't latlong.
+
 # happign 0.2.1
-* Fix `get_wms_raster()` because of [#21](https://github.com/paul-carteron/happign/issues/21)
+* Fix `get_wms_raster()` because of [#21](https://github.com/paul-carteron/happign/issues/21). Now using vrt and warping combine.
 * Add support to wmts to `get_layers_metadata()`
 
 # happign 0.2.0
