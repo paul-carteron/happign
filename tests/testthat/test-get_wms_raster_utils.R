@@ -61,3 +61,22 @@ test_that("create_urls works", {
    expect_length(urls, 2)
    expect_match(urls[1], "base_url&bbox=47.*,-4.*,47.*,-4.*&width=.*&height=")
 })
+test_that("create_urls longlat", {
+
+   urls_2154 <- create_urls(st_transform(x, 2154),
+                            base_url = "base_url",
+                            res = 1)
+   urls_4326 <- create_urls(st_transform(x, 4326),
+                            base_url = "base_url",
+                            res = 1)
+
+   expect_type(urls_2154, "character")
+   expect_type(urls_4326, "character")
+   expect_length(urls_2154, 1)
+   expect_length(urls_4326, 1)
+
+   expect_match(urls_2154,
+                "base_url&bbox=148682.*,6769648.*&width=.*&height=")
+   expect_match(urls_4326,
+                "base_url&bbox=47.*,-4.*&width=.*&height=")
+})
