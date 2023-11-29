@@ -8,16 +8,16 @@
 
 There were no ERRORs or WARNINGs for each environnement.
 
+RQ : I test under 0.2.2-1 but I finally rename version 0.2.2
+
 ### Windows Server 2022, R-devel, 64 bit
 
-happign 0.2.1: NOTE
+happign 0.2.1-1: NOTE
 
-
-Build ID:	happign_0.2.1.tar.gz-477e6ff9ebbc425f9c13f0c5ad71a651
+Build ID:	happign_0.2.1-1.tar.gz-cdd9f46faead4b49996092cc5de06dfa
 Platform:	Windows Server 2022, R-devel, 64 bit
-Submitted:	7 minutes 3.3 seconds ago
-Build time:	7 minutes 0.8 seconds
-
+Submitted:	8 minutes 25.2 seconds ago
+Build time:	7 minutes 54.4 seconds
 NOTES:
 * checking for non-standard things in the check directory ... NOTE
 Found the following files/directories:
@@ -28,26 +28,25 @@ Found the following files/directories:
 
 ### Ubuntu Linux 20.04.1 LTS, R-release, GCC
 
-happign 0.2.1: NOTE
+happign 0.2.1-1: NOTE
 
-Build ID:	happign_0.2.1.tar.gz-0722a249a50e4cd19c45e6b92e8dd160
+
+Build ID:	happign_0.2.1-1.tar.gz-19366ffb55ed4062a91a3d8c6f726411
 Platform:	Ubuntu Linux 20.04.1 LTS, R-release, GCC
-Submitted:	1 hour 4 minutes 57.3 seconds ago
-Build time:	1 hour 4 minutes 52 seconds
-
+Submitted:	3 hours 35 minutes 25.7 seconds ago
+Build time:	2 hours 44 minutes 45.1 seconds
 NOTES:
 * checking HTML version of manual ... NOTE
 Skipping checking HTML validation: no command 'tidy' found
 
 ### Fedora Linux, R-devel, clang, gfortran
 
-happign 0.2.1: NOTE
+happign 0.2.1-1: NOTE
 
-Build ID:	happign_0.2.1.tar.gz-85ec9ef126cc40a3a504178edf07e393
-Platform:	Fedora Linux, R-devel, clang, gfortran
-Submitted:	55 minutes 50 seconds ago
-Build time:	55 minutes 45.4 seconds
-
+Build ID:	happign_0.2.1-1.tar.gz-a0110e950d84493d93d5b8a7e5f763ac
+Platform:	Fedora Linux, R-devel, GCC
+Submitted:	3 hours 7 minutes 48.2 seconds ago
+Build time:	2 hours 46 minutes 20.5 seconds
 NOTES:
-* checking HTML version of manual ... NOTE
-Skipping checking HTML validation: no command 'tidy' found
+* checking data for non-ASCII characters ... NOTE
+  Note: found 7592 marked UTF-8 strings
