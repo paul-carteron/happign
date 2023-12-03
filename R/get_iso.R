@@ -56,6 +56,8 @@
 #'varies according to several parameters. At present, the parameter concerned
 #'is cost_value, i.e. the requested time or distance.
 #'
+#' @seealso [get_isodistance], [get_isochrone]
+#'
 #' @return object of class `sf` with `POLYGON` geometry
 #'
 #' @importFrom sf read_sf st_make_valid
@@ -161,8 +163,7 @@ build_iso_query <- function(point, source, value,
 }
 
 #' @title Calculate isodistance
-#' @description
-#' Wrapper function to calculate isodistance from `get_iso`.
+#' @describeIn get_iso Wrapper function to calculate isodistance from [get_iso].
 #'
 #' @usage
 #' get_isodistance(x,
@@ -175,8 +176,6 @@ build_iso_query <- function(point, source, value,
 #'
 #' @inheritParams get_iso
 #' @param dist `numeric`; A quantity of time.
-#' @param units `character`; Unit in which distance are expressed in the answer.
-#' Should be one of "meter" or "kilometer".
 #'
 get_isodistance <- function(x,
                             dist,
@@ -200,9 +199,9 @@ get_isodistance <- function(x,
 
    return(res)
 }
+
 #' @title Calculate isochrone
-#' @description
-#' Wrapper function to calculate isochrone from `get_iso`.
+#' @describeIn get_iso Wrapper function to calculate isochrone from [get_iso].
 #'
 #' @usage
 #' get_isochrone(x,
@@ -215,8 +214,6 @@ get_isodistance <- function(x,
 #'
 #' @inheritParams get_iso
 #' @param time `numeric`; A quantity of time.
-#' @param units `character`; Unit in which times are expressed in the answer.
-#' Should be one of "hour", "minute" or "second".
 #'
 get_isochrone <- function(x,
                           time,

@@ -2,6 +2,8 @@
 % Please edit documentation in R/get_iso.R
 \name{get_iso}
 \alias{get_iso}
+\alias{get_isodistance}
+\alias{get_isochrone}
 \title{isochronous/isodistance  calculations}
 \usage{
 get_iso(x,
@@ -13,6 +15,22 @@ get_iso(x,
         direction = "departure",
         source = "iso",
         constraints = NULL)
+
+get_isodistance(x,
+                dist,
+                units = "meter",
+                source = "iso",
+                profile = "car",
+                direction = "departure",
+                constraints = NULL)
+
+get_isochrone(x,
+              time,
+              units = "minute",
+              source = "iso",
+              profile = "car",
+              direction = "departure",
+              constraints = NULL)
 }
 \arguments{
 \item{x}{Object of class \code{sf} or \code{sfc} with POINT geometry. There may be
@@ -46,6 +64,10 @@ available (default "iso"). See section \code{SOURCE} for further information.}
 
 \item{constraints}{Used to express constraints on the characteristics
 to calculate isochrones/isodistances. See section \code{CONSTRAINTS}.}
+
+\item{dist}{\code{numeric}; A quantity of time.}
+
+\item{time}{\code{numeric}; A quantity of time.}
 }
 \value{
 object of class \code{sf} with \code{POLYGON} geometry
@@ -56,6 +78,13 @@ IGN API on the Géoportail platform. The reference data comes from the IGN
 BD TOPO® database. For further information see IGN
 \href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc/isochrone/api}{documentation.}
 }
+\section{Functions}{
+\itemize{
+\item \code{get_isodistance()}: Wrapper function to calculate isodistance from \link{get_iso}.
+
+\item \code{get_isochrone()}: Wrapper function to calculate isochrone from \link{get_iso}.
+
+}}
 \section{SOURCE}{
 
 
@@ -74,3 +103,6 @@ varies according to several parameters. At present, the parameter concerned
 is cost_value, i.e. the requested time or distance.
 }
 
+\seealso{
+\link{get_isodistance}, \link{get_isochrone}
+}
