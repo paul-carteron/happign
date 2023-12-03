@@ -40,6 +40,9 @@
     <loc>https://paul-carteron.github.io/happign/reference/are_queryable.html</loc>
   </url>
   <url>
+    <loc>https://paul-carteron.github.io/happign/reference/build_iso_query.html</loc>
+  </url>
+  <url>
     <loc>https://paul-carteron.github.io/happign/reference/cog_2023.html</loc>
   </url>
   <url>
@@ -59,6 +62,9 @@
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_apikeys.html</loc>
+  </url>
+  <url>
+    <loc>https://paul-carteron.github.io/happign/reference/get_iso.html</loc>
   </url>
   <url>
     <loc>https://paul-carteron.github.io/happign/reference/get_last_news.html</loc>
