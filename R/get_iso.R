@@ -11,7 +11,7 @@
 #'         type = "time",
 #'         profile = "pedestrian",
 #'         time_unit = "minute",
-#'         distance_unit = "kilometer",
+#'         distance_unit = "meter",
 #'         direction = "departure",
 #'         source = "iso",
 #'         constraints = NULL)
@@ -68,14 +68,18 @@ get_iso <- function(x,
                     type = "time",
                     profile = "pedestrian",
                     time_unit = "minute",
-                    distance_unit = "kilometer",
+                    distance_unit = "meter",
                     direction = "departure",
                     source = "iso",
                     constraints = NULL){
 
-   match.arg(source, c("iso", "pgr"))
+   # test input args ----
+   match.arg(type, c("time", "distance"))
    match.arg(profile, c("car", "pedestrian"))
+   match.arg(time_unit, c("hour", "minute", "second", NULL))
+   match.arg(distance_unit, c("meter", "kilometer",  NULL))
    match.arg(direction, c("departure", "arrival"))
+   match.arg(source, c("iso", "pgr"))
 
    x <- x_to_iso(x)
 
@@ -168,7 +172,7 @@ build_iso_query <- function(point, source, value,
 #' @usage
 #' get_isodistance(x,
 #'                 dist,
-#'                 units = "meter",
+#'                 unit = "meter",
 #'                 source = "iso",
 #'                 profile = "car",
 #'                 direction = "departure",
@@ -176,24 +180,21 @@ build_iso_query <- function(point, source, value,
 #'
 #' @inheritParams get_iso
 #' @param dist `numeric`; A quantity of time.
-#' @param units see `time_unit` and `distance_unit` param.
 #'
 get_isodistance <- function(x,
                             dist,
-                            units = "meter",
+                            unit = "meter",
                             source = "iso",
                             profile = "car",
                             direction = "departure",
                             constraints = NULL){
-
-   match.arg(units, c("meter", "kilometer"))
 
    res <- get_iso(x,
                   value = dist,
                   type = "distance",
                   profile = profile,
                   time_unit = NULL,
-                  distance_unit = units,
+                  distance_unit = unit,
                   direction = direction,
                   source = source,
                   constraints = NULL)
@@ -207,7 +208,7 @@ get_isodistance <- function(x,
 #' @usage
 #' get_isochrone(x,
 #'               time,
-#'               units = "minute",
+#'               unit = "minute",
 #'               source = "iso",
 #'               profile = "car",
 #'               direction = "departure",
@@ -215,23 +216,22 @@ get_isodistance <- function(x,
 #'
 #' @inheritParams get_iso
 #' @param time `numeric`; A quantity of time.
+#' @param unit see `time_unit` and `distance_unit` param.
 #'
 get_isochrone <- function(x,
                           time,
-                          units = "minute",
+                          unit = "minute",
                           source = "iso",
                           profile = "car",
                           direction = "departure",
                           constraints = NULL){
 
-   match.arg(units, c("hour", "minute", "second"))
-
    res <- get_iso(x,
                   value = time,
                   type = "time",
                   profile = profile,
-                  time_unit = NULL,
-                  distance_unit = units,
+                  time_unit = unit,
+                  distance_unit = NULL,
                   direction = direction,
                   source = source,
                   constraints = NULL)

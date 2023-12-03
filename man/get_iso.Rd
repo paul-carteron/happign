@@ -11,14 +11,14 @@ get_iso(x,
         type = "time",
         profile = "pedestrian",
         time_unit = "minute",
-        distance_unit = "kilometer",
+        distance_unit = "meter",
         direction = "departure",
         source = "iso",
         constraints = NULL)
 
 get_isodistance(x,
                 dist,
-                units = "meter",
+                unit = "meter",
                 source = "iso",
                 profile = "car",
                 direction = "departure",
@@ -26,7 +26,7 @@ get_isodistance(x,
 
 get_isochrone(x,
               time,
-              units = "minute",
+              unit = "minute",
               source = "iso",
               profile = "car",
               direction = "departure",
@@ -67,7 +67,7 @@ to calculate isochrones/isodistances. See section \code{CONSTRAINTS}.}
 
 \item{dist}{\code{numeric}; A quantity of time.}
 
-\item{units}{see \code{time_unit} and \code{distance_unit} param.}
+\item{unit}{see \code{time_unit} and \code{distance_unit} param.}
 
 \item{time}{\code{numeric}; A quantity of time.}
 }
