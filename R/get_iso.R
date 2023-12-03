@@ -176,6 +176,7 @@ build_iso_query <- function(point, source, value,
 #'
 #' @inheritParams get_iso
 #' @param dist `numeric`; A quantity of time.
+#' @param units see `time_unit` and `distance_unit` param.
 #'
 get_isodistance <- function(x,
                             dist,

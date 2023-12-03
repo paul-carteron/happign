@@ -67,6 +67,8 @@ to calculate isochrones/isodistances. See section \code{CONSTRAINTS}.}
 
 \item{dist}{\code{numeric}; A quantity of time.}
 
+\item{units}{see \code{time_unit} and \code{distance_unit} param.}
+
 \item{time}{\code{numeric}; A quantity of time.}
 }
 \value{
