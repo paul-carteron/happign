@@ -74,14 +74,14 @@ BD TOPO® database. For further information see IGN
 <span>        type <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>        profile <span class="op">=</span> <span class="st">"pedestrian"</span>,</span>
 <span>        time_unit <span class="op">=</span> <span class="st">"minute"</span>,</span>
-<span>        distance_unit <span class="op">=</span> <span class="st">"kilometer"</span>,</span>
+<span>        distance_unit <span class="op">=</span> <span class="st">"meter"</span>,</span>
 <span>        direction <span class="op">=</span> <span class="st">"departure"</span>,</span>
 <span>        source <span class="op">=</span> <span class="st">"iso"</span>,</span>
 <span>        constraints <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">get_isodistance</span><span class="op">(</span><span class="va">x</span>,</span>
 <span>                <span class="va">dist</span>,</span>
-<span>                units <span class="op">=</span> <span class="st">"meter"</span>,</span>
+<span>                unit <span class="op">=</span> <span class="st">"meter"</span>,</span>
 <span>                source <span class="op">=</span> <span class="st">"iso"</span>,</span>
 <span>                profile <span class="op">=</span> <span class="st">"car"</span>,</span>
 <span>                direction <span class="op">=</span> <span class="st">"departure"</span>,</span>
@@ -89,7 +89,7 @@ BD TOPO® database. For further information see IGN
 <span></span>
 <span><span class="fu">get_isochrone</span><span class="op">(</span><span class="va">x</span>,</span>
 <span>              <span class="va">time</span>,</span>
-<span>              units <span class="op">=</span> <span class="st">"minute"</span>,</span>
+<span>              unit <span class="op">=</span> <span class="st">"minute"</span>,</span>
 <span>              source <span class="op">=</span> <span class="st">"iso"</span>,</span>
 <span>              profile <span class="op">=</span> <span class="st">"car"</span>,</span>
 <span>              direction <span class="op">=</span> <span class="st">"departure"</span>,</span>
@@ -152,7 +152,7 @@ to calculate isochrones/isodistances. See section <code>CONSTRAINTS</code>.</p><
 <dd><p><code>numeric</code>; A quantity of time.</p></dd>
 
 
-<dt>units</dt>
+<dt>unit</dt>
 <dd><p>see <code>time_unit</code> and <code>distance_unit</code> param.</p></dd>
 
 
