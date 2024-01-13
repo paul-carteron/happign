@@ -80,7 +80,7 @@ test_that("shp_to_geojson crs", {
 })
 test_that("shp_to_geojson dTolerance", {
 
-   x <- st_buffer(poly, 1)
+   x <- st_buffer(st_transform(poly, 2154), 1)
    geojson <- shp_to_geojson(x)
    simplified_geojson <- shp_to_geojson(x, 4326, 10)
    expect_true(nchar(geojson) > nchar(simplified_geojson))

@@ -1,4 +1,4 @@
-x <- st_buffer(poly, 500)
+x <- st_buffer(st_transform(poly, 2154), 500)
 
 with_mock_dir("get_apicarto_rpg", {
    #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
@@ -9,12 +9,12 @@ with_mock_dir("get_apicarto_rpg", {
 
       # simple poly
       res <- get_apicarto_rpg(x, 2020, dTolerance = 10)
-      expect_equal(dim(res), c(9, 9))
+      expect_equal(dim(res), c(8, 9))
       expect_s3_class(res, "sf")
 
       # multiple years from same version
       res <- get_apicarto_rpg(x, 2020:2021, dTolerance = 10)
-      expect_equal(dim(res), c(18, 9))
+      expect_equal(dim(res), c(16, 9))
       expect_s3_class(res, "sf")
 
       # multiple years from different version
@@ -24,17 +24,17 @@ with_mock_dir("get_apicarto_rpg", {
 
       # code_cultu
       res <- get_apicarto_rpg(x, 2021, code_cultu = "MIE", dTolerance = 10)
-      expect_equal(dim(res), c(3, 9))
+      expect_equal(dim(res), c(2, 9))
       expect_s3_class(res, "sf")
 
       # multiple code_cultu, multiple years
       res <- get_apicarto_rpg(x, 2020:2021, code_cultu = c("MIE", "PPH"), dTolerance = 10)
-      expect_equal(dim(res), c(6, 9))
+      expect_equal(dim(res), c(5, 9))
       expect_s3_class(res, "sf")
 
       # vectorization
       res <- get_apicarto_rpg(x, 2020:2021, code_cultu = "MIE", dTolerance = 10)
-      expect_equal(res$code_cultu, rep("MIE", 6))
+      expect_equal(res$code_cultu, rep("MIE", 4))
       expect_s3_class(res, "sf")
 
    })

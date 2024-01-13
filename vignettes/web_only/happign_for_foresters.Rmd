@@ -167,8 +167,8 @@ layers <- get_layers_metadata("altimetrie", "wms")
 mnt_name <- layers[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
 mns_name <- layers[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
-mnt <- get_wms_raster(borders, "altimetrie", res = 5, mnt_name)
-mns <- get_wms_raster(borders, "altimetrie", res = 5, mns_name)
+mnt <- get_wms_raster(borders, "altimetrie", mnt_name, res = 5)
+mns <- get_wms_raster(borders, "altimetrie", mns_name, res = 5)
 
 level_curve <- get_wfs(borders, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe",
                        spatial_filter = "intersects") |> 

@@ -136,7 +136,7 @@ get_wms_raster <- function(x,
                          "&layers=", layer,
                          "&styles=", "",
                          "&format=image/geotiff",
-                         "&crs=EPSG:", st_crs(grid)$epsg)
+                         "&crs=", st_crs(grid)$srid)
       urls <- create_urls(grid, base_url, res)
 
       rast <- download_wms(urls, crs, filename, overwrite)
@@ -152,7 +152,6 @@ get_wms_raster <- function(x,
 #' France.
 #'
 #' @importFrom sf st_bbox st_linestring st_length st_sfc st_crs
-#' @importFrom units drop_units
 #'
 #' @noRd
 bbox_dim <- function(x){
@@ -167,8 +166,9 @@ bbox_dim <- function(x){
    height <- st_linestring(rbind(c(bb$xmin, bb$ymin), c(bb$xmin, bb$ymax)))
 
    width_height <- st_length(st_sfc(list(width, height), crs = st_crs(x))) |>
-      setNames(c("width", "height")) |>
-      units::drop_units() #replace by as numeric to avoid dependency ?
+      as.numeric() |>
+      setNames(c("width", "height"))
+
 
    return(width_height)
 }
