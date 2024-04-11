@@ -1,14 +1,11 @@
 #' @title Download WFS layer
 #'
 #' @description
-#' Read simple features from IGN Web Feature Service (WFS).
-#' Three minimal info are needed : a location, an apikey
-#' and the name of layer. You can find those information from
-#' [IGN website](https://geoservices.ign.fr/services-web-experts)
+#' Read simple features from IGN Web Feature Service (WFS) from location
+#' and name of layer.
 #'
 #' @usage
 #' get_wfs(x = NULL,
-#'         apikey = NULL,
 #'         layer = NULL,
 #'         filename = NULL,
 #'         spatial_filter = "bbox",
@@ -18,20 +15,17 @@
 #'
 #' @param x Object of class `sf` or `sfc`. Needs to be located in
 #' France.
-#' @param apikey `character`; API key from `get_apikeys()` or directly
-#' from [IGN website](https://geoservices.ign.fr/services-web-experts)
-#' @param layer `character`; name of the layer from `get_layers_metadata(apikey, "wfs")`
+#' @param layer `character`; name of the layer from `get_layers_metadata("wfs")`
 #' or directly from
 #' [IGN website](https://geoservices.ign.fr/services-web-experts)
-#' @param filename Either a character string naming a file or a connection open
+#' @param filename `character`;Either a string naming a file or a connection open
 #' for writing. (ex : "test.shp" or "~/test.shp")
 #' @param spatial_filter `character`; spatial predicate from ECQL language.
 #' See detail and examples for more info.
 #' @param ecql_filter `character`; corresponding to an ECQL query.
 #' See detail and examples for more info.
 #' @param overwrite `logical`; if TRUE, file is overwrite.
-#' @param interactive `character`; if TRUE, no need to specify `apikey`
-#' and `layer`, you'll be ask.
+#' @param interactive `character`; if TRUE, no need to specify `layer`, you'll be ask.
 #'
 #' @return
 #' `sf` object from `sf` package or `NULL` if no data.
@@ -58,7 +52,7 @@
 #' [here](https://docs.geoserver.org/latest/en/user/tutorials/cql/cql_tutorial.html)
 #'
 #' @seealso
-#' [get_apikeys()], [get_layers_metadata()]
+#' [get_layers_metadata()]
 #'
 #' @examples
 #' \dontrun{
@@ -74,43 +68,38 @@
 #'
 #' # For specific use, choose apikey with get_apikey() and layer with get_layers_metadata()
 #' ## Getting borders of best town in France
-#' apikey <- get_apikeys()[1]
-#' metadata_table <- get_layers_metadata(apikey, "wfs")
-#' layer <- metadata_table[32,1] # LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune
+#' metadata_table <- get_layers_metadata("wfs")
+#' layer <- metadata_table[237,1] # LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune
 #'
 #' # Downloading borders
-#' borders <- get_wfs(penmarch, apikey, layer)
+#' borders <- get_wfs(penmarch, layer)
 #'
 #' # Plotting result
 #' qtm(borders, fill = NULL, borders = "firebrick") # easy map
 #'
 #' # Get forest_area of the best town in France
 #' forest_area <- get_wfs(x = borders,
-#'                        apikey = "environnement",
 #'                        layer = "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape")
 #'
-#' qtm(forest_area, fill = "libelle")
+#' qtm(forest_area, fill = "nom_typn")
 #'
 #' # Using ECQL filters to query IGN server
 #' ## First find attributes of the layer
-#' attrs <- get_wfs_attributes(apikey, layer)
+#' attrs <- get_wfs_attributes(layer)
 #'
 #' ## e.g. : find all commune's name starting by "plou"
 #' plou_borders <- get_wfs(x = NULL, # When x is NULL, all France is query
-#'                         apikey = "administratif",
 #'                         layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
 #'                         ecql_filter = "nom_m LIKE 'PLOU%'")
 #' qtm(plou_borders)
 #'
 #' ## Combining ecql_filters
 #' plou_borders_inf_2000 <- get_wfs(x = NULL, # When x is NULL, all France is query
-#'                                  apikey = "administratif",
 #'                                  layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
 #'                                  ecql_filter = "nom_m LIKE 'PLOU%' AND population < 2000")
 #' qtm(plou_borders)+ qtm(plou_borders_inf_2000, fill = "red")
 #' }
 get_wfs <- function(x = NULL,
-                    apikey = NULL,
                     layer = NULL,
                     filename = NULL,
                     spatial_filter = "bbox",
@@ -143,10 +132,8 @@ get_wfs <- function(x = NULL,
 
 
    # interactive mode ----
-   # if TRUE menu ask for apikey and layer name
    if (interactive){
-      choice <- interactive_mode()
-      apikey <- choice$apikey
+      choice <- interactive_mode("wfs")
       layer <- choice$layer
    }
 
@@ -154,13 +141,13 @@ get_wfs <- function(x = NULL,
    # When spatial filter "bbox" isn't used, crs are needed
    is_bbox <- sum(spatial_filter == "bbox") == 1
    if(!is_bbox){
-      crs <- get_wfs_default_crs(apikey, layer)
+      crs <- get_wfs_default_crs(layer)
    }
 
    # hit api and loop if there more than 1000 features
-   req <- build_wfs_req(x, apikey, layer, spatial_filter,
+   req <- build_wfs_req(x, layer, spatial_filter,
                         ecql_filter, startindex = 0, crs)
-   resp <- hit_api_wfs(req, ecql_filter, apikey)
+   resp <- hit_api_wfs(req, ecql_filter)
 
    # Succesful request but no feature found
    if (is_empty(resp)){
@@ -200,7 +187,6 @@ get_wfs <- function(x = NULL,
 #' @description construct url
 #'
 #' @param x Object of class `sf`. Needs to be located in France.
-#' @param apikey API key from `get_apikeys()`
 #' @param layer Name of the layer
 #' @param spatial_filter See ?get_wfs
 #' @param ecql_filter See ?get_wfs
@@ -209,7 +195,6 @@ get_wfs <- function(x = NULL,
 #' @noRd
 #'
 build_wfs_req <- function(x,
-                          apikey,
                           layer,
                           spatial_filter = NULL,
                           ecql_filter = NULL,
@@ -221,8 +206,7 @@ build_wfs_req <- function(x,
    spatial_predicate <- NULL
 
    if (shape_exist & spatial_filter_exist){
-      spatial_predicate <- construct_spatial_filter(x, spatial_filter,
-                                                    crs, apikey)
+      spatial_predicate <- construct_spatial_filter(x, spatial_filter, crs)
    }
 
    all_filter <- paste(c(spatial_predicate, ecql_filter), collapse = " AND ")
@@ -238,9 +222,8 @@ build_wfs_req <- function(x,
       count = 1000
    )
 
-   request <- request("https://wxs.ign.fr") |>
-      req_url_path_append(apikey) |>
-      req_url_path_append("geoportail/wfs") |>
+   request <- request("https://data.geopf.fr/") |>
+      req_url_path_append("wfs/ows") |>
       req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
       req_url_query(!!!params) |>
       req_body_form(cql_filter=all_filter)
@@ -251,12 +234,10 @@ build_wfs_req <- function(x,
 #' format url and request it
 #' @param req httr2 request from `build_wfs_req`
 #' @param ecql_filter see `?get_wfs`
-#' @param apikey see `?get_wfs`
 #' @noRd
 #'
 hit_api_wfs <- function(req,
-                        ecql_filter,
-                        apikey) {
+                        ecql_filter) {
 
    tryCatch({
       resp <- req_perform(req) |>
@@ -270,7 +251,6 @@ hit_api_wfs <- function(req,
             stop("Please check that :\n",
                  "- x is not empty ;\n",
                  "- layer is valid by running ",
-                 "`get_layers_metadata(\"", apikey, "\", \"wfs\")`\n",
                  call. = F)
          }})
 
@@ -313,8 +293,7 @@ save_wfs <- function(filename, resp, overwrite, quiet = F){
 #'
 construct_spatial_filter <- function(x = NULL,
                                      spatial_filter = NULL,
-                                     crs = NULL,
-                                     apikey = NULL){
+                                     crs = NULL){
 
    # Test for units
    units <- c("feet", "meters", "statute miles", "nautical miles", "kilometers")
@@ -341,7 +320,7 @@ construct_spatial_filter <- function(x = NULL,
    # Build final spatial filter
    spatial_filter <- sprintf("%s(%s, %s)",
                              toupper(spatial_filter[1]),
-                             ifelse(apikey == "topographie", "geometrie", "the_geom"),
+                             "geom",
                              paste(c(geom, spatial_filter[-1]), collapse = ", "))
 
    return(spatial_filter)

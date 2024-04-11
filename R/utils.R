@@ -19,16 +19,15 @@
 #' @return An epsg code as class `integer` (e.g `4326`)
 #' @noRd
 #'
-get_wfs_default_crs <- function(apikey, layer){
-   match.arg(apikey, get_apikeys())
+get_wfs_default_crs <- function(layer){
 
    param <- list(service = "wfs",
                  version = "2.0.0",
                  request = "GetCapabilities",
                  sections = "FeatureTypeList")
 
-   req <- request("https://wxs.ign.fr/") |>
-      req_url_path(apikey,"geoportail", "wfs") |>
+   req <- request("https://data.geopf.fr/") |>
+      req_url_path("wfs/ows") |>
       req_url_query(!!!param) |>
       req_perform() |>
       resp_body_xml()
@@ -134,12 +133,10 @@ shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
 #'
 #' @return list of character with apikey and layer
 #' @noRd
-interactive_mode <- function(){
-   apikeys <- get_apikeys()
-   apikey <- apikeys[menu(apikeys)]
+interactive_mode <- function(data_type){
 
-   layers <- get_layers_metadata(apikey, data_type = "wms")$Name
+   layers <- get_layers_metadata(data_type)$Name
    layer <- layers[menu(layers)]
 
-   return(list("apikey" = apikey, "layer" = layer))
+   return(list("layer" = layer))
 }

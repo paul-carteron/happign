@@ -9,7 +9,6 @@
 #'
 #' @usage
 #' get_wms_raster(x,
-#'                apikey = "altimetrie",
 #'                layer = "ELEVATION.ELEVATIONGRIDCOVERAGE",
 #'                res = 25,
 #'                filename = tempfile(fileext = ".tif"),
@@ -21,8 +20,6 @@
 #'
 #' @param x Object of class `sf` or `sfc`. Needs to be located in
 #' France.
-#' @param apikey `character`; API key from `get_apikeys()` or directly
-#' from [IGN website](https://geoservices.ign.fr/services-web-experts).
 #' @param layer `character`; layer name from
 #' `get_layers_metadata(apikey, "wms")` or directly from
 #' [IGN website](https://geoservices.ign.fr/services-web-experts).
@@ -63,7 +60,7 @@
 #' @importFrom utils menu
 #'
 #' @seealso
-#' [get_apikeys()], [get_layers_metadata()]
+#' [get_layers_metadata()]
 #'
 #' @export
 #'
@@ -73,7 +70,7 @@
 #' library(tmap)
 #'
 #' # Shape from the best town in France
-#' penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
+#' x <- penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 #'
 #' # For quick testing use interactive = TRUE
 #' raster <- get_wms_raster(x = penmarch, interactive = TRUE)
@@ -96,7 +93,6 @@
 #'    tm_borders(col = "blue", lwd  = 3)
 #'}
 get_wms_raster <- function(x,
-                           apikey = "altimetrie",
                            layer = "ELEVATION.ELEVATIONGRIDCOVERAGE",
                            res = 25,
                            filename = tempfile(fileext = ".tif"),
@@ -109,8 +105,7 @@ get_wms_raster <- function(x,
    # interactive mode ----
    # if TRUE menu ask for apikey and layer name
    if (interactive){
-      choice <- interactive_mode()
-      apikey <- choice$apikey
+      choice <- interactive_mode("wms")
       layer <- choice$layer
    }
 
@@ -130,12 +125,13 @@ get_wms_raster <- function(x,
    }else{
       grid <- create_grid(x, res)
 
-      base_url <- paste0("https://wxs.ign.fr/", apikey, "/geoportail/r/wms?",
-                         "version=", "1.3.0",
-                         "&request=GetMap",
-                         "&layers=", layer,
-                         "&styles=", "",
+      base_url <- paste0("https://data.geopf.fr/wms-r?",
+                         "layers=", layer,
                          "&format=image/geotiff",
+                         "&service=wms",
+                         "&version=1.3.0",
+                         "&request=GetMap",
+                         "&styles=", "",
                          "&crs=", st_crs(grid)$srid)
       urls <- create_urls(grid, base_url, res)
 
@@ -271,10 +267,12 @@ download_wms <- function(urls, crs, filename, overwrite) {
                  options = c(if (overwrite) "-overwrite" else ""))
 
       gdal_utils("warp",
-                 source = tmp_vrt,
+                 source = urls,
                  destination = filename,
                  quiet = FALSE,
-                 options = c("-t_srs", st_crs(crs)$input,
+                 options = c("-t_srs", st_crs(crs)$srid,
+                             "-s_srs", st_crs(grid)$srid,
+                             "-tr", 0.001, 0.001,
                              if (overwrite) "-overwrite" else ""))
    },warning = function(w) {
       warn <- conditionMessage(w)

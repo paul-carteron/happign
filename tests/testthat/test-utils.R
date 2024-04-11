@@ -22,24 +22,21 @@ test_that("spatial_filter", {
    # point
    expect_match(construct_spatial_filter(x = point,
                                          spatial_filter = c("dwithin", 50, "meters"),
-                                         crs = 4326,
-                                         apikey = "altimetrie"),
-                "DWITHIN(the_geom, POINT (47.813 -4.344), 50, meters)", fixed = T)
+                                         crs = 4326),
+                "DWITHIN(geom, POINT (47.813 -4.344), 50, meters)", fixed = T)
 
    # polygon
    expect_match(construct_spatial_filter(x = poly,
                                          spatial_filter = c("dwithin", 50, "meters"),
-                                         crs = 4326,
-                                         apikey = "altimetrie"),
+                                         crs = 4326),
                 "47.815 -4.347, 47.813 -4.344)), 50, meters)", fixed = T)
 
 
    # bbox
    expect_match(construct_spatial_filter(x = poly,
                                          spatial_filter = "bbox",
-                                         crs = 4326,
-                                         apikey = "altimetrie"),
-                "BBOX(the_geom, -4.347, 47.811, -4.344, 47.815, 'EPSG:4326')", fixed = T)
+                                         crs = 4326),
+                "BBOX(geom, -4.347, 47.811, -4.344, 47.815, 'EPSG:4326')", fixed = T)
 
 })
 test_that("shp_to_geojson", {
@@ -90,10 +87,9 @@ with_mock_dir("get_wfs_default_crs", {
       skip_on_cran()
       skip_if_offline()
 
-      expect_error(get_wfs_default_crs("administratif", "badname"),
-                   "No crs found")
+      expect_error(get_wfs_default_crs("badname"), "No crs found")
 
-      crs <- get_wfs_default_crs("altimetrie", "ELEVATION.CONTOUR.LINE:courbe")
+      crs <- get_wfs_default_crs("ELEVATION.CONTOUR.LINE:courbe")
       expect_equal(crs, 4326)
 
    })

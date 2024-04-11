@@ -21,19 +21,15 @@
 #' get_wfs_attributes(interactive = TRUE)
 #'
 #' }
-get_wfs_attributes <- function(apikey = NULL,
-                               layer = NULL,
+get_wfs_attributes <- function(layer = NULL,
                                interactive = FALSE){
 
    if (interactive){
-      apikeys <- get_apikeys()
-      apikey <- apikeys[menu(apikeys)]
-
-      layers <- get_layers_metadata(apikey, data_type = "wfs")$Name
-      layer <- layers[menu(layers)]
+      choice <- interactive_mode("wfs")
+      layer <- choice$layer
    }
 
-   resp <- build_wfs_attributes(apikey, layer) |>
+   resp <- build_wfs_attributes(layer) |>
       req_perform() |>
       resp_body_xml()
 
@@ -44,7 +40,7 @@ get_wfs_attributes <- function(apikey = NULL,
    return(attr_names[1:(length(attr_names)-2)])
 }
 
-build_wfs_attributes<- function(apikey, layer){
+build_wfs_attributes<- function(layer){
 
    params <- list(
       service = "WFS",
@@ -53,9 +49,8 @@ build_wfs_attributes<- function(apikey, layer){
       typeName = layer
       )
 
-   request <- request("https://wxs.ign.fr") |>
-      req_url_path_append(apikey) |>
-      req_url_path_append("geoportail/wfs") |>
+   request <- request("https://data.geopf.fr/") |>
+      req_url_path_append("wfs/ows") |>
       req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
       req_url_query(!!!params)
 
