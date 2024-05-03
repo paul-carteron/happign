@@ -5,7 +5,6 @@
 \title{Download WMS raster layer}
 \usage{
 get_wms_raster(x,
-               apikey = "altimetrie",
                layer = "ELEVATION.ELEVATIONGRIDCOVERAGE",
                res = 25,
                filename = tempfile(fileext = ".tif"),
@@ -18,9 +17,6 @@ get_wms_raster(x,
 \arguments{
 \item{x}{Object of class \code{sf} or \code{sfc}. Needs to be located in
 France.}
-
-\item{apikey}{\code{character}; API key from \code{get_apikeys()} or directly
-from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}.}
 
 \item{layer}{\code{character}; layer name from
 \code{get_layers_metadata(apikey, "wms")} or directly from
@@ -79,7 +75,7 @@ library(sf)
 library(tmap)
 
 # Shape from the best town in France
-penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
+x <- penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
 # For quick testing use interactive = TRUE
 raster <- get_wms_raster(x = penmarch, interactive = TRUE)
@@ -103,5 +99,5 @@ tm_shape(penmarch)+
 }
 }
 \seealso{
-\code{\link[=get_apikeys]{get_apikeys()}}, \code{\link[=get_layers_metadata]{get_layers_metadata()}}
+\code{\link[=get_layers_metadata]{get_layers_metadata()}}
 }

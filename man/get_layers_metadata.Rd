@@ -4,14 +4,14 @@
 \alias{get_layers_metadata}
 \title{Metadata for one couple of apikey and data_type}
 \usage{
-get_layers_metadata(apikey, data_type)
+get_layers_metadata(data_type, apikey = NULL)
 }
 \arguments{
-\item{apikey}{API key from \code{get_apikeys()} or directly
-from the \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
+\item{data_type}{Should be \code{"wfs"}, \code{"wms-r"} or \code{"wmts"}. See details for more
+information about these Web services formats.}
 
-\item{data_type}{Should be \code{"wfs"} or \code{"wms"}. See details for more
-information about these two Webservice formats.}
+\item{apikey}{API key from \code{get_apikeys()} or directly from the
+\href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 }
 \value{
 data.frame
@@ -21,20 +21,25 @@ Metadata are retrieved using the IGN APIs. The execution time can
 be long depending on the size of the metadata associated with
 the API key and the overload of the IGN servers.
 }
+\details{
+\itemize{
+\item \code{"wfs"} : Web Feature Service designed to return data in vector format (line,
+point, polygon, ...) ;
+\item \code{"wms-r"} : Web Map Service focuses on raster data ;
+\item \code{"wmts"} : Web Map Tile Service is similar to WMS, but instead of serving maps
+as single images, WMTS serves maps by dividing the map into a pyramid of tiles at
+multiple scales.
+}
+}
 \examples{
 \dontrun{
-apikey <- get_apikeys()[4]
-metadata_table <- get_layers_metadata(apikey, "wms")
-layers <- metadata_table$Name
-one_abstract <- metadata_table[1, "Abstract"]
+# Get all metadata for a datatype
+metadata_table <- get_layers_metadata("wms-r")
 
-# List every wfs layers (warning : it's quite long)
-all_layers <- lapply(get_apikeys(),
-                     get_layers_metadata,
-                     data_type = "wfs")
+# Get all "administratif" wms layers
+apikey <- get_apikeys()[1] #administratif
+admin_layers <- get_layers_metadata("wms-r", apikey)
 
-# Convert list to data.frame
-all_layers <- do.call(rbind, list_metadata)
 }
 
 }

@@ -5,7 +5,6 @@
 \title{Download WFS layer}
 \usage{
 get_wfs(x = NULL,
-        apikey = NULL,
         layer = NULL,
         filename = NULL,
         spatial_filter = "bbox",
@@ -17,14 +16,11 @@ get_wfs(x = NULL,
 \item{x}{Object of class \code{sf} or \code{sfc}. Needs to be located in
 France.}
 
-\item{apikey}{\code{character}; API key from \code{get_apikeys()} or directly
-from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
-
-\item{layer}{\code{character}; name of the layer from \code{get_layers_metadata(apikey, "wfs")}
+\item{layer}{\code{character}; name of the layer from \code{get_layers_metadata("wfs")}
 or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{filename}{Either a character string naming a file or a connection open
+\item{filename}{\code{character};Either a string naming a file or a connection open
 for writing. (ex : "test.shp" or "~/test.shp")}
 
 \item{spatial_filter}{\code{character}; spatial predicate from ECQL language.
@@ -35,17 +31,14 @@ See detail and examples for more info.}
 
 \item{overwrite}{\code{logical}; if TRUE, file is overwrite.}
 
-\item{interactive}{\code{character}; if TRUE, no need to specify \code{apikey}
-and \code{layer}, you'll be ask.}
+\item{interactive}{\code{character}; if TRUE, no need to specify \code{layer}, you'll be ask.}
 }
 \value{
 \code{sf} object from \code{sf} package or \code{NULL} if no data.
 }
 \description{
-Read simple features from IGN Web Feature Service (WFS).
-Three minimal info are needed : a location, an apikey
-and the name of layer. You can find those information from
-\href{https://geoservices.ign.fr/services-web-experts}{IGN website}
+Read simple features from IGN Web Feature Service (WFS) from location
+and name of layer.
 }
 \details{
 \itemize{
@@ -75,44 +68,39 @@ penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 shape <- get_wfs(x = penmarch,
                  interactive = TRUE)
 
-# For specific use, choose apikey with get_apikey() and layer with get_layers_metadata()
 ## Getting borders of best town in France
-apikey <- get_apikeys()[1]
-metadata_table <- get_layers_metadata(apikey, "wfs")
+metadata_table <- get_layers_metadata("wfs", "administratif")
 layer <- metadata_table[32,1] # LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune
 
 # Downloading borders
-borders <- get_wfs(penmarch, apikey, layer)
+borders <- get_wfs(penmarch, layer)
 
 # Plotting result
 qtm(borders, fill = NULL, borders = "firebrick") # easy map
 
 # Get forest_area of the best town in France
 forest_area <- get_wfs(x = borders,
-                       apikey = "environnement",
                        layer = "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape")
 
-qtm(forest_area, fill = "libelle")
+qtm(forest_area, fill = "nom_typn")
 
 # Using ECQL filters to query IGN server
 ## First find attributes of the layer
-attrs <- get_wfs_attributes(apikey, layer)
+attrs <- get_wfs_attributes(layer)
 
 ## e.g. : find all commune's name starting by "plou"
 plou_borders <- get_wfs(x = NULL, # When x is NULL, all France is query
-                        apikey = "administratif",
                         layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
                         ecql_filter = "nom_m LIKE 'PLOU\%'")
 qtm(plou_borders)
 
 ## Combining ecql_filters
 plou_borders_inf_2000 <- get_wfs(x = NULL, # When x is NULL, all France is query
-                                 apikey = "administratif",
                                  layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
                                  ecql_filter = "nom_m LIKE 'PLOU\%' AND population < 2000")
 qtm(plou_borders)+ qtm(plou_borders_inf_2000, fill = "red")
 }
 }
 \seealso{
-\code{\link[=get_apikeys]{get_apikeys()}}, \code{\link[=get_layers_metadata]{get_layers_metadata()}}
+\code{\link[=get_layers_metadata]{get_layers_metadata()}}
 }

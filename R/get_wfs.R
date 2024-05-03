@@ -66,10 +66,9 @@
 #' shape <- get_wfs(x = penmarch,
 #'                  interactive = TRUE)
 #'
-#' # For specific use, choose apikey with get_apikey() and layer with get_layers_metadata()
 #' ## Getting borders of best town in France
-#' metadata_table <- get_layers_metadata("wfs")
-#' layer <- metadata_table[237,1] # LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune
+#' metadata_table <- get_layers_metadata("wfs", "administratif")
+#' layer <- metadata_table[32,1] # LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune
 #'
 #' # Downloading borders
 #' borders <- get_wfs(penmarch, layer)
@@ -161,9 +160,9 @@ get_wfs <- function(x = NULL,
    temp <- resp
    while(nrow(temp) == 1000){
       message("...", appendLF = F)
-      url <- build_wfs_req(x, apikey, layer, spatial_filter,
+      url <- build_wfs_req(x, layer, spatial_filter,
                            ecql_filter, startindex = i, crs)
-      temp <- hit_api_wfs(url, ecql_filter, apikey)
+      temp <- hit_api_wfs(url, ecql_filter)
       resp <- rbind(resp, temp)
       message(nrow(resp), appendLF = F)
       i <- i + 1000
@@ -286,7 +285,6 @@ save_wfs <- function(filename, resp, overwrite, quiet = F){
 #' @param shape object of class sf or sfc
 #' @param spatial_filter list containing spatial operation and other argument
 #' @param crs epsg character from `get_wfs_default_crs`
-#' @param apikey character from `get_apikeys()`
 #' @importFrom sf st_bbox
 #' @return ecql string
 #' @noRd

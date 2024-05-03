@@ -6,14 +6,17 @@
 #' the API key and the overload of the IGN servers.
 #'
 #' @usage
-#' get_layers_metadata(data_type)
+#' get_layers_metadata(data_type, apikey = NULL)
 #'
 #' @param data_type Should be `"wfs"`, `"wms-r"` or `"wmts"`. See details for more
 #' information about these Web services formats.
+#' @param apikey API key from `get_apikeys()` or directly from the
+#' [IGN website](https://geoservices.ign.fr/services-web-experts)
 #'
 #' @details
-#' * `"wfs"` : Web Feature Service designed to return data in vector format (line, point, polygon, ...)
-#' * `"wms-r"` : Web Map Service focuses on raster data
+#' * `"wfs"` : Web Feature Service designed to return data in vector format (line,
+#' point, polygon, ...) ;
+#' * `"wms-r"` : Web Map Service focuses on raster data ;
 #' * `"wmts"` : Web Map Tile Service is similar to WMS, but instead of serving maps
 #' as single images, WMTS serves maps by dividing the map into a pyramid of tiles at
 #' multiple scales.
@@ -26,10 +29,12 @@
 #'
 #' @examples
 #' \dontrun{
-#' metadata_table <- get_layers_metadata("wms")
+#' # Get all metadata for a datatype
+#' metadata_table <- get_layers_metadata("wms-r")
 #'
-#' # Get all "administratif" layers by filtering ressource name
-#' admin_layers <- metadata_table[grepl("admin", metadata_table$Name, ignore.case = TRUE),]
+#' # Get all "administratif" wms layers
+#' apikey <- get_apikeys()[1] #administratif
+#' admin_layers <- get_layers_metadata("wms-r", apikey)
 #'
 #' }
 #'
@@ -37,7 +42,7 @@
 #' @return data.frame
 #' @export
 #'
-get_layers_metadata <- function(data_type) {
+get_layers_metadata <- function(data_type, apikey = NULL) {
 
    # check input ----
    if (!(data_type %in% c("wms-r", "wfs", "wmts"))){
@@ -57,23 +62,31 @@ get_layers_metadata <- function(data_type) {
                    "wfs" = "//d1:FeatureType/*[position() <= 3]",
                    "wmts" = "//d1:Layer/*[position() <= 2 or self::ows:Identifier]")
 
-   req <- request("https://data.geopf.fr/") |>
-      req_url_path(capabilities$path) |>
-      req_url_query(service = capabilities$service,
-                    version = capabilities$version,
-                    request = "GetCapabilities",
-                    sections = "FeatureTypeList") |>
+   if (!is.null(apikey)){
+      req <- request("https://data.geopf.fr/") |>
+         req_url_path("annexes", "ressources", data_type, paste0(apikey,".xml"))
+
+   }else{
+      req <- request("https://data.geopf.fr/") |>
+         req_url_path(capabilities$path) |>
+         req_url_query(service = capabilities$service,
+                       version = capabilities$version,
+                       request = "GetCapabilities",
+                       sections = "FeatureTypeList")
+   }
+
+   resp <- req |>
       req_perform() |>
       resp_body_xml() |>
       xml_find_all(xpath)
 
-   if (is_empty(req)){
+   if (is_empty(resp)){
       warning("There's no ", data_type, " resources, NULL is returned.", call. = F)
       return(NULL)
    }
 
-   metadata <- as.data.frame(matrix(xml_text(req), ncol = 3, byrow = T)) |>
-      setNames(xml_name(req)[1:3])
+   metadata <- as.data.frame(matrix(xml_text(resp), ncol = 3, byrow = T)) |>
+      setNames(xml_name(resp)[1:3])
 
    return(metadata)
 }

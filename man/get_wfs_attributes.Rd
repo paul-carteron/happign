@@ -4,18 +4,14 @@
 \alias{get_wfs_attributes}
 \title{get_wfs_attributes}
 \usage{
-get_wfs_attributes(apikey = NULL, layer = NULL, interactive = FALSE)
+get_wfs_attributes(layer = NULL, interactive = FALSE)
 }
 \arguments{
-\item{apikey}{\code{character}; API key from \code{get_apikeys()} or directly
-from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
-
-\item{layer}{\code{character}; name of the layer from \code{get_layers_metadata(apikey, "wfs")}
+\item{layer}{\code{character}; name of the layer from \code{get_layers_metadata("wfs")}
 or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{interactive}{\code{character}; if TRUE, no need to specify \code{apikey}
-and \code{layer}, you'll be ask.}
+\item{interactive}{\code{character}; if TRUE, no need to specify \code{layer}, you'll be ask.}
 }
 \value{
 \code{character}vector with layer attributes
