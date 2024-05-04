@@ -258,12 +258,20 @@ create_options <- function(){
 #'
 #' @noRd
 config_options <- function(){
+
+   # GDAL_HTTP_UNSAFESSL is used to avoid safe SSL host / certificate verification
+   # which can be problematic when using professional computer
+   # GDAL_SKIP is needed for GDAL < 3.5,
+   # See https://github.com/rspatial/terra/issues/828 for more
+
    c(
+      GDAL_SKIP = "DODS",
+      GDAL_HTTP_UNSAFESSL = "YES",
       VSI_CACHE = "TRUE",
-      GDAL_CACHEMAX = "20%",
-      VSI_CACHE_SIZE = "1000000",
+      GDAL_CACHEMAX = "30%",
+      VSI_CACHE_SIZE = "10000000",
       GDAL_HTTP_MULTIPLEX = "YES",
-      GDAL_INGESTED_BYTES_AT_OPEN = "30000",
+      GDAL_INGESTED_BYTES_AT_OPEN = "32000",
       GDAL_DISABLE_READDIR_ON_OPEN = "EMPTY_DIR",
       GDAL_HTTP_VERSION = "2",
       GDAL_HTTP_MERGE_CONSECUTIVE_RANGES = "YES",
