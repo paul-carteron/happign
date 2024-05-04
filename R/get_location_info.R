@@ -12,11 +12,15 @@
 #'                   read_sf = TRUE,
 #'                   version = "1.3.0")
 #'
-#' @inheritParams get_wms_raster
 #' @param x Object of class `sf` or `sfc`. Only single point are supported for now.
 #' Needs to be located in France.
+#' @param apikey `character`; API key from get_apikeys() or directly from the IGN website
+#' @param layer `character`; layer name obtained from
+#' `get_layers_metadata("wms-r")` or the
+#' [IGN website](https://geoservices.ign.fr/services-web-experts).
 #' @param read_sf `logical`; if `TRUE` an `sf` object is returned but
 #' response times may be higher.
+#' @param version `character`; old param
 #'
 #' @return `character` or `sf` containing additional information about the layer
 #'

@@ -14,15 +14,16 @@ get_location_info(x,
 \item{x}{Object of class \code{sf} or \code{sfc}. Only single point are supported for now.
 Needs to be located in France.}
 
-\item{layer}{\code{character}; layer name from
-\code{get_layers_metadata(apikey, "wms")} or directly from
+\item{apikey}{\code{character}; API key from get_apikeys() or directly from the IGN website}
+
+\item{layer}{\code{character}; layer name obtained from
+\code{get_layers_metadata("wms-r")} or the
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}.}
 
 \item{read_sf}{\code{logical}; if \code{TRUE} an \code{sf} object is returned but
 response times may be higher.}
 
-\item{version}{\code{character}; version of the service used. See details
-for more info.}
+\item{version}{\code{character}; old param}
 }
 \value{
 \code{character} or \code{sf} containing additional information about the layer

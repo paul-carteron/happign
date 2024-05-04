@@ -5,68 +5,64 @@
 \title{Download WMS raster layer}
 \usage{
 get_wms_raster(x,
-               layer = "ELEVATION.ELEVATIONGRIDCOVERAGE",
-               res = 25,
-               filename = tempfile(fileext = ".tif"),
+               layer,
+               res,
                crs = 2154,
+               rgb = TRUE,
+               filename = tempfile(fileext = ".tif"),
+               verbose = TRUE,
                overwrite = FALSE,
-               version = "1.3.0",
-               styles = "",
                interactive = FALSE)
 }
 \arguments{
-\item{x}{Object of class \code{sf} or \code{sfc}. Needs to be located in
-France.}
+\item{x}{Object of class \code{sf} or \code{sfc}, located in France.}
 
-\item{layer}{\code{character}; layer name from
-\code{get_layers_metadata(apikey, "wms")} or directly from
+\item{layer}{\code{character}; layer name obtained from
+\code{get_layers_metadata("wms-r")} or the
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}.}
 
-\item{res}{\code{numeric}; resolution in the unit of the coordinate system
-(e.g. meter for 2154). See detail for more information about \code{res}.}
+\item{res}{\code{numeric}; resolution specified in the units of
+the coordinate system (e.g., meters for EPSG:2154, degrees for EPSG:4326).
+See details for more information.}
 
-\item{filename}{\code{character} or \code{NULL}; filename or a open connection for
-writing. (ex : "test.tif" or "~/test.tif"). If \code{NULL}, \code{layer} is used as
-filename. Default drivers is ".tif" but all gdal drivers are supported,
-see details for more info.}
+\item{crs}{\code{numeric}, \code{character}, or object of class \code{sf} or \code{sfc};
+defaults to EPSG:2154. See \code{\link[sf:st_crs]{sf::st_crs()}} for more details.}
 
-\item{crs}{\code{numeric}, \code{character}, or object of class \code{sf} or \code{sfc}.
-It is set to EPSG:2154 by default. See \code{\link[sf:st_crs]{sf::st_crs()}} for more detail.}
+\item{rgb}{\code{boolean}; if set to \code{TRUE}, downloads an RGB image. If set
+to \code{FALSE}, downloads a single band with floating point values.
+See details for more information.}
 
-\item{overwrite}{If TRUE, output raster is overwrite.}
+\item{filename}{\code{character} or \code{NULL}; specifies the filename or an
+open connection for writing (e.g., "test.tif" or "~/test.tif").
+If \code{NULL}, uses \code{layer} as the filename. The default format is ".tif",
+but all \href{https://gdal.org/drivers/raster/index.html}{GDAL drivers}
+are supported.}
 
-\item{version}{\code{character}; version of the service used. See details
-for more info.}
+\item{verbose}{\code{boolean}; if TRUE, message are added.}
 
-\item{styles}{\code{character}; rendering style of the layer. Set to ""
-by default. See details for more info.}
+\item{overwrite}{\code{boolean}; if TRUE, the existing raster will be overwritten.}
 
-\item{interactive}{\code{logical}; If TRUE, interactive menu ask for
+\item{interactive}{\code{logical}; if TRUE, an interactive menu prompts for
 \code{apikey} and \code{layer}.}
 }
 \value{
 \code{SpatRaster} object from \code{terra} package.
 }
 \description{
-Download a raster layer from IGN Web Mapping Services (WMS).
-To do that, it need a location giving by a shape, an apikey
-and the name of layer. You can find those information from
-\href{https://geoservices.ign.fr/services-web-experts}{IGN website}
-or with \code{get_apikeys()} and \code{get_layers_metadata()}.
+Download a raster layer from the IGN Web Mapping Services (WMS).
+Specify a location using a shape and provide the layer name.
 }
 \details{
 \itemize{
-\item \code{res} : Warning, setting \code{res} higher than default layer resolution
-multiplies the number of pixels without increasing
-the precision. For example, the download of the BD Alti layer from
-IGN will be optimal for a resolution of 25m.
-\item \code{version} and \code{styles} arguments are detailed on
-\href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-wms-ogc}{IGN documentation}
-\item \code{filename} : All GDAL supported drivers can be found
-\href{https://gdal.org/drivers/raster/index.html}{here}
-\item \code{overwrite} : \verb{get_wms raster} always checks that \code{filename} does not
-already exist. If it does, it is imported into R without further downloading
-unless \code{overwrite} is set to \code{TRUE}.
+\item \code{res}: Note that setting \code{res} higher than the default resolution
+of the layer will increase the number of pixels but not the precision
+of the image. For instance, downloading the BD Alti layer from IGN
+is optimal at a resolution of 25m.
+\item \code{rgb}: Rasters are commonly used to download images such as orthophotos.
+In specific cases like DEMs, however, a value per pixel is essential.
+\item \code{overwrite}: The function \code{get_wms_raster} first checks if
+\code{filename} already exists. If it does, the file is imported into
+R without downloading again, unless \code{overwrite} is set to \code{TRUE}.
 }
 }
 \examples{
@@ -75,21 +71,21 @@ library(sf)
 library(tmap)
 
 # Shape from the best town in France
-x <- penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
+penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
 # For quick testing use interactive = TRUE
-raster <- get_wms_raster(x = penmarch, interactive = TRUE)
+raster <- get_wms_raster(x = penmarch, res = 25, interactive = TRUE)
 
 # For specific data, choose apikey with get_apikey() and layer with get_layers_metadata()
 apikey <- get_apikeys()[4]  # altimetrie
-metadata_table <- get_layers_metadata(apikey, "wms") # all layers for altimetrie wms
+metadata_table <- get_layers_metadata("wms-r", apikey) # all layers for altimetrie wms
 layer <- metadata_table[2,1] # ELEVATION.ELEVATIONGRIDCOVERAGE
 
-# Downloading digital elevation model from IGN
-mnt_2154 <- get_wms_raster(penmarch, apikey, layer, res = 25)
+# Downloading digital elevation model values not image
+mnt_2154 <- get_wms_raster(penmarch, layer, res = 25, crs = 2154, rgb = FALSE)
 
 # If crs is set to 4326, res is in degrees
-mnt_4326 <- get_wms_raster(penmarch, apikey, layer, res = 0.0005, crs = 4326)
+mnt_4326 <- get_wms_raster(penmarch, layer, res = 0.0001, crs = 4326, rgb = FALSE)
 
 # Plotting result
 tm_shape(mnt_4326)+
@@ -97,6 +93,7 @@ tm_shape(mnt_4326)+
 tm_shape(penmarch)+
    tm_borders(col = "blue", lwd  = 3)
 }
+
 }
 \seealso{
 \code{\link[=get_layers_metadata]{get_layers_metadata()}}

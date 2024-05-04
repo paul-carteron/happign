@@ -135,7 +135,10 @@ shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
 #' @noRd
 interactive_mode <- function(data_type){
 
-   layers <- get_layers_metadata(data_type)$Name
+   apikeys <- get_apikeys()
+   apikey <- apikeys[menu(apikeys)]
+
+   layers <- get_layers_metadata(data_type, apikey)$Name
    layer <- layers[menu(layers)]
 
    return(list("layer" = layer))

@@ -23,6 +23,7 @@
 #'
 #' @importFrom httr2 req_perform req_url_path req_url_query request resp_body_xml
 #' @importFrom xml2 xml_find_all xml_name xml_text
+#' @importFrom stats setNames
 #'
 #' @seealso
 #' [get_apikeys()]
@@ -75,15 +76,16 @@ get_layers_metadata <- function(data_type, apikey = NULL) {
                        sections = "FeatureTypeList")
    }
 
-   resp <- req |>
-      req_perform() |>
-      resp_body_xml() |>
-      xml_find_all(xpath)
-
-   if (is_empty(resp)){
-      warning("There's no ", data_type, " resources, NULL is returned.", call. = F)
-      return(NULL)
-   }
+   tryCatch(
+      resp <- req |>
+         req_perform() |>
+         resp_body_xml() |>
+         xml_find_all(xpath),
+      httr2_http_404 = function(cnd){
+         stop("There's no ", data_type, " layer available, NULL is returned.", call. = F)
+         return(NULL)
+      }
+   )
 
    metadata <- as.data.frame(matrix(xml_text(resp), ncol = 3, byrow = T)) |>
       setNames(xml_name(resp)[1:3])
