@@ -77,7 +77,7 @@
 #' layer <- metadata_table[2,1] # ELEVATION.ELEVATIONGRIDCOVERAGE
 #'
 #' # Downloading digital elevation model values not image
-#' mnt_2154 <- get_wms_raster(penmarch, layer, res = 25, crs = 2154, rgb = FALSE)
+#' mnt_2154 <- get_wms_raster(penmarch, layer, res = 1, crs = 2154, rgb = FALSE)
 #'
 #' # If crs is set to 4326, res is in degrees
 #' mnt_4326 <- get_wms_raster(penmarch, layer, res = 0.0001, crs = 4326, rgb = FALSE)
@@ -130,23 +130,16 @@ get_wms_raster <- function(x,
          "-t_srs", st_crs(crs)$srid,
          "-tr", res, res,
          "-r", "bilinear",
-         "-multi",
          if (overwrite) "-overwrite" else NULL
       )
-
-      if (verbose)
-         message("Raster is downloading...", appendLF = F)
 
       rast <- gdal_utils("warp",
                          source = desc_xml,
                          destination = filename,
-                         quiet=TRUE, #https://github.com/r-spatial/sf/issues/1994
+                         quiet=FALSE,
                          options = c(warp_options, create_options()),
                          config_options = config_options()) |>
          suppressWarnings()
-
-      if (verbose)
-         message(" done.", appendLF = TRUE)
 
       rast <- rast(filename)
 
@@ -275,7 +268,6 @@ config_options <- function(){
       GDAL_DISABLE_READDIR_ON_OPEN = "EMPTY_DIR",
       GDAL_HTTP_VERSION = "2",
       GDAL_HTTP_MERGE_CONSECUTIVE_RANGES = "YES",
-      GDAL_NUM_THREADS = "ALL_CPUS",
       GDAL_HTTP_USERAGENT = "happign (https://github.com/paul-carteron/happign)"
    )
 }
