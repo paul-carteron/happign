@@ -48,8 +48,7 @@ tm_shape(borders)+
 An other way of getting borders without apicarto is to use ECQL language to directly query IGN WFS geoservers.
 
 ```{r borders2}
-borders2 <- get_wfs(apikey = "administratif",
-                    layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+borders2 <- get_wfs(layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
                     spatial_filter = "intersects",
                     ecql_filter = "nom_m LIKE 'CAMORS'")
 ```
@@ -59,14 +58,12 @@ borders2 <- get_wfs(apikey = "administratif",
 Cadastral parcels are essential for any forest manager Here how to download it with `get_wfs`.
 
 ```{r cadastral_parcels}
-apikey <- "parcellaire"
-layer <- get_layers_metadata(apikey, "wfs")
-name_parcellaire_layer <- layer[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
+layers <- get_layers_metadata("wfs", "parcellaire")
+parcellaire_layer <- layer[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
 
 parcellaire <- get_wfs(x = borders,
-                       apikey = apikey,
                        spatial_filter = "intersects",
-                       layer = name_parcellaire_layer)
+                       layer = parcellaire_layer)
 
 tm_shape(borders)+
    tm_borders(col = "red", lwd = 2)+
@@ -84,22 +81,21 @@ __*Rq :*__
 The first interesting layer for forester is the "BD Forêt" which is all vegetation type assigned to each area greater than or equal to 0.5 ha (5,000 m²). There is two layer for forest : the old one BD Forêt V1 and the new one BD Forêt V2 that can be accessed with "burger menu" on the top left of interactive map below.
 
 ```{r bd_foret, warning=FALSE}
-apikey <- "environnement"
-layer <- get_layers_metadata(apikey, "wfs")
-name_BDV1 <- layer[2,1]
-name_BDV2 <- layer[3,1]
+layers <- get_layers_metadata("wfs", "environnement")
+BDF1_layer <- layer[4,1]
+BDF2_layer <- layer[5,1]
 
-BDV1 <- get_wfs(borders, apikey, name_BDV1, spatial_filter = "intersects")
-BDV2 <- get_wfs(borders, apikey, name_BDV2, spatial_filter = "intersects")
+BDF1 <- get_wfs(borders, BDF1_layer, spatial_filter = "intersects")
+BDF2 <- get_wfs(borders, BDF2_layer, spatial_filter = "intersects")
 
-tm_shape(BDV1) +
+tm_shape(BDF1) +
    tm_polygons(col = "libelle",
-               popup.vars = names(BDV1)[1:(ncol(BDV1)-2)],
+               popup.vars = names(BDF1)[1:(ncol(BDF1)-2)],
                legend.show = FALSE)+
-tm_shape(BDV2) +
+tm_shape(BDF2) +
     tm_polygons(col = "tfv",
                 alpha = 0.5,
-                popup.vars = names(BDV2)[1:(ncol(BDV2)-2)],
+                popup.vars = names(BDF2)[1:(ncol(BDF2)-2)],
                 legend.show = FALSE) +
 tm_shape(borders) +
    tm_borders(lwd = 2)
@@ -108,7 +104,7 @@ tm_shape(borders) +
 More calculations can be done as you can see below :
 
 ```{r bd_foret_calculation, warning=FALSE}
-forest_type_BDV2 <- BDV2 |>
+forest_type_BDF2 <- BDF2 |>
   mutate(area = as.numeric(st_area(geometry))) |>
   st_drop_geometry() |>
   group_by(essence) |>
@@ -117,7 +113,7 @@ forest_type_BDV2 <- BDV2 |>
   mutate(essence = as.factor(essence))
 
 ggplot()+
-  geom_col(data = forest_type_BDV2,
+  geom_col(data = forest_type_BDF2,
            aes(x = rev(reorder(essence, sum_area)),
                y = sum_area,
                fill = as.factor(essence)))+
@@ -137,14 +133,13 @@ One information you really want when you work at forest management is if your zo
 Again, you can click on map, point and shape for more informations.
 
 ```{r protected_area, message=FALSE, warning=FALSE}
-apikey <- "environnement"
-protected_area_names <- get_layers_metadata(apikey, "wfs") |> 
+protected_area_layers <- get_layers_metadata("wfs", "environnement") |> 
    filter(grepl("^PROTECTED", Name)) |> 
    pull(Name)
 
-all_protected_area <- map(.x = protected_area_names,
-                          .f = ~ try(get_wfs(borders, apikey, .x, 
-                                          spatial_filter = "intersects"), silent = TRUE)) |> 
+all_protected_area <- map(.x = protected_area_layers,
+                          .f = ~ try(get_wfs(borders, .x, 
+                                          spatial_filter = "intersects"))) |> 
    set_names(protected_area_names) |> 
    discard(~ identical(length(.), 0L))
 
@@ -163,14 +158,14 @@ tm_shape(borders,is.master = TRUE) +
 It's always good to know a more about terrain topologie. IGN offers MNT and MNS for download. As a reminder, the MNT corresponds to the surface of the ground and the MNS to the real surface (in our case, the trees). It is thus easy to find the height of the trees by subtracting the DTM from the MNS.
 
 ```{r mnt_mns_mnh}
-layers <- get_layers_metadata("altimetrie", "wms")
-mnt_name <- layers[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
-mns_name <- layers[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
+layers <- get_layers_metadata("wms-r", "altimetrie")
+mnt_layer <- layers[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
+mns_layer <- layers[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
-mnt <- get_wms_raster(borders, "altimetrie", mnt_name, res = 5)
-mns <- get_wms_raster(borders, "altimetrie", mns_name, res = 5)
+mnt <- get_wms_raster(borders, mnt_layer, res = 5, crs = 2154, rgb = FALSE)
+mns <- get_wms_raster(borders, mns_layer, res = 5, crs = 2154, rgb = FALSE)
 
-level_curve <- get_wfs(borders, "altimetrie", "ELEVATION.CONTOUR.LINE:courbe",
+level_curve <- get_wfs(borders, "ELEVATION.CONTOUR.LINE:courbe",
                        spatial_filter = "intersects") |> 
    st_intersection(borders)
 
@@ -213,7 +208,6 @@ biggest_parcels <- parcellaire |>
    slice_max(area)
 
 irc <- get_wms_raster(biggest_parcels,
-                      apikey = "ortho",
                       res = 0.2,
                       layer = "ORTHOIMAGERY.ORTHOPHOTOS.IRC")
 
@@ -320,12 +314,12 @@ BD topo from IGN covers in a coherent way all the geographical and administrativ
 For the example below I choose to download all water-related data :
 
 ```{r bd_topo}
-cour_eau <- get_wfs(borders, "topographie", "BDTOPO_V3:cours_d_eau") |> 
+cour_eau <- get_wfs(borders, "BDTOPO_V3:cours_d_eau") |> 
    st_intersection(borders) 
-detail_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:detail_hydrographique") |> 
+detail_hydro <- get_wfs(borders, "BDTOPO_V3:detail_hydrographique") |> 
    st_intersection(borders) 
 # water detected by satellite
-surf_hydro <- get_wfs(borders, "topographie", "BDTOPO_V3:surface_hydrographique") |> 
+surf_hydro <- get_wfs(borders, "BDTOPO_V3:surface_hydrographique") |> 
    st_intersection(borders) 
 
 tm_shape(cour_eau)+
@@ -344,7 +338,6 @@ The "Etat-major" map is a general map of France made, in its first version, in t
 
 ```{r etat_major}
 etat_major <- get_wms_raster(x = borders,
-                             apikey = "cartes",
                              res = 1,
                              layer = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40")
 

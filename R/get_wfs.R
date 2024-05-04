@@ -205,7 +205,7 @@ build_wfs_req <- function(x,
    spatial_predicate <- NULL
 
    if (shape_exist & spatial_filter_exist){
-      spatial_predicate <- construct_spatial_filter(x, spatial_filter, crs)
+      spatial_predicate <- construct_spatial_filter(x, spatial_filter, crs, layer)
    }
 
    all_filter <- paste(c(spatial_predicate, ecql_filter), collapse = " AND ")
@@ -291,7 +291,8 @@ save_wfs <- function(filename, resp, overwrite, quiet = F){
 #'
 construct_spatial_filter <- function(x = NULL,
                                      spatial_filter = NULL,
-                                     crs = NULL){
+                                     crs = NULL,
+                                     layer = NULL){
 
    # Test for units
    units <- c("feet", "meters", "statute miles", "nautical miles", "kilometers")
@@ -318,7 +319,13 @@ construct_spatial_filter <- function(x = NULL,
    # Build final spatial filter
    spatial_filter <- sprintf("%s(%s, %s)",
                              toupper(spatial_filter[1]),
-                             "geom",
+                             if (grepl("BDTOPO", layer)){
+                                "geometrie"
+                             }else if (grepl("DFCI", layer)){
+                                "the_geom"
+                             }else{
+                                "geom"
+                             },
                              paste(c(geom, spatial_filter[-1]), collapse = ", "))
 
    return(spatial_filter)
