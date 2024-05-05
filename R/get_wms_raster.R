@@ -6,8 +6,8 @@
 #'
 #' @usage
 #' get_wms_raster(x,
-#'                layer,
-#'                res,
+#'                layer = "ORTHOIMAGERY.ORTHOPHOTOS",
+#'                res = 10,
 #'                crs = 2154,
 #'                rgb = TRUE,
 #'                filename = tempfile(fileext = ".tif"),
@@ -90,8 +90,8 @@
 #'}
 #'
 get_wms_raster <- function(x,
-                           layer,
-                           res,
+                           layer = "ORTHOIMAGERY.ORTHOPHOTOS",
+                           res = 10,
                            crs = 2154,
                            rgb = TRUE,
                            filename = tempfile(fileext = ".tif"),

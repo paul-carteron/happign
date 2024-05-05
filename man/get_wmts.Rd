@@ -52,8 +52,25 @@ tiles.
 library(sf)
 library(tmap)
 
-x <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
+penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
+# Get orthophoto
+layers <- get_layers_metadata("wmts", "ortho")$Identifier
+ortho <- get_wmts(penmarch, layer = layers[1], zoom = 21)
+plotRGB(ortho)
+
+# Get all available irc images
+layers <- get_layers_metadata("wmts", "orthohisto")$Identifier
+irc_names <- grep("irc", layers, value = TRUE, ignore.case = TRUE)
+
+irc <- lapply(irc_names, function(x) get_wmts(penmarch, layer = x, zoom = 18)) |>
+   setNames(irc_names)
+
+# remove empty layer (e.g. only NA)
+irc <- Filter(function(x) !all(is.na(values(x))), irc)
+
+# plot
+all_plots <- lapply(irc, plotRGB)
 
 }
 }
