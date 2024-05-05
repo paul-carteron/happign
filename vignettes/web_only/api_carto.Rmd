@@ -207,7 +207,7 @@ ressources <- c("prescription-surf",
                 "prescription-pct")
 prescriptions <- get_apicarto_gpu(partition,
                                   ressource = ressources,
-                                  dTolerance = 5)
+                                  dTolerance = 10)
 
 tm_shape(prescriptions[[1]])+
    tm_polygons("libelle",  legend.show = FALSE)+
