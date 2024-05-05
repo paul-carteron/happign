@@ -138,7 +138,7 @@ tm_layout(main.title = "Penmarch borders from IGN",
 ```
 
 <div class="figure" style="text-align: center">
-<img src="figure/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5"  />
+<img src="unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5"  />
 <p class="caption">plot of chunk unnamed-chunk-5</p>
 </div>
 
@@ -168,7 +168,7 @@ tm_shape(hedges) + # Point use to retrieve data
 ```
 
 <div class="figure" style="text-align: center">
-<img src="figure/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6"  />
+<img src="unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6"  />
 <p class="caption">plot of chunk unnamed-chunk-6</p>
 </div>
 
@@ -204,7 +204,7 @@ tm_layout(main.title = "DEM of Penmarch",
 ```
 
 <div class="figure" style="text-align: center">
-<img src="figure/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7"  />
+<img src="unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7"  />
 <p class="caption">plot of chunk unnamed-chunk-7</p>
 </div>
 
@@ -238,6 +238,6 @@ tm_layout(main.title = "Orthophoto Hight Resolution",
 ```
 
 <div class="figure" style="text-align: center">
-<img src="figure/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"  />
+<img src="unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"  />
 <p class="caption">plot of chunk unnamed-chunk-8</p>
 </div>
