@@ -59,7 +59,7 @@ Cadastral parcels are essential for any forest manager Here how to download it w
 
 ```{r cadastral_parcels}
 layers <- get_layers_metadata("wfs", "parcellaire")
-parcellaire_layer <- layer[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
+parcellaire_layer <- layers[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
 
 parcellaire <- get_wfs(x = borders,
                        spatial_filter = "intersects",
@@ -82,8 +82,8 @@ The first interesting layer for forester is the "BD Forêt" which is all vegetat
 
 ```{r bd_foret, warning=FALSE}
 layers <- get_layers_metadata("wfs", "environnement")
-BDF1_layer <- layer[4,1]
-BDF2_layer <- layer[5,1]
+BDF1_layer <- layers[4,1]
+BDF2_layer <- layers[5,1]
 
 BDF1 <- get_wfs(borders, BDF1_layer, spatial_filter = "intersects")
 BDF2 <- get_wfs(borders, BDF2_layer, spatial_filter = "intersects")
