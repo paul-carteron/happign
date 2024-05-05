@@ -47,8 +47,7 @@ test_that("wms_overwrite", {
    mnt <- get_wms_raster(happign:::poly, layer, res,
                          filename = filename)
 
-   expect_message(get_wms_raster(happign:::poly,
-                                 res = 25,
+   expect_message(get_wms_raster(happign:::poly, layer, res,
                                  filename = filename),
                   "File already exists at")
 })

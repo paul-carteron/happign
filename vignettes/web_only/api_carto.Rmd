@@ -206,7 +206,8 @@ ressources <- c("prescription-surf",
                 "prescription-lin",
                 "prescription-pct")
 prescriptions <- get_apicarto_gpu(partition,
-                                  ressource = ressources)
+                                  ressource = ressources,
+                                  dTolerance = 5)
 
 tm_shape(prescriptions[[1]])+
    tm_polygons("libelle",  legend.show = FALSE)+
@@ -241,7 +242,6 @@ Let's find how many wine appellations are there in Finistère, France (spoiler, 
 
 ```{r vitivole_finistere, message=FALSE}
 finistere <- get_wfs(penmarch,
-                    "administratif",
                     "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:departement")
 
 # finistere borders are quite complex, and dTolerance cant be used. In this case convex hull of shape 
