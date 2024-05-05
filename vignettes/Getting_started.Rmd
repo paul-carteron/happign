@@ -1,7 +1,7 @@
 ---
 title: "Getting started with happign"
 author: "Paul Carteron"
-date: "2023-08-03"
+date: "2024-05-05"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting started with happign}
@@ -16,80 +16,95 @@ vignette: >
 We can load the `happign` package, and some additional packages we will need (`sf` to manipulate spatial data and `tmap` to create maps)
 
 
+
+
+
 ```r
 library(happign)
 library(sf)
-library(tmap)
+library(tmap);tmap_mode("plot")
+#> tmap mode set to plotting
 ```
 
-# WFS and WMS service
 
-`happign` use two web service from IGN :
+# WFS, WMS and WMTS service
 
-*  WMS raster : data in raster format (.jpg, .png, .tif, ...)
+`happign` use three web service from IGN :
+
+*  WMS raster : data in raster format e.g. images (.jpg, .png, .tif, ...)
+*  WMTS : same as WMS raster but images are precalculated
 *  WFS : data in vector format (.shp, ...).
 
-More detailed information are available [here](https://www.ogc.org/standard/wms/) for WMS and [here](https://www.ogc.org/standard/wfs/) for WFS.
+More detailed information are available [here](https://www.ogc.org/standard/wms/) for WMS, [here](https://www.ogc.org/standard/wmts/) for WMTS and [here](https://www.ogc.org/standard/wfs/) for WFS.
 
-To download data from IGN web services at least three elements are needed :
+To download data from IGN web services at least two elements are needed :
 
-* An API key;
 * A layer name ;
 * An input shape read by [`sf`]( https://CRAN.R-project.org/package=sf) package.
 
-## API key
+## Layer name
 
-API keys can be directly retrieved on the [IGN website from the expert web services](https://geoservices.ign.fr/services-web-experts) (I recommend you at this point to go and have a look) or with `get_apikeys()` function.
+It is possible to find the names of available layers from the IGN website. For example, the first layer name in **WFS format** for ["Administratif" category](https://geoservices.ign.fr/services-web-experts-administratif) is *"ADMINEXPRESS-COG-CARTO.LATEST:arrondissement"*
 
+All layer's name can be accessed from R with the `get_layers_metadata()` function. This one connects directly to the IGN site which allows to have the last updated resources. It can be used for WMS and WFS :
+
+
+
+```r
+administratif_wfs <- get_layers_metadata(data_type = "wfs")
+administratif_wms <- get_layers_metadata(data_type = "wms-r")
+administratif_wms <- get_layers_metadata(data_type = "wmts")
+
+head(administratif_wfs)
+#>                                                       Name
+#> 1              OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016
+#> 2              OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019
+#> 3                   ADMINEXPRESS-COG.LATEST:arrondissement
+#> 4         ADMINEXPRESS-COG.LATEST:arrondissement_municipal
+#> 5                           ADMINEXPRESS-COG.LATEST:canton
+#> 6 ADMINEXPRESS-COG.LATEST:chflieu_arrondissement_municipal
+#>                   Title          Abstract
+#> 1       OCSGE Gers 2016   OCSGE Gers 2016
+#> 2      OCSGE Gers 2019   OCSGE Gers 2019 
+#> 3 ADMINEXPRESS COG 2023      édition 2023
+#> 4 ADMINEXPRESS COG 2023      édition 2023
+#> 5 ADMINEXPRESS COG 2023      édition 2023
+#> 6 ADMINEXPRESS COG 2023      édition 2023
+```
+
+You can specify an apikey to focus on specific category. API keys can be directly retrieved on the [IGN website from the expert web services](https://geoservices.ign.fr/services-web-experts) or with `get_apikeys()` function.
 
 
 ```r
 get_apikeys()
-#>  [1] "administratif" "adresse"       "agriculture"   "altimetrie"   
-#>  [5] "cartes"        "cartovecto"    "clc"           "economie"     
-#>  [9] "enr"           "environnement" "geodesie"      "lambert93"    
-#> [13] "ocsge"         "ortho"         "orthohisto"    "parcellaire"  
-#> [17] "satellite"     "sol"           "topographie"   "transports"
-```
+#>  [1] "administratif" "adresse"       "agriculture"  
+#>  [4] "altimetrie"    "cartes"        "cartovecto"   
+#>  [7] "clc"           "economie"      "enr"          
+#> [10] "environnement" "geodesie"      "lambert93"    
+#> [13] "ocsge"         "ortho"         "orthohisto"   
+#> [16] "parcellaire"   "satellite"     "sol"          
+#> [19] "topographie"   "transports"
 
-## Layer name
+administratif_wmts <- get_layers_metadata("wmts", "administratif")
 
-As for API key, it is possible to find the names of available layers from the expert web services of the IGN. For example, the first layer name in **WFS format** for ["Administratif" category](https://geoservices.ign.fr/services-web-experts-administratif) is *"ADMINEXPRESS-COG-CARTO.LATEST:arrondissement"*
-
-Again, all layer's name can be accessed from R with the `get_layers_metadata()` function. This one connects directly to the IGN site which allows to have the last updated resources. It can be used for WMS and WFS :
-
-
-```r
-administratif_wfs <- get_layers_metadata(apikey = "administratif", data_type = "wfs")
-administratif_wms <- get_layers_metadata(apikey = "administratif", data_type = "wms")
-
-head(administratif_wfs)
-#>                                                                 Name
-#> 1                       ADMINEXPRESS-COG-CARTO.LATEST:arrondissement
-#> 2             ADMINEXPRESS-COG-CARTO.LATEST:arrondissement_municipal
-#> 3                               ADMINEXPRESS-COG-CARTO.LATEST:canton
-#> 4     ADMINEXPRESS-COG-CARTO.LATEST:chflieu_arrondissement_municipal
-#> 5                      ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune
-#> 6 ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune_associee_ou_deleguee
-#>                                                                      Title
-#> 1                       ADMINEXPRESS-COG-CARTO.LATEST:arrondissement.title
-#> 2             ADMINEXPRESS-COG-CARTO.LATEST:arrondissement_municipal.title
-#> 3                               ADMINEXPRESS-COG-CARTO.LATEST:canton.title
-#> 4     ADMINEXPRESS-COG-CARTO.LATEST:chflieu_arrondissement_municipal.title
-#> 5                      ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune.title
-#> 6 ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune_associee_ou_deleguee.title
-#>       Abstract
-#> 1 édition 2023
-#> 2 édition 2023
-#> 3 édition 2023
-#> 4 édition 2023
-#> 5 édition 2023
-#> 6 édition 2023
+head(administratif_wmts)
+#>                                              Title
+#> 1                           ADMINEXPRESS COG CARTO
+#> 2                                 ADMINEXPRESS COG
+#> 3 Limites administratives mises à jour en continu.
+#>                                                                 Abstract
+#> 1    Limites administratives Express COG code officiel géographique 2023
+#> 2   Limites administratives Express COG code officiel géographique. 2023
+#> 3 Limites administratives mises à jour en continu ; Edition : 2024-03-25
+#>                               Identifier
+#> 1          ADMINEXPRESS-COG-CARTO.LATEST
+#> 2                ADMINEXPRESS-COG.LATEST
+#> 3 LIMITES_ADMINISTRATIVES_EXPRESS.LATEST
 ```
 
 ## Downloading the data
 
-Now that we know how to get an API key and layer name, it only takes a few lines to get plethora of resources. For the example we will look at the beautiful town of Penmarch in France. A part of this town is stored as a shape in happign.
+Now that we know how to get a layer name, it only takes a few lines to get plethora of resources. For the example we will look at the beautiful town of Penmarch in France. A part of this town is stored as a shape in happign.
 
 
 ```r
@@ -104,16 +119,14 @@ penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 ```r
 
 penmarch_borders <- get_wfs(x = penmarch,
-                            apikey = "administratif",
                             layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
 #> Features downloaded : 1
-
 # Checking result
 tm_shape(penmarch_borders)+
    tm_polygons(alpha = 0, lwd = 2)+
 tm_shape(penmarch)+
    tm_polygons(col = "red")+
-tm_add_legend(type = "fill", border.col = "black", border.lwd =2, 
+tm_add_legend(type = "fill", border.col = "black", border.lwd =2,
               col = NA, labels = "border from get_wfs")+
 tm_add_legend(type = "fill", col = "red", labels = "penmarch shape from happign package")+
 tm_layout(main.title = "Penmarch borders from IGN",
@@ -121,62 +134,62 @@ tm_layout(main.title = "Penmarch borders from IGN",
           legend.position = c(0.7, -0.1),
           outer.margins = c(0.1, 0,0,0),
           frame = FALSE)
-#> Legend labels were too wide. The labels have been resized to 0.63. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
+#> Legend labels were too wide. The labels have been resized to 0.61. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
 ```
 
 <div class="figure" style="text-align: center">
-<img src="Getting_started-unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6"  />
-<p class="caption">plot of chunk unnamed-chunk-6</p>
+<img src="figure/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5"  />
+<p class="caption">plot of chunk unnamed-chunk-5</p>
 </div>
 
 It's as simple as that!
-Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many road junctions there are in Penmarch?
+Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many hedges for biodiversity there are in Penmarch?
 
-*Spoiler : there are 192 of them !*
+*Spoiler : there are 436 of them !*
+
 
 
 ```r
-dikes <- get_wfs(x = penmarch_borders,
-                 apikey = get_apikeys()[6], #cartovecto
-                 layer = "BDCARTO_BDD_WLD_WGS84G:noeud_routier",
+hedges <- get_wfs(x = penmarch_borders,
+                 layer = "BDTOPO_V3:haie",
                  spatial_filter = "intersects")
-#> Features downloaded : 192
+#> Features downloaded : 436
 
 # Checking result
 tm_shape(penmarch_borders) + # Borders of penmarch
    tm_borders(lwd = 2) +
-tm_shape(dikes) + # Point use to retrieve data
-   tm_symbols(col = "red", shape = 13, size = 0.3) +
-   tm_add_legend(type = "symbol", shape = 13, label = "Road junction", col = "red") +
-   tm_layout(main.title = "Road nodes recorded by the IGN in Penmarch",
+tm_shape(hedges) + # Point use to retrieve data
+   tm_lines(col = "red", size = 0.3) +
+   tm_add_legend(type = "line", label = "Hedges", col = "red") +
+   tm_layout(main.title = "Hedges recorded by the IGN in Penmarch",
              main.title.position = "center",
              legend.position = c("right", "bottom"),
              frame = FALSE)
 ```
 
 <div class="figure" style="text-align: center">
-<img src="Getting_started-unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7"  />
-<p class="caption">plot of chunk unnamed-chunk-7</p>
+<img src="figure/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6"  />
+<p class="caption">plot of chunk unnamed-chunk-6</p>
 </div>
 
 ### WMS raster
 
-For raster, the process is the same, but with the function `get_wms_raster()`, but you need to specify the resolution (note that it must be in the same coordinate system as the crs parameter). There's plenty of elevation resources inside ["altimetrie" category](https://geoservices.ign.fr/services-web-experts-altimetrie). A basic one is the Digital Elevation Model (DEM or MNT in French). Borders of Penmarch are used to download the DEM.
+For raster, the process is the same, but with the function `get_wms_raster()`, but you need to specify the resolution (note that it must be in the same coordinate system as the crs parameter). There's plenty of elevation resources inside ["altimetrie" category](https://geoservices.ign.fr/services-web-experts-altimetrie). A basic one is the Digital Elevation Model (DEM or MNT in French). Borders of Penmarch are used to download the DEM. Note that for DEM, we don't want an RGB image but values of each pixels. That why `rgb=FALSE` is used below.
+
 
 
 
 ```r
-layers_metadata <- get_layers_metadata("altimetrie", "wms")
+layers_metadata <- get_layers_metadata("wms-r", "altimetrie")
 dem_layer <- layers_metadata[2, 1] #LEVATION.ELEVATIONGRIDCOVERAGE
 
 mnt <- get_wms_raster(x = penmarch_borders,
-                      apikey = "altimetrie",
                       layer = dem_layer,
                       res = 25,
-                      crs = 2154)
+                      crs = 2154,
+                      rgb = FALSE)
 #> 0...10...20...30...40...50...60...70...80...90...100 - done.
-#> Raster is saved at :
-#> C:\Users\PAUL\AppData\Local\Temp\RtmpK29L2a\file12e45e89658a.tif
+#> Raster is saved at : C:\Users\PaulCarteron\AppData\Local\Temp\Rtmp63I4Tv\filea98465250a.tif
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 
@@ -191,10 +204,40 @@ tm_layout(main.title = "DEM of Penmarch",
 ```
 
 <div class="figure" style="text-align: center">
-<img src="Getting_started-unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"  />
-<p class="caption">plot of chunk unnamed-chunk-8</p>
+<img src="figure/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7"  />
+<p class="caption">plot of chunk unnamed-chunk-7</p>
 </div>
 
 __*Rq :*__
 
  * *Raster from `get_wms_raster()` are `SpatRaster` object from the `terra` package. To learn more about conversion between other raster type in R go [check this out](https://geocompx.org/post/2021/spatial-classes-conversion/).*
+
+### WMTS
+
+For WMTS, no resolution is needed beacause images are precalculated but a zoom level is needed. The higher the zoom level is, the more precis image is. If you only need visualisation, i recommend to use WMTS instead of WMS.
+
+
+
+```r
+layers_metadata <- get_layers_metadata("wmts", "ortho")
+ortho_layer <- layers_metadata[1, 3] #HR.ORTHOIMAGERY.ORTHOPHOTOS
+
+hr_ortho <- get_wmts(x = penmarch_borders,
+                     layer = ortho_layer,
+                     zoom = 14)
+#> 0...10...20...30...40...50...60...70...80...90...100 - done.
+
+tm_shape(hr_ortho) +
+   tm_rgb(title = "Orthophoto Hight Resolution") +
+tm_shape(penmarch_borders)+
+   tm_borders(lwd = 2)+
+tm_layout(main.title = "Orthophoto Hight Resolution",
+          main.title.position = "center",
+          legend.position = c("right", "bottom"),
+          legend.bg.color = "white", legend.bg.alpha = 0.7)
+```
+
+<div class="figure" style="text-align: center">
+<img src="figure/unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"  />
+<p class="caption">plot of chunk unnamed-chunk-8</p>
+</div>
