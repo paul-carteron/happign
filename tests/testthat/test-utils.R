@@ -22,20 +22,23 @@ test_that("spatial_filter", {
    # point
    expect_match(construct_spatial_filter(x = point,
                                          spatial_filter = c("dwithin", 50, "meters"),
-                                         crs = 4326),
+                                         crs = 4326,
+                                         layer = "layer"),
                 "DWITHIN(geom, POINT (47.813 -4.344), 50, meters)", fixed = T)
 
    # polygon
    expect_match(construct_spatial_filter(x = poly,
                                          spatial_filter = c("dwithin", 50, "meters"),
-                                         crs = 4326),
+                                         crs = 4326,
+                                         layer = "layer"),
                 "47.815 -4.347, 47.813 -4.344)), 50, meters)", fixed = T)
 
 
    # bbox
    expect_match(construct_spatial_filter(x = poly,
                                          spatial_filter = "bbox",
-                                         crs = 4326),
+                                         crs = 4326,
+                                         layer = "layer"),
                 "BBOX(geom, -4.347, 47.811, -4.344, 47.815, 'EPSG:4326')", fixed = T)
 
 })

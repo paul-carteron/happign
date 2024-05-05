@@ -82,7 +82,7 @@ metadata_table <- get_layers_metadata("wms-r", apikey) # all layers for altimetr
 layer <- metadata_table[2,1] # ELEVATION.ELEVATIONGRIDCOVERAGE
 
 # Downloading digital elevation model values not image
-mnt_2154 <- get_wms_raster(penmarch, layer, res = 25, crs = 2154, rgb = FALSE)
+mnt_2154 <- get_wms_raster(penmarch, layer, res = 1, crs = 2154, rgb = FALSE)
 
 # If crs is set to 4326, res is in degrees
 mnt_4326 <- get_wms_raster(penmarch, layer, res = 0.0001, crs = 4326, rgb = FALSE)

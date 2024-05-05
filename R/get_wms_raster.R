@@ -99,12 +99,21 @@ get_wms_raster <- function(x,
                            overwrite = FALSE,
                            interactive = FALSE){
 
+   # check x ----
+   if (!inherits(x, c("sf", "sfc"))) {
+      stop("`x` must be of class sf or sfc.", call. = F)
+   }
+
    # interactive mode ----
    # if TRUE menu ask for apikey and layer name
    if (interactive){
-
       choice <- interactive_mode("wms-r")
       layer <- choice$layer
+   }
+
+   # check layer ----
+   if (!inherits(layer, "character")) {
+      stop("`layer` must be of class character.", call. = F)
    }
 
    # if no filename provided, layer is used by removing non alphanum character
@@ -118,40 +127,40 @@ get_wms_raster <- function(x,
       rast <- rast(filename)
       message("File already exists at ", filename," therefore is loaded.\n",
               "Set overwrite to TRUE to download it again.")
-   }else{
-      sd <- get_sd(layer)
-      desc_xml <- generate_desc_xml(sd, rgb)
-      bb <- st_bbox(x)
-
-      warp_options <- c(
-         "-of", "GTIFF",
-         "-te", bb$xmin, bb$ymin, bb$xmax, bb$ymax,
-         "-te_srs", st_crs(x)$srid,
-         "-t_srs", st_crs(crs)$srid,
-         "-tr", res, res,
-         "-r", "bilinear",
-         if (overwrite) "-overwrite" else NULL
-      )
-
-      rast <- gdal_utils("warp",
-                         source = desc_xml,
-                         destination = filename,
-                         quiet=FALSE,
-                         options = c(warp_options, create_options()),
-                         config_options = config_options()) |>
-         suppressWarnings()
-
-      rast <- rast(filename)
-
-      if (rgb){
-         RGB(rast) <- c(1, 2, 3)
-         names(rast) <- c("red", "green", "blue")
-      }
-
-      if (verbose)
-         message("Raster is saved at : ", suppressWarnings(normalizePath(filename)))
-
+      return(rast)
    }
+
+   sd <- get_sd(layer)
+   desc_xml <- generate_desc_xml(sd, rgb)
+   bb <- st_bbox(x)
+
+   warp_options <- c(
+      "-of", "GTIFF",
+      "-te", bb$xmin, bb$ymin, bb$xmax, bb$ymax,
+      "-te_srs", st_crs(x)$srid,
+      "-t_srs", st_crs(crs)$srid,
+      "-tr", res, res,
+      "-r", "bilinear",
+      if (overwrite) "-overwrite" else NULL
+   )
+
+   rast <- gdal_utils("warp",
+                      source = desc_xml,
+                      destination = filename,
+                      quiet=FALSE,
+                      options = c(warp_options, create_options()),
+                      config_options = config_options()) |>
+      suppressWarnings()
+
+   rast <- rast(filename)
+
+   if (rgb){
+      RGB(rast) <- c(1, 2, 3)
+      names(rast) <- c("red", "green", "blue")
+   }
+
+   if (verbose)
+      message("Raster is saved at : ", suppressWarnings(normalizePath(filename)))
 
    return(rast)
 

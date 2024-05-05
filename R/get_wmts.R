@@ -7,7 +7,6 @@
 #'
 #' @usage
 #' get_wmts(x,
-#'          apikey = "ortho",
 #'          layer = "ORTHOIMAGERY.ORTHOPHOTOS",
 #'          zoom = 10L,
 #'          crs = 2154,
@@ -17,8 +16,6 @@
 #'
 #' @param x Object of class `sf` or `sfc`. Needs to be located in
 #' France.
-#' @param apikey `character`; API key from `get_apikeys()` or directly
-#' from [IGN website](https://geoservices.ign.fr/services-web-experts).
 #' @param layer `character`; layer name from
 #' `get_layers_metadata(apikey, "wms")` or directly from
 #' [IGN website](https://geoservices.ign.fr/services-web-experts).
@@ -50,10 +47,14 @@
 #'
 #'@examples
 #' \dontrun{
-#' TO-DO
+#' library(sf)
+#' library(tmap)
+#'
+#' x <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
+#'
+#'
 #'}
 get_wmts <- function(x,
-                     apikey = "ortho",
                      layer = "ORTHOIMAGERY.ORTHOPHOTOS",
                      zoom = 10L,
                      crs = 2154,
@@ -70,20 +71,11 @@ get_wmts <- function(x,
    # interactive mode ----
    # if TRUE menu ask for apikey and layer name
    if (interactive){
-      choice <- interactive_mode()
-      apikey <- choice$apikey
+      choice <- interactive_mode("wmts")
       layer <- choice$layer
    }
 
    # check other input ----
-   # apikey
-   is_apikey <- apikey %in% get_apikeys()
-   is_personal_key <- grepl("^[[:alnum:]]{24}$", apikey)
-   if (!any(is_apikey, is_personal_key)) {
-      stop("`apikey` must be a character from `get_apikey()` or a personal key.",
-           call. = F)
-   }
-
    # layer
    if (!inherits(layer, "character")) {
       stop("`layer` must be of class character.", call. = F)
@@ -97,6 +89,12 @@ get_wmts <- function(x,
       zoom <- as.integer(zoom)
    }
 
+   # if no filename provided, layer is used by removing non alphanum character
+   if (is.null(filename)){
+      filename <- gsub("[^[:alnum:]]", "_", layer)
+      filename <- paste0(filename, ".tif") # Save as geotiff by default
+   }
+
    # overwrite ----
    # if filename exist and overwrite is set to FALSE, raster is loaded
    if (file.exists(filename) && !overwrite) {
@@ -108,10 +106,9 @@ get_wmts <- function(x,
 
    # prepare param for gdal warp ----
    bbox <- st_transform(x, crs) |> st_bbox()
-   crs <- paste0("EPSG:", st_crs(bbox)$epsg)
+   crs <- st_crs(bbox)$srid
 
-   url <- sprintf("WMTS:https://wxs.ign.fr/%s/geoportail/wmts?service=WMTS&version=1.0.0&request=GetCapabilities",
-                  apikey)
+   url <- sprintf("WMTS:https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetCapabilities")
 
    options <- c("-te", bbox$xmin, bbox$ymin, bbox$xmax, bbox$ymax,
                 "-te_srs", crs,

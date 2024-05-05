@@ -5,7 +5,6 @@
 \title{Download WMTS raster tiles}
 \usage{
 get_wmts(x,
-         apikey = "ortho",
          layer = "ORTHOIMAGERY.ORTHOPHOTOS",
          zoom = 10L,
          crs = 2154,
@@ -16,9 +15,6 @@ get_wmts(x,
 \arguments{
 \item{x}{Object of class \code{sf} or \code{sfc}. Needs to be located in
 France.}
-
-\item{apikey}{\code{character}; API key from \code{get_apikeys()} or directly
-from \href{https://geoservices.ign.fr/services-web-experts}{IGN website}.}
 
 \item{layer}{\code{character}; layer name from
 \code{get_layers_metadata(apikey, "wms")} or directly from
@@ -53,7 +49,12 @@ tiles.
 }
 \examples{
 \dontrun{
-TO-DO
+library(sf)
+library(tmap)
+
+x <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
+
+
 }
 }
 \seealso{
