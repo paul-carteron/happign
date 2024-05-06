@@ -33,7 +33,7 @@ jobs:
 
     steps:
     # NO NEED TO CHECKOUT HERE
-    - uses: r-hub/actions/setup@v1
+    - uses: r-hub/actions/setup@v2
       with:
         config: ${{ github.event.inputs.config }}
       id: rhub-setup
