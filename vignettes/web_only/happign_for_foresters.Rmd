@@ -140,7 +140,7 @@ protected_area_layers <- get_layers_metadata("wfs", "environnement") |>
 all_protected_area <- map(.x = protected_area_layers,
                           .f = ~ try(get_wfs(borders, .x, 
                                           spatial_filter = "intersects"))) |> 
-   set_names(protected_area_names) |> 
+   set_names(protected_area_layers) |> 
    discard(~ identical(length(.), 0L))
 
 # Plot the result
