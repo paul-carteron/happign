@@ -209,9 +209,9 @@ prescriptions <- get_apicarto_gpu(partition,
                                   dTolerance = 10)
 
 tm_shape(prescriptions[[1]])+
-   tm_polygons("libelle",  legend.show = FALSE)+
+   tm_lines("libelle", legend.col.show = FALSE, lwd = 2)+
 tm_shape(prescriptions[[2]])+
-   tm_lines("libelle", legend.col.show = FALSE, lwd = 2)
+   tm_dots("libelle",  legend.show = FALSE, size = 0.1)
 
 ```
 
