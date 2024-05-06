@@ -1,3 +1,17 @@
+# happign 0.3.0
+* Refactor package to adapt to Géoplateforme
+
+## Breaking change :
+* `get_wms_raster()`, `get_wfs()` and `get_wmts()` do not use `apikey` arg anymore.
+* Order of arguments in `get_layers_metadata()` has been changed. The arg `data_type` now comes before `apikey`.
+* `get_iso()` has be temporary removed from `happign`
+
+## Other change :
+* Arg `apikey` isn't mandatory anymore in `get_layers_metadata`.
+* Vignettes have been adapted to happign 0.3.0.
+* `get_wms_raster()` now have a `verbose` argument
+* `get_wms_raster()` function uses the WMS driver provided by GDAL to download a raster image. Instead of downloading and merging multiple tiles, it retrieves the entire image at once from the WMS server.
+
 # happign 0.2.2
 * Fix bug when creating bbox for `get_wms_raster()` getMap request when crs isn't latlong.
 
