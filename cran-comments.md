@@ -6,9 +6,6 @@
 
 ## R CMD check results
 
-There were no ERRORs or WARNINGs for each environnement.
-
-RQ : I test under 0.2.2-1 but I finally rename version 0.2.2
 
 ### Windows Server 2022, R-devel, 64 bit
 

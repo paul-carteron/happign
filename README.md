@@ -80,9 +80,6 @@ Package vignettes :
 - [API
   carto](https://paul-carteron.github.io/happign/articles/web_only/api_carto.html)
   : How to use all API Carto with happign ;
-- [SCAN 25, SCAN 100 et SCAN
-  OACI](https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html)
-  : How to download Scan 25, Scan 100 and Scan OACI
 
 ### Future features
 

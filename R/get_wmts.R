@@ -23,7 +23,7 @@
 #' map tiles covers a large geographical area. In other words, the smaller
 #' the zoom level, the less precise the resolution. For conversion between zoom
 #' level and resolution see
-#' [WMTS IGN Documentation](https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-tuilees-wmts-ogc)
+#' [WMTS IGN Documentation](https://geoservices.ign.fr/documentation/services/services-geoplateforme/diffusion#70062)
 #' @param crs `numeric`, `character`, or object of class `sf` or `sfc`.
 #' It is set to EPSG:2154 by default. See [sf::st_crs()] for more detail.
 #' @param filename `character` or `NULL`; filename or a open connection for

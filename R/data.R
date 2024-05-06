@@ -10,5 +10,5 @@
 #'   \item{COM}{insee code}
 #'   \item{LIBELLE}{Name of commune}
 #' }
-#' @source \url{https://www.insee.fr/fr/information/2115000}
+#' @source \url{https://www.insee.fr/fr/information/6800675}
 "cog_2023"
