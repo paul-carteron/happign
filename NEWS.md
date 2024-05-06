@@ -30,12 +30,12 @@ There is no longer need to download several tiles.
 # happign 0.1.8
 * Correction of get_raw_lidar()
 * New vignette "completion_of_ign_data_road_example"
-* Precomputation of cran vignette
+* Pre-computation of cran vignette
 * Apply DRY principle to option("timeout") handling
 * Add "penmarch.shp" as internal data for test and example
 * Better handling of filename saving for `get_wfs()`
 * Adding support for spatial and ecql filter to `get_wfs()`
-* Remove dependecy to magritrr pipe `%>%` by `|>`
+* Remove dependency to magritrr pipe `%>%` by `|>`
 * Add internal shape for testing `point`, `multipoint`, `line`, `multiline`, `poly`, `multipoly`
 * add `get_wfs_attributes()` function
 * `NULL` is returned when no data found
