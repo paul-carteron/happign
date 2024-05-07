@@ -12,7 +12,7 @@ and name of layer."><meta property="og:image" content="https://paul-carteron.git
     
     <a class="navbar-brand me-2" href="../index.html">happign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,9 +121,7 @@ It provide multiple spatial filter : "intersects", "disjoint", "contains", "with
 "crosses", "overlaps", "equals", "relate", "beyond", "dwithin". For "relate", "beyond",
 "dwithin", argument can be provide using vector like :
 spatial_filter = c("dwithin", distance, units). More info about ECQL language
-<a href="https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html" class="external-link">here</a>.
-Be aware that "dwithin" is broken and it doesn't accept units properly. Only degrees can be used.
-To avoid this, create a buffer and then use "within" instead od "dwithin".</p></li>
+<a href="https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html" class="external-link">here</a>.</p></li>
 <li><p>ECQL query can be provided to <code>ecql_filter</code>. This allows direct query of the IGN's WFS
 geoservers. If <code>x</code> is set, then the <code>ecql_filter</code> comes in addition to the
 <code>spatial_filter</code>. More info for writing ECQL
