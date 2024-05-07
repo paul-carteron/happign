@@ -48,8 +48,6 @@ It provide multiple spatial filter : "intersects", "disjoint", "contains", "with
 "dwithin", argument can be provide using vector like :
 spatial_filter = c("dwithin", distance, units). More info about ECQL language
 \href{https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html}{here}.
-Be aware that "dwithin" is broken and it doesn't accept units properly. Only degrees can be used.
-To avoid this, create a buffer and then use "within" instead od "dwithin".
 \item ECQL query can be provided to \code{ecql_filter}. This allows direct query of the IGN's WFS
 geoservers. If \code{x} is set, then the \code{ecql_filter} comes in addition to the
 \code{spatial_filter}. More info for writing ECQL

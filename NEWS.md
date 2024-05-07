@@ -109,7 +109,7 @@ merging for quiet faster results. `stars` package is not used anymore.
 
 * adding connection to isochrone and isodistance calculation of IGN with `get_iso()`
 * new vignette [happign for forester](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html)
-* new vignette [SCAN 25, SCAN 100 et SCAN OACI](https://paul-carteron.github.io/happign/articles/SCAN_25_SCAN_100_SCAN_OACI.html)
+* new vignette SCAN 25, SCAN 100 et SCAN OACI
 
 # happign 0.1.2
 

@@ -24,7 +24,7 @@ France.}
 map tiles covers a large geographical area. In other words, the smaller
 the zoom level, the less precise the resolution. For conversion between zoom
 level and resolution see
-\href{https://geoservices.ign.fr/documentation/services/api-et-services-ogc/images-tuilees-wmts-ogc}{WMTS IGN Documentation}}
+\href{https://geoservices.ign.fr/documentation/services/services-geoplateforme/diffusion#70062}{WMTS IGN Documentation}}
 
 \item{crs}{\code{numeric}, \code{character}, or object of class \code{sf} or \code{sfc}.
 It is set to EPSG:2154 by default. See \code{\link[sf:st_crs]{sf::st_crs()}} for more detail.}
