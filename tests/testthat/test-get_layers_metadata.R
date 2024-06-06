@@ -3,7 +3,7 @@ with_mock_dir("get_layers_metada_wfs", {
 
       res <- get_layers_metadata("wfs")
 
-      expect_equal(dim(res), c(418, 3))
+      expect_equal(dim(res), c(436, 3))
       expect_equal(names(res),
                    c("Name", "Title", "Abstract"))
       })
@@ -27,7 +27,7 @@ with_mock_dir("get_layers_metada_wmts", {
 
       res <- get_layers_metadata("wmts")
 
-      expect_equal(dim(res), c(544, 3))
+      expect_equal(dim(res), c(543, 3))
       expect_equal(names(res),
                    c("Title", "Abstract", "Identifier"))
    })

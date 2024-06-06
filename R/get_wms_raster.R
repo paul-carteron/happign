@@ -51,7 +51,7 @@
 #' `filename` already exists. If it does, the file is imported into
 #' R without downloading again, unless `overwrite` is set to `TRUE`.
 #'
-#' @importFrom terra rast RGB<-
+#' @importFrom terra rast RGB<- minmax allNA
 #' @importFrom sf gdal_utils st_bbox st_crs
 #' @importFrom utils menu
 #'
@@ -153,6 +153,12 @@ get_wms_raster <- function(x,
       suppressWarnings()
 
    rast <- rast(filename)
+
+
+   if (sum(minmax(allNA(rast))) == 2){
+      message("Raster is empty, NULL is returned")
+      return(NULL)
+   }
 
    if (rgb){
       RGB(rast) <- c(1, 2, 3)

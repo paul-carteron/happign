@@ -1,3 +1,8 @@
+# happign 0.3.1
+* `get_iso()`, `get_isochrone()` and `get_isodistance()` are back thanks to 
+[sylvaine31](https://github.com/sylvaine31) in [#16](https://github.com/paul-carteron/happign/issues/16)
+* `get_wms_raster()` and `get_wmts()` now return `NULL` when raster as only NA values [#26](https://github.com/paul-carteron/happign/issues/16)
+
 # happign 0.3.0
 * Refactor package to adapt to Géoplateforme
 

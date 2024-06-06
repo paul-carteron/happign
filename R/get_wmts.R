@@ -155,6 +155,11 @@ get_wmts <- function(x,
    RGB(rast) <- c(1, 2, 3, 4)
    names(rast) <- c("red", "green", "blue", "alpha")
 
+   if (sum(minmax(allNA(rast))) == 2){
+      message("Raster is empty, NULL is returned")
+      return(NULL)
+   }
+
    return(rast)
 
 }
