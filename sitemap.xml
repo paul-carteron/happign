@@ -1,93 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://paul-carteron.github.io/happign/404.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/articles/Getting_started.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/articles/web_only/api_carto.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/index.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/are_queryable.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/build_iso_query.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/cog_2023.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_cadastre.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_codes_postaux.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_gpu.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_rpg.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_apicarto_viticole.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_apikeys.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_iso.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_last_news.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_layers_metadata.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_location_info.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_raw_lidar.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_wfs.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_wfs_attributes.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_wms_raster.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/get_wmts.html</loc>
-  </url>
-  <url>
-    <loc>https://paul-carteron.github.io/happign/reference/index.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://paul-carteron.github.io/happign/404.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/CONTRIBUTING.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/LICENSE.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/articles/Getting_started.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/articles/index.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/articles/web_only/api_carto.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/authors.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/index.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/news/index.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/are_queryable.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/build_iso_query.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/cog_2023.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_apicarto_cadastre.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_apicarto_codes_postaux.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_apicarto_gpu.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_apicarto_rpg.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_apicarto_viticole.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_apikeys.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_iso.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_last_news.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_layers_metadata.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_location_info.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_raw_lidar.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_wfs.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_wfs_attributes.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_wms_raster.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/get_wmts.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/index.html</loc></url>
 </urlset>
+
