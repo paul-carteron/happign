@@ -147,7 +147,7 @@ get_wms_raster <- function(x,
    rast <- gdal_utils("warp",
                       source = desc_xml,
                       destination = filename,
-                      quiet=FALSE,
+                      quiet=!verbose,
                       options = c(warp_options, create_options()),
                       config_options = config_options()) |>
       suppressWarnings()
