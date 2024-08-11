@@ -55,6 +55,7 @@ tiles.</p>
 <span>         zoom <span class="op">=</span> <span class="fl">10L</span>,</span>
 <span>         crs <span class="op">=</span> <span class="fl">2154</span>,</span>
 <span>         filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span>,</span>
+<span>         verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>         overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>         interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -92,6 +93,10 @@ It is set to EPSG:2154 by default. See <code><a href="https://r-spatial.github.i
 writing. (ex : "test.tif" or "~/test.tif"). If <code>NULL</code>, <code>layer</code> is used as
 filename. Default drivers is ".tif" but all gdal drivers are supported,
 see details for more info.</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p><code>boolean</code>; if TRUE, message are added.</p></dd>
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
