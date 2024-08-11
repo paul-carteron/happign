@@ -26,7 +26,8 @@ Imports:
     methods,
     sf (>= 1.0-7),
     terra,
-    xml2
+    xml2,
+    yyjsonr
 Suggests: 
     covr,
     httptest2,

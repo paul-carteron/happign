@@ -5,14 +5,15 @@
 \title{Apicarto Cadastre}
 \usage{
 get_apicarto_cadastre(x,
-                      type = "parcelle",
-                      source = "PCI",
-                      section = list(NULL),
-                      numero = list(NULL),
-                      code_arr = list(NULL),
-                      code_abs = list(NULL),
-                      code_com = list(NULL),
-                      dTolerance = 0)
+                      type = "commune",
+                      code_com = NULL,
+                      section = NULL,
+                      numero = NULL,
+                      code_arr = NULL,
+                      code_abs = NULL,
+                      dTolerance = 0L,
+                      source = "pci",
+                      progress = TRUE)
 }
 \arguments{
 \item{x}{It can be a shape, insee codes or departement codes :
@@ -25,8 +26,8 @@ get_apicarto_cadastre(x,
 \item{type}{A \code{character} from \code{"parcelle"}, \code{"commune"}, \code{"feuille"},
 \code{"division"}, \code{"localisant"}}
 
-\item{source}{Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
-See detail for more info.}
+\item{code_com}{A \code{character} of length 5 corresponding to the commune code. Only use with
+\code{type = "division"} or \code{type = "feuille"}}
 
 \item{section}{A \code{character} of length 2}
 
@@ -38,11 +39,14 @@ Lyon, Marseille}
 \item{code_abs}{A \code{character} corresponding to the code of absorbed commune.
 This prefix is useful to differentiate between communes that have merged}
 
-\item{code_com}{A \code{character} of length 5 corresponding to the commune code. Only use with
-\code{type = "division"} or \code{type = "feuille"}}
-
 \item{dTolerance}{numeric; Complex shape cannot be handle by API; using \code{dTolerance}
 allow to simplify them. See \code{?sf::st_simplify}}
+
+\item{source}{Can be "bdp" for BD Parcellaire or "pci" for Parcellaire express.
+See detail for more info.}
+
+\item{progress}{Display a progress bar? Use TRUE to turn on a basic progress
+bar, use a string to give it a name. See \code{\link[httr2:req_perform_iterative]{httr2::req_perform_iterative()}}.}
 }
 \value{
 Object of class \code{sf}
@@ -64,6 +68,7 @@ comparison of this two products can be found
 \examples{
 \dontrun{
 library(sf)
+library(tmap)
 
 # shape from the town of penmarch
 penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
@@ -71,35 +76,41 @@ penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 # get commune borders
 ## from shape
 penmarch_borders <- get_apicarto_cadastre(penmarch, type = "commune")
+qtm(penmarch_borders, fill = NA)+qtm(penmarch)
 
 ## from insee_code
 border <- get_apicarto_cadastre("29158", type = "commune")
-borders <- get_apicarto_cadastre(c("29158", "29165"), type = "commune")
+borders <- get_apicarto_cadastre(c("29158", "29135"), type = "commune")
+qtm(borders, fill="nom_com")
 
 # get cadastral parcels
 ## from shape
-parcels <- get_apicarto_cadastre(penmarch, section = "AX")
+parcels <- get_apicarto_cadastre(penmarch, section = "AW", type = "parcelle")
 
 ## from insee code
-parcels <- get_apicarto_cadastre("29158")
+parcels <- get_apicarto_cadastre("29158", type = "parcelle")
 
 # Use parameter recycling
 ## get sections "AX" parcels from multiple insee_code
-parcels <- get_apicarto_cadastre(c("29158", "29165"), section = "AX")
+parcels <- get_apicarto_cadastre(c("29158", "29135"), section = "AW", type = "parcelle")
+qtm(penmarch_borders, fill = NA)+qtm(parcels)
 
-## get parcels numbered "0001", "0010" of section "AX" and "BR"
-section <- c("AX", "BR")
+## get parcels numbered "0001", "0010" of section "AW" and "BR"
+section <- c("AW", "BR")
 numero <- rep(c("0001", "0010"), each = 2)
-parcels <- get_apicarto_cadastre("29158", section = section, numero = numero)
+parcels <- get_apicarto_cadastre("29158", section = section, numero = numero, type = "parcelle")
+qtm(penmarch_borders, fill = NA)+qtm(parcels)
 
 ## generalization with expand.grid
-params <- expand.grid(code_insee = c("29158", "29165"),
-                      section = c("AX", "BR"),
+params <- expand.grid(code_insee = c("29158", "29135"),
+                      section = c("AW", "BR"),
                       numero = c("0001", "0010"),
                       stringsAsFactors = FALSE)
 parcels <- get_apicarto_cadastre(params$code_insee,
                                  section = params$section,
-                                 numero = params$numero)
+                                 numero = params$numero,
+                                 type = "parcelle")
+qtm(penmarch_borders, fill = NA)+qtm(parcels$geometry)
 
 }
 

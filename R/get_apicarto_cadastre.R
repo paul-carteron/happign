@@ -5,14 +5,15 @@
 #'
 #' @usage
 #' get_apicarto_cadastre(x,
-#'                       type = "parcelle",
-#'                       source = "PCI",
-#'                       section = list(NULL),
-#'                       numero = list(NULL),
-#'                       code_arr = list(NULL),
-#'                       code_abs = list(NULL),
-#'                       code_com = list(NULL),
-#'                       dTolerance = 0)
+#'                       type = "commune",
+#'                       code_com = NULL,
+#'                       section = NULL,
+#'                       numero = NULL,
+#'                       code_arr = NULL,
+#'                       code_abs = NULL,
+#'                       dTolerance = 0L,
+#'                       source = "pci",
+#'                       progress = TRUE)
 #'
 #' @param x It can be a shape, insee codes or departement codes :
 #' * Shape : must be an object of class `sf` or `sfc`.
@@ -20,18 +21,20 @@
 #' * Code departement : must be a `character` of length  2 or 3 (DOM-TOM)
 #' @param type A `character` from `"parcelle"`, `"commune"`, `"feuille"`,
 #'  `"division"`, `"localisant"`
-#' @param source Can be "BDP" for BD Parcellaire or "PCI" for Parcellaire express.
-#' See detail for more info.
+#' @param code_com A `character` of length 5 corresponding to the commune code. Only use with
+#' `type = "division"` or `type = "feuille"`
 #' @param section A `character` of length 2
 #' @param numero A `character` of length 4
 #' @param code_arr A `character` corresponding to district code for Paris,
 #' Lyon, Marseille
 #' @param code_abs A `character` corresponding to the code of absorbed commune.
 #' This prefix is useful to differentiate between communes that have merged
-#' @param code_com A `character` of length 5 corresponding to the commune code. Only use with
-#' `type = "division"` or `type = "feuille"`
 #' @param dTolerance numeric; Complex shape cannot be handle by API; using `dTolerance`
 #' allow to simplify them. See `?sf::st_simplify`
+#' @param source Can be "bdp" for BD Parcellaire or "pci" for Parcellaire express.
+#' See detail for more info.
+#' @param progress Display a progress bar? Use TRUE to turn on a basic progress
+#' bar, use a string to give it a name. See [httr2::req_perform_iterative()].
 #'
 #' @details
 #' `x`, `section`, `numero`, `code_arr`, `code_abs`, `code_com` can take vector of character.
@@ -46,11 +49,15 @@
 #' @return Object of class `sf`
 #' @export
 #'
-#' @importFrom sf st_as_sfc st_make_valid st_transform
+#' @importFrom sf st_as_sfc st_make_valid st_transform st_simplify
+#' @importFrom yyjsonr write_geojson_str
+#' @importFrom httr2 req_perform_iterative iterate_with_offset resp_body_string
+#' req_options req_url_path req_url_query resp_body_json resps_data req_url_path_append
 #'
 #' @examples
 #' \dontrun{
 #' library(sf)
+#' library(tmap)
 #'
 #' # shape from the town of penmarch
 #' penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
@@ -58,35 +65,41 @@
 #' # get commune borders
 #' ## from shape
 #' penmarch_borders <- get_apicarto_cadastre(penmarch, type = "commune")
+#' qtm(penmarch_borders, fill = NA)+qtm(penmarch)
 #'
 #' ## from insee_code
 #' border <- get_apicarto_cadastre("29158", type = "commune")
-#' borders <- get_apicarto_cadastre(c("29158", "29165"), type = "commune")
+#' borders <- get_apicarto_cadastre(c("29158", "29135"), type = "commune")
+#' qtm(borders, fill="nom_com")
 #'
 #' # get cadastral parcels
 #' ## from shape
-#' parcels <- get_apicarto_cadastre(penmarch, section = "AX")
+#' parcels <- get_apicarto_cadastre(penmarch, section = "AW", type = "parcelle")
 #'
 #' ## from insee code
-#' parcels <- get_apicarto_cadastre("29158")
+#' parcels <- get_apicarto_cadastre("29158", type = "parcelle")
 #'
 #' # Use parameter recycling
 #' ## get sections "AX" parcels from multiple insee_code
-#' parcels <- get_apicarto_cadastre(c("29158", "29165"), section = "AX")
+#' parcels <- get_apicarto_cadastre(c("29158", "29135"), section = "AW", type = "parcelle")
+#' qtm(penmarch_borders, fill = NA)+qtm(parcels)
 #'
-#' ## get parcels numbered "0001", "0010" of section "AX" and "BR"
-#' section <- c("AX", "BR")
+#' ## get parcels numbered "0001", "0010" of section "AW" and "BR"
+#' section <- c("AW", "BR")
 #' numero <- rep(c("0001", "0010"), each = 2)
-#' parcels <- get_apicarto_cadastre("29158", section = section, numero = numero)
+#' parcels <- get_apicarto_cadastre("29158", section = section, numero = numero, type = "parcelle")
+#' qtm(penmarch_borders, fill = NA)+qtm(parcels)
 #'
 #' ## generalization with expand.grid
-#' params <- expand.grid(code_insee = c("29158", "29165"),
-#'                       section = c("AX", "BR"),
+#' params <- expand.grid(code_insee = c("29158", "29135"),
+#'                       section = c("AW", "BR"),
 #'                       numero = c("0001", "0010"),
 #'                       stringsAsFactors = FALSE)
 #' parcels <- get_apicarto_cadastre(params$code_insee,
 #'                                  section = params$section,
-#'                                  numero = params$numero)
+#'                                  numero = params$numero,
+#'                                  type = "parcelle")
+#' qtm(penmarch_borders, fill = NA)+qtm(parcels$geometry)
 #'
 #'}
 #'
@@ -94,70 +107,166 @@
 #' @export
 #'
 get_apicarto_cadastre <- function(x,
-                                  type = "parcelle",
-                                  source = "PCI",
-                                  section = list(NULL),
-                                  numero = list(NULL),
-                                  code_arr = list(NULL),
-                                  code_abs = list(NULL),
-                                  code_com = list(NULL),
-                                  dTolerance = 0){
+                                  type = "commune",
+                                  code_com = NULL,
+                                  section = NULL,
+                                  numero = NULL,
+                                  code_arr = NULL,
+                                  code_abs = NULL,
+                                  dTolerance = 0L,
+                                  source = "pci",
+                                  progress = TRUE) {
 
-   # initialisation, list(NULL) is used instead of NULL for Map loop below
-   geom <- code_insee <- code_dep <- list(NULL)
-
-   # check x input
-   if (!inherits(x, c("character", "sf", "sfc"))) { # x can have 3 class
-      stop("x must be of class character, sf or sfc.")
+   if (!inherits(x, c("sf", "sfc", "character"))) {
+      stop("Input 'x' must be of class 'sf', 'sfc', or 'character'")
    }
 
-   # check type and source input
-   match.arg(type, c("parcelle", "commune", "feuille", "division", "localisant"))
-   match.arg(source, c("BDP", "PCI"))
+   geom <- NULL
+   code_insee <- NULL
+   code_dep <- NULL
 
-   # deal with spatial object
-   if(inherits(x, c("sf", "sfc"))){
-      geom <- shp_to_geojson(x, crs = 4326, dTolerance)
+   if (inherits(x, c("sf", "sfc"))) {
+      geom <- get_geojson(x, dTolerance)
    }
 
-   # deal with character
-   if(inherits(x, "character")){
-      switch(as.character(nchar(x[1])),
-             "5" = {code_insee <- x},
-             "3" = {code_dep <- x},
-             "2" = {code_dep <- x},
-             stop("x must be length 5; not ", nchar(x)))
+   if (inherits(x, "character")) {
+      codes <- process_character_input(x)
+      code_insee <- codes$code_insee
+      code_dep <- codes$code_dep
    }
 
-   # hit api and loop if there more than 500 features
-   resp <- Map(
-      loop_api,
-      path = paste0("api/cadastre/", type),
-      limit = 500,
-      "_limit" = 500,
-      "code_insee" = code_insee,
-      "code_dep" = code_dep,
-      "section" = section,
-      "numero" = numero,
-      "geom" = geom,
-      "code_abs" = code_abs,
-      "code_arr" = code_arr,
-      "source_ign" = source
+
+   params <- create_params(geom, code_insee, code_dep, code_com, section,
+                           numero, code_arr, code_abs, source)
+   resps <- lapply(params, fetch_data, type, progress)
+   result <- lapply(resps, process_responses)
+
+   result <- do.call(rbind, result)
+   result <- result[, !sapply(result, is.list)]
+   return(result)
+}
+
+#' @name get_geojson
+#' @noRd
+#' @description Function to convert sf object to geojson
+get_geojson <- function(x, dTolerance = 0L, crs = 4326) {
+   geom <- x |>
+      st_make_valid() |>
+      st_simplify(dTolerance = dTolerance) |>
+      st_transform(crs) |>
+      st_geometry() |>
+      yyjsonr::write_geojson_str()
+   return(geom)
+}
+
+#' @name process_character_input
+#' @noRd
+#' @description Detect length of x as character and add x to correct arg (dep or
+#' code insee)
+process_character_input <- function(x) {
+   nchar_x <- nchar(x[1])
+
+   result <- switch(as.character(nchar_x),
+                    "5" = list(code_insee = x, code_dep = NULL),
+                    "3" = list(code_insee = NULL, code_dep = x),
+                    "2" = list(code_insee = NULL, code_dep = x),
+                    stop("Character input 'x' must be of length 5, 3, or 2; not ",
+                         nchar_x), call. = FALSE)
+
+   return(result)
+}
+
+#' @name create_params
+#' @noRd
+#' @description Create request paramaeter and vectorized it
+create_params <- function(geom, code_insee, code_dep, code_com, section, numero, code_arr, code_abs, source) {
+   # Helper function to create single parameter set
+   create_single_params <- function(geom, code_insee, code_dep, code_com, section, numero, code_arr, code_abs, source) {
+      params <- list(
+         "geom" = geom,
+         "code_insee" = code_insee,
+         "code_dep" = code_dep,
+         "code_com" = code_com,
+         "section" = section,
+         "numero" = numero,
+         "code_arr" = code_arr,
+         "code_abs" = code_abs,
+         "source_ign" = toupper(source),
+         "_start" = 0,
+         "_limit" = 500
+      )
+      return(params)
+   }
+
+   # Use Map to apply create_single_params over all combinations
+   all_params <- Map(
+      create_single_params,
+      if (is.null(geom)) list(NULL) else geom,
+      if (is.null(code_insee)) list(NULL) else code_insee,
+      if (is.null(code_dep)) list(NULL) else code_dep,
+      if (is.null(code_com)) list(NULL) else code_com,
+      if (is.null(section)) list(NULL) else section,
+      if (is.null(numero)) list(NULL) else numero,
+      if (is.null(code_arr)) list(NULL) else code_arr,
+      if (is.null(code_abs)) list(NULL) else code_abs,
+      if (is.null(source)) list(NULL) else source
    )
 
-   if (is_empty(resp)){
-      warning("No data found, NULL is returned. This could be due to :\n",
-              "- shape outside of France\n",
-              "- non-existent insee or department code\n",
-              "- existing code but not recognized by apicarto.\n",
-              "Running data(cog_2023) can help find all insee code.", .call = FALSE)
-      return(NULL)
-   }
+   return(all_params)
+}
 
-   # bind rows of each Map call
-   resp <- do.call(rbind, resp)
-   # Cleaning list column from features
-   resp <- resp[ , !sapply(resp, is.list)]
 
-   return(resp)
+#' @name fetch_data
+#' @noRd
+#' @description Fecth data from params
+fetch_data <- function(params, type, progress) {
+   req <- request("https://apicarto.ign.fr") |>
+      req_url_path("api/cadastre") |>
+      req_url_path_append(type) |>
+      req_options(ssl_verifypeer = 0) |>
+      req_url_query(!!!params)
+
+   error_message <- paste(
+      unlist(params[c("code_insee", "code_dep", "code_com", "section", "numero", "code_arr", "code_abs")]),
+      collapse = " - "
+   )
+
+   resps <- tryCatch({
+      req_perform_iterative(
+         req,
+         next_req = iterate_with_offset(
+            "_start",
+            start = 0,
+            offset = 500,
+            resp_pages = function(resp) resp_body_json(resp)$totalFeatures
+         ),
+         max_reqs = Inf,
+         progress = progress
+      )
+   }, error = function(e) {
+      if (grepl("URI Too Long", e$message)) {
+         stop("Shape is too complex. \nTry increase `dTolerance` parameter.", call. = F)
+      } else if (grepl("whole number", e$message)) {
+         warning("No data found for : ", error_message, call. = F)
+         return(NULL)
+      } else {
+         stop(e)  # Re-throw the original error if no condition matches
+      }
+   })
+
+   return(resps)
+}
+
+#' @name process_responses
+#' @noRd
+#' @description Combines all responses in one sf object
+process_responses <- function(resps) {
+   res <- resps |>
+      resps_data(\(resp) resp_body_string(resp)) |>
+      lapply(read_sf)
+
+   result <- do.call(rbind, res)
+   result <- result[, !sapply(result, is.list)]
+
+   return(result)
 }

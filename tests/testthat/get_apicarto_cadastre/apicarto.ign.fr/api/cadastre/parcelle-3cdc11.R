@@ -1,0 +1,13 @@
+structure(list(method = "GET", url = "https://apicarto.ign.fr/api/cadastre/parcelle?code_insee=29158&section=BR&numero=0010&source_ign=PCI&_start=0&_limit=500", 
+    status_code = 200L, headers = structure(list(Date = "Sun, 11 Aug 2024 14:49:03 GMT", 
+        `Content-Type` = "application/json; charset=utf-8", `Content-Length` = "879", 
+        Connection = "keep-alive", `X-Powered-By` = "Express", 
+        `Access-Control-Allow-Origin` = "*", `Cache-Control` = "private, no-cache, no-store, must-revalidate", 
+        Expires = "-1", Pragma = "no-cache", Vary = "Origin", 
+        `Access-Control-Allow-Credentials` = "true", ETag = "W/\"36f-noc5qiA9UrZ0xmZIVT/wR7geHuY\"", 
+        `Strict-Transport-Security` = "max-age=31536000; includeSubDomains"), class = "httr2_headers"), 
+    body = charToRaw("{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"parcelle.490680\",\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[[[-4.31347412,47.80711947],[-4.3134728,47.8071333],[-4.31343466,47.8076011],[-4.3134284,47.80767732],[-4.31340744,47.80793597],[-4.31315534,47.80798772],[-4.31321947,47.80712547],[-4.31334834,47.80712201],[-4.31347412,47.80711947]]]]},\"geometry_name\":\"geom\",\"properties\":{\"numero\":\"0010\",\"feuille\":1,\"section\":\"BR\",\"code_dep\":\"29\",\"nom_com\":\"Penmarch\",\"code_com\":\"158\",\"com_abs\":\"000\",\"code_arr\":\"000\",\"idu\":\"29158000BR0010\",\"code_insee\":\"29158\",\"contenance\":1754},\"bbox\":[-4.31347412,47.80711947,-4.31315534,47.80798772]}],\"totalFeatures\":1,\"numberMatched\":1,\"numberReturned\":1,\"timeStamp\":\"2024-08-11T14:49:03.676Z\",\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}},\"bbox\":[-4.31347412,47.80711947,-4.31315534,47.80798772]}"), 
+    request = structure(list(url = "https://apicarto.ign.fr/api/cadastre/parcelle?code_insee=29158&section=BR&numero=0010&source_ign=PCI&_start=0&_limit=500", 
+        method = NULL, headers = list(), body = NULL, fields = list(), 
+        options = list(ssl_verifypeer = 0), policies = list()), class = "httr2_request"), 
+    cache = new.env(parent = emptyenv())), class = "httr2_response")

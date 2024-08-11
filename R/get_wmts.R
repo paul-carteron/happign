@@ -11,6 +11,7 @@
 #'          zoom = 10L,
 #'          crs = 2154,
 #'          filename = tempfile(fileext = ".tif"),
+#'          verbose = FALSE,
 #'          overwrite = FALSE,
 #'          interactive = FALSE)
 #'
@@ -30,6 +31,7 @@
 #' writing. (ex : "test.tif" or "~/test.tif"). If `NULL`, `layer` is used as
 #' filename. Default drivers is ".tif" but all gdal drivers are supported,
 #' see details for more info.
+#' @param verbose `boolean`; if TRUE, message are added.
 #' @param overwrite If TRUE, output raster is overwrite.
 #' @param interactive `logical`; If TRUE, interactive menu ask for
 #' `apikey` and `layer`.
@@ -76,6 +78,7 @@ get_wmts <- function(x,
                      zoom = 10L,
                      crs = 2154,
                      filename = tempfile(fileext = ".tif"),
+                     verbose = FALSE,
                      overwrite = FALSE,
                      interactive = FALSE){
 

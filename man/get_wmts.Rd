@@ -9,6 +9,7 @@ get_wmts(x,
          zoom = 10L,
          crs = 2154,
          filename = tempfile(fileext = ".tif"),
+         verbose = FALSE,
          overwrite = FALSE,
          interactive = FALSE)
 }
@@ -33,6 +34,8 @@ It is set to EPSG:2154 by default. See \code{\link[sf:st_crs]{sf::st_crs()}} for
 writing. (ex : "test.tif" or "~/test.tif"). If \code{NULL}, \code{layer} is used as
 filename. Default drivers is ".tif" but all gdal drivers are supported,
 see details for more info.}
+
+\item{verbose}{\code{boolean}; if TRUE, message are added.}
 
 \item{overwrite}{If TRUE, output raster is overwrite.}
 
