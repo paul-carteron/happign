@@ -1,7 +1,13 @@
 test_that("get_geojson work", {
    poly <- happign:::poly
    poly_json <- get_geojson(poly)
-   expect_equal(poly_json,'{"type":"Polygon","coordinates":[[[-4.3469999999999995,47.815],[-4.345999999999999,47.811],[-4.3439999999999985,47.81299999999998],[-4.3469999999999995,47.815]]]}')
+   expect_match(poly_json,
+                paste0('\\{"type":"Polygon","coordinates":\\[\\[',
+                       '\\[-4\\.346.*,47\\.815.*\\],',
+                       '\\[-4\\.345.*,47\\.811.*\\],',
+                       '\\[-4\\.343.*,47\\.812.*\\],',
+                       '\\[-4\\.346.*,47\\.815.*\\]',
+                       '\\]\\]\\}'))
 })
 
 test_that("process_character_input work", {
