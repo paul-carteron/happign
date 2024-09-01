@@ -1,4 +1,6 @@
 # happign 0.3.1
+* refactor `get_apicarto_cadastre` that now use `httr2::req_perform_iterative` and ``yyjsonr`
+*  `get_wms_raster()` and `get_wmts()` are now really silent when `verbose = FALSE` [#28](https://github.com/paul-carteron/happign/issues/28)
 * `get_iso()`, `get_isochrone()` and `get_isodistance()` are back thanks to 
 [sylvaine31](https://github.com/sylvaine31) in [#16](https://github.com/paul-carteron/happign/issues/16)
 * `get_wms_raster()` and `get_wmts()` now return `NULL` when raster as only NA values [#26](https://github.com/paul-carteron/happign/issues/16)
