@@ -39,7 +39,12 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="happign-031">happign 0.3.1<a class="anchor" aria-label="anchor" href="#happign-031"></a></h2>
-<ul><li>
+<ul><li>refactor <code>get_apicarto_cadastre</code> that now use <code><a href="https://httr2.r-lib.org/reference/req_perform_iterative.html" class="external-link">httr2::req_perform_iterative</a></code> and `<code>yyjsonr</code>
+</li>
+<li>
+<code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> and <code><a href="../reference/get_wmts.html">get_wmts()</a></code> are now really silent when <code>verbose = FALSE</code> <a href="https://github.com/paul-carteron/happign/issues/28" class="external-link">#28</a>
+</li>
+<li>
 <code><a href="../reference/get_iso.html">get_iso()</a></code>, <code><a href="../reference/get_iso.html">get_isochrone()</a></code> and <code><a href="../reference/get_iso.html">get_isodistance()</a></code> are back thanks to <a href="https://github.com/sylvaine31" class="external-link">sylvaine31</a> in <a href="https://github.com/paul-carteron/happign/issues/16" class="external-link">#16</a>
 </li>
 <li>
