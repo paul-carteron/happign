@@ -1,5 +1,12 @@
 ## R CMD check results
 
+I sucessfully pass R-CMD-Check test from rhun::rhub_chek()
+   
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/10655748170)
+
+
+## R CMD check results
+
 I sucessfully pass R-CMD-Check test for 5 OS :
    * {os: macos-latest,   r: 'release'}
    * {os: windows-latest, r: 'release'}
