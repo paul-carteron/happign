@@ -104,6 +104,35 @@ varies according to several parameters. At present, the parameter concerned
 is cost_value, i.e. the requested time or distance.
 }
 
+\examples{
+\dontrun{
+library(sf)
+library(tmap)
+
+# All area i can acces in less than 5 minute from penmarch centroid
+penmarch <- get_apicarto_cadastre("29158")
+penmarch_centroid <- st_centroid(penmarch)
+isochrone <- get_isochrone(penmarch_centroid, 5)
+
+qtm(penmarch, col = "red")+qtm(isochrone, col = "blue")+qtm(penmarch_centroid, fill = "red")
+
+# All area i can acces as pedestrian in less than 1km
+isodistance <- get_isodistance(penmarch_centroid, 1, unit = "kilometer", profile = "pedestrian")
+
+qtm(penmarch, col = "red")+qtm(isodistance, col = "blue")+qtm(penmarch_centroid, fill = "red")
+
+# In case of multiple point provided, the output will contain as many polygons as points.
+code_insee <- c("29158", "29072", "29171")
+communes_centroid <- get_apicarto_cadastre(code_insee) |> st_centroid()
+isochrones <- get_isochrone(communes_centroid, 8)
+isochrones$code_insee <- code_insee
+qtm(isochrones, fill = "code_insee")
+
+# Find area where i can acces all communes centroid in less than 8 minutes
+area <- st_intersection(isochrones)
+qtm(communes_centroid, fill = "red")+ qtm(area[area$origins == "1:3",])
+}
+}
 \seealso{
 \link{get_isodistance}, \link{get_isochrone}
 }
