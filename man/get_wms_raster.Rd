@@ -35,7 +35,7 @@ See details for more information.}
 \item{filename}{\code{character} or \code{NULL}; specifies the filename or an
 open connection for writing (e.g., "test.tif" or "~/test.tif").
 If \code{NULL}, uses \code{layer} as the filename. The default format is ".tif",
-but all \href{https://gdal.org/drivers/raster/index.html}{GDAL drivers}
+but all \href{https://gdal.org/en/latest/drivers/raster/index.html}{GDAL drivers}
 are supported.}
 
 \item{verbose}{\code{boolean}; if TRUE, message are added.}

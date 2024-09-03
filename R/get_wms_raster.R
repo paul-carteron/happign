@@ -30,7 +30,7 @@
 #' @param filename `character` or `NULL`; specifies the filename or an
 #' open connection for writing (e.g., "test.tif" or "~/test.tif").
 #' If `NULL`, uses `layer` as the filename. The default format is ".tif",
-#' but all [GDAL drivers](https://gdal.org/drivers/raster/index.html)
+#' but all [GDAL drivers](https://gdal.org/en/latest/drivers/raster/index.html)
 #' are supported.
 #' @param verbose `boolean`; if TRUE, message are added.
 #' @param overwrite `boolean`; if TRUE, the existing raster will be overwritten.
