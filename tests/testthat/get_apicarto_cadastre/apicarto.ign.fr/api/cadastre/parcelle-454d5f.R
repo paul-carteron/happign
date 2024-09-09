@@ -1,0 +1,10 @@
+structure(list(method = "GET", url = "https://apicarto.ign.fr/api/cadastre/parcelle?code_insee=29135&section=AX&numero=0001&source_ign=PCI&_start=0&_limit=500", 
+    status_code = 200L, headers = structure(list(Date = "Mon, 09 Sep 2024 07:27:07 GMT", 
+        `Content-Type` = "application/json; charset=utf-8", `Content-Length` = "882", 
+        Connection = "keep-alive", `X-Powered-By` = "Express", 
+        `Access-Control-Allow-Origin` = "*", `Cache-Control` = "private, no-cache, no-store, must-revalidate", 
+        Expires = "-1", Pragma = "no-cache", Vary = "Origin", 
+        `Access-Control-Allow-Credentials` = "true", ETag = "W/\"372-Qm44/4C1Ec7zbh5zg2hmnl3O1B4\"", 
+        `Strict-Transport-Security` = "max-age=31536000; includeSubDomains"), class = "httr2_headers"), 
+    body = charToRaw("{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"parcelle.153701\",\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[[[-4.19705488,47.80478601],[-4.19715193,47.80484284],[-4.19720697,47.80486684],[-4.19731477,47.80493268],[-4.19736386,47.80498009],[-4.19765708,47.80538816],[-4.19811794,47.80603905],[-4.19698276,47.80614601],[-4.19705488,47.80478601]]]]},\"geometry_name\":\"geom\",\"properties\":{\"numero\":\"0001\",\"feuille\":1,\"section\":\"AX\",\"code_dep\":\"29\",\"nom_com\":\"Loctudy\",\"code_com\":\"135\",\"com_abs\":\"000\",\"code_arr\":\"000\",\"idu\":\"29135000AX0001\",\"code_insee\":\"29135\",\"contenance\":7185},\"bbox\":[-4.19811794,47.80478601,-4.19698276,47.80614601]}],\"totalFeatures\":1,\"numberMatched\":1,\"numberReturned\":1,\"timeStamp\":\"2024-09-09T07:27:07.210Z\",\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}},\"bbox\":[-4.19811794,47.80478601,-4.19698276,47.80614601]}"), 
+    cache = new.env(parent = emptyenv())), class = "httr2_response")

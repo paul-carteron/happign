@@ -43,26 +43,28 @@ library(sf)
 penmarch <- get_apicarto_cadastre("29158", type = "commune")
 
 # failure with too complex geom
-rpg <- get_apicarto_rpg(penmarch, 2020)
+rpg <- get_apicarto_rpg(st_buffer(penmarch, 10), 2020)
 
 # avoid complex data by setting dTolerance
-rpg <- get_apicarto_rpg(penmarch, 2020, dTolerance = 10)
+rpg <- get_apicarto_rpg(penmarch, 2020, dTolerance = 15)
 
 # multiple years after 2014
-rpg <- get_apicarto_rpg(x, 2020:2021, dTolerance = 10)
+rpg <- get_apicarto_rpg(penmarch, 2020:2021, dTolerance = 15)
 
 # years before and after 2014
 # list is returned because attributs are different
-rpg <- get_apicarto_rpg(x, c(2010, 2021), dTolerance = 10)
+rpg <- get_apicarto_rpg(penmarch, c(2010, 2021), dTolerance = 15)
 
 # filter by code_cultu
-rpg <- get_apicarto_rpg(x, 2021, code_cultu = "MIE", dTolerance = 10)
+rpg <- get_apicarto_rpg(penmarch, 2021, code_cultu = "MIE", dTolerance = 15)
 
 # all "MIE" from 2020 and all "PPH" from 2021
-rpg <- get_apicarto_rpg(x, 2020:2021, code_cultu = c("MIE", "PPH"), dTolerance = 10)
+rpg <- get_apicarto_rpg(penmarch, 2020:2021,
+                        code_cultu = c("MIE", "PPH"),
+                        dTolerance = 15)
 
 # vectorization : all "MIE" from 2020 and 2021
-rpg <- get_apicarto_rpg(x, 2020:2021, code_cultu = "MIE", dTolerance = 10)
+rpg <- get_apicarto_rpg(x, 2020:2021, code_cultu = "MIE", dTolerance = 15)
 }
 
 }

@@ -1,0 +1,10 @@
+structure(list(method = "GET", url = "https://apicarto.ign.fr/api/cadastre/parcelle?code_insee=29158&section=AX&numero=0010&source_ign=PCI&_start=0&_limit=500", 
+    status_code = 200L, headers = structure(list(Date = "Mon, 09 Sep 2024 07:27:07 GMT", 
+        `Content-Type` = "application/json; charset=utf-8", `Content-Length` = "775", 
+        Connection = "keep-alive", `X-Powered-By` = "Express", 
+        `Access-Control-Allow-Origin` = "*", `Cache-Control` = "private, no-cache, no-store, must-revalidate", 
+        Expires = "-1", Pragma = "no-cache", Vary = "Origin", 
+        `Access-Control-Allow-Credentials` = "true", ETag = "W/\"307-VaboFxAgGxXxg7tZM48JXceZ6wc\"", 
+        `Strict-Transport-Security` = "max-age=31536000; includeSubDomains"), class = "httr2_headers"), 
+    body = charToRaw("{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"parcelle.472935\",\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[[[-4.37243072,47.80123787],[-4.3722172,47.80123073],[-4.37223109,47.80097151],[-4.37244791,47.80097256],[-4.37243072,47.80123787]]]]},\"geometry_name\":\"geom\",\"properties\":{\"numero\":\"0010\",\"feuille\":1,\"section\":\"AX\",\"code_dep\":\"29\",\"nom_com\":\"Penmarch\",\"code_com\":\"158\",\"com_abs\":\"000\",\"code_arr\":\"000\",\"idu\":\"29158000AX0010\",\"code_insee\":\"29158\",\"contenance\":460},\"bbox\":[-4.37244791,47.80097151,-4.3722172,47.80123787]}],\"totalFeatures\":1,\"numberMatched\":1,\"numberReturned\":1,\"timeStamp\":\"2024-09-09T07:27:07.655Z\",\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"urn:ogc:def:crs:EPSG::4326\"}},\"bbox\":[-4.37244791,47.80097151,-4.3722172,47.80123787]}"), 
+    cache = new.env(parent = emptyenv())), class = "httr2_response")
