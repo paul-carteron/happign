@@ -12,7 +12,7 @@
 #'                  progress = TRUE)
 #'
 #' @param x Object of class `sf`. Needs to be located in France.
-#' @param annee numeric between 2010 and 2022.
+#' @param annee numeric between 2010 and 2023.
 #' @param code_cultu character corresponding to code culture, see detail.
 #' @param dTolerance numeric; tolerance parameter. The value of `dTolerance`
 #' must be specified in meters, see detail.
@@ -78,7 +78,7 @@ get_apicarto_rpg <- function(x,
    }
 
    # check parameter : annee
-   year_range <- 2010:2022
+   year_range <- 2010:2023
    if (!all(annee %in% year_range)){
       stop(sprintf("Input 'annee' must be between %s and %s.",
            min(year_range),
