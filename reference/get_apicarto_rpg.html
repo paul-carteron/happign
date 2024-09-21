@@ -52,8 +52,9 @@ is a wrapper around version 1 and 2 of the API.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_apicarto_rpg</span><span class="op">(</span><span class="va">x</span>,</span>
 <span>                 <span class="va">annee</span>,</span>
-<span>                 code_cultu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>,</span>
-<span>                 dTolerance <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<span>                 code_cultu <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                 dTolerance <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>                 progress <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,7 +66,7 @@ is a wrapper around version 1 and 2 of the API.</p>
 
 
 <dt id="arg-annee">annee<a class="anchor" aria-label="anchor" href="#arg-annee"></a></dt>
-<dd><p>numeric between 2010 and 2021</p></dd>
+<dd><p>numeric between 2010 and 2023.</p></dd>
 
 
 <dt id="arg-code-cultu">code_cultu<a class="anchor" aria-label="anchor" href="#arg-code-cultu"></a></dt>
@@ -75,6 +76,11 @@ is a wrapper around version 1 and 2 of the API.</p>
 <dt id="arg-dtolerance">dTolerance<a class="anchor" aria-label="anchor" href="#arg-dtolerance"></a></dt>
 <dd><p>numeric; tolerance parameter. The value of <code>dTolerance</code>
 must be specified in meters, see detail.</p></dd>
+
+
+<dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
+<dd><p>Display a progress bar? Use TRUE to turn on a basic progress
+bar, use a string to give it a name. See <code><a href="https://httr2.r-lib.org/reference/req_perform_iterative.html" class="external-link">httr2::req_perform_iterative()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -134,7 +140,7 @@ found in <code>sf::st_simlplify</code>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>
