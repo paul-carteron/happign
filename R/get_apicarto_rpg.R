@@ -9,7 +9,7 @@
 #'                  annee,
 #'                  code_cultu = NULL,
 #'                  dTolerance = 0L,
-#'                  progress = TRUE)
+#'                  progress = FALSE)
 #'
 #' @param x Object of class `sf`. Needs to be located in France.
 #' @param annee numeric between 2010 and 2023.

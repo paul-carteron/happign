@@ -6,18 +6,22 @@
 \usage{
 get_apicarto_rpg(x,
                  annee,
-                 code_cultu = list(NULL),
-                 dTolerance = 0)
+                 code_cultu = NULL,
+                 dTolerance = 0L,
+                 progress = FALSE)
 }
 \arguments{
 \item{x}{Object of class \code{sf}. Needs to be located in France.}
 
-\item{annee}{numeric between 2010 and 2021}
+\item{annee}{numeric between 2010 and 2023.}
 
 \item{code_cultu}{character corresponding to code culture, see detail.}
 
 \item{dTolerance}{numeric; tolerance parameter. The value of \code{dTolerance}
 must be specified in meters, see detail.}
+
+\item{progress}{Display a progress bar? Use TRUE to turn on a basic progress
+bar, use a string to give it a name. See \code{\link[httr2:req_perform_iterative]{httr2::req_perform_iterative()}}.}
 }
 \value{
 \code{list} or object of class \code{sf}
