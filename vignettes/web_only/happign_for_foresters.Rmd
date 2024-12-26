@@ -17,12 +17,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r message=FALSE, warning=FALSE}
+```{r lib message=FALSE, warning=FALSE}
 library(happign)
 library(sf)
 library(tmap); tmap_mode("view") # Set map to interactive
 library(dplyr)
-library(ggplot2);sf_use_s2(FALSE) # Avoid problem with spherical geometry
+library(ggplot2)
 library(purrr)
 library(stars)
 library(terra)
@@ -30,51 +30,52 @@ library(terra)
 
 ## First choose a zone of interest
 
-For the example we will work with the Camors forest. First of all we need the commune border that can be obtained from the insee code. Fortunately, happign provides a table containing all insee codes (`data("cog_2023")`). Then, `get_apicarto_commune` is used to download shape from Apicarto commune.
+For the example we will work with the Camors forest. First of all we need the commune border that can be obtained with `get_apicarto_commune` from the insee code. For convenience, `happign` provides a table containing all insee codes (`data("cog_2023")`).
 
 ```{r borders}
 data("cog_2023")
 
-insee_code <- cog_2023[grepl("^Camors", cog_2023$LIBELLE),1]
+#search communes name Camors and extract insee code
+insee_code <- cog_2023[grepl("^Camors", cog_2023$LIBELLE),"COM"]
 
-borders <- get_apicarto_cadastre(insee_code, type = "commune")
+camors_border <- get_apicarto_cadastre(insee_code, type = "commune")
 
-tm_shape(borders)+
+tm_shape(camors_border)+
    tm_borders()+
    tm_text("nom_com")
 
 ```
 
-An other way of getting borders without apicarto is to use ECQL language to directly query IGN WFS geoservers.
+An other way of getting borders without Apicarto is to use ECQL language to directly query IGN WFS geoservers.
 
 ```{r borders2}
-borders2 <- get_wfs(layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+camors_border2 <- get_wfs(layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
                     spatial_filter = "intersects",
                     ecql_filter = "nom_m LIKE 'CAMORS'")
 ```
 
 ## Download cadastral parcel
 
-Cadastral parcels are essential for any forest manager Here how to download it with `get_wfs`.
+Cadastral parcels are essential for any forest manager. Here how to download it with `get_wfs`.
 
 ```{r cadastral_parcels}
 layers <- get_layers_metadata("wfs", "parcellaire")
 parcellaire_layer <- layers[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
 
-parcellaire <- get_wfs(x = borders,
+camors_parcels <- get_wfs(x = camors_border,
                        spatial_filter = "intersects",
                        layer = parcellaire_layer)
 
-tm_shape(borders)+
+tm_shape(camors_border)+
    tm_borders(col = "red", lwd = 2)+
-tm_shape(parcellaire)+
-   tm_polygons(alpha = 0)
+tm_shape(camors_parcels)+
+   tm_polygons(fill_alpha = 0)
 
 ```
 
 __*Rq :*__
 
- * *IGN WFS can return a maximum of 1000 features. The get_wfs() function overrides this limit by performing several consecutive requests as the console show*
+ * *IGN WFS can return a maximum of 1000 features. The `get_wfs()` function overrides this limit by performing several consecutive requests as the console show*
  
 ## Downloading BD Forêt
 
@@ -85,23 +86,23 @@ layers <- get_layers_metadata("wfs", "environnement")
 BDF1_layer <- layers[4,1]
 BDF2_layer <- layers[5,1]
 
-BDF1 <- get_wfs(borders, BDF1_layer, spatial_filter = "intersects")
-BDF2 <- get_wfs(borders, BDF2_layer, spatial_filter = "intersects")
+BDF1 <- get_wfs(camors_border, BDF1_layer, spatial_filter = "intersects")
+BDF2 <- get_wfs(camors_border, BDF2_layer, spatial_filter = "intersects")
 
 tm_shape(BDF1) +
-   tm_polygons(col = "libelle",
+   tm_polygons(fill = "libelle",
                popup.vars = names(BDF1)[1:(ncol(BDF1)-2)],
-               legend.show = FALSE)+
+               fill.legend = tm_legend_hide())+
 tm_shape(BDF2) +
-    tm_polygons(col = "tfv",
-                alpha = 0.5,
+    tm_polygons(fill = "tfv",
+                fill_alpha = 0.5,
                 popup.vars = names(BDF2)[1:(ncol(BDF2)-2)],
-                legend.show = FALSE) +
-tm_shape(borders) +
+                fill.legend = tm_legend_hide()) +
+tm_shape(camors_border) +
    tm_borders(lwd = 2)
 ```
 
-More calculations can be done as you can see below :
+More calculations can be done to get a better understanding of forest type. Below, areas per species are calculated :
 
 ```{r bd_foret_calculation, warning=FALSE}
 forest_type_BDF2 <- BDF2 |>
@@ -120,6 +121,7 @@ ggplot()+
   theme_bw()+
   labs(title = "Surface couverte par essences [ha]",
        y = "Surface [ha]",
+       x = "",
        fill = "Essence :")+
   theme(axis.text.x = element_blank())
 
@@ -128,46 +130,57 @@ ggplot()+
 
 ## Detect protected area
 
-One information you really want when you work at forest management is if your zone of interest is inside protected area. The example code below is design to automatically test every layer starting with "PROTECTED" so you can be sure that you have all of them.
+One information you really want when you're a forest manager is if your zone of interest is inside protected area. The example code below is design to automatically test every layer containing "PROTECTED" so you can be sure that you have all of them.
 
 Again, you can click on map, point and shape for more informations.
 
 ```{r protected_area, message=FALSE, warning=FALSE}
 protected_area_layers <- get_layers_metadata("wfs", "environnement") |> 
-   filter(grepl("^PROTECTED", Name)) |> 
+   filter(grepl(".*PROTECTED.*", Name)) |> 
    pull(Name)
 
-all_protected_area <- map(.x = protected_area_layers,
-                          .f = ~ try(get_wfs(borders, .x, 
-                                          spatial_filter = "intersects"))) |> 
-   set_names(protected_area_layers) |> 
-   discard(~ identical(length(.), 0L))
+get_wfs_on_camors <- function(protected_area_layer){
+   message(protected_area_layer,"...")
+   layer <- try(
+      get_wfs(
+         camors_border,
+         protected_area_layer,
+         spatial_filter = "intersects"
+         )
+      )
+   return(layer)
+}
+
+try_all_protected_area <- lapply(protected_area_layers, get_wfs_on_camors) |> 
+   setNames(protected_area_layers)
+
+# remove empty layers
+all_protected_area <- Filter(function(x) !is.null(x), try_all_protected_area)
 
 # Plot the result
+tm_shape(camors_border) +
+   tm_borders(lwd = 2)+
 tm_shape(all_protected_area[[1]])+
-   tm_dots(group = "Point rencontre des secours en forêts", col = "red")+
-tm_shape(all_protected_area[[2]])+
-   tm_polygons(group = "Znieff 2", alpha = 0.8, col = "blue")+
-tm_shape(borders,is.master = TRUE) +
-   tm_borders(lwd = 2)
+   tm_polygons(fill_alpha = 0.8, col = "blue")
 ```
 
 
 ## MNS, MNT and MNH...
 
-It's always good to know a more about terrain topologie. IGN offers MNT and MNS for download. As a reminder, the MNT corresponds to the surface of the ground and the MNS to the real surface (in our case, the trees). It is thus easy to find the height of the trees by subtracting the DTM from the MNS.
+Terrain topologie is quite useful for forest management. IGN offers MNT and MNS for download. As a reminder, the MNT corresponds to the surface of the ground and the MNS to the real surface (in our case, the trees). It is thus easy to find the height of the trees by subtracting the MNT from the MNS.
 
 ```{r mnt_mns_mnh}
 layers <- get_layers_metadata("wms-r", "altimetrie")
 mnt_layer <- layers[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
 mns_layer <- layers[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
-mnt <- get_wms_raster(borders, mnt_layer, res = 5, crs = 2154, rgb = FALSE)
-mns <- get_wms_raster(borders, mns_layer, res = 5, crs = 2154, rgb = FALSE)
+mnt <- get_wms_raster(camors_border, mnt_layer, res = 5, crs = 2154, rgb = FALSE)
+mns <- get_wms_raster(camors_border, mns_layer, res = 5, crs = 2154, rgb = FALSE)
 
-level_curve <- get_wfs(borders, "ELEVATION.CONTOUR.LINE:courbe",
+# Add level curve for flexing
+level_curve <- get_wfs(camors_border, "ELEVATION.CONTOUR.LINE:courbe",
                        spatial_filter = "intersects") |> 
-   st_intersection(borders)
+   st_intersection(camors_border)
 
 # Calculate digital height model i.e. tree height
 mnh <- mns - mnt
@@ -175,14 +188,13 @@ mnh[mnh < 0] <- NA  # Remove negative value
 mnh[mnh > 50] <- 40 # Remove height more than 50m
 
 tm_shape(mnh) +
-  tm_raster(style = "cont", 
-            title = "Height",
-            palette = "-Spectral",
-            colorNA = "grey",
-            showNA = F) +
+  tm_raster(col.scale = tm_scale_continuous(
+     values = "carto.earth", value.na = "grey"
+     ),
+     col.legend = tm_legend(title = "Height", showNA = F)) +
 tm_shape(level_curve)+
-   tm_lines(col = "black")+
-tm_shape(borders)+
+   tm_lines(col="grey25", col_alpha = 0.8)+
+tm_shape(camors_border)+
    tm_borders(lwd = 2, col = "red")
 
 ```
@@ -202,13 +214,13 @@ Categories are somewhat arbitrary, and you can find various rules of thumb, such
 
 
 ```{r ndvi}
-# To show the 20cm resolution possibility for IRC, let's take only the biggest parcels
-biggest_parcels <- parcellaire |> 
+# To show the 80cm resolution possibility for IRC, let's take only the biggest parcels
+biggest_parcels <- camors_parcels |> 
    mutate(area = st_area(geometry)) |> 
    slice_max(area)
 
 irc <- get_wms_raster(biggest_parcels,
-                      res = 0.2,
+                      res = 0.8,
                       layer = "ORTHOIMAGERY.ORTHOPHOTOS.IRC")
 
 # calculate ndvi from near_infrared and infrared
@@ -216,25 +228,19 @@ ndvi_fun <- function(nir, red){
   (nir - red) / (nir + red)
 }
 
-ndvi <- lapp(irc[[c(1, 2)]],
-            fun = ndvi_fun)
-
-# palette for plotting
-breaks_ndvi <- c(-1,-0.2,-0.1,0,0.025 ,0.05,0.075,0.1,0.125,0.15,0.175,0.2 ,0.25 ,0.3 ,0.35,0.4,0.45,0.5,0.55,0.6,1)
+ndvi <- lapp(irc[[c(1, 2)]], fun = ndvi_fun)
    
 palette_ndvi <- c("#BFBFBF","#DBDBDB","#FFFFE0","#FFFACC","#EDE8B5","#DED99C","#CCC782","#BDB86B","#B0C261","#A3CC59","#91BF52","#80B347","#70A340","#619636","#4F8A2E","#407D24","#306E1C","#216112","#0F540A","#004500")
 
-tm_shape(borders)+
-   tm_borders(lwd = 2, col = "red")+
-tm_shape(ndvi)+
-   tm_raster(stretch.palette = F,
-             style = "cont",
-             title = "NDVI",
-             breaks = breaks_ndvi,
-             palette = palette_ndvi,
-             colorNA = NULL)+
 tm_shape(biggest_parcels, is.master = TRUE)+
-   tm_borders(lwd = 2, col = "blue")
+   tm_borders(lwd = 2, col = "blue")+
+tm_shape(ndvi)+
+   tm_raster(
+      col.scale = tm_scale_continuous(
+         limits = c(-1, 1),
+         values = palette_ndvi#, values.repeat = F, value.na = NULL
+      ),
+      col.legend = tm_legend(title = "NDVI"))
 
 ```
 
@@ -251,13 +257,10 @@ gloss_fun <- function(nir, red){
 gloss_index <- lapp(irc[[c(1, 2)]],
             fun = gloss_fun)
 
-tm_shape(borders)+
-   tm_borders(lwd = 2, col = "red")+
+tm_shape(biggest_parcels)+
+   tm_borders(lwd = 2, col = "blue")+
 tm_shape(gloss_index)+
-   tm_raster(style = "cont", 
-             title = "GLOSS INDEX")+
-tm_shape(biggest_parcels, is.master = T)+
-   tm_borders(lwd = 2, col = "blue")
+   tm_raster(col.legend = tm_legend(title = "GLOSS INDEX"))
 
 ```
 
@@ -272,11 +275,11 @@ __*Rq :*__
  
 
 ```{r}
-info_sup <- get_location_info(x = st_centroid(borders),
-                              apikey = "ortho",
-                              layer = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
-                              read_sf = F)
-info_sup$date_vol
+# info_sup <- get_location_info(x = st_centroid(camors_border),
+#                               apikey = "ortho",
+#                               layer = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
+#                               read_sf = F)
+# info_sup$date_vol
 ```
 
 The call to the function `get_location_info` indicates that this orthophoto was taken the 2019-05-14.
@@ -284,16 +287,16 @@ The call to the function `get_location_info` indicates that this orthophoto was 
 In some cases, the function can be used to retrieve resources that are not explicitly available. For example, there are no vector layers of public forests, only a raster layer. However, when additional information is requested, the outline of the forest is returned.
 
 ```{r get_location_info}
-x <- st_sfc(st_point(c(-3.549957, 47.83396)), crs = 4326) # Carnoet forest
-
-forest <- get_location_info(x,
-                            apikey = "environnement",
-                            layer = "FORETS.PUBLIQUES",
-                            read_sf = TRUE)
-tm_shape(forest)+
-   tm_borders()+
-tm_shape(x)+
-   tm_dots(size = 0.05, col = "red")
+# x <- st_sfc(st_point(c(-3.549957, 47.83396)), crs = 4326) # Carnoet forest
+# 
+# forest <- get_location_info(x,
+#                             apikey = "environnement",
+#                             layer = "FORETS.PUBLIQUES",
+#                             read_sf = TRUE)
+# tm_shape(forest)+
+#    tm_borders()+
+# tm_shape(x)+
+#    tm_dots(size = 0.05, col = "red")
 ```
 
 
@@ -314,13 +317,13 @@ BD topo from IGN covers in a coherent way all the geographical and administrativ
 For the example below I choose to download all water-related data :
 
 ```{r bd_topo}
-cour_eau <- get_wfs(borders, "BDTOPO_V3:cours_d_eau") |> 
-   st_intersection(borders) 
-detail_hydro <- get_wfs(borders, "BDTOPO_V3:detail_hydrographique") |> 
-   st_intersection(borders) 
+cour_eau <- get_wfs(camors_border, "BDTOPO_V3:cours_d_eau") |> 
+   st_intersection(camors_border) 
+detail_hydro <- get_wfs(camors_border, "BDTOPO_V3:detail_hydrographique") |> 
+   st_intersection(camors_border) 
 # water detected by satellite
-surf_hydro <- get_wfs(borders, "BDTOPO_V3:surface_hydrographique") |> 
-   st_intersection(borders) 
+surf_hydro <- get_wfs(camors_border, "BDTOPO_V3:surface_hydrographique") |> 
+   st_intersection(camors_border) 
 
 tm_shape(cour_eau)+
    tm_lines(col = "blue")+
@@ -328,7 +331,7 @@ tm_shape(detail_hydro)+
    tm_dots(col = "red")+
 tm_shape(surf_hydro)+
    tm_polygons("steelblue")+
-tm_shape(borders)+
+tm_shape(camors_border)+
    tm_borders(lwd = 2)
 ```
 
@@ -337,7 +340,7 @@ tm_shape(borders)+
 The "Etat-major" map is a general map of France made, in its first version, in the 19th century. Here how to get it :
 
 ```{r etat_major}
-etat_major <- get_wms_raster(x = borders,
+etat_major <- get_wms_raster(x = camors_border,
                              res = 1,
                              layer = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40")
 
@@ -347,7 +350,7 @@ etat_major <- st_as_stars(etat_major, ignore_file = TRUE)
 
 tm_shape(etat_major)+
    tm_rgb()+
-tm_shape(borders)+
+tm_shape(camors_border)+
    tm_borders(lwd = 3, col = "red")
 
 ```
