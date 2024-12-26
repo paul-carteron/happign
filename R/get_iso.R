@@ -1,4 +1,5 @@
 #' @title isochronous/isodistance  calculations
+#'
 #' @description
 #' Calculates isochrones or isodistances in France from an sf object using the
 #' IGN API on the Géoportail platform. The reference data comes from the IGN
@@ -61,6 +62,8 @@
 #'
 #' @importFrom sf read_sf st_make_valid
 #' @importFrom httr2 req_perform_parallel resps_data resp_body_string
+#'
+#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -206,6 +209,7 @@ build_iso_query <- function(point, source, value,
 #'                 constraints = NULL)
 #'
 #' @param dist `numeric`; A quantity of time.
+#' @export
 #'
 get_isodistance <- function(x,
                             dist,
@@ -242,6 +246,7 @@ get_isodistance <- function(x,
 #'
 #' @param time `numeric`; A quantity of time.
 #' @param unit see `time_unit` and `distance_unit` param.
+#' @export
 #'
 get_isochrone <- function(x,
                           time,
