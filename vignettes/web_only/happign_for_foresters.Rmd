@@ -23,8 +23,6 @@ library(sf)
 library(tmap); tmap_mode("view") # Set map to interactive
 library(dplyr)
 library(ggplot2)
-library(purrr)
-library(stars)
 library(terra)
 ```
 
@@ -333,24 +331,4 @@ tm_shape(surf_hydro)+
    tm_polygons("steelblue")+
 tm_shape(camors_border)+
    tm_borders(lwd = 2)
-```
-
-## What about history ?
-
-The "Etat-major" map is a general map of France made, in its first version, in the 19th century. Here how to get it :
-
-```{r etat_major}
-etat_major <- get_wms_raster(x = camors_border,
-                             res = 1,
-                             layer = "GEOGRAPHICALGRIDSYSTEMS.ETATMAJOR40")
-
-# raster is very large and tmap cannot plot it. Convert to stars as below allow for quick plotting
-# saving raster to disk allow full resolution visualisation : writeRaster(etat_major, "test.tif") 
-etat_major <- st_as_stars(etat_major, ignore_file = TRUE)
-
-tm_shape(etat_major)+
-   tm_rgb()+
-tm_shape(camors_border)+
-   tm_borders(lwd = 3, col = "red")
-
 ```
