@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r lib message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE}
 library(happign)
 library(sf)
 library(tmap); tmap_mode("view") # Set map to interactive
