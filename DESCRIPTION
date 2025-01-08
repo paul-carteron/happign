@@ -34,7 +34,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    tmap (>= 3.99.0)
+    tmap
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
