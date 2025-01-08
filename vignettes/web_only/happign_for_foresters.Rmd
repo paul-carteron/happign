@@ -20,10 +20,12 @@ knitr::opts_chunk$set(
 ```{r message=FALSE, warning=FALSE}
 library(happign)
 library(sf)
-library(tmap); tmap_mode("view") # Set map to interactive
 library(dplyr)
 library(ggplot2)
 library(terra)
+library(tmap)
+tmap_mode("view") # Set map to interactive
+tmap_options(check.and.fix = TRUE)
 ```
 
 ## First choose a zone of interest
