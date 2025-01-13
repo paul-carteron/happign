@@ -76,7 +76,7 @@ penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 # get commune borders
 ## from shape
 penmarch_borders <- get_apicarto_cadastre(penmarch, type = "commune")
-qtm(penmarch_borders, fill = NA)+qtm(penmarch)
+qtm(penmarch_borders)+qtm(penmarch, fill = "red")
 
 ## from insee_code
 border <- get_apicarto_cadastre("29158", type = "commune")
@@ -85,15 +85,19 @@ qtm(borders, fill="nom_com")
 
 # get cadastral parcels
 ## from shape
-parcels <- get_apicarto_cadastre(penmarch, section = "AW", type = "parcelle")
+parcels <- get_apicarto_cadastre(penmarch, type = "parcelle")
 
 ## from insee code
 parcels <- get_apicarto_cadastre("29158", type = "parcelle")
 
 # Use parameter recycling
-## get sections "AX" parcels from multiple insee_code
-parcels <- get_apicarto_cadastre(c("29158", "29135"), section = "AW", type = "parcelle")
-qtm(penmarch_borders, fill = NA)+qtm(parcels)
+## get sections "AW" parcels from multiple insee_code
+parcels <- get_apicarto_cadastre(
+   c("29158", "29135"),
+   section = "AW",
+   type = "parcelle"
+)
+qtm(borders, fill = NA)+qtm(parcels)
 
 ## get parcels numbered "0001", "0010" of section "AW" and "BR"
 section <- c("AW", "BR")

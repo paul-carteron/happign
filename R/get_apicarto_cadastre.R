@@ -65,7 +65,7 @@
 #' # get commune borders
 #' ## from shape
 #' penmarch_borders <- get_apicarto_cadastre(penmarch, type = "commune")
-#' qtm(penmarch_borders, fill = NA)+qtm(penmarch)
+#' qtm(penmarch_borders)+qtm(penmarch, fill = "red")
 #'
 #' ## from insee_code
 #' border <- get_apicarto_cadastre("29158", type = "commune")
@@ -74,15 +74,19 @@
 #'
 #' # get cadastral parcels
 #' ## from shape
-#' parcels <- get_apicarto_cadastre(penmarch, section = "AW", type = "parcelle")
+#' parcels <- get_apicarto_cadastre(penmarch, type = "parcelle")
 #'
 #' ## from insee code
 #' parcels <- get_apicarto_cadastre("29158", type = "parcelle")
 #'
 #' # Use parameter recycling
-#' ## get sections "AX" parcels from multiple insee_code
-#' parcels <- get_apicarto_cadastre(c("29158", "29135"), section = "AW", type = "parcelle")
-#' qtm(penmarch_borders, fill = NA)+qtm(parcels)
+#' ## get sections "AW" parcels from multiple insee_code
+#' parcels <- get_apicarto_cadastre(
+#'    c("29158", "29135"),
+#'    section = "AW",
+#'    type = "parcelle"
+#' )
+#' qtm(borders, fill = NA)+qtm(parcels)
 #'
 #' ## get parcels numbered "0001", "0010" of section "AW" and "BR"
 #' section <- c("AW", "BR")
@@ -224,7 +228,7 @@ fetch_data <- function(params, type, progress) {
       req_url_path("api/cadastre") |>
       req_url_path_append(type) |>
       req_options(ssl_verifypeer = 0) |>
-      req_url_query(!!!params)
+      req_url_query(!!!unlist(params))
 
    error_message <- paste(
       unlist(params[c("code_insee", "code_dep", "code_com", "section", "numero", "code_arr", "code_abs")]),
@@ -238,7 +242,9 @@ fetch_data <- function(params, type, progress) {
             "_start",
             start = 0,
             offset = 500,
-            resp_pages = function(resp) resp_body_json(resp)$totalFeatures
+            resp_pages = function(resp) {
+               ceiling(resp_body_json(resp)$totalFeatures/500)
+            }
          ),
          max_reqs = Inf,
          progress = progress
