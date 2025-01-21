@@ -185,7 +185,7 @@ get_sd <- function(layer){
    url <- paste0("https://data.geopf.fr/wms-r?",
                  "SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities")
 
-   metadata <- gdal_utils("info", source = url, quiet = T, options = c("-json", "listmdd"))
+   metadata <- gdal_utils("info", source = url, quiet = T, options = "-json")
    json <- jsonlite::fromJSON(metadata)
    raw_sds <- json$metadata$SUBDATASETS
 
