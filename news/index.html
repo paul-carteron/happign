@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">happign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,12 @@
       <small>Source: <a href="https://github.com/paul-carteron/happign/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.2" id="happign-032">happign 0.3.2<a class="anchor" aria-label="anchor" href="#happign-032"></a></h2>
+<p>Utilities : * add <code>com_2024</code> dataset as successor or <code>cog_2023</code></p>
+<p>Bug fixes : * <code>get_wms_raster</code> throw <code>GDAL ERROR 1</code> with <code>sf &gt;= 1.0-19</code> fixe in <a href="https://github.com/paul-carteron/happign/issues/32" class="external-link">#32</a> * add proper roxygen documentation for <code>get_iso*</code> functions <a href="https://github.com/paul-carteron/happign/issues/31" class="external-link">#31</a> * <code>get_apicarto_cadastre</code> pagination fix</p>
+<p>Vignettes : * remove too large raster from last example of <a href="https://github.com/paul-carteron/happign/blob/main/vignettes/web_only/happign_for_foresters.Rmd" class="external-link">happign_for_forester</a></p>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="happign-031">happign 0.3.1<a class="anchor" aria-label="anchor" href="#happign-031"></a></h2><p class="text-muted">CRAN release: 2024-09-03</p>
 <ul><li>refactor <code>get_apicarto_cadastre</code> that now use <code><a href="https://httr2.r-lib.org/reference/req_perform_iterative.html" class="external-link">httr2::req_perform_iterative</a></code> and `<code>yyjsonr</code>
