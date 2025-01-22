@@ -84,7 +84,13 @@ packages we will need (<code>sf</code> to manipulate spatial data and
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-carteron" class="external-link">happign</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: le package 'sf' a été compilé avec</span></span>
+<span><span class="co">#&gt; la version R 4.4.2</span></span>
+<span><span class="co">#&gt; Linking to GEOS 3.12.2, GDAL 3.9.3, PROJ</span></span>
+<span><span class="co">#&gt; 9.4.1; sf_use_s2() is TRUE</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-tmap.github.io/tmap/" class="external-link">tmap</a></span><span class="op">)</span>;<span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_mode.html" class="external-link">tmap_mode</a></span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Breaking News: tmap 3.x is retiring. Please test v4, e.g. with</span></span>
+<span><span class="co">#&gt; remotes::install_github('r-tmap/tmap')</span></span>
 <span><span class="co">#&gt; tmap mode set to plotting</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -97,7 +103,10 @@ packages we will need (<code>sf</code> to manipulate spatial data and
 <li>WMTS : same as WMS raster but images are precalculated</li>
 <li>WFS : data in vector format (.shp, …).</li>
 </ul>
-<p>More detailed information are available <a href="https://www.ogc.org/standard/wms/" class="external-link">here</a> for WMS, <a href="https://www.ogc.org/standard/wmts/" class="external-link">here</a> for WMTS and <a href="https://www.ogc.org/standard/wfs/" class="external-link">here</a> for WFS.</p>
+<p>More detailed information are available <a href="https://www.ogc.org/publications/standard/wms/" class="external-link">here</a> for WMS,
+<a href="https://www.ogc.org/publications/standard/wmts/" class="external-link">here</a> for
+WMTS and <a href="https://www.ogc.org/publications/standard/wfs/" class="external-link">here</a> for
+WFS.</p>
 <p>To download data from IGN web services at least two elements are
 needed :</p>
 <ul>
@@ -123,32 +132,42 @@ be used for WMS and WFS :</p>
 <span><span class="va">administratif_wms</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>data_type <span class="op">=</span> <span class="st">"wmts"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">administratif_wfs</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                                                       Name</span></span>
-<span><span class="co">#&gt; 1              OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016</span></span>
-<span><span class="co">#&gt; 2              OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019</span></span>
-<span><span class="co">#&gt; 3                   ADMINEXPRESS-COG.LATEST:arrondissement</span></span>
-<span><span class="co">#&gt; 4         ADMINEXPRESS-COG.LATEST:arrondissement_municipal</span></span>
-<span><span class="co">#&gt; 5                           ADMINEXPRESS-COG.LATEST:canton</span></span>
-<span><span class="co">#&gt; 6 ADMINEXPRESS-COG.LATEST:chflieu_arrondissement_municipal</span></span>
-<span><span class="co">#&gt;                   Title          Abstract</span></span>
-<span><span class="co">#&gt; 1       OCSGE Gers 2016   OCSGE Gers 2016</span></span>
-<span><span class="co">#&gt; 2      OCSGE Gers 2019   OCSGE Gers 2019 </span></span>
-<span><span class="co">#&gt; 3 ADMINEXPRESS COG 2023      édition 2023</span></span>
-<span><span class="co">#&gt; 4 ADMINEXPRESS COG 2023      édition 2023</span></span>
-<span><span class="co">#&gt; 5 ADMINEXPRESS COG 2023      édition 2023</span></span>
-<span><span class="co">#&gt; 6 ADMINEXPRESS COG 2023      édition 2023</span></span></code></pre></div>
+<span><span class="co">#&gt;                                                    Name</span></span>
+<span><span class="co">#&gt; 1           OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016</span></span>
+<span><span class="co">#&gt; 2           OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019</span></span>
+<span><span class="co">#&gt; 3                                      wfs_sup:acte_sup</span></span>
+<span><span class="co">#&gt; 4             aeag-rwbody-sdage2022:rwbody_ag_sdage2022</span></span>
+<span><span class="co">#&gt; 5 LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement</span></span>
+<span><span class="co">#&gt; 6                ADMINEXPRESS-COG.LATEST:arrondissement</span></span>
+<span><span class="co">#&gt;                                                Title</span></span>
+<span><span class="co">#&gt; 1                                    OCSGE Gers 2016</span></span>
+<span><span class="co">#&gt; 2                                   OCSGE Gers 2019 </span></span>
+<span><span class="co">#&gt; 3               Acte de servitude d'utilité publique</span></span>
+<span><span class="co">#&gt; 4 Adour Garonne - Masses d'eau rivières - SDAGE 2022</span></span>
+<span><span class="co">#&gt; 5                                     Arrondissement</span></span>
+<span><span class="co">#&gt; 6                                 Arrondissement COG</span></span>
+<span><span class="co">#&gt;                                                      Abstract</span></span>
+<span><span class="co">#&gt; 1                                             OCSGE Gers 2016</span></span>
+<span><span class="co">#&gt; 2                                            OCSGE Gers 2019 </span></span>
+<span><span class="co">#&gt; 3 Liste des actes instituant une servitude d'utilité publique</span></span>
+<span><span class="co">#&gt; 4          Adour Garonne - Masses d'eau rivières - SDAGE 2022</span></span>
+<span><span class="co">#&gt; 5              Limites administrative mises à jour en continu</span></span>
+<span><span class="co">#&gt; 6                             Arrondissement ADMINEXPRESS COG</span></span></code></pre></div>
 <p>You can specify an apikey to focus on specific category. API keys can
 be directly retrieved on the <a href="https://geoservices.ign.fr/services-web-experts" class="external-link">IGN website from
 the expert web services</a> or with <code><a href="../reference/get_apikeys.html">get_apikeys()</a></code>
 function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "administratif" "adresse"       "agriculture"  </span></span>
-<span><span class="co">#&gt;  [4] "altimetrie"    "cartes"        "cartovecto"   </span></span>
-<span><span class="co">#&gt;  [7] "clc"           "economie"      "enr"          </span></span>
-<span><span class="co">#&gt; [10] "environnement" "geodesie"      "lambert93"    </span></span>
-<span><span class="co">#&gt; [13] "ocsge"         "ortho"         "orthohisto"   </span></span>
-<span><span class="co">#&gt; [16] "parcellaire"   "satellite"     "sol"          </span></span>
+<span><span class="co">#&gt;  [1] "administratif" "adresse"      </span></span>
+<span><span class="co">#&gt;  [3] "agriculture"   "altimetrie"   </span></span>
+<span><span class="co">#&gt;  [5] "cartes"        "cartovecto"   </span></span>
+<span><span class="co">#&gt;  [7] "clc"           "economie"     </span></span>
+<span><span class="co">#&gt;  [9] "enr"           "environnement"</span></span>
+<span><span class="co">#&gt; [11] "geodesie"      "lambert93"    </span></span>
+<span><span class="co">#&gt; [13] "ocsge"         "ortho"        </span></span>
+<span><span class="co">#&gt; [15] "orthohisto"    "parcellaire"  </span></span>
+<span><span class="co">#&gt; [17] "satellite"     "sol"          </span></span>
 <span><span class="co">#&gt; [19] "topographie"   "transports"</span></span>
 <span></span>
 <span><span class="va">administratif_wmts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="st">"wmts"</span>, <span class="st">"administratif"</span><span class="op">)</span></span>
@@ -159,9 +178,9 @@ function.</p>
 <span><span class="co">#&gt; 2                                 ADMINEXPRESS COG</span></span>
 <span><span class="co">#&gt; 3 Limites administratives mises à jour en continu.</span></span>
 <span><span class="co">#&gt;                                                                 Abstract</span></span>
-<span><span class="co">#&gt; 1    Limites administratives Express COG code officiel géographique 2023</span></span>
-<span><span class="co">#&gt; 2   Limites administratives Express COG code officiel géographique. 2023</span></span>
-<span><span class="co">#&gt; 3 Limites administratives mises à jour en continu ; Edition : 2024-03-25</span></span>
+<span><span class="co">#&gt; 1 Limites administratives mises à jour en continu ; Edition : 2024-02-22</span></span>
+<span><span class="co">#&gt; 2 Limites administratives mises à jour en continu ; Edition : 2024-02-22</span></span>
+<span><span class="co">#&gt; 3 Limites administratives mises à jour en continu ; Edition : 2024-12-18</span></span>
 <span><span class="co">#&gt;                               Identifier</span></span>
 <span><span class="co">#&gt; 1          ADMINEXPRESS-COG-CARTO.LATEST</span></span>
 <span><span class="co">#&gt; 2                ADMINEXPRESS-COG.LATEST</span></span>
@@ -197,12 +216,9 @@ shape in happign.</p>
 <span>          main.title.position <span class="op">=</span> <span class="st">"center"</span>,</span>
 <span>          legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="op">-</span><span class="fl">0.1</span><span class="op">)</span>,</span>
 <span>          outer.margins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,</span>
-<span>          frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Legend labels were too wide. The labels have been resized to 0.61. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<img src="unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5"><p class="caption">
-plot of chunk unnamed-chunk-5
-</p>
+<span>          frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="figure/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5"><div class="figcaption">plot of chunk unnamed-chunk-5</div>
 </div>
 <p>It’s as simple as that! Now you have to rely on your curiosity to
 explore the multiple possibilities that IGN offers. For example, who has
@@ -213,7 +229,7 @@ Penmarch?</p>
 <code class="sourceCode R"><span><span class="va">hedges</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch_borders</span>,</span>
 <span>                 layer <span class="op">=</span> <span class="st">"BDTOPO_V3:haie"</span>,</span>
 <span>                 spatial_filter <span class="op">=</span> <span class="st">"intersects"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Features downloaded : 436</span></span>
+<span><span class="co">#&gt; Features downloaded : 434</span></span>
 <span></span>
 <span><span class="co"># Checking result</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Borders of penmarch</span></span>
@@ -225,10 +241,8 @@ Penmarch?</p>
 <span>             main.title.position <span class="op">=</span> <span class="st">"center"</span>,</span>
 <span>             legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"bottom"</span><span class="op">)</span>,</span>
 <span>             frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<img src="unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6"><p class="caption">
-plot of chunk unnamed-chunk-6
-</p>
+<div class="float">
+<img src="figure/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6"><div class="figcaption">plot of chunk unnamed-chunk-6</div>
 </div>
 </div>
 <div class="section level4">
@@ -252,7 +266,7 @@ DEM, we don’t want an RGB image but values of each pixels. That why
 <span>                      crs <span class="op">=</span> <span class="fl">2154</span>,</span>
 <span>                      rgb <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 0...10...20...30...40...50...60...70...80...90...100 - done.</span></span>
-<span><span class="co">#&gt; Raster is saved at : C:\Users\PaulCarteron\AppData\Local\Temp\Rtmp63I4Tv\filea98465250a.tif</span></span>
+<span><span class="co">#&gt; Raster is saved at : C:\Users\PaulCarteron\AppData\Local\Temp\Rtmpueo2T1\file514477f61a4e.tif</span></span>
 <span></span>
 <span><span class="va">mnt</span><span class="op">[</span><span class="va">mnt</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co"># remove negative values in case of singularity</span></span>
 <span></span>
@@ -264,10 +278,8 @@ DEM, we don’t want an RGB image but values of each pixels. That why
 <span>          main.title.position <span class="op">=</span> <span class="st">"center"</span>,</span>
 <span>          legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"bottom"</span><span class="op">)</span>,</span>
 <span>          legend.bg.color <span class="op">=</span> <span class="st">"white"</span>, legend.bg.alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<img src="unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7"><p class="caption">
-plot of chunk unnamed-chunk-7
-</p>
+<div class="float">
+<img src="figure/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7"><div class="figcaption">plot of chunk unnamed-chunk-7</div>
 </div>
 <p><strong><em>Rq :</em></strong></p>
 <ul>
@@ -280,7 +292,7 @@ this out</a>.</em></li>
 <div class="section level4">
 <h4 id="wmts">WMTS<a class="anchor" aria-label="anchor" href="#wmts"></a>
 </h4>
-<p>For WMTS, no resolution is needed beacause images are precalculated
+<p>For WMTS, no resolution is needed because images are precalculated
 but a zoom level is needed. The higher the zoom level is, the more
 precis image is. If you only need visualisation, i recommend to use WMTS
 instead of WMS.</p>
@@ -291,7 +303,11 @@ instead of WMS.</p>
 <span><span class="va">hr_ortho</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wmts.html">get_wmts</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch_borders</span>,</span>
 <span>                     layer <span class="op">=</span> <span class="va">ortho_layer</span>,</span>
 <span>                     zoom <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 0...10...20...30...40...50...60...70...80...90...100 - done.</span></span>
+<span><span class="co">#&gt; Warning in CPL_gdalwarp(source, destination,</span></span>
+<span><span class="co">#&gt; options, oo, doo, config_options, : GDAL</span></span>
+<span><span class="co">#&gt; Error 1: Cannot find TileMatrix of zoom</span></span>
+<span><span class="co">#&gt; level 14 in TileMatrixSet 'PM_6_19'</span></span>
+<span><span class="co">#&gt; Error: Check that `layer` is valid</span></span>
 <span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">hr_ortho</span><span class="op">)</span> <span class="op">+</span></span>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html" class="external-link">tm_rgb</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Orthophoto Hight Resolution"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -300,12 +316,8 @@ instead of WMS.</p>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>main.title <span class="op">=</span> <span class="st">"Orthophoto Hight Resolution"</span>,</span>
 <span>          main.title.position <span class="op">=</span> <span class="st">"center"</span>,</span>
 <span>          legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"bottom"</span><span class="op">)</span>,</span>
-<span>          legend.bg.color <span class="op">=</span> <span class="st">"white"</span>, legend.bg.alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<img src="unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"><p class="caption">
-plot of chunk unnamed-chunk-8
-</p>
-</div>
+<span>          legend.bg.color <span class="op">=</span> <span class="st">"white"</span>, legend.bg.alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in eval(expr, envir, enclos): objet 'hr_ortho' introuvable</span></span></code></pre></div>
 </div>
 </div>
 </div>
