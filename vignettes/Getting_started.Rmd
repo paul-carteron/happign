@@ -19,10 +19,16 @@ We can load the `happign` package, and some additional packages we will need (`s
 
 
 
-```r
+``` r
 library(happign)
 library(sf)
+#> Warning: le package 'sf' a été compilé avec
+#> la version R 4.4.2
+#> Linking to GEOS 3.12.2, GDAL 3.9.3, PROJ
+#> 9.4.1; sf_use_s2() is TRUE
 library(tmap);tmap_mode("plot")
+#> Breaking News: tmap 3.x is retiring. Please test v4, e.g. with
+#> remotes::install_github('r-tmap/tmap')
 #> tmap mode set to plotting
 ```
 
@@ -35,7 +41,7 @@ library(tmap);tmap_mode("plot")
 *  WMTS : same as WMS raster but images are precalculated
 *  WFS : data in vector format (.shp, ...).
 
-More detailed information are available [here](https://www.ogc.org/standard/wms/) for WMS, [here](https://www.ogc.org/standard/wmts/) for WMTS and [here](https://www.ogc.org/standard/wfs/) for WFS.
+More detailed information are available [here](https://www.ogc.org/publications/standard/wms/) for WMS, [here](https://www.ogc.org/publications/standard/wmts/) for WMTS and [here](https://www.ogc.org/publications/standard/wfs/) for WFS.
 
 To download data from IGN web services at least two elements are needed :
 
@@ -50,39 +56,49 @@ All layer's name can be accessed from R with the `get_layers_metadata()` functio
 
 
 
-```r
+``` r
 administratif_wfs <- get_layers_metadata(data_type = "wfs")
 administratif_wms <- get_layers_metadata(data_type = "wms-r")
 administratif_wms <- get_layers_metadata(data_type = "wmts")
 
 head(administratif_wfs)
-#>                                                       Name
-#> 1              OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016
-#> 2              OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019
-#> 3                   ADMINEXPRESS-COG.LATEST:arrondissement
-#> 4         ADMINEXPRESS-COG.LATEST:arrondissement_municipal
-#> 5                           ADMINEXPRESS-COG.LATEST:canton
-#> 6 ADMINEXPRESS-COG.LATEST:chflieu_arrondissement_municipal
-#>                   Title          Abstract
-#> 1       OCSGE Gers 2016   OCSGE Gers 2016
-#> 2      OCSGE Gers 2019   OCSGE Gers 2019 
-#> 3 ADMINEXPRESS COG 2023      édition 2023
-#> 4 ADMINEXPRESS COG 2023      édition 2023
-#> 5 ADMINEXPRESS COG 2023      édition 2023
-#> 6 ADMINEXPRESS COG 2023      édition 2023
+#>                                                    Name
+#> 1           OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016
+#> 2           OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019
+#> 3                                      wfs_sup:acte_sup
+#> 4             aeag-rwbody-sdage2022:rwbody_ag_sdage2022
+#> 5 LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement
+#> 6                ADMINEXPRESS-COG.LATEST:arrondissement
+#>                                                Title
+#> 1                                    OCSGE Gers 2016
+#> 2                                   OCSGE Gers 2019 
+#> 3               Acte de servitude d'utilité publique
+#> 4 Adour Garonne - Masses d'eau rivières - SDAGE 2022
+#> 5                                     Arrondissement
+#> 6                                 Arrondissement COG
+#>                                                      Abstract
+#> 1                                             OCSGE Gers 2016
+#> 2                                            OCSGE Gers 2019 
+#> 3 Liste des actes instituant une servitude d'utilité publique
+#> 4          Adour Garonne - Masses d'eau rivières - SDAGE 2022
+#> 5              Limites administrative mises à jour en continu
+#> 6                             Arrondissement ADMINEXPRESS COG
 ```
 
 You can specify an apikey to focus on specific category. API keys can be directly retrieved on the [IGN website from the expert web services](https://geoservices.ign.fr/services-web-experts) or with `get_apikeys()` function.
 
 
-```r
+``` r
 get_apikeys()
-#>  [1] "administratif" "adresse"       "agriculture"  
-#>  [4] "altimetrie"    "cartes"        "cartovecto"   
-#>  [7] "clc"           "economie"      "enr"          
-#> [10] "environnement" "geodesie"      "lambert93"    
-#> [13] "ocsge"         "ortho"         "orthohisto"   
-#> [16] "parcellaire"   "satellite"     "sol"          
+#>  [1] "administratif" "adresse"      
+#>  [3] "agriculture"   "altimetrie"   
+#>  [5] "cartes"        "cartovecto"   
+#>  [7] "clc"           "economie"     
+#>  [9] "enr"           "environnement"
+#> [11] "geodesie"      "lambert93"    
+#> [13] "ocsge"         "ortho"        
+#> [15] "orthohisto"    "parcellaire"  
+#> [17] "satellite"     "sol"          
 #> [19] "topographie"   "transports"
 
 administratif_wmts <- get_layers_metadata("wmts", "administratif")
@@ -93,9 +109,9 @@ head(administratif_wmts)
 #> 2                                 ADMINEXPRESS COG
 #> 3 Limites administratives mises à jour en continu.
 #>                                                                 Abstract
-#> 1    Limites administratives Express COG code officiel géographique 2023
-#> 2   Limites administratives Express COG code officiel géographique. 2023
-#> 3 Limites administratives mises à jour en continu ; Edition : 2024-03-25
+#> 1 Limites administratives mises à jour en continu ; Edition : 2024-02-22
+#> 2 Limites administratives mises à jour en continu ; Edition : 2024-02-22
+#> 3 Limites administratives mises à jour en continu ; Edition : 2024-12-18
 #>                               Identifier
 #> 1          ADMINEXPRESS-COG-CARTO.LATEST
 #> 2                ADMINEXPRESS-COG.LATEST
@@ -107,7 +123,7 @@ head(administratif_wmts)
 Now that we know how to get a layer name, it only takes a few lines to get plethora of resources. For the example we will look at the beautiful town of Penmarch in France. A part of this town is stored as a shape in happign.
 
 
-```r
+``` r
 penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 ```
 
@@ -116,7 +132,7 @@ penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 `get_wfs` can be used to download borders :
 
 
-```r
+``` r
 
 penmarch_borders <- get_wfs(x = penmarch,
                             layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
@@ -134,13 +150,9 @@ tm_layout(main.title = "Penmarch borders from IGN",
           legend.position = c(0.7, -0.1),
           outer.margins = c(0.1, 0,0,0),
           frame = FALSE)
-#> Legend labels were too wide. The labels have been resized to 0.61. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
 ```
 
-<div class="figure" style="text-align: center">
-<img src="unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5"  />
-<p class="caption">plot of chunk unnamed-chunk-5</p>
-</div>
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
 
 It's as simple as that!
 Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many hedges for biodiversity there are in Penmarch?
@@ -149,11 +161,11 @@ Now you have to rely on your curiosity to explore the multiple possibilities tha
 
 
 
-```r
+``` r
 hedges <- get_wfs(x = penmarch_borders,
                  layer = "BDTOPO_V3:haie",
                  spatial_filter = "intersects")
-#> Features downloaded : 436
+#> Features downloaded : 434
 
 # Checking result
 tm_shape(penmarch_borders) + # Borders of penmarch
@@ -167,10 +179,7 @@ tm_shape(hedges) + # Point use to retrieve data
              frame = FALSE)
 ```
 
-<div class="figure" style="text-align: center">
-<img src="unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6"  />
-<p class="caption">plot of chunk unnamed-chunk-6</p>
-</div>
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 ### WMS raster
 
@@ -179,7 +188,7 @@ For raster, the process is the same, but with the function `get_wms_raster()`, b
 
 
 
-```r
+``` r
 layers_metadata <- get_layers_metadata("wms-r", "altimetrie")
 dem_layer <- layers_metadata[2, 1] #LEVATION.ELEVATIONGRIDCOVERAGE
 
@@ -189,7 +198,7 @@ mnt <- get_wms_raster(x = penmarch_borders,
                       crs = 2154,
                       rgb = FALSE)
 #> 0...10...20...30...40...50...60...70...80...90...100 - done.
-#> Raster is saved at : C:\Users\PaulCarteron\AppData\Local\Temp\Rtmp63I4Tv\filea98465250a.tif
+#> Raster is saved at : C:\Users\PaulCarteron\AppData\Local\Temp\Rtmpueo2T1\file514477f61a4e.tif
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 
@@ -203,10 +212,7 @@ tm_layout(main.title = "DEM of Penmarch",
           legend.bg.color = "white", legend.bg.alpha = 0.7)
 ```
 
-<div class="figure" style="text-align: center">
-<img src="unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7"  />
-<p class="caption">plot of chunk unnamed-chunk-7</p>
-</div>
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)
 
 __*Rq :*__
 
@@ -214,18 +220,22 @@ __*Rq :*__
 
 ### WMTS
 
-For WMTS, no resolution is needed beacause images are precalculated but a zoom level is needed. The higher the zoom level is, the more precis image is. If you only need visualisation, i recommend to use WMTS instead of WMS.
+For WMTS, no resolution is needed because images are precalculated but a zoom level is needed. The higher the zoom level is, the more precis image is. If you only need visualisation, i recommend to use WMTS instead of WMS.
 
 
 
-```r
+``` r
 layers_metadata <- get_layers_metadata("wmts", "ortho")
 ortho_layer <- layers_metadata[1, 3] #HR.ORTHOIMAGERY.ORTHOPHOTOS
 
 hr_ortho <- get_wmts(x = penmarch_borders,
                      layer = ortho_layer,
                      zoom = 14)
-#> 0...10...20...30...40...50...60...70...80...90...100 - done.
+#> Warning in CPL_gdalwarp(source, destination,
+#> options, oo, doo, config_options, : GDAL
+#> Error 1: Cannot find TileMatrix of zoom
+#> level 14 in TileMatrixSet 'PM_6_19'
+#> Error: Check that `layer` is valid
 
 tm_shape(hr_ortho) +
    tm_rgb(title = "Orthophoto Hight Resolution") +
@@ -235,9 +245,5 @@ tm_layout(main.title = "Orthophoto Hight Resolution",
           main.title.position = "center",
           legend.position = c("right", "bottom"),
           legend.bg.color = "white", legend.bg.alpha = 0.7)
+#> Error in eval(expr, envir, enclos): objet 'hr_ortho' introuvable
 ```
-
-<div class="figure" style="text-align: center">
-<img src="unnamed-chunk-8-1.png" alt="plot of chunk unnamed-chunk-8"  />
-<p class="caption">plot of chunk unnamed-chunk-8</p>
-</div>
