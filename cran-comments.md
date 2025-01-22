@@ -2,7 +2,7 @@
 
 I sucessfully pass R-CMD-Check test from rhun::rhub_chek()
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/10655748170)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/12903762654)
 
 
 ## R CMD check results
@@ -14,14 +14,14 @@ I sucessfully pass R-CMD-Check test for 5 OS :
    * {os: ubuntu-latest,   r: 'release'}
    * {os: ubuntu-latest,   r: 'oldrel-1'}
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/8980856731)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/12903612856)
 
 
-## rhub::rhub_check()
+## local devtools::check() results
+── R CMD check results ────────────────────── happign 0.3.2 ────
+Duration: 3m 28.3s
 
-I check 4 OS with new rhub::check_rhub(). Build can be found [here](https://github.com/paul-carteron/happign/actions/runs/8967409459).
+❯ checking for future file timestamps ... NOTE
+  unable to verify current time
 
-Checks for Windows isn't working because of source installation of package terra.
-
-I ask for the problem [here](https://github.com/r-hub/rhub/issues/605).
-
+0 errors ✔ | 0 warnings ✔ | 1 note ✖
