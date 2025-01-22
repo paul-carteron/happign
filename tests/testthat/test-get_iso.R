@@ -45,6 +45,7 @@ test_that("build_iso_query works", {
 
 test_that("get_iso_works", {
       skip_on_cran()
+      skip_on_ci()
       skip_if_offline()
 
       time_minute <- get_iso(happign:::point, 5, "time")
@@ -67,8 +68,8 @@ test_that("get_iso_works", {
 
 test_that("get_isodistance_works", {
       skip_on_cran()
+      skip_on_ci()
       skip_if_offline()
-
 
       dist <- get_isodistance(happign:::point, 500)
       expect_s3_class(dist, "sf")
@@ -80,6 +81,7 @@ test_that("get_isodistance_works", {
 
 test_that("get_isochrone_works", {
       skip_on_cran()
+      skip_on_ci()
       skip_if_offline()
 
       time <- get_isochrone(happign:::point, 2)
