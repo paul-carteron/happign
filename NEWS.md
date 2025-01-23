@@ -1,4 +1,6 @@
 # happign 0.3.2
+* Package now depend on R >= 4.1.0 because package code uses the base pipe |>
+
 Utilities :
 * add `com_2024` dataset as successor or `cog_2023`
 
