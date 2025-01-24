@@ -152,7 +152,7 @@ tm_layout(main.title = "Penmarch borders from IGN",
           frame = FALSE)
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-5](unnamed-chunk-5-1.png)
 
 It's as simple as that!
 Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many hedges for biodiversity there are in Penmarch?
@@ -179,7 +179,7 @@ tm_shape(hedges) + # Point use to retrieve data
              frame = FALSE)
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
+![plot of chunk unnamed-chunk-6](unnamed-chunk-6-1.png)
 
 ### WMS raster
 
@@ -212,7 +212,7 @@ tm_layout(main.title = "DEM of Penmarch",
           legend.bg.color = "white", legend.bg.alpha = 0.7)
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)
+![plot of chunk unnamed-chunk-7](unnamed-chunk-7-1.png)
 
 __*Rq :*__
 

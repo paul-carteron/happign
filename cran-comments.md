@@ -28,11 +28,10 @@ Non-standard file/directory found at top level:
 Result can be found [here](https://win-builder.r-project.org/4FlQmJx3e7vy/00check.log)
 
 ## local devtools::check() results
-── R CMD check results ─────────── happign 0.3.2 ────
-Duration: 2m 26.4s
+── R CMD check results  happign 0.3.2 ───
+Duration: 2m 33.1s
 
-❯ checking top-level files ... NOTE
-  Non-standard file/directory found at top level:
-    'figure'
+❯ checking for future file timestamps ... NOTE
+  unable to verify current time
 
 0 errors ✔ | 0 warnings ✔ | 1 note ✖
