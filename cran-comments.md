@@ -2,7 +2,7 @@
 
 I sucessfully pass R-CMD-Check test from rhun::rhub_chek()
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/12903762654)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/12934230218)
 
 
 ## R CMD check results
@@ -14,14 +14,25 @@ I sucessfully pass R-CMD-Check test for 5 OS :
    * {os: ubuntu-latest,   r: 'release'}
    * {os: ubuntu-latest,   r: 'oldrel-1'}
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/12903612856)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/12934210547)
 
+## devtools::check_win_devel() results
+
+Only one NOTE from figure folder I use to store precompile image for vignette
+
+```
+Non-standard file/directory found at top level:
+  'figure'
+```
+
+Result can be found [here](https://win-builder.r-project.org/4FlQmJx3e7vy/00check.log)
 
 ## local devtools::check() results
-── R CMD check results ────────────────────── happign 0.3.2 ────
-Duration: 3m 28.3s
+── R CMD check results ─────────── happign 0.3.2 ────
+Duration: 2m 26.4s
 
-❯ checking for future file timestamps ... NOTE
-  unable to verify current time
+❯ checking top-level files ... NOTE
+  Non-standard file/directory found at top level:
+    'figure'
 
 0 errors ✔ | 0 warnings ✔ | 1 note ✖
