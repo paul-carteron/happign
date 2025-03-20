@@ -22,7 +22,7 @@ Imports:
     archive,
     dplyr,
     jsonlite,
-    httr2 (>= 1.0.0),
+    httr2 (>= 1.1.0),
     methods,
     sf (>= 1.0-7),
     terra,

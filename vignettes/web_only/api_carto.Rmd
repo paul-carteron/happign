@@ -55,7 +55,7 @@ dataframe `cog_2023`.
 
 ```{r plou_borders, message=FALSE}
 # all town starting with "Plou"
-plou_insee_code <- cog_2023[startsWith(cog_2023$LIBELLE, "Plou"), "COM"]
+plou_insee_code <- com_2024[startsWith(com_2024$LIBELLE, "Plou"), "COM"]
 plou_borders <- get_apicarto_cadastre(plou_insee_code, type = "commune")
 
 # result
