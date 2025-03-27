@@ -51,7 +51,7 @@
 #' `filename` already exists. If it does, the file is imported into
 #' R without downloading again, unless `overwrite` is set to `TRUE`.
 #'
-#' @importFrom terra rast RGB<- minmax allNA
+#' @importFrom terra rast RGB<- minmax allNA nlyr
 #' @importFrom sf gdal_utils st_bbox st_crs
 #' @importFrom utils menu
 #'
@@ -94,79 +94,38 @@ get_wms_raster <- function(x,
                            res = 10,
                            crs = 2154,
                            rgb = TRUE,
-                           filename = tempfile(fileext = ".tif"),
-                           verbose = TRUE,
+                           filename = NULL,
                            overwrite = FALSE,
+                           verbose = TRUE,
                            interactive = FALSE){
 
-   # check x ----
-   if (!inherits(x, c("sf", "sfc"))) {
-      stop("`x` must be of class sf or sfc.", call. = F)
-   }
+   # Validate inputs
+   if (!inherits(x, c("sf", "sfc")))
+      stop("`x` must be of class sf or sfc.", call. = FALSE)
 
-   # interactive mode ----
-   # if TRUE menu ask for apikey and layer name
-   if (interactive){
-      choice <- interactive_mode("wms-r")
+   if (!is.character(layer))
+      stop("`layer` must be a character string.", call. = FALSE)
+
+   if (interactive) {
+      choice <- interactive_mode("wms-r")  # assume interactive_mode() is defined elsewhere.
       layer <- choice$layer
    }
 
-   # check layer ----
-   if (!inherits(layer, "character")) {
-      stop("`layer` must be of class character.", call. = F)
-   }
-
-   # if no filename provided, layer is used by removing non alphanum character
-   if (is.null(filename)){
-      filename <- gsub("[^[:alnum:]]", "_", layer)
-      filename <- paste0(filename, ".tif") # Save as geotiff by default
-   }
-
-   # if filename exist and overwrite is set to FALSE, raster is loaded
-   if (file.exists(filename) && !overwrite) {
-      rast <- rast(filename)
-      message("File already exists at ", filename," therefore is loaded.\n",
-              "Set overwrite to TRUE to download it again.")
-      return(rast)
-   }
-
    sd <- get_sd(layer)
-   desc_xml <- generate_desc_xml(sd, rgb)
-   bb <- st_bbox(x)
 
-   warp_options <- c(
-      "-of", "GTIFF",
-      "-te", bb$xmin, bb$ymin, bb$xmax, bb$ymax,
-      "-te_srs", st_crs(x)$srid,
-      "-t_srs", st_crs(crs)$srid,
-      "-tr", res, res,
-      "-r", "bilinear",
-      if (overwrite) "-overwrite" else NULL
-   )
+   # Perform the warp safely; the warp function always writes to the dest_file.
+   outfile <- safe_gdal_warp(x, sd, res, crs, rgb, filename, overwrite, verbose)
+   rast <- rast(outfile)
 
-   rast <- gdal_utils("warp",
-                      source = desc_xml,
-                      destination = filename,
-                      quiet=!verbose,
-                      options = c(warp_options, create_options()),
-                      config_options = config_options()) |>
-      suppressWarnings()
-
-   rast <- rast(filename)
-
-
-   if (sum(minmax(allNA(rast))) == 2){
+   if (sum(minmax(allNA(rast), compute = T)) == 2){
       message("Raster is empty, NULL is returned")
       return(NULL)
    }
 
-   if (rgb){
+   if (rgb && nlyr(rast) == 3){
       RGB(rast) <- c(1, 2, 3)
       names(rast) <- c("red", "green", "blue")
    }
-
-   if (verbose)
-      message("Raster is saved at : ", suppressWarnings(normalizePath(filename)))
 
    return(rast)
 
@@ -193,7 +152,7 @@ get_sd <- function(layer){
    sd <- unlist(raw_sds[grep(pattern, raw_sds)], use.names = FALSE)
 
    if (is.null(sd)){
-      stop(layer, " isn't a valid layer.", call. = F)
+      stop(layer, " isn't a valid layer name.", call. = F)
    }
    return(sd)
 }
@@ -284,5 +243,96 @@ config_options <- function(){
       GDAL_HTTP_VERSION = "2",
       GDAL_HTTP_MERGE_CONSECUTIVE_RANGES = "YES",
       GDAL_HTTP_USERAGENT = "happign (https://github.com/paul-carteron/happign)"
+   )
+}
+
+#' @title warp_options
+#' @description warp options for gdal_warp
+#'
+#' @importFrom sf st_bbox st_crs
+#'
+#' @noRd
+warp_options <- function(x, crs, res, overwrite){
+
+   bb <- st_bbox(x)
+
+   return(
+      c(
+         "-of", "GTIFF",
+         "-te", bb$xmin, bb$ymin, bb$xmax, bb$ymax,
+         "-te_srs", st_crs(x)$srid,
+         "-t_srs", st_crs(crs)$srid,
+         "-tr", res, res,
+         "-r", "bilinear",
+         if (overwrite) "-overwrite" else NULL
+      )
+   )
+}
+
+#' @title safe_warp
+#' @description Safe warp wrapper: try warp_wms and if a FLOAT32/jpeg
+#' warning/error occurs, retry with rgb = FALSE.
+#'
+#' @noRd
+safe_gdal_warp <- function(x, sd, res, crs, rgb, filename, overwrite, verbose){
+   is_float32_jpeg_warning <- function(msg) {
+      grepl("FLOAT32", msg) && grepl("image/jpeg", msg)
+   }
+   is_gdal_nulldouble_warning <- function(msg) {
+      grepl("GeoDoubleParams", msg)
+   }
+
+   # Internal warp function: writes output directly to dest.
+   gdal_warp <- function(x, sd, res, crs, rgb, filename, overwrite, verbose) {
+      desc_xml <- generate_desc_xml(sd, rgb)
+
+      # If caching is enabled (filename provided) and file exists, load and return it.
+      caching_is_enable <- !is.null(filename) && file.exists(filename) && !overwrite
+      if (caching_is_enable){
+         if (verbose) message("Using cached file: ", normalizePath(filename))
+         return(filename)
+      }
+
+      outfile <- if (is.null(filename)) tempfile(fileext = ".tif") else filename
+
+      sf::gdal_utils("warp",
+                     source = desc_xml,
+                     destination = outfile ,
+                     quiet = !verbose,
+                     options = c(warp_options(x, crs, res, overwrite), create_options()),
+                     config_options = config_options())
+      return(outfile)
+   }
+
+   tryCatch(
+      withCallingHandlers({
+         outfile <- gdal_warp(x, sd, res, crs, rgb, filename, overwrite, verbose)
+         caching_is_enable <- !is.null(filename) && file.exists(filename) && !overwrite
+         if (verbose && !caching_is_enable) message("Warp executed successfully.")
+         outfile
+      },
+      warning = function(w) {
+         msg <- conditionMessage(w)
+         # If it's the FLOAT32/jpeg warning, convert it to an error for retry recursively
+         if (is_float32_jpeg_warning(msg)) {
+            stop(msg)
+         }
+         # If it's the specific GDAL null count warning, muffle it.
+         else {
+            invokeRestart("muffleWarning")
+         }
+      }),
+      error = function(e) {
+         err_msg <- conditionMessage(e)
+         if (is_float32_jpeg_warning(err_msg)) {
+            if (!rgb) {  # Already retried with rgb = FALSE, stop here.
+               stop("FLOAT32/jpeg mismatch persists even with rgb = FALSE.")
+            }
+            message("\nDetected FLOAT32/jpeg mismatch. Retrying with rgb = FALSE...")
+            safe_gdal_warp(x, sd, res, crs, rgb = FALSE, filename, warp_options, verbose)
+         } else {
+            stop("GDAL warp failed: ", err_msg)
+         }
+      }
    )
 }

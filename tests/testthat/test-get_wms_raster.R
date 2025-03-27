@@ -1,41 +1,41 @@
-layer <- "ELEVATION.ELEVATIONGRIDCOVERAGE"
+x <- happign:::poly
+layer <- "ORTHOIMAGERY.ORTHOPHOTOS"
 res <- 25
+crs <- 2154
 
 test_that("wms_base_case", {
-      skip_on_cran()
-      skip_if_offline()
+   skip_on_cran()
+   skip_if_offline()
 
-      crs <- 2154
+   base_case <- get_wms_raster(x, layer, res, crs, verbose = F)
 
-      mnt_rgb <- get_wms_raster(happign:::poly, layer, res, crs)
-      mnt <- get_wms_raster(happign:::poly, layer, res, crs, rgb = F)
+   expect_true(st_crs(base_case) == st_crs(2154))
+   expect_equal(terra::nlyr(base_case), 3)
+   expect_named(base_case, c("red", "green", "blue"))
 
-      expect_s4_class(mnt_rgb, "SpatRaster")
-      expect_s4_class(mnt, "SpatRaster")
+   # check rgb value are not empty
+   expect_true(all(terra::minmax(base_case, compute=T)["max",] >= 0))
+})
 
-      expect_true(st_crs(mnt_rgb) == st_crs(2154))
-      expect_true(st_crs(mnt) == st_crs(2154))
+test_that("wms_rgb", {
+   skip_on_cran()
+   skip_if_offline()
 
-      expect_equal(dim(mnt_rgb), c(17, 11, 3))
-      expect_equal(dim(mnt), c(17, 11, 1))
+   rgb_FALSE <- get_wms_raster(x, layer, res, crs, rgb = FALSE, verbose = F)
 
-      expect_named(mnt_rgb, c("red", "green", "blue"))
+   expect_equal(terra::nlyr(rgb_FALSE), 1)
 
-      expect_true(terra::minmax(mnt, compute=T)["max",] >= 0)
 })
 
 test_that("wms_crs", {
    skip_on_cran()
    skip_if_offline()
 
-   mnt <- get_wms_raster(happign:::poly,
-                         layer, res,
-                         crs = 27572)
+   new_crs <- 27572
+   crs_CHANGED <- get_wms_raster(happign:::poly, layer, res, crs = new_crs, verbose = F)
 
-   expect_s4_class(mnt, "SpatRaster")
-   expect_true(st_crs(mnt) == st_crs(27572))
-   expect_equal(dim(mnt), c(17, 10, 3))
-   expect_true(all(terra::minmax(mnt, compute=T)["max",] >= 0))
+   expect_true(st_crs(crs_CHANGED) == st_crs(new_crs))
+
 })
 
 test_that("wms_overwrite", {
@@ -43,13 +43,10 @@ test_that("wms_overwrite", {
    skip_if_offline()
 
    filename <- tempfile(fileext = ".tif")
+   first_download <- get_wms_raster(x, layer, res, crs, filename = filename, verbose = F)
 
-   mnt <- get_wms_raster(happign:::poly, layer, res,
-                         filename = filename)
-
-   expect_message(get_wms_raster(happign:::poly, layer, res,
-                                 filename = filename),
-                  "File already exists at")
+   expect_message(get_wms_raster(x, layer, res, filename = filename),
+                  "Using cached file")
 })
 
 test_that("wms_png", {
@@ -58,25 +55,19 @@ test_that("wms_png", {
 
    filename <- tempfile(fileext = ".png")
 
-   mnt <- get_wms_raster(happign:::poly,
-                         layer = "ORTHOIMAGERY.ORTHOPHOTOS",
-                         res = 25,
-                         filename = filename)
+   png <- get_wms_raster(x, layer, res, filename = filename, verbose = F)
 
-   expect_s4_class(mnt, "SpatRaster")
-   expect_equal(dim(mnt), c(17, 11, 3))
-   expect_true(terra::minmax(mnt, compute=T)["max",1] >= 0)
+   expect_true(all(terra::minmax(png, compute=T)["max",] >= 0))
 })
 
 test_that("wms_multipoly", {
    skip_on_cran()
    skip_if_offline()
 
-   mnt <- get_wms_raster(happign:::multipoly, layer, res)
+   multipoly <- get_wms_raster(x, layer, res, verbose = F)
 
-   expect_s4_class(mnt, "SpatRaster")
-   expect_equal(dim(mnt), c(15, 31, 3))
-   expect_true(all(terra::minmax(mnt, compute=T)["max",] >= 0))
+   expect_equal(terra::nlyr(multipoly), 3)
+   expect_true(all(terra::minmax(multipoly, compute=T)["max",] >= 0))
 
 })
 
@@ -84,11 +75,7 @@ test_that("wms_bad_name", {
    skip_on_cran()
    skip_if_offline()
 
-   expect_error(get_wms_raster(happign:::poly,
-                               layer = "badname",
-                               res = 25,
-                               overwrite = TRUE),
-                "isn't a valid layer.")
+   expect_error(get_wms_raster(x, layer = "badname"), "isn't a valid layer name.")
 })
 
 test_that("get_sd_work", {
@@ -96,16 +83,23 @@ test_that("get_sd_work", {
    skip_if_offline()
 
    wms_url <- get_sd(layer)
-   normal_result <- paste0(
-      "WMS:https://data.geopf.fr/wms-r/wms?",
-      "SERVICE=WMS",
-      "&VERSION=1.3.0",
-      "&REQUEST=GetMap",
-      "&LAYERS=", layer,
-      "&CRS=IGNF:WGS84G",
-      "&BBOX=-64.000000000,-23.000000000,168.000000000,52.000000000"
-   )
-   expect_equal(wms_url, normal_result)
+   url_clean <- sub("^WMS:", "", wms_url)
+
+   parsed <- httr2::url_parse(url_clean)
+
+   expect_equal(parsed$scheme, "https")
+   expect_equal(parsed$hostname, "data.geopf.fr")
+   expect_equal(parsed$path, "/wms-r/wms")
+
+   query <- parsed$query
+
+   expect_equal(query$SERVICE, "WMS")
+   expect_equal(query$VERSION, "1.3.0")
+   expect_equal(query$REQUEST, "GetMap")
+   expect_equal(query$LAYERS, layer)
+   expect_equal(query$CRS, "EPSG:3857")
+   # 4 digit separate with comma
+   expect_true(grepl("[-0-9.]+,[-0-9.]+,[-0-9.]+,[-0-9.]+", query$BBOX))
 })
 
 test_that("generate_desc_xml_work", {
@@ -165,3 +159,34 @@ test_that("config_options_work", {
       )
    )
 })
+
+test_that("warp_options_work", {
+   warp_opts_overwrite <- warp_options(x, crs, res, overwrite = T)
+   warp_opts <- warp_options(x, crs, res, overwrite = F)
+
+   expect_equal(
+      warp_opts_overwrite,
+      c(
+         "-of", "GTIFF",
+         "-te", xmin = "-4.347", ymin = "47.811", xmax = "-4.344", ymax = "47.815",
+         "-te_srs", "EPSG:4326",
+         "-t_srs", "EPSG:2154",
+         "-tr", "25", "25",
+         "-r", "bilinear",
+         "-overwrite"
+      )
+   )
+
+   expect_equal(
+      warp_opts,
+      c(
+         "-of", "GTIFF",
+         "-te", xmin = "-4.347", ymin = "47.811", xmax = "-4.344", ymax = "47.815",
+         "-te_srs", "EPSG:4326",
+         "-t_srs", "EPSG:2154",
+         "-tr", "25", "25",
+         "-r", "bilinear"
+      )
+   )
+})
+

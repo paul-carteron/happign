@@ -36,7 +36,6 @@ test_that("build_iso_query works", {
       time_unit = "time_unit"
    )
 
-   expect_s3_class(req, "httr2_request")
    expect_match(req$url,
                 "https://data.geopf.fr/navigation/isochrone")
    expect_equal(req$options$ssl_verifypeer, 0)

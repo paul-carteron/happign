@@ -38,9 +38,9 @@ If \code{NULL}, uses \code{layer} as the filename. The default format is ".tif",
 but all \href{https://gdal.org/en/latest/drivers/raster/index.html}{GDAL drivers}
 are supported.}
 
-\item{verbose}{\code{boolean}; if TRUE, message are added.}
-
 \item{overwrite}{\code{boolean}; if TRUE, the existing raster will be overwritten.}
+
+\item{verbose}{\code{boolean}; if TRUE, message are added.}
 
 \item{interactive}{\code{logical}; if TRUE, an interactive menu prompts for
 \code{apikey} and \code{layer}.}
