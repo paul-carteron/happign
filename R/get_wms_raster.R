@@ -11,8 +11,8 @@
 #'                crs = 2154,
 #'                rgb = TRUE,
 #'                filename = NULL,
-#'                verbose = TRUE,
 #'                overwrite = FALSE,
+#'                verbose = TRUE,
 #'                interactive = FALSE)
 #'
 #' @param x Object of class `sf` or `sfc`, located in France.
