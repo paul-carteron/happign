@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(happign)
 library(dplyr)
-library(tmap); tmap_mode("view"); tmap_options(check.and.fix = TRUE)
+library(tmap); tmap_mode("view")
 library(sf)
 ```
 
@@ -74,7 +74,8 @@ cad_mat <- data.frame(CODE_DEP = rep("29", 10),
                                
 parcels <- get_apicarto_cadastre(paste0(cad_mat$CODE_DEP, cad_mat$CODE_COM),
                                  section = cad_mat$SECTION,
-                                 numero = cad_mat$N_PARC)
+                                 numero = cad_mat$N_PARC,
+                                 type="parcelle")
 
 
 tm_shape(parcels)+
@@ -94,7 +95,7 @@ Let's start by finding RPG from Penmarc'h town for years 2015. One of the limita
 
 ```{r rpg}
 penmarch  <- get_apicarto_cadastre("29158", type = "commune")
-rpg <- get_apicarto_rpg(penmarch, annee = 2015, dTolerance = 10) 
+rpg <- get_apicarto_rpg(penmarch, annee = 2015, dTolerance = 15) 
 
 # plot result
 tm_shape(penmarch)+
@@ -106,19 +107,19 @@ tm_shape(rpg)+
 The function is vectorized, which mean that query several years at the same time is possible. However, since 2014 the format of the RPG has changed. The function will therefore return a list with the parcels before and after 2014. Below an example showing evolution of RPG from 2013 to 2016.
 
 ```{r rpg_vect, message=FALSE}
-all_years_rpg <- get_apicarto_rpg(penmarch, annee = 2013:2016, dTolerance = 10) 
+all_years_rpg <- get_apicarto_rpg(penmarch, annee = 2013:2016, dTolerance = 15) 
 
 # plot evolution of rpg since 2010
 tm_shape(penmarch)+
    tm_borders()+
 tm_shape(all_years_rpg[["2013"]])+
-   tm_polygons(group = "2013")+
+   tm_polygons(group = "2013", "code_cultu")+
 tm_shape(all_years_rpg[["2014"]])+
-   tm_polygons(group = "2014")+
+   tm_polygons(group = "2014", "code_cultu")+
 tm_shape(all_years_rpg[["2015"]])+
-   tm_polygons(group = "2015")+
+   tm_polygons(group = "2015", "code_cultu")+
 tm_shape(all_years_rpg[["2016"]])+
-   tm_polygons(group = "2016")
+   tm_polygons(group = "2016", "code_cultu")
 ```
 
 It is also possible to query from the culture code. Again, there are changes before and after 2014; [The user documentation](https://apicarto.ign.fr/api/doc/pdf/docUser_moduleRPG.pdf) explains:
@@ -132,7 +133,7 @@ For this example, let's find all potatoes, carrots and leeks.
 rpg <- get_apicarto_rpg(penmarch,
                         annee = 2020,
                         code_cultu = c("PTC", "CAR", "POR"),
-                        dTolerance = 10) 
+                        dTolerance = 15) 
 
 tm_shape(rpg)+
    tm_polygons("code_cultu",
@@ -239,8 +240,7 @@ Let's find how many wine appellations are there in Finistère, France (spoiler, 
 
 ```{r vitivole_finistere, message=FALSE}
 finistere <- get_wfs(penmarch,
-                    "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:departement")
-
+                    "ADMINEXPRESS-COG-CARTO.LATEST:departement")
 # finistere borders are quite complex, and dTolerance cant be used. In this case convex hull of shape 
 # can be used with intersection of the results 
 convex_finistere <- st_convex_hull(finistere)
