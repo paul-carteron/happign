@@ -69,14 +69,10 @@ camors_parcels <- get_wfs(
    spatial_filter = "intersects",
    layer = parcellaire_layer)
 
-if (!is.null(camors_parcels)) {
-  tm_shape(camors_border) +
-    tm_borders(col = "red", lwd = 2) +
-  tm_shape(camors_parcels) +
-    tm_polygons(fill_alpha = 0)
-} else {
-  message("camors_parcels is NULL — skipping map rendering")
-}
+tm_shape(camors_border)+
+   tm_borders(col = "red", lwd = 2)+
+tm_shape(camors_parcels)+
+   tm_polygons(fill_alpha = 0)
 
 ```
 

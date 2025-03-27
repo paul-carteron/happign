@@ -16,12 +16,14 @@ permissions:
 
 jobs:
   pkgdown:
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
     # Only restrict concurrency for non-PR jobs
     concurrency:
       group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GDAL_SKIP: DODS
+      GDAL_HTTP_UNSAFESSL: YES
     permissions:
       contents: write
     steps:
@@ -32,6 +34,9 @@ jobs:
       - uses: r-lib/actions/setup-r@14a7e741c1cb130261263aa1593718ba42cf443b # v2.11.2
         with:
           use-public-rspm: true
+
+      - name: Install macOS system dependencies
+        run: brew install gdal proj
 
       - uses: r-lib/actions/setup-r-dependencies@14a7e741c1cb130261263aa1593718ba42cf443b # v2.11.2
         with:
