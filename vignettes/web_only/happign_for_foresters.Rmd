@@ -24,8 +24,7 @@ library(dplyr)
 library(ggplot2)
 library(terra)
 library(tmap)
-tmap_mode("view") # Set map to interactive
-tmap_options(check.and.fix = TRUE)
+tmap_mode("view")
 ```
 
 ## First choose a zone of interest
@@ -49,9 +48,12 @@ tm_shape(camors_border)+
 An other way of getting borders without Apicarto is to use ECQL language to directly query IGN WFS geoservers.
 
 ```{r borders2}
-camors_border2 <- get_wfs(layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
-                    spatial_filter = "intersects",
-                    ecql_filter = "nom_m LIKE 'CAMORS'")
+camors_border2 <- get_wfs(
+   layer = "ADMINEXPRESS-COG-CARTO.LATEST:commune",
+   ecql_filter = "nom_m LIKE 'CAMORS'"
+   )
+
+# "nom_m" attribut can be found using get_wfs_attributes(layer)
 ```
 
 ## Download cadastral parcel
@@ -62,9 +64,10 @@ Cadastral parcels are essential for any forest manager. Here how to download it 
 layers <- get_layers_metadata("wfs", "parcellaire")
 parcellaire_layer <- layers[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
 
-camors_parcels <- get_wfs(x = camors_border,
-                       spatial_filter = "intersects",
-                       layer = parcellaire_layer)
+camors_parcels <- get_wfs(
+   x = camors_border,
+   spatial_filter = "intersects",
+   layer = parcellaire_layer)
 
 tm_shape(camors_border)+
    tm_borders(col = "red", lwd = 2)+
@@ -89,31 +92,32 @@ BDF2_layer <- layers[5,1]
 BDF1 <- get_wfs(camors_border, BDF1_layer, spatial_filter = "intersects")
 BDF2 <- get_wfs(camors_border, BDF2_layer, spatial_filter = "intersects")
 
-# tmap v3 code
+# tmap V4 code
 tm_shape(BDF1) +
-   tm_polygons(col = "libelle",
+   tm_polygons(fill = "libelle",
                popup.vars = names(BDF1)[1:(ncol(BDF1)-2)],
-               legend.show = FALSE)+
+               fill.legend = tm_legend_hide())+
 tm_shape(BDF2) +
-    tm_polygons(col = "tfv",
-                alpha = 0.5,
+    tm_polygons(fill = "tfv",
+                fill_alpha = 0.5,
                 popup.vars = names(BDF2)[1:(ncol(BDF2)-2)],
-                legend.show = FALSE) +
+                fill.legend = tm_legend_hide()) +
 tm_shape(camors_border) +
    tm_borders(lwd = 2)
+
 ```
 
 ```{r eval=FALSE, include=FALSE}
-# # tmap V4 code
+# # tmap v3 code
 # tm_shape(BDF1) +
-#    tm_polygons(fill = "libelle",
+#    tm_polygons(col = "libelle",
 #                popup.vars = names(BDF1)[1:(ncol(BDF1)-2)],
-#                fill.legend = tm_legend_hide())+
+#                legend.show = FALSE)+
 # tm_shape(BDF2) +
-#     tm_polygons(fill = "tfv",
-#                 fill_alpha = 0.5,
+#     tm_polygons(col = "tfv",
+#                 alpha = 0.5,
 #                 popup.vars = names(BDF2)[1:(ncol(BDF2)-2)],
-#                 fill.legend = tm_legend_hide()) +
+#                 legend.show = FALSE) +
 # tm_shape(camors_border) +
 #    tm_borders(lwd = 2)
 ```
@@ -204,28 +208,29 @@ mnh <- mns - mnt
 mnh[mnh < 0] <- NA  # Remove negative value 
 mnh[mnh > 50] <- 40 # Remove height more than 50m
 
+# tmap v4 code
 tm_shape(mnh) +
-  tm_raster(style = "cont", 
-            title = "Height",
-            palette = "-Spectral",
-            colorNA = "grey",
-            showNA = F) +
+  tm_raster(col.scale = tm_scale_continuous(
+     values = "carto.earth", value.na = "grey"
+     ),
+     col.legend = tm_legend(title = "Height", showNA = F)) +
 tm_shape(level_curve)+
-   tm_lines(col = "black")+
+   tm_lines(col="grey25", col_alpha = 0.8)+
 tm_shape(camors_border)+
    tm_borders(lwd = 2, col = "red")
 
 ```
 
 ```{r eval=FALSE, include=FALSE}
-# # tmap v4 code
+# tmap v3
 # tm_shape(mnh) +
-#   tm_raster(col.scale = tm_scale_continuous(
-#      values = "carto.earth", value.na = "grey"
-#      ),
-#      col.legend = tm_legend(title = "Height", showNA = F)) +
+#   tm_raster(style = "cont", 
+#             title = "Height",
+#             palette = "-Spectral",
+#             colorNA = "grey",
+#             showNA = F) +
 # tm_shape(level_curve)+
-#    tm_lines(col="grey25", col_alpha = 0.8)+
+#    tm_lines(col = "black")+
 # tm_shape(camors_border)+
 #    tm_borders(lwd = 2, col = "red")
 ```
@@ -265,30 +270,32 @@ ndvi <- lapp(irc[[c(1, 2)]], fun = ndvi_fun)
 breaks_ndvi <- c(-1,-0.2,-0.1,0,0.025 ,0.05,0.075,0.1,0.125,0.15,0.175,0.2 ,0.25 ,0.3 ,0.35,0.4,0.45,0.5,0.55,0.6,1)
 palette_ndvi <- c("#BFBFBF","#DBDBDB","#FFFFE0","#FFFACC","#EDE8B5","#DED99C","#CCC782","#BDB86B","#B0C261","#A3CC59","#91BF52","#80B347","#70A340","#619636","#4F8A2E","#407D24","#306E1C","#216112","#0F540A","#004500")
 
-tm_shape(camors_border)+
-   tm_borders(lwd = 2, col = "red")+
-tm_shape(ndvi)+
-   tm_raster(stretch.palette = F,
-             style = "cont",
-             title = "NDVI",
-             breaks = breaks_ndvi,
-             palette = palette_ndvi,
-             colorNA = NULL)+
+
+#tmap v4 code
 tm_shape(biggest_parcels, is.master = TRUE)+
-   tm_borders(lwd = 2, col = "blue")
+   tm_borders(lwd = 2, col = "blue")+
+tm_shape(ndvi)+
+   tm_raster(
+      col.scale = tm_scale_continuous(
+         limits = c(-1, 1),
+         values = palette_ndvi#, values.repeat = F, value.na = NULL
+      ),
+      col.legend = tm_legend(title = "NDVI"))
 
 ```
 ```{r eval=FALSE, include=FALSE}
-# #tmap v4 code
-# tm_shape(biggest_parcels, is.master = TRUE)+
-#    tm_borders(lwd = 2, col = "blue")+
+# # tmap v3 code
+# tm_shape(camors_border)+
+#    tm_borders(lwd = 2, col = "red")+
 # tm_shape(ndvi)+
-#    tm_raster(
-#       col.scale = tm_scale_continuous(
-#          limits = c(-1, 1),
-#          values = palette_ndvi#, values.repeat = F, value.na = NULL
-#       ),
-#       col.legend = tm_legend(title = "NDVI"))
+#    tm_raster(stretch.palette = F,
+#              style = "cont",
+#              title = "NDVI",
+#              breaks = breaks_ndvi,
+#              palette = palette_ndvi,
+#              colorNA = NULL)+
+# tm_shape(biggest_parcels, is.master = TRUE)+
+#    tm_borders(lwd = 2, col = "blue")
 ```
 
 
@@ -305,22 +312,25 @@ gloss_fun <- function(nir, red){
 gloss_index <- lapp(irc[[c(1, 2)]],
             fun = gloss_fun)
 
-tm_shape(camors_border)+
-   tm_borders(lwd = 2, col = "red")+
+# tmap v4 code
+tm_shape(biggest_parcels)+
+   tm_borders(lwd = 2, col = "blue")+
 tm_shape(gloss_index)+
-   tm_raster(style = "cont", 
-             title = "GLOSS INDEX")+
-tm_shape(biggest_parcels, is.master = T)+
-   tm_borders(lwd = 2, col = "blue")
+   tm_raster(col.legend = tm_legend(title = "GLOSS INDEX"))
+
 
 ```
 
 ```{r eval=FALSE, include=FALSE}
-# # tmap v4 code
-# tm_shape(biggest_parcels)+
-#    tm_borders(lwd = 2, col = "blue")+
+# # tmap v3
+# tm_shape(camors_border)+
+#    tm_borders(lwd = 2, col = "red")+
 # tm_shape(gloss_index)+
-#    tm_raster(col.legend = tm_legend(title = "GLOSS INDEX"))
+#    tm_raster(style = "cont", 
+#              title = "GLOSS INDEX")+
+# tm_shape(biggest_parcels, is.master = T)+
+#    tm_borders(lwd = 2, col = "blue")
+
 ```
 
 
