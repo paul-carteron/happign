@@ -10,7 +10,7 @@
 #'                res = 10,
 #'                crs = 2154,
 #'                rgb = TRUE,
-#'                filename = tempfile(fileext = ".tif"),
+#'                filename = NULL,
 #'                verbose = TRUE,
 #'                overwrite = FALSE,
 #'                interactive = FALSE)
