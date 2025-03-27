@@ -29,13 +29,16 @@
 #' defaults to EPSG:2154. See [sf::st_crs()] for more details.
 #' @param filename `character` or `NULL`; specifies the filename or an
 #' open connection for writing (e.g., "test.tif" or "~/test.tif").
-#' If `NULL`, uses `layer` as the filename. The default format is ".tif",
-#' but all [GDAL drivers](https://gdal.org/en/latest/drivers/raster/index.html)
+#' The default format is ".tif" but all
+#' [GDAL drivers](https://gdal.org/en/latest/drivers/raster/index.html)
 #' are supported.
+#' When a filename is provided, the function uses it as a cache: if the
+#' file already exists and `overwrite` is set to `FALSE`, the function
+#' will directly load the raster from that file instead of re-downloading it.
 #' @param verbose `boolean`; if TRUE, message are added.
 #' @param overwrite `boolean`; if TRUE, the existing raster will be overwritten.
 #' @param interactive `logical`; if TRUE, an interactive menu prompts for
-#' `apikey` and `layer`.
+#' `apikey` and `layer` argument.
 #'
 #' @return
 #' `SpatRaster` object from `terra` package.
@@ -46,10 +49,8 @@
 #' of the image. For instance, downloading the BD Alti layer from IGN
 #' is optimal at a resolution of 25m.
 #' * `rgb`: Rasters are commonly used to download images such as orthophotos.
-#' In specific cases like DEMs, however, a value per pixel is essential.
-#' * `overwrite`: The function `get_wms_raster` first checks if
-#' `filename` already exists. If it does, the file is imported into
-#' R without downloading again, unless `overwrite` is set to `TRUE`.
+#' In specific cases like DEMs, however, a value per pixel is essential. See
+#' examples below.
 #'
 #' @importFrom terra rast RGB<- minmax allNA nlyr
 #' @importFrom sf gdal_utils st_bbox st_crs

@@ -34,16 +34,19 @@ See details for more information.}
 
 \item{filename}{\code{character} or \code{NULL}; specifies the filename or an
 open connection for writing (e.g., "test.tif" or "~/test.tif").
-If \code{NULL}, uses \code{layer} as the filename. The default format is ".tif",
-but all \href{https://gdal.org/en/latest/drivers/raster/index.html}{GDAL drivers}
-are supported.}
+The default format is ".tif" but all
+\href{https://gdal.org/en/latest/drivers/raster/index.html}{GDAL drivers}
+are supported.
+When a filename is provided, the function uses it as a cache: if the
+file already exists and \code{overwrite} is set to \code{FALSE}, the function
+will directly load the raster from that file instead of re-downloading it.}
 
 \item{overwrite}{\code{boolean}; if TRUE, the existing raster will be overwritten.}
 
 \item{verbose}{\code{boolean}; if TRUE, message are added.}
 
 \item{interactive}{\code{logical}; if TRUE, an interactive menu prompts for
-\code{apikey} and \code{layer}.}
+\code{apikey} and \code{layer} argument.}
 }
 \value{
 \code{SpatRaster} object from \code{terra} package.
@@ -59,10 +62,8 @@ of the layer will increase the number of pixels but not the precision
 of the image. For instance, downloading the BD Alti layer from IGN
 is optimal at a resolution of 25m.
 \item \code{rgb}: Rasters are commonly used to download images such as orthophotos.
-In specific cases like DEMs, however, a value per pixel is essential.
-\item \code{overwrite}: The function \code{get_wms_raster} first checks if
-\code{filename} already exists. If it does, the file is imported into
-R without downloading again, unless \code{overwrite} is set to \code{TRUE}.
+In specific cases like DEMs, however, a value per pixel is essential. See
+examples below.
 }
 }
 \examples{

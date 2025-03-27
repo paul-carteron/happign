@@ -1,3 +1,13 @@
+# happign 0.3.3
+Features :
+* Enhanced error handling for `get_wms_raster`
+
+Bug fixes :
+* Force `httr2 >= 1.1.1` to avoid error when using `get_iso*` with more than 5 inputs [#33](https://github.com/paul-carteron/happign/issues/33)
+
+Breaking changes:
+In `get_wms_raster()`, when `filename = NULL`, the function now uses a temporary file for storage instead of generating a filename based on the layer name as in previous versions.
+
 # happign 0.3.2
 * Package now depend on R >= 4.1.0 because package code uses the base pipe |>
 
