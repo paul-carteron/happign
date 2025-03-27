@@ -30,6 +30,7 @@ Imports:
     yyjsonr
 Suggests: 
     covr,
+    ggplot2,
     httptest2,
     knitr,
     rmarkdown,
