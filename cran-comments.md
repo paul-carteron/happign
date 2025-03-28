@@ -2,36 +2,35 @@
 
 I sucessfully pass R-CMD-Check test from rhun::rhub_chek()
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/12946026482)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/14127781478)
 
 
 ## R CMD check results
 
-I sucessfully pass R-CMD-Check test for 5 OS :
-   * {os: macos-latest,   r: 'release'}
-   * {os: windows-latest, r: 'release'}
-   * {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-   * {os: ubuntu-latest,   r: 'release'}
-   * {os: ubuntu-latest,   r: 'oldrel-1'}
+I sucessfully pass R-CMD-Check test for 7 OS :
+   - {os: macos-latest,   r: 'release'}
+   - {os: macos-14,       r: 'release'}
+   - {os: windows-latest, r: 'release'}
+   - {os: ubuntu-latest,  r: 'devel', http-user-agent: 'release'}
+   - {os: ubuntu-latest,  r: 'release'}
+   - {os: ubuntu-latest,  r: 'oldrel-1'}
+   - {os: ubuntu-22.04,   r: 'release'}
+
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/12946018851)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/14114446956)
 
 ## devtools::check_win_devel() results
 
-Only one NOTE from figure folder I use to store precompile image for vignette
+```
+* checking CRAN incoming feasibility ... [12s] WARNING
+Maintainer: 'Paul Carteron <carteronpaul@gmail.com>'
 
 ```
-Non-standard file/directory found at top level:
-  'figure'
-```
 
-Result can be found [here](https://win-builder.r-project.org/6RWAeEsUDSly/00check.log)
+Result can be found [here](https://win-builder.r-project.org/Ikr7K9gjqqX5/00check.log)
 
 ## local devtools::check() results
-── R CMD check results  happign 0.3.2 ───
-Duration: 2m 33.1s
+── R CMD check results ───── happign 0.3.2 ────
+Duration: 4m 10.2s
 
-❯ checking for future file timestamps ... NOTE
-  unable to verify current time
-
-0 errors ✔ | 0 warnings ✔ | 1 note ✖
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔
