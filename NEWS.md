@@ -1,4 +1,11 @@
 # happign 0.3.3
+Bug fixes :
+* remove encoding error in `com_2024` dataset thanks to @mgageo [#36](https://github.com/paul-carteron/happign/issues/36)
+
+Utilities :
+* add `com_2025`,`dep_2025`,`reg_2025` dataset as successor or `com_2024`
+
+# happign 0.3.3
 Features :
 * Enhanced error handling for `get_wms_raster`
 
