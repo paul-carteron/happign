@@ -50,17 +50,16 @@ All other parameters are used to refine the query.
 
 We’ll start with a simple example : retrieve borders of multiple town. 
 Because `get_apicaro_cadastre` is a vectorized function, it's possible to set multiple insee code.
-If you do not know insee codes, you can consult existing codes from the internal 
-dataframe `cog_2023`.
+If you do not know insee codes, you can consult existing codes from the internal dataframe `com_2025`.
 
 ```{r plou_borders, message=FALSE}
 # all town starting with "Plou"
-plou_insee_code <- com_2024[startsWith(com_2024$LIBELLE, "Plou"), "COM"]
+plou_insee_code <- com_2025[startsWith(com_2025$LIBELLE_COM, "Plou"), "COM"]
 plou_borders <- get_apicarto_cadastre(plou_insee_code, type = "commune")
 
 # result
 tm_shape(plou_borders)+
-   tm_borders(col = "black")
+   tm_polygons(col = "black")
 ```
 
 Another common case consists in recovering the geometry of the parcels from a "cadastral matrix extract". The latter lists for each owner all his built and unbuilt properties owned in a commune. It is a private information and to obtain one it is necessary to ask for an extract top the Center of the Land taxes. In this example a false simplified cadastral matrix is used.

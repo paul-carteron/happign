@@ -29,13 +29,13 @@ tmap_mode("view")
 
 ## First choose a zone of interest
 
-For the example we will work with the Camors forest. First of all we need the commune border that can be obtained with `get_apicarto_commune` from the insee code. For convenience, `happign` provides a table containing all insee codes (`data("cog_2023")`).
+For the example we will work with the Camors forest. First of all we need the commune border that can be obtained with `get_apicarto_commune` from the insee code. For convenience, `happign` provides a table containing all insee codes (`data("com_2025")`).
 
 ```{r borders}
-data("cog_2023")
+data("cog_2025")
 
 #search communes name Camors and extract insee code
-insee_code <- cog_2023[grepl("^Camors", cog_2023$LIBELLE),"COM"]
+insee_code <- com_2025[grepl("^Camors", com_2025$LIBELLE_COM),"COM"]
 
 camors_border <- get_apicarto_cadastre(insee_code, type = "commune")
 
