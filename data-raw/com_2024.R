@@ -5,10 +5,10 @@ com_2024 <- read.csv("https://www.insee.fr/fr/statistiques/fichier/7766585/v_com
    dplyr::filter(!is.na(REG)) |>
    dplyr::select(COM, LIBELLE)
 
-Encoding(com_2024$LIBELLE) <- "latin1"
+Encoding(com_2024$LIBELLE) <- "UTF-8"
 com_2024$LIBELLE <- iconv(
    com_2024$LIBELLE,
-   "latin1",
+   "UTF-8",
    "UTF-8"
 )
 
