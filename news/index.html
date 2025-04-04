@@ -39,6 +39,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.3" id="happign-033">happign 0.3.3<a class="anchor" aria-label="anchor" href="#happign-033"></a></h2><p class="text-muted">CRAN release: 2025-03-28</p>
+<p>Bug fixes : * remove encoding error in <code>com_2024</code> dataset thanks to <a href="https://github.com/mgageo" class="external-link">@mgageo</a> <a href="https://github.com/paul-carteron/happign/issues/36" class="external-link">#36</a></p>
+<p>Utilities : * add <code>com_2025</code>,<code>dep_2025</code>,<code>reg_2025</code> dataset as successor or <code>com_2024</code></p>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.3" id="happign-033-1">happign 0.3.3<a class="anchor" aria-label="anchor" href="#happign-033-1"></a></h2><p class="text-muted">CRAN release: 2025-03-28</p>
 <p>Features : * Enhanced error handling for <code>get_wms_raster</code></p>
 <p>Bug fixes : * Force <code>httr2 &gt;= 1.1.1</code> to avoid error when using <code>get_iso*</code> with more than 5 inputs <a href="https://github.com/paul-carteron/happign/issues/33" class="external-link">#33</a></p>
 <p>Breaking changes: In <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code>, when <code>filename = NULL</code>, the function now uses a temporary file for storage instead of generating a filename based on the layer name as in previous versions.</p>
