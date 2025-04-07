@@ -38,12 +38,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.3" id="happign-033">happign 0.3.3<a class="anchor" aria-label="anchor" href="#happign-033"></a></h2><p class="text-muted">CRAN release: 2025-03-28</p>
-<p>Bug fixes : * remove encoding error in <code>com_2024</code> dataset thanks to <a href="https://github.com/mgageo" class="external-link">@mgageo</a> <a href="https://github.com/paul-carteron/happign/issues/36" class="external-link">#36</a></p>
-<p>Utilities : * add <code>com_2025</code>,<code>dep_2025</code>,<code>reg_2025</code> dataset as successor or <code>com_2024</code></p>
+<h2 class="pkg-version" data-toc-text="0.3.4" id="happign-034">happign 0.3.4<a class="anchor" aria-label="anchor" href="#happign-034"></a></h2>
+<ul><li>Add better error handling to <code>get_wms_raster</code> <a href="https://github.com/paul-carteron/happign/issues/36" class="external-link">#37</a>
+</li>
+</ul><p>Bug fixes: * remove encoding error in <code>com_2024</code> dataset thanks to <a href="https://github.com/mgageo" class="external-link">@mgageo</a> <a href="https://github.com/paul-carteron/happign/issues/36" class="external-link">#36</a></p>
+<p>Utilities: * add <code>com_2025</code>,<code>dep_2025</code>,<code>reg_2025</code> dataset as successor or <code>com_2024</code></p>
+<p>Breaking changes: * Support for LIDAR data is removed, package <a href="https://lidar.pages.mia.inra.fr/lidarHD/articles/lidarHD.html" class="external-link"><code>LidarHD</code></a> is more suitable for this</p>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.3" id="happign-033-1">happign 0.3.3<a class="anchor" aria-label="anchor" href="#happign-033-1"></a></h2><p class="text-muted">CRAN release: 2025-03-28</p>
+<h2 class="pkg-version" data-toc-text="0.3.3" id="happign-033">happign 0.3.3<a class="anchor" aria-label="anchor" href="#happign-033"></a></h2><p class="text-muted">CRAN release: 2025-03-28</p>
 <p>Features : * Enhanced error handling for <code>get_wms_raster</code></p>
 <p>Bug fixes : * Force <code>httr2 &gt;= 1.1.1</code> to avoid error when using <code>get_iso*</code> with more than 5 inputs <a href="https://github.com/paul-carteron/happign/issues/33" class="external-link">#33</a></p>
 <p>Breaking changes: In <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code>, when <code>filename = NULL</code>, the function now uses a temporary file for storage instead of generating a filename based on the layer name as in previous versions.</p>
@@ -179,13 +182,13 @@
 <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> supports the download of big raster of several gigabytes</li>
 <li>
 <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> has new <code>crs</code> argument</li>
-<li>New function <code><a href="../reference/get_raw_lidar.html">get_raw_lidar()</a></code> to download raw lidar data</li>
+<li>New function <code>get_raw_lidar()</code> to download raw lidar data</li>
 <li>New function <code>get_apicarto_commune()</code> to download commune borders from apicarto</li>
 <li>A new dataset containing names of communes and their associated insee code has been added</li>
 <li>Simplify <code><a href="../reference/get_layers_metadata.html">get_layers_metadata()</a></code> to retrieve only title, name, and abstract</li>
 <li>Remove dependency to <code>tidyr</code>
 </li>
-<li>new function <code><a href="../reference/get_raw_lidar.html">get_raw_lidar()</a></code> to download raw lidar data from IGN</li>
+<li>new function <code>get_raw_lidar()</code> to download raw lidar data from IGN</li>
 <li>new function <code>get_apicarto_commune</code> to download commune borders from the apicarto “cadastre” of IGN</li>
 </ul></div>
     <div class="section level2">
