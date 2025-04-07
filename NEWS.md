@@ -1,9 +1,14 @@
-# happign 0.3.3
-Bug fixes :
+# happign 0.3.4
+* Add better error handling to `get_wms_raster` [#37](https://github.com/paul-carteron/happign/issues/36)
+
+Bug fixes:
 * remove encoding error in `com_2024` dataset thanks to @mgageo [#36](https://github.com/paul-carteron/happign/issues/36)
 
-Utilities :
+Utilities:
 * add `com_2025`,`dep_2025`,`reg_2025` dataset as successor or `com_2024`
+
+Breaking changes:
+* Support for LIDAR data is removed, package [`LidarHD`](https://lidar.pages.mia.inra.fr/lidarHD/articles/lidarHD.html) is more suitable for this
 
 # happign 0.3.3
 Features :
