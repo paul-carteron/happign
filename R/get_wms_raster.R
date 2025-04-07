@@ -101,11 +101,13 @@ get_wms_raster <- function(x,
                            interactive = FALSE){
 
    # Validate inputs
-   if (!inherits(x, c("sf", "sfc")))
+   if (!inherits(x, c("sf", "sfc"))){
       stop("`x` must be of class sf or sfc.", call. = FALSE)
+   }
 
-   if (!is.character(layer))
+   if (!is.character(layer)){
       stop("`layer` must be a character string.", call. = FALSE)
+   }
 
    if (interactive) {
       choice <- interactive_mode("wms-r")  # assume interactive_mode() is defined elsewhere.
@@ -113,9 +115,14 @@ get_wms_raster <- function(x,
    }
 
    sd <- get_sd(layer)
+   desc_xml_path <- generate_desc_xml(sd)
+
+   if (!rgb){
+      modify_xml_for_float(desc_xml_path)
+   }
 
    # Perform the warp safely; the warp function always writes to the dest_file.
-   outfile <- safe_gdal_warp(x, sd, res, crs, rgb, filename, overwrite, verbose)
+   outfile <- safe_gdal_warp(x, desc_xml_path, res, crs, filename, overwrite, verbose)
    rast <- rast(outfile)
 
    if (sum(minmax(allNA(rast), compute = T)) == 2){
@@ -184,6 +191,22 @@ modify_xml_for_float <- function(path_to_xml){
    return(NULL)
 }
 
+#' @title modify_xml_for_png
+#' @description Switch the WMS <ImageFormat> to image/png
+#'
+#' @param path_to_xml `character`; path to the WMS description XML
+#'
+#' @importFrom xml2 read_xml xml_find_first xml_text<- write_xml
+#'
+#' @noRd
+modify_xml_for_png <- function(path_to_xml){
+   doc <- read_xml(path_to_xml)
+   image_format_node <- xml_find_first(doc, "//ImageFormat")
+   xml_text(image_format_node) <- 'image/png'
+   write_xml(doc, path_to_xml, options = "no_declaration")
+   return(NULL)
+}
+
 #' @title generate_desc_xml
 #' @description generate WMS description xml
 #'
@@ -193,19 +216,81 @@ modify_xml_for_float <- function(path_to_xml){
 #' @importFrom sf gdal_utils
 #'
 #' @noRd
-generate_desc_xml <- function(sd, rgb = TRUE){
+generate_desc_xml <- function(sd){
 
    tmp_xml <- tempfile(fileext = ".xml")
-
-   gdal_utils("translate", sd, tmp_xml,
-              options = c("-of", "WMS"))
-
-   if (!rgb){
-      modify_xml_for_float(tmp_xml)
-   }
+   gdal_utils("translate", sd, tmp_xml, options = c("-of", "WMS"))
 
    return(tmp_xml)
+}
 
+#' @title safe_warp
+#' @description Safe warp wrapper: try warp_wms and if a FLOAT32/jpeg
+#' warning/error occurs, retry with rgb = FALSE.
+#'
+#' @noRd
+safe_gdal_warp <- function(x, desc_xml_path, res, crs, filename, overwrite, verbose){
+   is_float32_jpeg_mismatch <- function(msg) {
+      grepl("FLOAT32", msg) && grepl("image/jpeg", msg)
+   }
+   is_jpeg_not_supported <- function(msg){
+      grepl("jpeg_color_space", msg, ignore.case = T)
+   }
+
+   # Internal warp function: writes output directly to dest.
+   gdal_warp <- function(x, desc_xml_path, res, crs, filename, overwrite, verbose) {
+
+      # If caching is enabled (filename provided) and file exists, load and return it.
+      caching_is_enable <- !is.null(filename) && file.exists(filename) && !overwrite
+      if (caching_is_enable){
+         if (verbose) message("Using cached file: ", normalizePath(filename))
+         return(filename)
+      }
+
+      outfile <- if (is.null(filename)) tempfile(fileext = ".tif") else filename
+
+      sf::gdal_utils("warp",
+                     source = desc_xml_path,
+                     destination = outfile ,
+                     quiet = !verbose,
+                     options = c(warp_options(x, crs, res, overwrite), create_options()),
+                     config_options = config_options())
+      return(outfile)
+   }
+
+   tryCatch(
+      withCallingHandlers({
+         outfile <- gdal_warp(x, desc_xml_path, res, crs, filename, overwrite, verbose)
+         caching_is_enable <- !is.null(filename) && file.exists(filename) && !overwrite
+         if (verbose && !caching_is_enable) message("Warp executed successfully.")
+         outfile
+      },
+      warning = function(w) {
+         msg <- conditionMessage(w)
+         # If it's the FLOAT32/jpeg warning, convert it to an error for retry recursively
+         if (is_float32_jpeg_mismatch(msg) || is_jpeg_not_supported(msg)) {
+            stop(msg)
+         }
+         # If it's the specific GDAL null count warning, muffle it.
+         else {
+            invokeRestart("muffleWarning")
+         }
+      }),
+      error = function(e) {
+         err_msg <- conditionMessage(e)
+         if (is_jpeg_not_supported(err_msg)){
+            message("\nLayer likely doesn't support 'image/jpeg'. Switching to 'image/png' and retrying...")
+            modify_xml_for_png(desc_xml_path)
+            return(safe_gdal_warp(x, desc_xml_path, res, crs, filename, overwrite, verbose))
+         } else if (is_float32_jpeg_mismatch(err_msg)) {
+            message("\nDetected FLOAT32/jpeg mismatch. Retrying with rgb = FALSE...")
+            modify_xml_for_float(desc_xml_path)
+            return(safe_gdal_warp(x, desc_xml_path, res, crs, filename, overwrite, verbose))
+         } else {
+            stop("GDAL warp failed: ", err_msg)
+         }
+      }
+   )
 }
 
 #' @title create_options
@@ -267,73 +352,5 @@ warp_options <- function(x, crs, res, overwrite){
          "-r", "bilinear",
          if (overwrite) "-overwrite" else NULL
       )
-   )
-}
-
-#' @title safe_warp
-#' @description Safe warp wrapper: try warp_wms and if a FLOAT32/jpeg
-#' warning/error occurs, retry with rgb = FALSE.
-#'
-#' @noRd
-safe_gdal_warp <- function(x, sd, res, crs, rgb, filename, overwrite, verbose){
-   is_float32_jpeg_warning <- function(msg) {
-      grepl("FLOAT32", msg) && grepl("image/jpeg", msg)
-   }
-   is_gdal_nulldouble_warning <- function(msg) {
-      grepl("GeoDoubleParams", msg)
-   }
-
-   # Internal warp function: writes output directly to dest.
-   gdal_warp <- function(x, sd, res, crs, rgb, filename, overwrite, verbose) {
-      desc_xml <- generate_desc_xml(sd, rgb)
-
-      # If caching is enabled (filename provided) and file exists, load and return it.
-      caching_is_enable <- !is.null(filename) && file.exists(filename) && !overwrite
-      if (caching_is_enable){
-         if (verbose) message("Using cached file: ", normalizePath(filename))
-         return(filename)
-      }
-
-      outfile <- if (is.null(filename)) tempfile(fileext = ".tif") else filename
-
-      sf::gdal_utils("warp",
-                     source = desc_xml,
-                     destination = outfile ,
-                     quiet = !verbose,
-                     options = c(warp_options(x, crs, res, overwrite), create_options()),
-                     config_options = config_options())
-      return(outfile)
-   }
-
-   tryCatch(
-      withCallingHandlers({
-         outfile <- gdal_warp(x, sd, res, crs, rgb, filename, overwrite, verbose)
-         caching_is_enable <- !is.null(filename) && file.exists(filename) && !overwrite
-         if (verbose && !caching_is_enable) message("Warp executed successfully.")
-         outfile
-      },
-      warning = function(w) {
-         msg <- conditionMessage(w)
-         # If it's the FLOAT32/jpeg warning, convert it to an error for retry recursively
-         if (is_float32_jpeg_warning(msg)) {
-            stop(msg)
-         }
-         # If it's the specific GDAL null count warning, muffle it.
-         else {
-            invokeRestart("muffleWarning")
-         }
-      }),
-      error = function(e) {
-         err_msg <- conditionMessage(e)
-         if (is_float32_jpeg_warning(err_msg)) {
-            if (!rgb) {  # Already retried with rgb = FALSE, stop here.
-               stop("FLOAT32/jpeg mismatch persists even with rgb = FALSE.")
-            }
-            message("\nDetected FLOAT32/jpeg mismatch. Retrying with rgb = FALSE...")
-            safe_gdal_warp(x, sd, res, crs, rgb = FALSE, filename, warp_options, verbose)
-         } else {
-            stop("GDAL warp failed: ", err_msg)
-         }
-      }
    )
 }

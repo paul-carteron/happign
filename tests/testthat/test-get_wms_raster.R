@@ -108,7 +108,7 @@ test_that("generate_desc_xml_work", {
 
    sd <- get_sd(layer)
 
-   tmp_xml <- generate_desc_xml(sd, rgb = T)
+   tmp_xml <- generate_desc_xml(sd)
    xml <- paste0(readLines(tmp_xml), collapse = "")
    xml <- gsub(" ", "", xml)
 
@@ -127,6 +127,13 @@ test_that("generate_desc_xml_work", {
 
    expect_false(grepl("<ImageFormat>image/jpeg</ImageFormat>", xml))
    expect_true(grepl("<Version>.*<ServerUrl>.*<Layers>.*<CRS>", xml))
+
+   # also test modify_xml_for_png
+   modified_xml <- modify_xml_for_png(tmp_xml)
+   xml <- readLines(tmp_xml)
+
+   expect_true(grepl("<ImageFormat>image/png</ImageFormat>", xml))
+
 })
 
 test_that("create_options_work", {
