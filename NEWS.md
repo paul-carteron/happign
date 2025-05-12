@@ -1,5 +1,5 @@
 # happign 0.3.4
-* Add better error handling to `get_wms_raster` [#37](https://github.com/paul-carteron/happign/issues/36)
+* Add better error handling to `get_wms_raster` [#37](https://github.com/paul-carteron/happign/issues/37)
 
 Bug fixes:
 * remove encoding error in `com_2024` dataset thanks to @mgageo [#36](https://github.com/paul-carteron/happign/issues/36)
