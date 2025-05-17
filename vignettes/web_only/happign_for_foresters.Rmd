@@ -60,7 +60,7 @@ camors_border2 <- get_wfs(
 
 Cadastral parcels are essential for any forest manager. Here how to download it with `get_wfs`.
 
-```{r cadastral_parcels}
+```{r cadastral_parcels, message=TRUE, warning=TRUE, error=TRUE}
 layers <- get_layers_metadata("wfs", "parcellaire")
 parcellaire_layer <- layers[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
 
