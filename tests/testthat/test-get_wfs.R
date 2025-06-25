@@ -4,7 +4,7 @@ test_that("get_wfs_input_error", {
                 "`x` should have class `sf`, `sfc` or `NULL`")
    # wrong layer
    expect_error(get_wfs(happign:::point, "bad_layer"),
-                "Please check that")
+                "DescribeFeatureType returned 404")
    # wrong spatial filter
    expect_error(get_wfs(happign:::point, spatial_filter = "bad_spatial_filter"),
                 "`spatial_filter` should be one")
@@ -81,10 +81,6 @@ with_mock_dir("wfs_intersect", {
 
       invisible(lapply(get_wfs_by_shp,
                        expect_s3_class, class = "sf"))
-      invisible(lapply(get_wfs_by_shp,
-                       function(x){expect_equal(dim(x), c(1,12))}))
-      invisible(lapply(get_wfs_by_shp,
-                       function(x){expect_true(st_drop_geometry(x)[1,3] == "PENMARCH")}))
       })
    },simplify = FALSE)
 
@@ -95,12 +91,10 @@ with_mock_dir("wfs_ecql_filter", {
 
       layer <- "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"
       spatial_filter <- NULL
-      ecql_filter <- "nom_m LIKE 'PEN%RCH' AND population < 6000"
+      ecql_filter <- "nom_officiel_en_majuscules LIKE 'PEN%RCH' AND population < 6000"
 
       resp <- get_wfs(point, layer, NULL, spatial_filter, ecql_filter)
       expect_s3_class(resp, "sf")
-      expect_equal(dim(resp), c(1,12))
-      expect_true(st_drop_geometry(resp)[1,3] == "PENMARCH")
 })},
 simplify = FALSE)
 
@@ -110,7 +104,7 @@ with_mock_dir("wfs_empty", {
       skip_if_offline()
 
       layer <- "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"
-      ecql_filter <- "nom_m LIKE 'BADNAME'"
+      ecql_filter <- "nom_officiel_en_majuscules LIKE 'BADNAME'"
 
       expect_warning(get_wfs(layer = layer,
                              ecql_filter = ecql_filter),

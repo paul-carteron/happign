@@ -45,6 +45,46 @@ get_wfs_default_crs <- function(layer){
    return(epsg)
 }
 
+#' @title get_wfs_default_geometry_name
+#' @description Get the default geometry name for a layer.
+#'
+#' @param layer `character`; name of the layer from `get_layers_metadata(apikey, "wfs")`.
+#'
+#' @importFrom xml2 xml_find_first xml_attr
+#' @importFrom httr2 request req_url_path_append req_user_agent req_url_query req_perform resp_body_xml
+#'
+#' @return A character representing geometry column name
+#' @noRd
+#'
+get_wfs_default_geometry_name <- function(layer){
+
+   params <- list(
+      service = "WFS",
+      version = "2.0.0",
+      request = "DescribeFeatureType",
+      typeNames = layer
+   )
+
+   req <- request("https://data.geopf.fr") |>
+      req_url_path_append("wfs/ows") |>
+      req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
+      req_url_query(!!!params)
+
+   # ── run the request, return NULL on 404 ──────────────────────────────── #
+   xml_doc <- tryCatch(
+      req |> req_perform() |> resp_body_xml(),
+      httr2_http = function(cnd) {
+         stop("DescribeFeatureType returned 404 for layer '", layer, "'.", call. = FALSE)
+      }
+   )
+
+   geometry_name <- xml_find_first(xml_doc, ".//xsd:element[contains(@type,'gml')]") |>
+      xml_attr("name")
+
+   return(geometry_name)
+}
+
+
 #' @title st_as_text_happign
 #' @description Flip X and Y coord for ECQL filter.
 #'

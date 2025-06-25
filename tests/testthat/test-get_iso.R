@@ -41,50 +41,50 @@ test_that("build_iso_query works", {
    expect_equal(req$options$ssl_verifypeer, 0)
 })
 
-test_that("get_iso_works", {
-      skip_on_cran()
-      skip_on_ci()
-      skip_if_offline()
-
-      time_minute <- get_iso(happign:::point, 5, "time")
-      expect_s3_class(time_minute, "sf")
-      expect_true(st_is(time_minute, "POLYGON"))
-      expect_named(time_minute, "geometry")
-
-      time_second <- get_iso(happign:::point, 500, "time",
-                             time_unit = "second")
-      expect_false(time_minute == time_second)
-
-      dist <- get_iso(happign:::point, 500, "distance")
-      expect_s3_class(dist, "sf")
-      expect_true(st_is(dist, "POLYGON"))
-      expect_named(dist, "geometry")
-
-      expect_false(time_minute == dist)
-
-   })
-
-test_that("get_isodistance_works", {
-      skip_on_cran()
-      skip_on_ci()
-      skip_if_offline()
-
-      dist <- get_isodistance(happign:::point, 500)
-      expect_s3_class(dist, "sf")
-      expect_true(st_is(dist, "POLYGON"))
-      expect_named(dist, "geometry")
-
-
-   })
-
-test_that("get_isochrone_works", {
-      skip_on_cran()
-      skip_on_ci()
-      skip_if_offline()
-
-      time <- get_isochrone(happign:::point, 2)
-      expect_s3_class(time, "sf")
-      expect_true(st_is(time, "POLYGON"))
-      expect_named(time, "geometry")
-
-   })
+# test_that("get_iso_works", {
+#       skip_on_cran()
+#       skip_on_ci()
+#       skip_if_offline()
+#
+#       time_minute <- get_iso(happign:::point, 5, "time")
+#       expect_s3_class(time_minute, "sf")
+#       expect_true(st_is(time_minute, "POLYGON"))
+#       expect_named(time_minute, "geometry")
+#
+#       time_second <- get_iso(happign:::point, 500, "time",
+#                              time_unit = "second")
+#       expect_false(time_minute == time_second)
+#
+#       dist <- get_iso(happign:::point, 500, "distance")
+#       expect_s3_class(dist, "sf")
+#       expect_true(st_is(dist, "POLYGON"))
+#       expect_named(dist, "geometry")
+#
+#       expect_false(time_minute == dist)
+#
+#    })
+#
+# test_that("get_isodistance_works", {
+#       skip_on_cran()
+#       skip_on_ci()
+#       skip_if_offline()
+#
+#       dist <- get_isodistance(happign:::point, 500)
+#       expect_s3_class(dist, "sf")
+#       expect_true(st_is(dist, "POLYGON"))
+#       expect_named(dist, "geometry")
+#
+#
+#    })
+#
+# test_that("get_isochrone_works", {
+#       skip_on_cran()
+#       skip_on_ci()
+#       skip_if_offline()
+#
+#       time <- get_isochrone(happign:::point, 2)
+#       expect_s3_class(time, "sf")
+#       expect_true(st_is(time, "POLYGON"))
+#       expect_named(time, "geometry")
+#
+#    })

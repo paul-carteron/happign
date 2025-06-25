@@ -19,18 +19,20 @@ test_that("spatial_filter", {
    expect_error(construct_spatial_filter(point, c("dwithin", 50, "bad_units"), "apikey"),
                 "When using \"dwithin\" units should be one of")
 
+   layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"
+
    # point
    expect_match(construct_spatial_filter(x = point,
                                          spatial_filter = c("dwithin", 50, "meters"),
                                          crs = 4326,
-                                         layer = "layer"),
-                "DWITHIN(geom, POINT (47.813 -4.344), 50, meters)", fixed = T)
+                                         layer = layer),
+                "DWITHIN(geometrie, POINT (47.813 -4.344), 50, meters)", fixed = T)
 
    # polygon
    expect_match(construct_spatial_filter(x = poly,
                                          spatial_filter = c("dwithin", 50, "meters"),
                                          crs = 4326,
-                                         layer = "layer"),
+                                         layer = layer),
                 "47.815 -4.347, 47.813 -4.344)), 50, meters)", fixed = T)
 
 
@@ -38,8 +40,8 @@ test_that("spatial_filter", {
    expect_match(construct_spatial_filter(x = poly,
                                          spatial_filter = "bbox",
                                          crs = 4326,
-                                         layer = "layer"),
-                "BBOX(geom, -4.347, 47.811, -4.344, 47.815, 'EPSG:4326')", fixed = T)
+                                         layer = layer),
+                "BBOX(geometrie, -4.347, 47.811, -4.344, 47.815, 'EPSG:4326')", fixed = T)
 
 })
 test_that("shp_to_geojson", {
@@ -85,6 +87,7 @@ test_that("shp_to_geojson dTolerance", {
    simplified_geojson <- shp_to_geojson(x, 4326, 10)
    expect_true(nchar(geojson) > nchar(simplified_geojson))
 })
+
 with_mock_dir("get_wfs_default_crs", {
    test_that("get_wfs_default_crs", {
       skip_on_cran()
@@ -94,6 +97,20 @@ with_mock_dir("get_wfs_default_crs", {
 
       crs <- get_wfs_default_crs("ELEVATION.CONTOUR.LINE:courbe")
       expect_equal(crs, 4326)
+
+   })
+}, simplify = FALSE)
+
+with_mock_dir("get_wfs_default_geometry_name", {
+   test_that("get_wfs_default_geometry_name", {
+      skip_on_cran()
+      skip_if_offline()
+
+      expect_error(get_wfs_default_geometry_name("badname"),
+                   "DescribeFeatureType returned 404 for layer 'badname'")
+
+      geometry_name <- get_wfs_default_geometry_name("ELEVATION.CONTOUR.LINE:courbe")
+      expect_equal(geometry_name, "geom")
 
    })
 }, simplify = FALSE)

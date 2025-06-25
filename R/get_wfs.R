@@ -317,13 +317,7 @@ construct_spatial_filter <- function(x = NULL,
    # Build final spatial filter
    spatial_filter <- sprintf("%s(%s, %s)",
                              toupper(spatial_filter[1]),
-                             if (grepl("BDTOPO", layer)){
-                                "geometrie"
-                             }else if (grepl("DFCI", layer)){
-                                "the_geom"
-                             }else{
-                                "geom"
-                             },
+                             get_wfs_default_geometry_name(layer),
                              paste(c(geom, spatial_filter[-1]), collapse = ", "))
 
    return(spatial_filter)
