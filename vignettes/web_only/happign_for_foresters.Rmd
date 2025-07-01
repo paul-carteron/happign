@@ -199,11 +199,6 @@ mns_layer <- layers[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 mnt <- get_wms_raster(camors_border, mnt_layer, res = 15, crs = 2154, rgb = FALSE)
 mns <- get_wms_raster(camors_border, mns_layer, res = 15, crs = 2154, rgb = FALSE)
 
-# Add level curve for flexing
-level_curve <- get_wfs(camors_border, "ELEVATION.CONTOUR.LINE:courbe",
-                       spatial_filter = "intersects") |> 
-   st_intersection(camors_border)
-
 # Calculate digital height model i.e. tree height
 mnh <- mns - mnt
 mnh[mnh < 0] <- NA  # Remove negative value 
@@ -215,8 +210,6 @@ tm_shape(mnh) +
      values = "carto.earth", value.na = "grey"
      ),
      col.legend = tm_legend(title = "Height", showNA = F)) +
-tm_shape(level_curve)+
-   tm_lines(col="grey25", col_alpha = 0.8)+
 tm_shape(camors_border)+
    tm_borders(lwd = 2, col = "red")
 

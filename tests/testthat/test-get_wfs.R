@@ -1,4 +1,7 @@
 test_that("get_wfs_input_error", {
+   skip_on_cran()
+   skip_on_ci()
+   skip_if_offline()
    # bad x class
    expect_error(get_wfs("bad_x", "intersects"),
                 "`x` should have class `sf`, `sfc` or `NULL`")
@@ -11,6 +14,9 @@ test_that("get_wfs_input_error", {
 })
 
 test_that("save_wfs", {
+   skip_on_cran()
+   skip_on_ci()
+   skip_if_offline()
 
    filename <- tempfile(fileext = ".shp")
 
