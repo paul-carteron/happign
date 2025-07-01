@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r message=FALSE, warning=FALSE}
+library(happign)
 library(sf)
 library(dplyr)
 library(ggplot2)

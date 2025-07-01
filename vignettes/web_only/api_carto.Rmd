@@ -12,10 +12,10 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-devtools::load_all()
 ```
 
 ```{r setup}
+library(happign)
 library(dplyr)
 library(sf)
 library(tmap)
