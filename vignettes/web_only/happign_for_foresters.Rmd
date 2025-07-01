@@ -18,7 +18,6 @@ knitr::opts_chunk$set(
 ```
 
 ```{r message=FALSE, warning=FALSE}
-library(happign)
 library(sf)
 library(dplyr)
 library(ggplot2)
@@ -50,7 +49,7 @@ An other way of getting borders without Apicarto is to use ECQL language to dire
 ```{r borders2}
 camors_border2 <- get_wfs(
    layer = "ADMINEXPRESS-COG-CARTO.LATEST:commune",
-   ecql_filter = "nom_m LIKE 'CAMORS'"
+   ecql_filter = "nom_officiel_en_majuscules LIKE 'CAMORS'"
    )
 
 # "nom_m" attribut can be found using get_wfs_attributes(layer = "ADMINEXPRESS-COG-CARTO.LATEST:commune")
@@ -67,12 +66,13 @@ parcellaire_layer <- layers[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcel
 camors_parcels <- get_wfs(
    x = camors_border,
    spatial_filter = "intersects",
-   layer = parcellaire_layer)
+   layer = parcellaire_layer
+   )
 
-tm_shape(camors_border)+
-   tm_borders(col = "red", lwd = 2)+
 tm_shape(camors_parcels)+
-   tm_polygons(fill_alpha = 0)
+   tm_polygons(fill_alpha = 0, lwd = 0.5)+
+tm_shape(camors_border)+
+   tm_borders(col = "red", lwd = 2)
 
 ```
 
@@ -272,15 +272,15 @@ palette_ndvi <- c("#BFBFBF","#DBDBDB","#FFFFE0","#FFFACC","#EDE8B5","#DED99C","#
 
 
 #tmap v4 code
-tm_shape(biggest_parcels, is.master = TRUE)+
-   tm_borders(lwd = 2, col = "blue")+
 tm_shape(ndvi)+
    tm_raster(
       col.scale = tm_scale_continuous(
          limits = c(-1, 1),
          values = palette_ndvi,
       ),
-      col.legend = tm_legend(title = "NDVI"))
+      col.legend = tm_legend(title = "NDVI"))+
+tm_shape(biggest_parcels, is.master = TRUE)+
+   tm_borders(lwd = 2, col = "blue")
 
 ```
 ```{r eval=FALSE, include=FALSE}
@@ -313,10 +313,10 @@ gloss_index <- lapp(irc[[c(1, 2)]],
             fun = gloss_fun)
 
 # tmap v4 code
-tm_shape(biggest_parcels)+
-   tm_borders(lwd = 2, col = "blue")+
 tm_shape(gloss_index)+
-   tm_raster(col.legend = tm_legend(title = "GLOSS INDEX"))
+   tm_raster(col.legend = tm_legend(title = "GLOSS INDEX"))+
+tm_shape(biggest_parcels)+
+   tm_borders(lwd = 2, col = "blue")
 
 
 ```

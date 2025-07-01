@@ -12,13 +12,14 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+devtools::load_all()
 ```
 
 ```{r setup}
-library(happign)
 library(dplyr)
-library(tmap); tmap_mode("view")
 library(sf)
+library(tmap)
+tmap_mode("view")
 ```
 
 # Presentation
