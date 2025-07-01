@@ -69,6 +69,8 @@ camors_parcels <- get_wfs(
    spatial_filter = "intersects",
    layer = parcellaire_layer
    )
+sprintf("camors_parcels : %s": camors_parcels)
+sprintf("camors_border : %s": camors_border)
 
 tm_shape(camors_parcels)+
    tm_polygons(fill_alpha = 0, lwd = 0.5)+
@@ -204,6 +206,9 @@ mnh <- mns - mnt
 mnh[mnh < 0] <- NA  # Remove negative value 
 mnh[mnh > 50] <- 40 # Remove height more than 50m
 
+sprintf("camors_parcels : %s": camors_parcels)
+sprintf("camors_border : %s": camors_border)
+
 # tmap v4 code
 tm_shape(mnh) +
   tm_raster(col.scale = tm_scale_continuous(
@@ -245,6 +250,8 @@ Categories are somewhat arbitrary, and you can find various rules of thumb, such
 
 ```{r ndvi}
 # To show the 80cm resolution possibility for IRC, let's take only the biggest parcels
+sprintf("camors_parcels : %s": camors_parcels)
+sprintf("camors_border : %s": camors_border)
 biggest_parcels <- camors_parcels |> 
    mutate(area = st_area(geometry)) |> 
    slice_max(area)
