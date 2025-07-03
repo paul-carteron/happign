@@ -69,12 +69,24 @@ camors_parcels <- get_wfs(
    spatial_filter = "intersects",
    layer = parcellaire_layer
    )
-str(camors_parcels)
+
 tm_shape(camors_parcels)+
    tm_polygons(fill_alpha = 0, lwd = 0.5)+
 tm_shape(camors_border)+
    tm_borders(col = "red", lwd = 2)
 
+```
+
+```{r debug-camors, include=FALSE}
+# Show that camors_border is non‐empty and has the expected CRS
+print(camors_border)
+print(st_crs(camors_border))
+print(st_bbox(camors_border))
+
+# Show the layer name you’re using
+layers <- get_layers_metadata("wfs", "parcellaire")
+parcellaire_layer <- layers[15,1]
+print(parcellaire_layer)
 ```
 
 __*Rq :*__
