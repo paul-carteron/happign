@@ -69,7 +69,7 @@ camors_parcels <- get_wfs(
    spatial_filter = "intersects",
    layer = parcellaire_layer
    )
-
+str(camors_parcels)
 tm_shape(camors_parcels)+
    tm_polygons(fill_alpha = 0, lwd = 0.5)+
 tm_shape(camors_border)+
