@@ -31,3 +31,4 @@
 ^LICENSE\.md$
 ^data-raw$
 ^revdep$
+^vignettes/articles$

@@ -139,7 +139,6 @@ get_apicarto_cadastre <- function(x,
       code_dep <- codes$code_dep
    }
 
-
    params <- create_params(geom, code_insee, code_dep, code_com, section,
                            numero, code_arr, code_abs, source)
    resps <- lapply(params, fetch_data, type, progress)
@@ -184,17 +183,21 @@ process_character_input <- function(x) {
 #' @noRd
 #' @description Create request paramaeter and vectorized it
 create_params <- function(geom, code_insee, code_dep, code_com, section, numero, code_arr, code_abs, source) {
+   add_leading_zero <- function(x, n){
+      if (is.null(x)) return (NULL)
+      gsub(" ", "0", sprintf(paste0("%0", n, "s"), x))
+   }
    # Helper function to create single parameter set
    create_single_params <- function(geom, code_insee, code_dep, code_com, section, numero, code_arr, code_abs, source) {
       params <- list(
          "geom" = geom,
          "code_insee" = code_insee,
          "code_dep" = code_dep,
-         "code_com" = code_com,
-         "section" = section,
-         "numero" = numero,
-         "code_arr" = code_arr,
-         "code_abs" = code_abs,
+         "code_com" = add_leading_zero(code_com, 3),
+         "section" = add_leading_zero(section, 2),
+         "numero" = add_leading_zero(numero, 4),
+         "code_arr" = add_leading_zero(code_arr, 3),
+         "code_abs" = add_leading_zero(code_abs, 3),
          "source_ign" = toupper(source),
          "_start" = 0,
          "_limit" = 500

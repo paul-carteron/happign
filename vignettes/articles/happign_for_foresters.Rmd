@@ -1,13 +1,8 @@
 ---
-title: "happign for foresters"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{happign for foresters}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+title: "happign_for_foresters"
 ---
 
-```{r setup, include = FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -17,7 +12,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r message=FALSE, warning=FALSE}
+```{r setup}
 library(happign)
 library(sf)
 library(dplyr)
@@ -32,12 +27,12 @@ tmap_mode("view")
 For the example we will work with the Camors forest. First of all we need the commune border that can be obtained with `get_apicarto_commune` from the insee code. For convenience, `happign` provides a table containing all insee codes (`data("com_2025")`).
 
 ```{r borders}
-data("com_2025")
+data("com_2025", package = "happign")
 
 #search communes name Camors and extract insee code
 insee_code <- com_2025[grepl("^Camors", com_2025$LIBELLE_COM),"COM"]
 
-camors_border <- get_apicarto_cadastre(insee_code, type = "commune")
+camors <- get_apicarto_cadastre(insee_code, type = "commune")
 
 tm_shape(camors_border)+
    tm_borders()+
@@ -58,35 +53,16 @@ camors_border2 <- get_wfs(
 
 ## Download cadastral parcel
 
-Cadastral parcels are essential for any forest manager. Here how to download it with `get_wfs`.
+Cadastral parcels are essential for any forest manager. Here how to download it with `get_apicarto_cadastre`. We will work only on section `"H"`.
 
 ```{r cadastral_parcels, message=TRUE, warning=TRUE, error=TRUE}
-layers <- get_layers_metadata("wfs", "parcellaire")
-parcellaire_layer <- layers[15,1] # "CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle"
-
-camors_parcels <- get_wfs(
-   x = camors_border,
-   spatial_filter = "intersects",
-   layer = parcellaire_layer
-   )
+camors_parcels <- get_apicarto_cadastre(insee_code, type = "parcelle", section = "H")
 
 tm_shape(camors_parcels)+
    tm_polygons(fill_alpha = 0, lwd = 0.5)+
 tm_shape(camors_border)+
    tm_borders(col = "red", lwd = 2)
 
-```
-
-```{r debug-camors, include=FALSE}
-# Show that camors_border is non‐empty and has the expected CRS
-print(camors_border)
-print(st_crs(camors_border))
-print(st_bbox(camors_border))
-
-# Show the layer name you’re using
-layers <- get_layers_metadata("wfs", "parcellaire")
-parcellaire_layer <- layers[15,1]
-print(parcellaire_layer)
 ```
 
 __*Rq :*__
@@ -119,22 +95,6 @@ tm_shape(camors_border) +
    tm_borders(lwd = 2)
 
 ```
-
-```{r eval=FALSE, include=FALSE}
-# # tmap v3 code
-# tm_shape(BDF1) +
-#    tm_polygons(col = "libelle",
-#                popup.vars = names(BDF1)[1:(ncol(BDF1)-2)],
-#                legend.show = FALSE)+
-# tm_shape(BDF2) +
-#     tm_polygons(col = "tfv",
-#                 alpha = 0.5,
-#                 popup.vars = names(BDF2)[1:(ncol(BDF2)-2)],
-#                 legend.show = FALSE) +
-# tm_shape(camors_border) +
-#    tm_borders(lwd = 2)
-```
-
 
 More calculations can be done to get a better understanding of forest type. Below, areas per species are calculated :
 
@@ -208,8 +168,8 @@ layers <- get_layers_metadata("wms-r", "altimetrie")
 mnt_layer <- layers[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
 mns_layer <- layers[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
-mnt <- get_wms_raster(camors_border, mnt_layer, res = 15, crs = 2154, rgb = FALSE)
-mns <- get_wms_raster(camors_border, mns_layer, res = 15, crs = 2154, rgb = FALSE)
+mnt <- get_wms_raster(camors_parcels, mnt_layer, res = 5, crs = 2154, rgb = FALSE)
+mns <- get_wms_raster(camors_parcels, mns_layer, res = 5, crs = 2154, rgb = FALSE)
 
 # Calculate digital height model i.e. tree height
 mnh <- mns - mnt
@@ -218,27 +178,15 @@ mnh[mnh > 50] <- 40 # Remove height more than 50m
 
 # tmap v4 code
 tm_shape(mnh) +
-  tm_raster(col.scale = tm_scale_continuous(
-     values = "carto.earth", value.na = "grey"
-     ),
-     col.legend = tm_legend(title = "Height", showNA = F)) +
+  tm_raster(
+     col.scale = tm_scale_continuous(values = "carto.earth", value.na = "grey"),
+     col.legend = tm_legend(title = "Height", showNA = F)
+) +
+tm_shape(camors_parcels, is.main = TRUE)+
+   tm_borders() +
 tm_shape(camors_border)+
-   tm_borders(lwd = 2, col = "red")
+   tm_borders(lwd = 2, col = "firebrick") 
 
-```
-
-```{r eval=FALSE, include=FALSE}
-# tmap v3
-# tm_shape(mnh) +
-#   tm_raster(style = "cont", 
-#             title = "Height",
-#             palette = "-Spectral",
-#             colorNA = "grey",
-#             showNA = F) +
-# tm_shape(level_curve)+
-#    tm_lines(col = "black")+
-# tm_shape(camors_border)+
-#    tm_borders(lwd = 2, col = "red")
 ```
 
 ## NDVI
@@ -256,13 +204,10 @@ Categories are somewhat arbitrary, and you can find various rules of thumb, such
 
 
 ```{r ndvi}
-# To show the 80cm resolution possibility for IRC, let's take only the biggest parcels
-biggest_parcels <- camors_parcels |> 
-   mutate(area = st_area(geometry)) |> 
-   slice_max(area)
-
-irc <- get_wms_raster(biggest_parcels,
-                      res = 0.8,
+# In fact IRC have 80cm resolution, but to avoid too slow ploting, res = 5 is used
+# I also add a buffer to have more than the area
+irc <- get_wms_raster(st_buffer(camors_parcels, 500),
+                      res = 5,
                       layer = "ORTHOIMAGERY.ORTHOPHOTOS.IRC")
 
 # calculate ndvi from near_infrared and infrared
@@ -284,26 +229,12 @@ tm_shape(ndvi)+
          limits = c(-1, 1),
          values = palette_ndvi,
       ),
-      col.legend = tm_legend(title = "NDVI"))+
-tm_shape(biggest_parcels, is.master = TRUE)+
+      col.legend = tm_legend(title = "NDVI")
+      )+
+tm_shape(camors_parcels, is.main = TRUE)+
    tm_borders(lwd = 2, col = "blue")
 
 ```
-```{r eval=FALSE, include=FALSE}
-# # tmap v3 code
-# tm_shape(camors_border)+
-#    tm_borders(lwd = 2, col = "red")+
-# tm_shape(ndvi)+
-#    tm_raster(stretch.palette = F,
-#              style = "cont",
-#              title = "NDVI",
-#              breaks = breaks_ndvi,
-#              palette = palette_ndvi,
-#              colorNA = NULL)+
-# tm_shape(biggest_parcels, is.master = TRUE)+
-#    tm_borders(lwd = 2, col = "blue")
-```
-
 
 ## The gloss index
 
@@ -321,24 +252,11 @@ gloss_index <- lapp(irc[[c(1, 2)]],
 # tmap v4 code
 tm_shape(gloss_index)+
    tm_raster(col.legend = tm_legend(title = "GLOSS INDEX"))+
-tm_shape(biggest_parcels)+
+tm_shape(camors_parcels, is.main = TRUE)+
    tm_borders(lwd = 2, col = "blue")
 
 
 ```
-
-```{r eval=FALSE, include=FALSE}
-# # tmap v3
-# tm_shape(camors_border)+
-#    tm_borders(lwd = 2, col = "red")+
-# tm_shape(gloss_index)+
-#    tm_raster(style = "cont", 
-#              title = "GLOSS INDEX")+
-# tm_shape(biggest_parcels, is.master = T)+
-#    tm_borders(lwd = 2, col = "blue")
-
-```
-
 
 ### Info on raster
 
