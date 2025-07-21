@@ -24,8 +24,8 @@ test_that("create_params work", {
    simple_params <- create_params(1, 2, 3, 4, 5, 6, 7, 8, "pci")
    expect_equal(simple_params,
                 list(
-                   list(geom = 1, code_insee = 2, code_dep = 3, code_com = 4,
-                        section = 5, numero = 6, code_arr = 7, code_abs = 8,
+                   list(geom = 1, code_insee = 2, code_dep = 3, code_com = "004",
+                        section = '05', numero = '0006', code_arr = '007', code_abs = '008',
                         source_ign = "PCI", `_start` = 0, `_limit` = 500)
                 )
    )

@@ -34,7 +34,7 @@ insee_code <- com_2025[grepl("^Camors", com_2025$LIBELLE_COM),"COM"]
 
 camors <- get_apicarto_cadastre(insee_code, type = "commune")
 
-tm_shape(camors_border)+
+tm_shape(camors)+
    tm_borders()+
    tm_text("nom_com")
 
@@ -43,12 +43,12 @@ tm_shape(camors_border)+
 An other way of getting borders without Apicarto is to use ECQL language to directly query IGN WFS geoservers.
 
 ```{r borders2}
-camors_border2 <- get_wfs(
+camors2 <- get_wfs(
    layer = "ADMINEXPRESS-COG-CARTO.LATEST:commune",
    ecql_filter = "nom_officiel_en_majuscules LIKE 'CAMORS'"
    )
 
-# "nom_m" attribut can be found using get_wfs_attributes(layer = "ADMINEXPRESS-COG-CARTO.LATEST:commune")
+# "nom_officiel_en_majuscules" attribut can be found using get_wfs_attributes(layer = "ADMINEXPRESS-COG-CARTO.LATEST:commune")
 ```
 
 ## Download cadastral parcel
@@ -60,7 +60,7 @@ camors_parcels <- get_apicarto_cadastre(insee_code, type = "parcelle", section =
 
 tm_shape(camors_parcels)+
    tm_polygons(fill_alpha = 0, lwd = 0.5)+
-tm_shape(camors_border)+
+tm_shape(camors)+
    tm_borders(col = "red", lwd = 2)
 
 ```
@@ -78,8 +78,8 @@ layers <- get_layers_metadata("wfs", "environnement")
 BDF1_layer <- layers[4,1]
 BDF2_layer <- layers[5,1]
 
-BDF1 <- get_wfs(camors_border, BDF1_layer, spatial_filter = "intersects")
-BDF2 <- get_wfs(camors_border, BDF2_layer, spatial_filter = "intersects")
+BDF1 <- get_wfs(camors, BDF1_layer, spatial_filter = "intersects")
+BDF2 <- get_wfs(camors, BDF2_layer, spatial_filter = "intersects")
 
 # tmap V4 code
 tm_shape(BDF1) +
@@ -91,7 +91,7 @@ tm_shape(BDF2) +
                 fill_alpha = 0.5,
                 popup.vars = names(BDF2)[1:(ncol(BDF2)-2)],
                 fill.legend = tm_legend_hide()) +
-tm_shape(camors_border) +
+tm_shape(camors) +
    tm_borders(lwd = 2)
 
 ```
@@ -124,37 +124,37 @@ ggplot()+
 
 ## Detect protected area
 
-One information you really want when you're a forest manager is if your zone of interest is inside protected area. The example code below is design to automatically test every layer containing "PROTECTED" so you can be sure that you have all of them.
+One information you really want when you're a forest manager is if your zone of interest is inside protected area. You can for exemple, test for all layer containing "PROTECTED" so you can be sure that you have all of them. In the  example code below i only search for ZNIEFF.
 
 Again, you can click on map, point and shape for more informations.
 
 ```{r protected_area, message=FALSE, warning=FALSE}
-protected_area_layers <- get_layers_metadata("wfs", "environnement") |> 
-   filter(grepl(".*PROTECTED.*", Name)) |> 
+znieff_layers <- get_layers_metadata("wfs", "environnement") |> 
+   filter(grepl(".*ZNIEFF.*", Name)) |> 
    pull(Name)
 
-get_wfs_on_camors <- function(protected_area_layer){
-   message(protected_area_layer,"...")
+get_wfs_on_camors <- function(znieff_layer){
+   message(znieff_layers,"...")
    layer <- try(
       get_wfs(
-         camors_border,
-         protected_area_layer,
+         camors,
+         znieff_layer,
          spatial_filter = "intersects"
          )
       )
    return(layer)
 }
 
-try_all_protected_area <- lapply(protected_area_layers, get_wfs_on_camors) |> 
-   setNames(protected_area_layers)
+try_znieff <- lapply(znieff_layers, get_wfs_on_camors) |> 
+   setNames(znieff_layers)
 
 # remove empty layers
-all_protected_area <- Filter(function(x) !is.null(x), try_all_protected_area)
+znieffs <- Filter(function(x) !is.null(x), try_all_protected_area)
 
 # Plot the result
-tm_shape(camors_border) +
+tm_shape(camors) +
    tm_borders(lwd = 2)+
-tm_shape(all_protected_area[[1]])+
+tm_shape(znieffs[[1]])+
    tm_polygons(fill_alpha = 0.8, col = "blue")
 ```
 
@@ -168,8 +168,8 @@ layers <- get_layers_metadata("wms-r", "altimetrie")
 mnt_layer <- layers[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
 mns_layer <- layers[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 
-mnt <- get_wms_raster(camors_parcels, mnt_layer, res = 5, crs = 2154, rgb = FALSE)
-mns <- get_wms_raster(camors_parcels, mns_layer, res = 5, crs = 2154, rgb = FALSE)
+mnt <- get_wms_raster(camors_parcels, mnt_layer, res = 10, crs = 2154, rgb = FALSE)
+mns <- get_wms_raster(camors_parcels, mns_layer, res = 10, crs = 2154, rgb = FALSE)
 
 # Calculate digital height model i.e. tree height
 mnh <- mns - mnt
@@ -184,7 +184,7 @@ tm_shape(mnh) +
 ) +
 tm_shape(camors_parcels, is.main = TRUE)+
    tm_borders() +
-tm_shape(camors_border)+
+tm_shape(camors)+
    tm_borders(lwd = 2, col = "firebrick") 
 
 ```
@@ -269,7 +269,7 @@ __*Rq :*__
  
 
 ```{r}
-# info_sup <- get_location_info(x = st_centroid(camors_border),
+# info_sup <- get_location_info(x = st_centroid(camors),
 #                               apikey = "ortho",
 #                               layer = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
 #                               read_sf = F)
@@ -311,13 +311,13 @@ BD topo from IGN covers in a coherent way all the geographical and administrativ
 For the example below I choose to download all water-related data :
 
 ```{r bd_topo}
-cour_eau <- get_wfs(camors_border, "BDTOPO_V3:cours_d_eau") |> 
-   st_intersection(camors_border) 
-detail_hydro <- get_wfs(camors_border, "BDTOPO_V3:detail_hydrographique") |> 
-   st_intersection(camors_border) 
+cour_eau <- get_wfs(camors, "BDTOPO_V3:cours_d_eau") |> 
+   st_intersection(camors) 
+detail_hydro <- get_wfs(camors, "BDTOPO_V3:detail_hydrographique") |> 
+   st_intersection(camors) 
 # water detected by satellite
-surf_hydro <- get_wfs(camors_border, "BDTOPO_V3:surface_hydrographique") |> 
-   st_intersection(camors_border) 
+surf_hydro <- get_wfs(camors, "BDTOPO_V3:surface_hydrographique") |> 
+   st_intersection(camors) 
 
 tm_shape(cour_eau)+
    tm_lines(col = "blue")+
@@ -325,6 +325,6 @@ tm_shape(detail_hydro)+
    tm_dots(col = "red")+
 tm_shape(surf_hydro)+
    tm_polygons("steelblue")+
-tm_shape(camors_border)+
+tm_shape(camors)+
    tm_borders(lwd = 2)
 ```

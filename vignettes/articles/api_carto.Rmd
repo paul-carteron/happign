@@ -5,7 +5,10 @@ title: "API Carto"
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.align = "center",
+  fig.height = 4,
+  fig.width = 6
 )
 ```
 
@@ -49,169 +52,164 @@ Because `get_apicaro_cadastre` is a vectorized function, it's possible to set mu
 If you do not know insee codes, you can consult existing codes from the internal dataframe `com_2025`.
 
 ```{r plou_borders, message=TRUE}
-library(happign)
 data("com_2025", package = "happign")
-# all town starting with "Plou"
-plou_insee_code <- com_2025[startsWith(com_2025$LIBELLE_COM, "Plou"), "COM"]
-plou_borders <- get_apicarto_cadastre(plou_insee_code, type = "commune")
+
+# all town starting with "KER", yes I'm coming from "La Bretagne"
+ker_insee_code <- com_2025[startsWith(com_2025$NCC_COM, "KER"), "COM"]
+ker_borders <- get_apicarto_cadastre(ker_insee_code, type = "commune")
 
 # result
-tm_shape(plou_borders)+
+tm_shape(ker_borders)+
    tm_polygons(col = "black")
 ```
 
-<!-- Another common case consists in recovering the geometry of the parcels from a "cadastral matrix extract". The latter lists for each owner all his built and unbuilt properties owned in a commune. It is a private information and to obtain one it is necessary to ask for an extract top the Center of the Land taxes. In this example a false simplified cadastral matrix is used. -->
+Another common case consists in recovering the geometry of the parcels from a "cadastral matrix extract". The latter lists for each owner all his built and unbuilt properties owned in a commune. It is a private information and to obtain one it is necessary to ask for an extract top the Center of the Land taxes. In this example a false simplified cadastral matrix is used.
 
-<!-- ```{r mat_cadastral, message=FALSE} -->
-<!-- cad_mat <- data.frame(CODE_DEP = rep("29", 10), -->
-<!--                       CODE_COM = rep("158", 10), -->
-<!--                       SECTION = rep(c("AX", "AV"), each = 5), -->
-<!--                       N_PARC = c("0001","0002","0003","0004","0005", -->
-<!--                                  "0116","0117","0118","0119","0120")) -->
+```{r mat_cadastral, message=FALSE}
+cad_mat <- data.frame(CODE_DEP = rep("29", 10),
+                      CODE_COM = rep("158", 10),
+                      SECTION = rep(c("AX", "AV"), each = 5),
+                      N_PARC = c("0001","0002","0003","0004","0005",
+                                 "0116","0117","0118","0119","0120"))
 
-<!-- parcels <- get_apicarto_cadastre(paste0(cad_mat$CODE_DEP, cad_mat$CODE_COM), -->
-<!--                                  section = cad_mat$SECTION, -->
-<!--                                  numero = cad_mat$N_PARC, -->
-<!--                                  type="parcelle") -->
+parcels <- get_apicarto_cadastre(paste0(cad_mat$CODE_DEP, cad_mat$CODE_COM),
+                                 section = cad_mat$SECTION,
+                                 numero = cad_mat$N_PARC,
+                                 type="parcelle")
 
+tm_shape(parcels)+
+   tm_borders(col = "black")
 
-<!-- tm_shape(parcels)+ -->
-<!--    tm_borders(col = "black") -->
+```
 
-<!-- ``` -->
+## API carto RPG
 
-<!-- ## API carto RPG -->
+Documentation : [https://apicarto.ign.fr/api/doc/rpg](https://apicarto.ign.fr/api/doc/rpg)
 
-<!-- Documentation : [https://apicarto.ign.fr/api/doc/rpg](https://apicarto.ign.fr/api/doc/rpg) -->
+The graphic parcel register (RPG) is a geographic information system (GIS) allowing the identification of agricultural parcels. It is useful to the authorities working on agricultural development and land management (community of municipalities, watershed syndicate, etc.) when they need information on the characterization and evolution of the agricultural area.
 
-<!-- The graphic parcel register (RPG) is a geographic information system (GIS) allowing the identification of agricultural parcels. It is useful to the authorities working on agricultural development and land management (community of municipalities, watershed syndicate, etc.) when they need information on the characterization and evolution of the agricultural area. -->
+### Usage
 
-<!-- ### Usage -->
+Let's start by finding RPG from Penmarc'h town for years 2015. One of the limitations of the API carto RPG is that complex geometries, such as the precise contours of a commune, are not supported. To get around this problem, `get_apicarto_rpg` allows to simplify the shape with the `dTolerance` parameter. The method is illustrated below.
 
-<!-- Let's start by finding RPG from Penmarc'h town for years 2015. One of the limitations of the API carto RPG is that complex geometries, such as the precise contours of a commune, are not supported. To get around this problem, `get_apicarto_rpg` allows to simplify the shape with the `dTolerance` parameter. The method is illustrated below. -->
+```{r rpg}
+penmarch  <- get_apicarto_cadastre("29158", type = "commune")
+rpg <- get_apicarto_rpg(penmarch, annee = 2015, dTolerance = 15)
 
-<!-- ```{r rpg} -->
-<!-- penmarch  <- get_apicarto_cadastre("29158", type = "commune") -->
-<!-- rpg <- get_apicarto_rpg(penmarch, annee = 2015, dTolerance = 15)  -->
+# plot result
+tm_shape(penmarch)+
+   tm_borders()+
+tm_shape(rpg)+
+   tm_polygons("code_cultu")
+```
 
-<!-- # plot result -->
-<!-- tm_shape(penmarch)+ -->
-<!--    tm_borders()+ -->
-<!-- tm_shape(rpg)+ -->
-<!--    tm_polygons("code_cultu") -->
-<!-- ``` -->
+The function is vectorized, which mean that query several years at the same time is possible. However, since 2014 the format of the RPG has changed. The function will therefore return a list with the parcels before and after 2014. Below an example showing evolution of RPG from 2013 to 2016.
 
-<!-- The function is vectorized, which mean that query several years at the same time is possible. However, since 2014 the format of the RPG has changed. The function will therefore return a list with the parcels before and after 2014. Below an example showing evolution of RPG from 2013 to 2016. -->
+```{r rpg_vect, message=FALSE}
+all_years_rpg <- get_apicarto_rpg(penmarch, annee = 2013:2016, dTolerance = 15)
 
-<!-- ```{r rpg_vect, message=FALSE} -->
-<!-- all_years_rpg <- get_apicarto_rpg(penmarch, annee = 2013:2016, dTolerance = 15)  -->
+# plot evolution of rpg since 2010
+tm_shape(penmarch)+
+   tm_borders()+
+tm_shape(all_years_rpg[["2013"]])+
+   tm_polygons(group = "2013", "code_cultu")+
+tm_shape(all_years_rpg[["2014"]])+
+   tm_polygons(group = "2014", "code_cultu")+
+tm_shape(all_years_rpg[["2015"]])+
+   tm_polygons(group = "2015", "code_cultu")+
+tm_shape(all_years_rpg[["2016"]])+
+   tm_polygons(group = "2016", "code_cultu")
+```
 
-<!-- # plot evolution of rpg since 2010 -->
-<!-- tm_shape(penmarch)+ -->
-<!--    tm_borders()+ -->
-<!-- tm_shape(all_years_rpg[["2013"]])+ -->
-<!--    tm_polygons(group = "2013", "code_cultu")+ -->
-<!-- tm_shape(all_years_rpg[["2014"]])+ -->
-<!--    tm_polygons(group = "2014", "code_cultu")+ -->
-<!-- tm_shape(all_years_rpg[["2015"]])+ -->
-<!--    tm_polygons(group = "2015", "code_cultu")+ -->
-<!-- tm_shape(all_years_rpg[["2016"]])+ -->
-<!--    tm_polygons(group = "2016", "code_cultu") -->
-<!-- ``` -->
+It is also possible to query from the culture code. Again, there are changes before and after 2014; [The user documentation](https://apicarto.ign.fr/api/doc/pdf/docUser_moduleRPG.pdf) explains:
 
-<!-- It is also possible to query from the culture code. Again, there are changes before and after 2014; [The user documentation](https://apicarto.ign.fr/api/doc/pdf/docUser_moduleRPG.pdf) explains: -->
+"For RPG version 1 (before 2014) the value to be entered corresponds to the number contained in the CODE_CULTU attribute of the ILOTS_ANONYMS class with a value ranging from **01 to 28** (0 is mandatory for values less than 10). The list of crop codes can be consulted in [the content description of the RPG version 1.0](https://geoservices.ign.fr/sites/default/files/2021-07/DC_DL_RPG_1-0.pdf).
+For the RPG version 2 the value to be entered corresponds to the trigram contained in the attribute CODE_CULTU of the class PARCELLES_GRAPHIQUES by respecting the case (upper case). The list of crop codes can be found in the [content description of the GPR version 2.0.](https://geoservices.ign.fr/sites/default/files/2021-07/DC_DL_RPG_2-0.pdf)"
 
-<!-- "For RPG version 1 (before 2014) the value to be entered corresponds to the number contained in the CODE_CULTU attribute of the ILOTS_ANONYMS class with a value ranging from **01 to 28** (0 is mandatory for values less than 10). The list of crop codes can be consulted in [the content description of the RPG version 1.0](https://geoservices.ign.fr/sites/default/files/2021-07/DC_DL_RPG_1-0.pdf). -->
-<!-- For the RPG version 2 the value to be entered corresponds to the trigram contained in the attribute CODE_CULTU of the class PARCELLES_GRAPHIQUES by respecting the case (upper case). The list of crop codes can be found in the [content description of the GPR version 2.0.](https://geoservices.ign.fr/sites/default/files/2021-07/DC_DL_RPG_2-0.pdf)" -->
+For this example, let's find all potatoes, carrots and leeks.
 
-<!-- For this example, let's find all potatoes, carrots and leeks. -->
+```{r rpg_pdt_car_poi, message=FALSE}
+rpg <- get_apicarto_rpg(penmarch,
+                        annee = 2020,
+                        code_cultu = c("PTC", "CAR", "POR"),
+                        dTolerance = 15)
 
-<!-- ```{r rpg_pdt_car_poi, message=FALSE} -->
-<!-- rpg <- get_apicarto_rpg(penmarch, -->
-<!--                         annee = 2020, -->
-<!--                         code_cultu = c("PTC", "CAR", "POR"), -->
-<!--                         dTolerance = 15)  -->
+tm_shape(rpg)+
+   tm_polygons("code_cultu",
+               palette = c("orange", "springgreen", "gold"))
+```
 
-<!-- tm_shape(rpg)+ -->
-<!--    tm_polygons("code_cultu", -->
-<!--                palette = c("orange", "springgreen", "gold")) -->
-<!-- ``` -->
+## API carto urbanism
 
-<!-- ## API carto urbanism -->
+Documentation : [https://apicarto.ign.fr/api/doc/gpu](https://apicarto.ign.fr/api/doc/gpu)
 
-<!-- Documentation : [https://apicarto.ign.fr/api/doc/gpu](https://apicarto.ign.fr/api/doc/gpu) -->
+The API carto GPU allows you to obtain urban planning information intersecting a geometry. Beware, not all municipalities are in the geoportal of urbanism!
 
-<!-- The API carto GPU allows you to obtain urban planning information intersecting a geometry. Beware, not all municipalities are in the geoportal of urbanism! -->
+### RNU
 
-<!-- ### RNU -->
+First of all, you can check if a commune is under the National Urbanism Regulation from is insee code. The RNU fully apply in communes that have neither a local map nor a local urban plan (PLU, PLUi) nor a document in replacement of a PLU.
 
-<!-- First of all, you can check if a commune is under the National Urbanism Regulation from is insee code. The RNU fully apply in communes that have neither a local map nor a local urban plan (PLU, PLUi) nor a document in replacement of a PLU. -->
+```{r is_gpu}
+is_rnu <- get_apicarto_gpu("29158", ressource = "municipality")
+is_rnu$is_rnu
 
-<!-- ```{r is_gpu} -->
-<!-- is_rnu <- get_apicarto_gpu("29158", ressource = "municipality") -->
-<!-- is_rnu$is_rnu  -->
+# Penmarch is under the RNU and therefore has a document of urbanism
 
-<!-- # Penmarch is under the RNU and therefore has a document of urbanism -->
+is_rnu <- get_apicarto_gpu("23004", ressource = "municipality")
+is_rnu$is_rnu
 
-<!-- is_rnu <- get_apicarto_gpu("23004", ressource = "municipality") -->
-<!-- is_rnu$is_rnu  -->
+# Anzeme is under the RNU and therefore has a town planning document
+```
 
-<!-- # Anzeme is under the RNU and therefore has a town planning document -->
-<!-- ``` -->
+### PLU, PLUi, POS, CC, PSMV
 
-<!-- ### PLU, PLUi, POS, CC, PSMV -->
+Urban planning documents can take several forms:
+* PLU : Local Urbanism Plan
+* PLUi : Intercommunal Local Urbanism Plan
+* POS : Land use plan
+* PSMV : Plan of Safeguarding and Development
+* CC : Communal map
 
-<!-- Urban planning documents can take several forms: -->
-<!-- * PLU : Local Urbanism Plan -->
-<!-- * PLUi : Intercommunal Local Urbanism Plan -->
-<!-- * POS : Land use plan -->
-<!-- * PSMV : Plan of Safeguarding and Development -->
-<!-- * CC : Communal map -->
+The first step is to find out if urban planning document are available if it is the case, find the document's partition i.e. its ID :
 
-<!-- The first step is to find out if urban planning document are available if it is the case, find the document's partition i.e. its ID : -->
+```{r get_urban_plan, message=FALSE}
+# find out if documents are available
+penmarch <- get_apicarto_cadastre("29158", "commune")
+doc <- get_apicarto_gpu(st_centroid(penmarch), "document") 
+# It's better to use centroid instead of borders to avoid conflict with other communes
 
-<!-- ```{r get_urban_plan, message=FALSE} -->
-<!-- # find out if documents are available -->
-<!-- penmarch <- get_apicarto_cadastre("29158", "commune") -->
-<!-- doc <- get_apicarto_gpu(penmarch, "document", dTolerance = 10) # complex geometry handle with dTolerance -->
-<!-- # Because NULL is returned, it means that penmarch dont have available urban planning document -->
+partition <- doc |>
+   filter(grid_title == "PENMARCH") |>
+   pull(partition)
+```
 
-<!-- lanildut <- get_apicarto_cadastre("29112", "commune") -->
-<!-- doc <- get_apicarto_gpu(lanildut, "document",  dTolerance = 10) # complex geometry handle with dTolerance -->
-<!-- # Six documents are available inside the geometry. -->
-<!-- # In reality, only one document exists for the commune of lanildut but because borders are not coherent with urban planning document, several communes are returned. -->
+Now that the partition is recovered, it is possible to obtain several resources for a specific document. The different resources available are specified in the documentation of the function `?get_apicarto_gpu()`
 
-<!-- partition <- doc |>  -->
-<!--    filter(grid_title == "LANILDUT") |>  -->
-<!--    pull(partition) -->
-<!-- ``` -->
+```{r zone_urba, message=FALSE}
+zone_urba <- get_apicarto_gpu(partition, ressource = "zone-urba")
 
-<!-- Now that the partition is recovered, it is possible to obtain several resources for a specific document. The different resources available are specified in the documentation of the function `?get_apicarto_gpu()` -->
+# click on polygon for legend
+tm_shape(zone_urba)+
+   tm_polygons("libelong", legend.show = FALSE)
 
-<!-- ```{r zone_urba, message=FALSE} -->
-<!-- zone_urba <- get_apicarto_gpu(partition, ressource = "zone-urba") -->
+```
 
-<!-- # click on polygon for legend -->
-<!-- tm_shape(zone_urba)+ -->
-<!--    tm_polygons("libelong", legend.show = FALSE) -->
+Because `get_apicarto_gpu` is vectorized, many resources can be returned at the same time. This allows to identify all the prescriptions at once for example :
 
-<!-- ``` -->
+```{r gpu_vect_prescription, message=FALSE}
+ressources <- c("prescription-surf", "prescription-lin", "prescription-pct")
+prescriptions <- get_apicarto_gpu(partition,
+                                  ressource = ressources,
+                                  dTolerance = 10)
+tm_shape(prescriptions[[1]])+
+   tm_polygons("libelle", legend.col.show = FALSE, lwd = 2)+
+tm_shape(prescriptions[[2]])+
+   tm_lines("libelle", legend.col.show = FALSE, lwd = 2)+
+tm_shape(prescriptions[[3]])+
+   tm_dots("libelle",  legend.show = FALSE, size = 0.1)
 
-<!-- Because `get_apicarto_gpu` is vectorized, many resources can be returned at the same time. This allows to identify all the prescriptions at once for example : -->
+```
 
-<!-- ```{r gpu_vect_prescription, message=FALSE} -->
-<!-- ressources <- c("prescription-lin", -->
-<!--                 "prescription-pct") -->
-<!-- prescriptions <- get_apicarto_gpu(partition, -->
-<!--                                   ressource = ressources, -->
-<!--                                   dTolerance = 10) -->
-
-<!-- tm_shape(prescriptions[[1]])+ -->
-<!--    tm_lines("libelle", legend.col.show = FALSE, lwd = 2)+ -->
-<!-- tm_shape(prescriptions[[2]])+ -->
-<!--    tm_dots("libelle",  legend.show = FALSE, size = 0.1) -->
-
-<!-- ``` -->
 
 <!-- ## API carto "Appellations viticoles" -->
 
@@ -222,10 +220,10 @@ tm_shape(plou_borders)+
 <!-- * Protected geographical indication areas (IGP) -->
 <!-- * Wine growing areas without geographical indication (VSIG) -->
 
-<!-- This function is quite simple to use, only shape is needed.  -->
+<!-- This function is quite simple to use, only shape is needed. -->
 
 <!-- ```{r viticole_penmarch, message=FALSE} -->
-<!-- viticole <- get_apicarto_viticole(penmarch, dTolerance = 10) -->
+<!-- viticole <- get_apicarto_viticole(penmarch, dTolerance = 50) -->
 
 <!-- # plot result -->
 <!-- tm_shape(viticole)+ -->
@@ -238,10 +236,10 @@ tm_shape(plou_borders)+
 <!-- ```{r vitivole_finistere, message=FALSE} -->
 <!-- finistere <- get_wfs(penmarch, -->
 <!--                     "ADMINEXPRESS-COG-CARTO.LATEST:departement") -->
-<!-- # finistere borders are quite complex, and dTolerance cant be used. In this case convex hull of shape  -->
-<!-- # can be used with intersection of the results  -->
+<!-- # finistere borders are quite complex, and dTolerance cant be used. In this case convex hull of shape -->
+<!-- # can be used with intersection of the results -->
 <!-- convex_finistere <- st_convex_hull(finistere) -->
-<!-- viticole <- get_apicarto_viticole(convex_finistere) |>  -->
+<!-- viticole <- get_apicarto_viticole(convex_finistere) |> -->
 <!--    st_intersection(finistere) -->
 
 <!-- # plot result -->
