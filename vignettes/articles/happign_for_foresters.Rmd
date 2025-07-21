@@ -149,7 +149,7 @@ try_znieff <- lapply(znieff_layers, get_wfs_on_camors) |>
    setNames(znieff_layers)
 
 # remove empty layers
-znieffs <- Filter(function(x) !is.null(x), try_all_protected_area)
+znieffs <- Filter(function(x) !is.null(x), try_znieff)
 
 # Plot the result
 tm_shape(camors) +
