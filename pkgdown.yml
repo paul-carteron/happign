@@ -1,11 +1,8 @@
 pandoc: 3.1.11
-pkgdown: 2.1.2
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
-  web_only/api_carto: web_only/api_carto.html
+  articles/api_carto: api_carto.html
   Getting_started: Getting_started.html
-  web_only/happign_for_foresters: web_only/happign_for_foresters.html
-last_built: 2025-05-17T06:32Z
-urls:
-  reference: https://paul-carteron.github.io/happign/reference
-  article: https://paul-carteron.github.io/happign/articles
+  articles/happign_for_foresters: happign_for_foresters.html
+last_built: 2025-07-21T19:42Z
