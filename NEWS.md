@@ -1,3 +1,12 @@
+# happign 0.3.5
+Bug fixes:
+* add support to `get_wfs` to find geometry name [#40](https://github.com/paul-carteron/happign/issues/40)
+
+Vignettes :
+* Simplification of :
+   - [happign for foresters](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html)
+   - [API Carto](https://paul-carteron.github.io/happign/articles/web_only/api_carto.html)
+
 # happign 0.3.4
 * Add better error handling to `get_wms_raster` [#37](https://github.com/paul-carteron/happign/issues/37)
 
@@ -8,7 +17,7 @@ Utilities:
 * add `com_2025`,`dep_2025`,`reg_2025` dataset as successor or `com_2024`
 
 Breaking changes:
-* Support for LIDAR data is removed, package [`LidarHD`](https://lidar.pages.mia.inra.fr/lidarHD/articles/lidarHD.html) is more suitable for this
+* Support for LIDAR data is removed, package [`LidarHD`](https://lidar.pages-forge.inrae.fr/lidarHD/articles/lidarHD.html) is more suitable for this
 
 # happign 0.3.3
 Features :
@@ -32,7 +41,7 @@ Bug fixes :
 * `get_apicarto_cadastre` pagination fix
 
 Vignettes :
-* remove too large raster from last example of [happign_for_forester](https://github.com/paul-carteron/happign/blob/main/vignettes/web_only/happign_for_foresters.Rmd)
+* remove too large raster from last example of [happign_for_forester](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html)
 
 # happign 0.3.1
 * refactor `get_apicarto_cadastre` that now use `httr2::req_perform_iterative` and ``yyjsonr`

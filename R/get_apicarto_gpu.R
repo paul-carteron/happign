@@ -13,7 +13,7 @@
 #' "secteur-cc", "prescription-surf", "prescription-lin", "prescription-pct",
 #' "info-surf", "info-lin", "info-pct". See detail for more info.
 #' @param categorie public utility easement according to the
-#' [national nomenclature](https://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html)
+#' [national nomenclature](https://www.geoportail-urbanisme.gouv.fr/infos_sup/)
 #' @param dTolerance numeric; Complex shape cannot be handle by API; using `dTolerance` allow to simplify them. See `?sf::st_simplify`
 #'
 #' @details

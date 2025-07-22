@@ -22,14 +22,8 @@ We can load the `happign` package, and some additional packages we will need (`s
 ``` r
 library(happign)
 library(sf)
-#> Warning: le package 'sf' a été compilé avec
-#> la version R 4.4.2
-#> Linking to GEOS 3.12.2, GDAL 3.9.3, PROJ
-#> 9.4.1; sf_use_s2() is TRUE
 library(tmap);tmap_mode("plot")
-#> Breaking News: tmap 3.x is retiring. Please test v4, e.g. with
-#> remotes::install_github('r-tmap/tmap')
-#> tmap mode set to plotting
+#> ℹ tmap mode set to "plot".
 ```
 
 
@@ -62,27 +56,27 @@ administratif_wms <- get_layers_metadata(data_type = "wms-r")
 administratif_wms <- get_layers_metadata(data_type = "wmts")
 
 head(administratif_wfs)
-#>                                                    Name
-#> 1           OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016
-#> 2           OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019
-#> 3                                      wfs_sup:acte_sup
-#> 4             aeag-rwbody-sdage2022:rwbody_ag_sdage2022
-#> 5 LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement
-#> 6                ADMINEXPRESS-COG.LATEST:arrondissement
-#>                                                Title
-#> 1                                    OCSGE Gers 2016
-#> 2                                   OCSGE Gers 2019 
-#> 3               Acte de servitude d'utilité publique
-#> 4 Adour Garonne - Masses d'eau rivières - SDAGE 2022
-#> 5                                     Arrondissement
-#> 6                                 Arrondissement COG
-#>                                                      Abstract
-#> 1                                             OCSGE Gers 2016
-#> 2                                            OCSGE Gers 2019 
-#> 3 Liste des actes instituant une servitude d'utilité publique
-#> 4          Adour Garonne - Masses d'eau rivières - SDAGE 2022
-#> 5              Limites administrative mises à jour en continu
-#> 6                             Arrondissement ADMINEXPRESS COG
+#>                                                              Name
+#> 1                     OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016
+#> 2                     OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019
+#> 3                                          IGNF_GEODESIE:site-rbf
+#> 4                                          IGNF_GEODESIE:site-rdf
+#> 5           LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement
+#> 6 LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement_municipal
+#>                                                              Title
+#> 1                                                  OCSGE Gers 2016
+#> 2                                                 OCSGE Gers 2019 
+#> 3                                              (obsolete) Site RBF
+#> 4                                              (obsolete) Site RDF
+#> 5           ADMIN EXPRESS mises a jour en continu - arrondissement
+#> 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal
+#>                                                           Abstract
+#> 1                                                  OCSGE Gers 2016
+#> 2                                                 OCSGE Gers 2019 
+#> 3                                                              RBF
+#> 4                                                              RDF
+#> 5           ADMIN EXPRESS mises a jour en continu - arrondissement
+#> 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal
 ```
 
 You can specify an apikey to focus on specific category. API keys can be directly retrieved on the [IGN website from the expert web services](https://geoservices.ign.fr/services-web-experts) or with `get_apikeys()` function.
@@ -90,32 +84,36 @@ You can specify an apikey to focus on specific category. API keys can be directl
 
 ``` r
 get_apikeys()
-#>  [1] "administratif" "adresse"      
-#>  [3] "agriculture"   "altimetrie"   
-#>  [5] "cartes"        "cartovecto"   
-#>  [7] "clc"           "economie"     
-#>  [9] "enr"           "environnement"
-#> [11] "geodesie"      "lambert93"    
-#> [13] "ocsge"         "ortho"        
-#> [15] "orthohisto"    "parcellaire"  
-#> [17] "satellite"     "sol"          
-#> [19] "topographie"   "transports"
+#>  [1] "administratif" "adresse"       "agriculture"   "altimetrie"   
+#>  [5] "cartes"        "cartovecto"    "clc"           "economie"     
+#>  [9] "enr"           "environnement" "geodesie"      "lambert93"    
+#> [13] "ocsge"         "ortho"         "orthohisto"    "parcellaire"  
+#> [17] "satellite"     "sol"           "topographie"   "transports"
 
 administratif_wmts <- get_layers_metadata("wmts", "administratif")
 
 head(administratif_wmts)
-#>                                              Title
-#> 1                           ADMINEXPRESS COG CARTO
-#> 2                                 ADMINEXPRESS COG
-#> 3 Limites administratives mises à jour en continu.
-#>                                                                 Abstract
-#> 1 Limites administratives mises à jour en continu ; Edition : 2024-02-22
-#> 2 Limites administratives mises à jour en continu ; Edition : 2024-02-22
-#> 3 Limites administratives mises à jour en continu ; Edition : 2024-12-18
-#>                               Identifier
-#> 1          ADMINEXPRESS-COG-CARTO.LATEST
-#> 2                ADMINEXPRESS-COG.LATEST
-#> 3 LIMITES_ADMINISTRATIVES_EXPRESS.LATEST
+#>                                     Title
+#> 1                  ADMINEXPRESS COG CARTO
+#> 2 ADMINEXPRESS COG ; Edition : 2017-01-01
+#> 3 ADMINEXPRESS COG ; Edition : 2018-01-01
+#> 4 ADMINEXPRESS COG ; Edition : 2019-01-01
+#> 5 ADMINEXPRESS COG ; Edition : 2020-01-01
+#> 6 ADMINEXPRESS COG ; Edition : 2021-01-01
+#>                                                                                Abstract
+#> 1                Limites administratives mises à jour en continu ; Edition : 2025-01-01
+#> 2 Limites administratives Express COG code officiel géographique ; Edition : 2017-01-01
+#> 3 Limites administratives Express COG code officiel géographique ; Edition : 2018-01-01
+#> 4 Limites administratives Express COG code officiel géographique ; Edition : 2019-01-01
+#> 5 Limites administratives Express COG code officiel géographique ; Edition : 2020-01-01
+#> 6 Limites administratives Express COG code officiel géographique ; Edition : 2021-01-01
+#>                      Identifier
+#> 1 ADMINEXPRESS-COG-CARTO.LATEST
+#> 2         ADMINEXPRESS-COG.2017
+#> 3         ADMINEXPRESS-COG.2018
+#> 4         ADMINEXPRESS-COG.2019
+#> 5         ADMINEXPRESS-COG.2020
+#> 6         ADMINEXPRESS-COG.2021
 ```
 
 ## Downloading the data
@@ -133,31 +131,30 @@ penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
 
 ``` r
-
 penmarch_borders <- get_wfs(x = penmarch,
                             layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
 #> Features downloaded : 1
 # Checking result
-tm_shape(penmarch_borders)+
-   tm_polygons(alpha = 0, lwd = 2)+
-tm_shape(penmarch)+
-   tm_polygons(col = "red")+
-tm_add_legend(type = "fill", border.col = "black", border.lwd =2,
-              col = NA, labels = "border from get_wfs")+
-tm_add_legend(type = "fill", col = "red", labels = "penmarch shape from happign package")+
-tm_layout(main.title = "Penmarch borders from IGN",
-          main.title.position = "center",
-          legend.position = c(0.7, -0.1),
-          outer.margins = c(0.1, 0,0,0),
-          frame = FALSE)
+tm_shape(penmarch_borders) +
+   tm_polygons() +
+   tm_add_legend(type = "polygons", position = c("right", "top"),
+                 labels = "Penmarch borders from `get_wfs`")+
+tm_shape(penmarch) +
+   tm_polygons(fill="red") +
+   tm_add_legend(type = "polygons", fill="red", position = c("right", "top"),
+                 labels = "`penmarch` shape from `happign` package")+
+tm_title("Penmarch borders from IGN",
+         position = tm_pos_out("center", "top", pos.h = "center"))+
+   tm_compass(type = "arrow")+
+   tm_scalebar()
 ```
 
-![plot of chunk unnamed-chunk-5](unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)
 
 It's as simple as that!
 Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many hedges for biodiversity there are in Penmarch?
 
-*Spoiler : there are 436 of them !*
+*Spoiler : there are 434 of them !*
 
 
 
@@ -168,51 +165,53 @@ hedges <- get_wfs(x = penmarch_borders,
 #> Features downloaded : 434
 
 # Checking result
-tm_shape(penmarch_borders) + # Borders of penmarch
-   tm_borders(lwd = 2) +
+tm_shape(penmarch_borders) +
+   tm_polygons() +
+   tm_add_legend(type = "polygons", position = c("right", "top"),
+                 labels = "Penmarch borders from `get_wfs`")+
 tm_shape(hedges) + # Point use to retrieve data
-   tm_lines(col = "red", size = 0.3) +
-   tm_add_legend(type = "line", label = "Hedges", col = "red") +
-   tm_layout(main.title = "Hedges recorded by the IGN in Penmarch",
-             main.title.position = "center",
-             legend.position = c("right", "bottom"),
-             frame = FALSE)
+   tm_lines(col = "forestgreen", lwd = 2) +
+   tm_add_legend(type = "lines", lwd = 2, col = "forestgreen",
+                 position = c("right", "top"), labels = "Hedges")+
+tm_title("Hedges recorded by the IGN in Penmarch", position = tm_pos_out("center", "top", pos.h = "center"))+
+tm_compass(type = "arrow")+
+tm_scalebar()
 ```
 
-![plot of chunk unnamed-chunk-6](unnamed-chunk-6-1.png)
+![plot of chunk unnamed-chunk-17](figure/unnamed-chunk-17-1.png)
 
 ### WMS raster
 
-For raster, the process is the same, but with the function `get_wms_raster()`, but you need to specify the resolution (note that it must be in the same coordinate system as the crs parameter). There's plenty of elevation resources inside ["altimetrie" category](https://geoservices.ign.fr/services-web-experts-altimetrie). A basic one is the Digital Elevation Model (DEM or MNT in French). Borders of Penmarch are used to download the DEM. Note that for DEM, we don't want an RGB image but values of each pixels. That why `rgb=FALSE` is used below.
-
+For raster, the process is the same, but with the function `get_wms_raster()`. However, you also need to specify the resolution (note that it must be in the same coordinate system as the crs parameter). There's plenty of elevation resources inside ["altimetrie" category](https://geoservices.ign.fr/services-web-experts-altimetrie). A basic one is the Digital Elevation Model (DEM or MNT in French). Borders of Penmarch are used to download the DEM. Note that for DEM, we don't want an RGB image but values of each pixels. That why `rgb=FALSE` is used below.
 
 
 
 ``` r
 layers_metadata <- get_layers_metadata("wms-r", "altimetrie")
-dem_layer <- layers_metadata[2, 1] #LEVATION.ELEVATIONGRIDCOVERAGE
+dem_layer <- layers_metadata[3, 1] #ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES
 
-mnt <- get_wms_raster(x = penmarch_borders,
+mnt <- get_wms_raster(x = st_buffer(penmarch_borders, 800),
                       layer = dem_layer,
-                      res = 25,
+                      res = 5,
                       crs = 2154,
                       rgb = FALSE)
 #> 0...10...20...30...40...50...60...70...80...90...100 - done.
-#> Raster is saved at : C:\Users\PaulCarteron\AppData\Local\Temp\Rtmpueo2T1\file514477f61a4e.tif
+#> Warp executed successfully.
 
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 
 tm_shape(mnt) +
-   tm_raster(title = "Elevation [m]") +
-tm_shape(penmarch_borders)+
+   tm_raster(
+      col.scale = tm_scale_continuous(values = "terrain", value.na = "grey"),
+      col.legend = tm_legend(title = "Height", orientation = "landscape"))+
+tm_shape(penmarch_borders, is.main = TRUE)+
    tm_borders(lwd = 2)+
-tm_layout(main.title = "DEM of Penmarch",
-          main.title.position = "center",
-          legend.position = c("right", "bottom"),
-          legend.bg.color = "white", legend.bg.alpha = 0.7)
+tm_title("Digital Elevation Model of Penmarch", position = tm_pos_out("center", "top", pos.h = "center"))+
+tm_compass(type = "arrow")+
+tm_scalebar()
 ```
 
-![plot of chunk unnamed-chunk-7](unnamed-chunk-7-1.png)
+![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png)
 
 __*Rq :*__
 
@@ -230,20 +229,15 @@ ortho_layer <- layers_metadata[1, 3] #HR.ORTHOIMAGERY.ORTHOPHOTOS
 
 hr_ortho <- get_wmts(x = penmarch_borders,
                      layer = ortho_layer,
-                     zoom = 14)
-#> Warning in CPL_gdalwarp(source, destination,
-#> options, oo, doo, config_options, : GDAL
-#> Error 1: Cannot find TileMatrix of zoom
-#> level 14 in TileMatrixSet 'PM_6_19'
-#> Error: Check that `layer` is valid
+                     zoom = 9)
 
 tm_shape(hr_ortho) +
-   tm_rgb(title = "Orthophoto Hight Resolution") +
+   tm_rgb() +
 tm_shape(penmarch_borders)+
-   tm_borders(lwd = 2)+
-tm_layout(main.title = "Orthophoto Hight Resolution",
-          main.title.position = "center",
-          legend.position = c("right", "bottom"),
-          legend.bg.color = "white", legend.bg.alpha = 0.7)
-#> Error in eval(expr, envir, enclos): objet 'hr_ortho' introuvable
+   tm_borders(lwd = 2, col = "white")+
+tm_title("Orthophoto Hight Resolution", position = tm_pos_out("center", "top", pos.h = "center"))+
+tm_compass(type = "arrow")+
+tm_scalebar()
 ```
+
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png)
