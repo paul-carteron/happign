@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>R Interface to IGN Web Services • happign</title>
-<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>R access to IGN data • happign</title>
+<script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="R Interface to IGN Web Services">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="R access to IGN data">
 <meta name="description" content="Automatic open data acquisition from resources of IGN (Institut National de Information Geographique et forestiere) (&lt;https://www.ign.fr/&gt;). Available datasets include various types of raster and vector data, such as digital elevation models, state borders, spatial databases, cadastral parcels, and more. `happign` also provide access to API Carto (&lt;https://apicarto.ign.fr/api/doc/&gt;).">
 <meta property="og:description" content="Automatic open data acquisition from resources of IGN (Institut National de Information Geographique et forestiere) (&lt;https://www.ign.fr/&gt;). Available datasets include various types of raster and vector data, such as digital elevation models, state borders, spatial databases, cadastral parcels, and more. `happign` also provide access to API Carto (&lt;https://apicarto.ign.fr/api/doc/&gt;).">
 </head>
@@ -18,7 +18,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="index.html">happign</a>
 
@@ -37,7 +37,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/api_carto.html">API Carto</a></li>
     <li><a class="dropdown-item" href="articles/Getting_started.html">Getting started with happign</a></li>
-    <li><a class="dropdown-item" href="articles/happign_for_foresters.html">happign_for_foresters</a></li>
+    <li><a class="dropdown-item" href="articles/happign_for_foresters.html">happign_for_forester</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -47,6 +47,14 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/paul-carteron/happign/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
+<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
+  </ul>
+</li>
       </ul>
 </div>
 
@@ -55,7 +63,7 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="happign-">happign <a href="https://paul-carteron.github.io/happign/" class="external-link"><img src="reference/figures/logo.png" align="right" height="139"></a>
+<div class="page-header"><h1 id="happign-">happign <a href="https://paul-carteron.github.io/happign/"><img src="reference/figures/logo.png" align="right" height="139"></a>
 <a class="anchor" aria-label="anchor" href="#happign-"></a>
 </h1></div>
 </div>
@@ -97,11 +105,11 @@
 <p>Package vignettes :</p>
 <ul>
 <li>
-<a href="https://paul-carteron.github.io/happign/articles/Getting_started.html" class="external-link">Getting started with happign</a> : A brief intro to happign world ;</li>
+<a href="https://paul-carteron.github.io/happign/articles/Getting_started.html">Getting started with happign</a> : A brief intro to happign world ;</li>
 <li>
-<a href="https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html" class="external-link">happign for foresters</a> : A focus on possibilities offered by happign for forestry ;</li>
+<a href="https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html">happign for foresters</a> : A focus on possibilities offered by happign for forestry ;</li>
 <li>
-<a href="https://paul-carteron.github.io/happign/articles/web_only/api_carto.html" class="external-link">API carto</a> : How to use all API Carto with happign ;</li>
+<a href="https://paul-carteron.github.io/happign/articles/web_only/api_carto.html">API carto</a> : How to use all API Carto with happign ;</li>
 </ul>
 </div>
 <div class="section level3">
@@ -138,24 +146,27 @@
 <div class="section level3">
 <h3 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
 </h3>
-<p>Please note that the happign project is released with a <a href="https://paul-carteron.github.io/happign/CODE_OF_CONDUCT.html" class="external-link">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
+<p>Please note that the happign project is released with a <a href="https://paul-carteron.github.io/happign/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
 
-  </main><aside class="col-md-3"><div class="links">
+  </main><aside class="col-md-3"><div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/paul-carteron/happign/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/paul-carteron/happign/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://CRAN.R-project.org/package=happign" class="external-link"><img src="https://www.r-pkg.org/badges/version/happign" alt="CRAN status"></a></li>
+<li><a href="https://cran.r-project.org/package=happign" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-month/happign?color=green" alt="downloads"></a></li>
+<li><a href="https://app.codecov.io/gh/paul-carteron/happign?branch=main" class="external-link"><img src="https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+</ul>
+</div>
+
+<div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=happign" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/paul-carteron/happign/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/paul-carteron/happign/issues" class="external-link">Report a bug</a></li>
-</ul>
-</div>
-
-<div class="license">
-<h2 data-toc-skip>License</h2>
-<ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small>GPL (&gt;= 3)</small></li>
 </ul>
 </div>
 
@@ -167,13 +178,6 @@
 </ul>
 </div>
 
-<div class="citation">
-<h2 data-toc-skip>Citation</h2>
-<ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing happign</a></li>
-</ul>
-</div>
-
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
@@ -181,14 +185,18 @@
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/paul-carteron/happign/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/paul-carteron/happign/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://CRAN.R-project.org/package=happign" class="external-link"><img src="https://www.r-pkg.org/badges/version/happign" alt="CRAN status"></a></li>
-<li><a href="https://cran.r-project.org/package=happign" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-month/happign?color=green" alt="downloads"></a></li>
-<li><a href="https://app.codecov.io/gh/paul-carteron/happign?branch=main" class="external-link"><img src="https://codecov.io/gh/paul-carteron/happign/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small>GPL (&gt;= 3)</small></li>
+</ul>
+</div>
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing happign</a></li>
 </ul>
 </div>
 

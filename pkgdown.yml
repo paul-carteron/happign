@@ -5,4 +5,7 @@ articles:
   articles/api_carto: api_carto.html
   Getting_started: Getting_started.html
   articles/happign_for_foresters: happign_for_foresters.html
-last_built: 2025-07-23T12:55Z
+last_built: 2025-07-23T13:33Z
+urls:
+  reference: https://paul-carteron.github.io/happign/reference
+  article: https://paul-carteron.github.io/happign/articles

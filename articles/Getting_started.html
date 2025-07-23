@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Getting started with happign • happign</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -16,7 +16,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="../index.html">happign</a>
 
@@ -35,7 +35,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/api_carto.html">API Carto</a></li>
     <li><a class="dropdown-item" href="../articles/Getting_started.html">Getting started with happign</a></li>
-    <li><a class="dropdown-item" href="../articles/happign_for_foresters.html">happign_for_foresters</a></li>
+    <li><a class="dropdown-item" href="../articles/happign_for_foresters.html">happign_for_forester</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -45,6 +45,14 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/paul-carteron/happign/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
+<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
+  </ul>
+</li>
       </ul>
 </div>
 
@@ -77,7 +85,8 @@ Carteron</h4>
 packages we will need (<code>sf</code> to manipulate spatial data and
 <code>tmap</code> to create maps)</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-carteron" class="external-link">happign</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html" class="external-link">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>warning <span class="op">=</span> <span class="cn">FALSE</span>, message <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-carteron" class="external-link">happign</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -190,7 +199,6 @@ shape in happign.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">penmarch_borders</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch</span>,</span>
 <span>                            layer <span class="op">=</span> <span class="st">"LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Features downloaded : 1</span></span>
 <span><span class="co"># Checking result</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span> <span class="op">+</span></span>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -205,9 +213,7 @@ shape in happign.</p>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="figure/get_wfs-1.png" alt="plot of chunk get_wfs"><p class="caption">
-plot of chunk get_wfs
-</p>
+<p><img src="figure/get_wfs-1.png" alt="plot of chunk get_wfs" width="70%"></p>
 </div>
 <p>It’s as simple as that! Now you have to rely on your curiosity to
 explore the multiple possibilities that IGN offers. For example, who has
@@ -218,7 +224,6 @@ Penmarch?</p>
 <code class="sourceCode R"><span><span class="va">hedges</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch_borders</span>,</span>
 <span>                 layer <span class="op">=</span> <span class="st">"BDTOPO_V3:haie"</span>,</span>
 <span>                 spatial_filter <span class="op">=</span> <span class="st">"intersects"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Features downloaded : 434</span></span>
 <span></span>
 <span><span class="co"># Checking result</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span> <span class="op">+</span></span>
@@ -233,9 +238,7 @@ Penmarch?</p>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="figure/get_wfs2-1.png" alt="plot of chunk get_wfs2"><p class="caption">
-plot of chunk get_wfs2
-</p>
+<p><img src="figure/get_wfs2-1.png" alt="plot of chunk get_wfs2" width="70%"></p>
 </div>
 </div>
 <div class="section level4">
@@ -259,7 +262,6 @@ DEM, we don’t want an RGB image but values of each pixels. That why
 <span>                      crs <span class="op">=</span> <span class="fl">2154</span>,</span>
 <span>                      rgb <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 0...10...20...30...40...50...60...70...80...90...100 - done.</span></span>
-<span><span class="co">#&gt; Warp executed successfully.</span></span>
 <span></span>
 <span><span class="va">mnt</span><span class="op">[</span><span class="va">mnt</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co"># remove negative values in case of singularity</span></span>
 <span></span>
@@ -271,14 +273,9 @@ DEM, we don’t want an RGB image but values of each pixels. That why
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html" class="external-link">tm_title</a></span><span class="op">(</span><span class="st">"Digital Elevation Model of Penmarch"</span>, position <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_pos.html" class="external-link">tm_pos_out</a></span><span class="op">(</span><span class="st">"center"</span>, <span class="st">"top"</span>, pos.h <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [plot mode] fit legend/component: Some legend items or map compoments do not fit</span></span>
-<span><span class="co">#&gt; well, and are therefore rescaled.</span></span>
-<span><span class="co">#&gt; ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre></div>
+<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="figure/get_wms_raster-1.png" alt="plot of chunk get_wms_raster"><p class="caption">
-plot of chunk get_wms_raster
-</p>
+<p><img src="figure/get_wms_raster-1.png" alt="plot of chunk get_wms_raster" width="70%"></p>
 </div>
 <p><strong><em>Rq :</em></strong></p>
 <ul>
@@ -311,9 +308,7 @@ instead of WMS.</p>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="figure/get_wmts-1.png" alt="plot of chunk get_wmts"><p class="caption">
-plot of chunk get_wmts
-</p>
+<p><img src="figure/get_wmts-1.png" alt="plot of chunk get_wmts" width="70%"></p>
 </div>
 </div>
 </div>
