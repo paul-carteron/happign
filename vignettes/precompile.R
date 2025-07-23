@@ -4,5 +4,5 @@
 # for inspiration
 
 library(knitr)
-knit("vignettes/Getting_started.Rmd.orig", "vignettes/Getting_started.Rmd")
+knit("vignettes/getting_started.Rmd.orig", "vignettes/getting_started.Rmd")
 

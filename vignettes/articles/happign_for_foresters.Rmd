@@ -1,5 +1,5 @@
 ---
-title: "happign_for_forester"
+title: "Happign for forester"
 author: "Paul Carteron"
 date: "2025-07-23"
 output: rmarkdown::html_vignette
@@ -18,7 +18,6 @@ knitr::opts_chunk$set(
   fig.width = 6,
   fig.height = 4,
   dpi = 300,
-  out.width = "70%",
   fig.cap = NULL
 )
 ```
