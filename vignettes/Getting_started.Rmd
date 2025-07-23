@@ -35,7 +35,7 @@ library(tmap);tmap_mode("plot")
 *  WMTS : same as WMS raster but images are precalculated
 *  WFS : data in vector format (.shp, ...).
 
-More detailed information are available [here](https://www.ogc.org/publications/standard/wms/) for WMS, [here](https://www.ogc.org/publications/standard/wmts/) for WMTS and [here](https://www.ogc.org/publications/standard/wfs/) for WFS.
+More detailed information are available [here](https://www.ogc.org/standards/wms/) for WMS, [here](https://www.ogc.org/standards/wmts/) for WMTS and [here](https://www.ogc.org/standards/wfs/) for WFS.
 
 To download data from IGN web services at least two elements are needed :
 
@@ -84,11 +84,16 @@ You can specify an apikey to focus on specific category. API keys can be directl
 
 ``` r
 get_apikeys()
-#>  [1] "administratif" "adresse"       "agriculture"   "altimetrie"   
-#>  [5] "cartes"        "cartovecto"    "clc"           "economie"     
-#>  [9] "enr"           "environnement" "geodesie"      "lambert93"    
-#> [13] "ocsge"         "ortho"         "orthohisto"    "parcellaire"  
-#> [17] "satellite"     "sol"           "topographie"   "transports"
+#>  [1] "administratif" "adresse"      
+#>  [3] "agriculture"   "altimetrie"   
+#>  [5] "cartes"        "cartovecto"   
+#>  [7] "clc"           "economie"     
+#>  [9] "enr"           "environnement"
+#> [11] "geodesie"      "lambert93"    
+#> [13] "ocsge"         "ortho"        
+#> [15] "orthohisto"    "parcellaire"  
+#> [17] "satellite"     "sol"          
+#> [19] "topographie"   "transports"
 
 administratif_wmts <- get_layers_metadata("wmts", "administratif")
 
@@ -149,7 +154,7 @@ tm_title("Penmarch borders from IGN",
    tm_scalebar()
 ```
 
-![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
 
 It's as simple as that!
 Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many hedges for biodiversity there are in Penmarch?
@@ -178,7 +183,7 @@ tm_compass(type = "arrow")+
 tm_scalebar()
 ```
 
-![plot of chunk unnamed-chunk-17](figure/unnamed-chunk-17-1.png)
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 ### WMS raster
 
@@ -211,7 +216,7 @@ tm_compass(type = "arrow")+
 tm_scalebar()
 ```
 
-![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png)
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)
 
 __*Rq :*__
 
@@ -240,4 +245,4 @@ tm_compass(type = "arrow")+
 tm_scalebar()
 ```
 
-![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png)
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)

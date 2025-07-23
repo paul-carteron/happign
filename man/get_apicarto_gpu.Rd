@@ -19,7 +19,7 @@ a \code{character} corresponding to \strong{GPU partition} or
 "info-surf", "info-lin", "info-pct". See detail for more info.}
 
 \item{categorie}{public utility easement according to the
-\href{https://www.geoinformations.developpement-durable.gouv.fr/nomenclature-nationale-des-sup-r1082.html}{national nomenclature}}
+\href{https://www.geoportail-urbanisme.gouv.fr/infos_sup/}{national nomenclature}}
 
 \item{dTolerance}{numeric; Complex shape cannot be handle by API; using \code{dTolerance} allow to simplify them. See \code{?sf::st_simplify}}
 }

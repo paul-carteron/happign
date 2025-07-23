@@ -1,13 +1,13 @@
 ## R CMD check results
 
-I sucessfully pass R-CMD-Check test from rhun::rhub_chek()
+I sucessfully pass R-CMD-Check test from rhun::rhub_chek() for windows and ubuntu os.
+
+mac-os doesn't work becaus of other packages :
+   - macos-arm64 (R-devel) : ✖ Failed to build httpuv 1.6.16 (40.2s)
+   - m1-san (R-devel) : ✖ Failed to build httpuv 1.6.16 (51.1s)
    
 Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/14127781478)
 
-ubuntu next : Failed to build s2 1.1.8 (2.4s)
-ubuntu release : ✖ Failed to build s2 1.1.8 (1.7s)
-m1-san : ✖ Failed to build httpuv 1.6.16 (25.3s)
-mac-os-arm-64 : ✖ Failed to build httpuv 1.6.16 (25.4s)
 ## R CMD check results
 
 I sucessfully pass R-CMD-Check test for 7 OS :
@@ -18,23 +18,22 @@ I sucessfully pass R-CMD-Check test for 7 OS :
    - {os: ubuntu-latest,  r: 'release'}
    - {os: ubuntu-latest,  r: 'oldrel-1'}
    - {os: ubuntu-22.04,   r: 'release'}
-
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/14114446956)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16449195501)
 
 ## devtools::check_win_devel() results
 
 ```
-* checking CRAN incoming feasibility ... [12s] WARNING
+* checking CRAN incoming feasibility ... NOTE
 Maintainer: 'Paul Carteron <carteronpaul@gmail.com>'
 
 ```
 
-Result can be found [here](https://win-builder.r-project.org/Ikr7K9gjqqX5/00check.log)
+Result can be found [here](https://win-builder.r-project.org/utOa5t5gAw7H/00check.log)
 
 ## local devtools::check() results
-── R CMD check results ─ happign 0.3.4 ────
-Duration: 4m 4.6s
+── R CMD check results ──────── happign 0.3.5 ────
+Duration: 2m 46.7s
 
 ❯ checking for future file timestamps ... NOTE
   unable to verify current time
