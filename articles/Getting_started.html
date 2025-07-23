@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Getting started with happign • happign</title>
+<title>Getting started • happign</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting started with happign">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting started">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -34,8 +34,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/api_carto.html">API Carto</a></li>
-    <li><a class="dropdown-item" href="../articles/Getting_started.html">Getting started with happign</a></li>
-    <li><a class="dropdown-item" href="../articles/happign_for_foresters.html">happign_for_forester</a></li>
+    <li><a class="dropdown-item" href="../articles/Getting_started.html">Getting started</a></li>
+    <li><a class="dropdown-item" href="../articles/happign_for_foresters.html">happign for forester</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -66,11 +66,11 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Getting started with happign</h1>
+      <h1>Getting started</h1>
                         <h4 data-toc-skip class="author">Paul
 Carteron</h4>
             
-            <h4 data-toc-skip class="date">2024-05-05</h4>
+            <h4 data-toc-skip class="date">2025-07-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/paul-carteron/happign/blob/main/vignettes/Getting_started.Rmd" class="external-link"><code>vignettes/Getting_started.Rmd</code></a></small>
       <div class="d-none name"><code>Getting_started.Rmd</code></div>
@@ -213,7 +213,9 @@ shape in happign.</p>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<p><img src="figure/get_wfs-1.png" alt="plot of chunk get_wfs" width="70%"></p>
+<img src="figure/get_wfs-1.png" alt="plot of chunk get_wfs"><p class="caption">
+plot of chunk get_wfs
+</p>
 </div>
 <p>It’s as simple as that! Now you have to rely on your curiosity to
 explore the multiple possibilities that IGN offers. For example, who has
@@ -238,7 +240,9 @@ Penmarch?</p>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<p><img src="figure/get_wfs2-1.png" alt="plot of chunk get_wfs2" width="70%"></p>
+<img src="figure/get_wfs2-1.png" alt="plot of chunk get_wfs2"><p class="caption">
+plot of chunk get_wfs2
+</p>
 </div>
 </div>
 <div class="section level4">
@@ -275,7 +279,9 @@ DEM, we don’t want an RGB image but values of each pixels. That why
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<p><img src="figure/get_wms_raster-1.png" alt="plot of chunk get_wms_raster" width="70%"></p>
+<img src="figure/get_wms_raster-1.png" alt="plot of chunk get_wms_raster"><p class="caption">
+plot of chunk get_wms_raster
+</p>
 </div>
 <p><strong><em>Rq :</em></strong></p>
 <ul>
@@ -308,7 +314,9 @@ instead of WMS.</p>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<p><img src="figure/get_wmts-1.png" alt="plot of chunk get_wmts" width="70%"></p>
+<img src="figure/get_wmts-1.png" alt="plot of chunk get_wmts"><p class="caption">
+plot of chunk get_wmts
+</p>
 </div>
 </div>
 </div>
