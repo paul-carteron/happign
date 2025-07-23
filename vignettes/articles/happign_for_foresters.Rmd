@@ -1,14 +1,25 @@
 ---
-title: "happign_for_foresters"
+title: "happign_for_forester"
+author: "Paul Carteron"
+date: "2025-07-23"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{happign for forester}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.align = "center",
+  fig.center = TRUE,
+  fig.align = 'center',
+  fig.width = 6,
   fig.height = 4,
-  fig.width = 6
+  dpi = 300,
+  out.width = "70%",
+  fig.cap = NULL
 )
 ```
 

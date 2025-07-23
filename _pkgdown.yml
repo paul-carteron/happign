@@ -1,4 +1,12 @@
-url: ~
+url: "https://paul-carteron.github.io/happign"
+
 template:
   bootstrap: 5
+  light-switch: true
+  bslib:
+    preset: bootstrap
 
+home:
+  title: R access to IGN data
+  sidebar:
+    structure: [dev, links, community, authors, license, citation]
