@@ -22,8 +22,7 @@ We can load the `happign` package, and some additional packages we will need (`s
 ``` r
 library(happign)
 library(sf)
-library(tmap);tmap_mode("plot")
-#> ℹ tmap mode set to "plot".
+library(tmap)
 ```
 
 
@@ -84,16 +83,10 @@ You can specify an apikey to focus on specific category. API keys can be directl
 
 ``` r
 get_apikeys()
-#>  [1] "administratif" "adresse"      
-#>  [3] "agriculture"   "altimetrie"   
-#>  [5] "cartes"        "cartovecto"   
-#>  [7] "clc"           "economie"     
-#>  [9] "enr"           "environnement"
-#> [11] "geodesie"      "lambert93"    
-#> [13] "ocsge"         "ortho"        
-#> [15] "orthohisto"    "parcellaire"  
-#> [17] "satellite"     "sol"          
-#> [19] "topographie"   "transports"
+#>  [1] "administratif" "adresse"       "agriculture"   "altimetrie"    "cartes"       
+#>  [6] "cartovecto"    "clc"           "economie"      "enr"           "environnement"
+#> [11] "geodesie"      "lambert93"     "ocsge"         "ortho"         "orthohisto"   
+#> [16] "parcellaire"   "satellite"     "sol"           "topographie"   "transports"
 
 administratif_wmts <- get_layers_metadata("wmts", "administratif")
 
@@ -154,7 +147,10 @@ tm_title("Penmarch borders from IGN",
    tm_scalebar()
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
+<div class="figure" style="text-align: center">
+<img src="figure/get_wfs-1.png" alt="plot of chunk get_wfs"  />
+<p class="caption">plot of chunk get_wfs</p>
+</div>
 
 It's as simple as that!
 Now you have to rely on your curiosity to explore the multiple possibilities that IGN offers. For example, who has never wondered how many hedges for biodiversity there are in Penmarch?
@@ -183,7 +179,10 @@ tm_compass(type = "arrow")+
 tm_scalebar()
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
+<div class="figure" style="text-align: center">
+<img src="figure/get_wfs2-1.png" alt="plot of chunk get_wfs2"  />
+<p class="caption">plot of chunk get_wfs2</p>
+</div>
 
 ### WMS raster
 
@@ -214,9 +213,15 @@ tm_shape(penmarch_borders, is.main = TRUE)+
 tm_title("Digital Elevation Model of Penmarch", position = tm_pos_out("center", "top", pos.h = "center"))+
 tm_compass(type = "arrow")+
 tm_scalebar()
+#> [plot mode] fit legend/component: Some legend items or map compoments do not fit
+#> well, and are therefore rescaled.
+#> ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)
+<div class="figure" style="text-align: center">
+<img src="figure/get_wms_raster-1.png" alt="plot of chunk get_wms_raster"  />
+<p class="caption">plot of chunk get_wms_raster</p>
+</div>
 
 __*Rq :*__
 
@@ -245,4 +250,7 @@ tm_compass(type = "arrow")+
 tm_scalebar()
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)
+<div class="figure" style="text-align: center">
+<img src="figure/get_wmts-1.png" alt="plot of chunk get_wmts"  />
+<p class="caption">plot of chunk get_wmts</p>
+</div>
