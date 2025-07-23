@@ -10,14 +10,3 @@ home:
   title: R access to IGN data
   sidebar:
     structure: [dev, links, community, authors, license, citation]
-
-articles:
-- title: "Getting started"
-  contents:
-  - getting_started
-- title: "happign for forester"
-  contents:
-  - articles/happign_for_forester
-- title: "API Carto"
-  contents:
-  - articles/api_carto
