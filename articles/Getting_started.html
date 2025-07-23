@@ -87,9 +87,7 @@ packages we will need (<code>sf</code> to manipulate spatial data and
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html" class="external-link">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>warning <span class="op">=</span> <span class="cn">FALSE</span>, message <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-carteron" class="external-link">happign</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in library(happign): aucun package nommé 'happign' n'est trouvé</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Linking to GEOS 3.13.1, GDAL 3.11.0, PROJ 9.6.0; sf_use_s2() is TRUE</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -124,11 +122,8 @@ to the IGN site which allows to have the last updated resources. It can
 be used for WMS and WFS :</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">administratif_wfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>data_type <span class="op">=</span> <span class="st">"wfs"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get_layers_metadata(data_type = "wfs"): impossible de trouver la fonction "get_layers_metadata"</span></span>
 <span><span class="va">administratif_wms</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>data_type <span class="op">=</span> <span class="st">"wms-r"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get_layers_metadata(data_type = "wms-r"): impossible de trouver la fonction "get_layers_metadata"</span></span>
 <span><span class="va">administratif_wms</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>data_type <span class="op">=</span> <span class="st">"wmts"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get_layers_metadata(data_type = "wmts"): impossible de trouver la fonction "get_layers_metadata"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">administratif_wfs</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                                              Name</span></span>
@@ -158,10 +153,13 @@ the expert web services</a> or with <code><a href="../reference/get_apikeys.html
 function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get_apikeys(): impossible de trouver la fonction "get_apikeys"</span></span>
+<span><span class="co">#&gt;  [1] "administratif" "adresse"       "agriculture"   "altimetrie"   </span></span>
+<span><span class="co">#&gt;  [5] "cartes"        "cartovecto"    "clc"           "economie"     </span></span>
+<span><span class="co">#&gt;  [9] "enr"           "environnement" "geodesie"      "lambert93"    </span></span>
+<span><span class="co">#&gt; [13] "ocsge"         "ortho"         "orthohisto"    "parcellaire"  </span></span>
+<span><span class="co">#&gt; [17] "satellite"     "sol"           "topographie"   "transports"</span></span>
 <span></span>
 <span><span class="va">administratif_wmts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="st">"wmts"</span>, <span class="st">"administratif"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get_layers_metadata("wmts", "administratif"): impossible de trouver la fonction "get_layers_metadata"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">administratif_wmts</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                     Title</span></span>
@@ -194,8 +192,7 @@ to get plethora of resources. For the example we will look at the
 beautiful town of Penmarch in France. A part of this town is stored as a
 shape in happign.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">penmarch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/penmarch.shp"</span>, package <span class="op">=</span> <span class="st">"happign"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: `dsn` must point to a source, not an empty string.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">penmarch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/penmarch.shp"</span>, package <span class="op">=</span> <span class="st">"happign"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="wfs">WFS<a class="anchor" aria-label="anchor" href="#wfs"></a>
 </h4>
@@ -203,7 +200,6 @@ shape in happign.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">penmarch_borders</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch</span>,</span>
 <span>                            layer <span class="op">=</span> <span class="st">"LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get_wfs(x = penmarch, layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"): impossible de trouver la fonction "get_wfs"</span></span>
 <span><span class="co"># Checking result</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span> <span class="op">+</span></span>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -218,9 +214,7 @@ shape in happign.</p>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="figure/get_wfs-1.png" alt="plot of chunk get_wfs"><p class="caption">
-plot of chunk get_wfs
-</p>
+<p><img src="get_wfs-1.png" alt="plot of chunk get_wfs"></p>
 </div>
 <p>It’s as simple as that! Now you have to rely on your curiosity to
 explore the multiple possibilities that IGN offers. For example, who has
@@ -231,7 +225,6 @@ Penmarch?</p>
 <code class="sourceCode R"><span><span class="va">hedges</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch_borders</span>,</span>
 <span>                 layer <span class="op">=</span> <span class="st">"BDTOPO_V3:haie"</span>,</span>
 <span>                 spatial_filter <span class="op">=</span> <span class="st">"intersects"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get_wfs(x = penmarch_borders, layer = "BDTOPO_V3:haie", spatial_filter = "intersects"): impossible de trouver la fonction "get_wfs"</span></span>
 <span></span>
 <span><span class="co"># Checking result</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span> <span class="op">+</span></span>
@@ -246,9 +239,7 @@ Penmarch?</p>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="figure/get_wfs2-1.png" alt="plot of chunk get_wfs2"><p class="caption">
-plot of chunk get_wfs2
-</p>
+<p><img src="get_wfs2-1.png" alt="plot of chunk get_wfs2"></p>
 </div>
 </div>
 <div class="section level4">
@@ -264,7 +255,6 @@ DEM, we don’t want an RGB image but values of each pixels. That why
 <code>rgb=FALSE</code> is used below.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">layers_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="st">"wms-r"</span>, <span class="st">"altimetrie"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get_layers_metadata("wms-r", "altimetrie"): impossible de trouver la fonction "get_layers_metadata"</span></span>
 <span><span class="va">dem_layer</span> <span class="op">&lt;-</span> <span class="va">layers_metadata</span><span class="op">[</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">]</span> <span class="co">#ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES</span></span>
 <span></span>
 <span><span class="va">mnt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wms_raster.html">get_wms_raster</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_buffer</a></span><span class="op">(</span><span class="va">penmarch_borders</span>, <span class="fl">800</span><span class="op">)</span>,</span>
@@ -272,10 +262,9 @@ DEM, we don’t want an RGB image but values of each pixels. That why
 <span>                      res <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                      crs <span class="op">=</span> <span class="fl">2154</span>,</span>
 <span>                      rgb <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get_wms_raster(x = st_buffer(penmarch_borders, 800), layer = dem_layer, : impossible de trouver la fonction "get_wms_raster"</span></span>
+<span><span class="co">#&gt; 0...10...20...30...40...50...60...70...80...90...100 - done.</span></span>
 <span></span>
 <span><span class="va">mnt</span><span class="op">[</span><span class="va">mnt</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co"># remove negative values in case of singularity</span></span>
-<span><span class="co">#&gt; Error in (function (cond) : erreur d'ï¿½valuation de l'argument 'i' lors de la sï¿½lection d'une mï¿½thode pour la fonction '[&lt;-' : external pointer is not valid</span></span>
 <span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span> <span class="op">+</span></span>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span></span>
@@ -285,8 +274,10 @@ DEM, we don’t want an RGB image but values of each pixels. That why
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html" class="external-link">tm_title</a></span><span class="op">(</span><span class="st">"Digital Elevation Model of Penmarch"</span>, position <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_pos.html" class="external-link">tm_pos_out</a></span><span class="op">(</span><span class="st">"center"</span>, <span class="st">"top"</span>, pos.h <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in .Call(structure(list(name = "CppField__get", address = &lt;pointer: (nil)&gt;, : Valeur NULL passée comme adresse symbolique</span></span></code></pre></div>
+<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<p><img src="get_wms_raster-1.png" alt="plot of chunk get_wms_raster"></p>
+</div>
 <p><strong><em>Rq :</em></strong></p>
 <ul>
 <li><em>Raster from <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> are
@@ -304,13 +295,11 @@ precis image is. If you only need visualisation, i recommend to use WMTS
 instead of WMS.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">layers_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="st">"wmts"</span>, <span class="st">"ortho"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get_layers_metadata("wmts", "ortho"): impossible de trouver la fonction "get_layers_metadata"</span></span>
 <span><span class="va">ortho_layer</span> <span class="op">&lt;-</span> <span class="va">layers_metadata</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">]</span> <span class="co">#HR.ORTHOIMAGERY.ORTHOPHOTOS</span></span>
 <span></span>
 <span><span class="va">hr_ortho</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wmts.html">get_wmts</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch_borders</span>,</span>
 <span>                     layer <span class="op">=</span> <span class="va">ortho_layer</span>,</span>
 <span>                     zoom <span class="op">=</span> <span class="fl">9</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get_wmts(x = penmarch_borders, layer = ortho_layer, zoom = 9): impossible de trouver la fonction "get_wmts"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">hr_ortho</span><span class="op">)</span> <span class="op">+</span></span>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_rgb.html" class="external-link">tm_rgb</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -318,8 +307,10 @@ instead of WMS.</p>
 <span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html" class="external-link">tm_title</a></span><span class="op">(</span><span class="st">"Orthophoto Hight Resolution"</span>, position <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_pos.html" class="external-link">tm_pos_out</a></span><span class="op">(</span><span class="st">"center"</span>, <span class="st">"top"</span>, pos.h <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in .Call(structure(list(name = "CppField__get", address = &lt;pointer: (nil)&gt;, : Valeur NULL passée comme adresse symbolique</span></span></code></pre></div>
+<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<p><img src="get_wmts-1.png" alt="plot of chunk get_wmts"></p>
+</div>
 </div>
 </div>
 </div>
