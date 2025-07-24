@@ -1,12 +1,8 @@
 ## R CMD check results
 
-I sucessfully pass R-CMD-Check test from rhun::rhub_chek() for windows and ubuntu os.
-
-mac-os doesn't work becaus of other packages :
-   - macos-arm64 (R-devel) : ✖ Failed to build httpuv 1.6.16 (40.2s)
-   - m1-san (R-devel) : ✖ Failed to build httpuv 1.6.16 (51.1s)
+I sucessfully pass R-CMD-Check test from rhun::rhub_chek().
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/14127781478)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16474357206)
 
 ## R CMD check results
 
@@ -19,7 +15,7 @@ I sucessfully pass R-CMD-Check test for 7 OS :
    - {os: ubuntu-latest,  r: 'oldrel-1'}
    - {os: ubuntu-22.04,   r: 'release'}
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16449195501)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16474338139)
 
 ## devtools::check_win_devel() results
 
@@ -29,7 +25,7 @@ Maintainer: 'Paul Carteron <carteronpaul@gmail.com>'
 
 ```
 
-Result can be found [here](https://win-builder.r-project.org/utOa5t5gAw7H/00check.log)
+Result can be found [here](https://win-builder.r-project.org/wDsiITp644Ye/)
 
 ## local devtools::check() results
 ── R CMD check results ──────── happign 0.3.5 ────
