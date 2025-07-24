@@ -56,27 +56,30 @@ administratif_wms <- get_layers_metadata(data_type = "wms-r")
 administratif_wms <- get_layers_metadata(data_type = "wmts")
 
 head(administratif_wfs)
-#>                                                              Name
-#> 1                     OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016
-#> 2                     OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019
-#> 3                                          IGNF_GEODESIE:site-rbf
-#> 4                                          IGNF_GEODESIE:site-rdf
-#> 5           LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement
-#> 6 LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement_municipal
-#>                                                              Title
-#> 1                                                  OCSGE Gers 2016
-#> 2                                                 OCSGE Gers 2019 
-#> 3                                              (obsolete) Site RBF
-#> 4                                              (obsolete) Site RDF
-#> 5           ADMIN EXPRESS mises a jour en continu - arrondissement
-#> 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal
-#>                                                           Abstract
-#> 1                                                  OCSGE Gers 2016
-#> 2                                                 OCSGE Gers 2019 
-#> 3                                                              RBF
-#> 4                                                              RDF
-#> 5           ADMIN EXPRESS mises a jour en continu - arrondissement
-#> 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal
+```
+
+```
+##                                                              Name
+## 1                     OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016
+## 2                     OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019
+## 3                                          IGNF_GEODESIE:site-rbf
+## 4                                          IGNF_GEODESIE:site-rdf
+## 5           LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement
+## 6 LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement_municipal
+##                                                              Title
+## 1                                                  OCSGE Gers 2016
+## 2                                                 OCSGE Gers 2019 
+## 3                                              (obsolete) Site RBF
+## 4                                              (obsolete) Site RDF
+## 5           ADMIN EXPRESS mises a jour en continu - arrondissement
+## 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal
+##                                                           Abstract
+## 1                                                  OCSGE Gers 2016
+## 2                                                 OCSGE Gers 2019 
+## 3                                                              RBF
+## 4                                                              RDF
+## 5           ADMIN EXPRESS mises a jour en continu - arrondissement
+## 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal
 ```
 
 You can specify an apikey to focus on specific category. API keys can be directly retrieved on the [IGN website from the expert web services](https://geoservices.ign.fr/services-web-experts) or with `get_apikeys()` function.
@@ -84,36 +87,46 @@ You can specify an apikey to focus on specific category. API keys can be directl
 
 ``` r
 get_apikeys()
-#>  [1] "administratif" "adresse"       "agriculture"   "altimetrie"   
-#>  [5] "cartes"        "cartovecto"    "clc"           "economie"     
-#>  [9] "enr"           "environnement" "geodesie"      "lambert93"    
-#> [13] "ocsge"         "ortho"         "orthohisto"    "parcellaire"  
-#> [17] "satellite"     "sol"           "topographie"   "transports"
+```
 
+```
+##  [1] "administratif" "adresse"       "agriculture"  
+##  [4] "altimetrie"    "cartes"        "cartovecto"   
+##  [7] "clc"           "economie"      "enr"          
+## [10] "environnement" "geodesie"      "lambert93"    
+## [13] "ocsge"         "ortho"         "orthohisto"   
+## [16] "parcellaire"   "satellite"     "sol"          
+## [19] "topographie"   "transports"
+```
+
+``` r
 administratif_wmts <- get_layers_metadata("wmts", "administratif")
 
 head(administratif_wmts)
-#>                                     Title
-#> 1                  ADMINEXPRESS COG CARTO
-#> 2 ADMINEXPRESS COG ; Edition : 2017-01-01
-#> 3 ADMINEXPRESS COG ; Edition : 2018-01-01
-#> 4 ADMINEXPRESS COG ; Edition : 2019-01-01
-#> 5 ADMINEXPRESS COG ; Edition : 2020-01-01
-#> 6 ADMINEXPRESS COG ; Edition : 2021-01-01
-#>                                                                                Abstract
-#> 1                Limites administratives mises à jour en continu ; Edition : 2025-01-01
-#> 2 Limites administratives Express COG code officiel géographique ; Edition : 2017-01-01
-#> 3 Limites administratives Express COG code officiel géographique ; Edition : 2018-01-01
-#> 4 Limites administratives Express COG code officiel géographique ; Edition : 2019-01-01
-#> 5 Limites administratives Express COG code officiel géographique ; Edition : 2020-01-01
-#> 6 Limites administratives Express COG code officiel géographique ; Edition : 2021-01-01
-#>                      Identifier
-#> 1 ADMINEXPRESS-COG-CARTO.LATEST
-#> 2         ADMINEXPRESS-COG.2017
-#> 3         ADMINEXPRESS-COG.2018
-#> 4         ADMINEXPRESS-COG.2019
-#> 5         ADMINEXPRESS-COG.2020
-#> 6         ADMINEXPRESS-COG.2021
+```
+
+```
+##                                     Title
+## 1                  ADMINEXPRESS COG CARTO
+## 2 ADMINEXPRESS COG ; Edition : 2017-01-01
+## 3 ADMINEXPRESS COG ; Edition : 2018-01-01
+## 4 ADMINEXPRESS COG ; Edition : 2019-01-01
+## 5 ADMINEXPRESS COG ; Edition : 2020-01-01
+## 6 ADMINEXPRESS COG ; Edition : 2021-01-01
+##                                                                                Abstract
+## 1                Limites administratives mises à jour en continu ; Edition : 2025-01-01
+## 2 Limites administratives Express COG code officiel géographique ; Edition : 2017-01-01
+## 3 Limites administratives Express COG code officiel géographique ; Edition : 2018-01-01
+## 4 Limites administratives Express COG code officiel géographique ; Edition : 2019-01-01
+## 5 Limites administratives Express COG code officiel géographique ; Edition : 2020-01-01
+## 6 Limites administratives Express COG code officiel géographique ; Edition : 2021-01-01
+##                      Identifier
+## 1 ADMINEXPRESS-COG-CARTO.LATEST
+## 2         ADMINEXPRESS-COG.2017
+## 3         ADMINEXPRESS-COG.2018
+## 4         ADMINEXPRESS-COG.2019
+## 5         ADMINEXPRESS-COG.2020
+## 6         ADMINEXPRESS-COG.2021
 ```
 
 ## Downloading the data
@@ -133,6 +146,15 @@ penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 ``` r
 penmarch_borders <- get_wfs(x = penmarch,
                             layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
+```
+
+```
+## Error: Please check that :
+## - x is not empty ;
+## - layer is valid by running
+```
+
+``` r
 # Checking result
 tm_shape(penmarch_borders) +
    tm_polygons() +
@@ -149,7 +171,8 @@ tm_title("Penmarch borders from IGN",
 ```
 
 <div class="figure" style="text-align: center">
-<img src="get_wfs-1.png" alt="plot of chunk get_wfs"  />
+<img src="vignettes/get_wfs-1.jpeg" alt="plot of chunk get_wfs"  />
+<p class="caption">plot of chunk get_wfs</p>
 </div>
 
 It's as simple as that!
@@ -163,7 +186,9 @@ Now you have to rely on your curiosity to explore the multiple possibilities tha
 hedges <- get_wfs(x = penmarch_borders,
                  layer = "BDTOPO_V3:haie",
                  spatial_filter = "intersects")
+```
 
+``` r
 # Checking result
 tm_shape(penmarch_borders) +
    tm_polygons() +
@@ -179,7 +204,8 @@ tm_scalebar()
 ```
 
 <div class="figure" style="text-align: center">
-<img src="get_wfs2-1.png" alt="plot of chunk get_wfs2"  />
+<img src="vignettes/get_wfs2-1.jpeg" alt="plot of chunk get_wfs2"  />
+<p class="caption">plot of chunk get_wfs2</p>
 </div>
 
 ### WMS raster
@@ -197,8 +223,13 @@ mnt <- get_wms_raster(x = st_buffer(penmarch_borders, 800),
                       res = 5,
                       crs = 2154,
                       rgb = FALSE)
-#> 0...10...20...30...40...50...60...70...80...90...100 - done.
+```
 
+```
+## 0...10...20...30...40...50...60...70...80...90...100 - done.
+```
+
+``` r
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 
 tm_shape(mnt) +
@@ -213,7 +244,8 @@ tm_scalebar()
 ```
 
 <div class="figure" style="text-align: center">
-<img src="get_wms_raster-1.png" alt="plot of chunk get_wms_raster"  />
+<img src="vignettes/get_wms_raster-1.jpeg" alt="plot of chunk get_wms_raster"  />
+<p class="caption">plot of chunk get_wms_raster</p>
 </div>
 
 __*Rq :*__
@@ -244,5 +276,6 @@ tm_scalebar()
 ```
 
 <div class="figure" style="text-align: center">
-<img src="get_wmts-1.png" alt="plot of chunk get_wmts"  />
+<img src="vignettes/get_wmts-1.jpeg" alt="plot of chunk get_wmts"  />
+<p class="caption">plot of chunk get_wmts</p>
 </div>
