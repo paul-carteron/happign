@@ -4,5 +4,14 @@
 # for inspiration
 
 library(knitr)
-knit("vignettes/getting_started.Rmd.orig", "vignettes/getting_started.Rmd")
 
+opts_knit$set(base.dir = "vignettes", base.url = "")
+
+input <- "vignettes/getting_started.Rmd.orig"
+output <- "vignettes/getting_started.Rmd"
+knit(input, output)
+
+# Remove only the caption lines
+lines <- readLines(output)
+cleaned <- grep('<p class="caption">.*</p>', lines, invert = TRUE, value = TRUE)
+writeLines(cleaned, output)
