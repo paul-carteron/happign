@@ -9,14 +9,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
-
 # Before starting
 
 We can load the `happign` package, and some additional packages we will need (`sf` to manipulate spatial data and `tmap` to create maps)
-
-
-
 
 
 ``` r
@@ -25,7 +20,6 @@ library(happign)
 library(sf)
 library(tmap)
 ```
-
 
 # WFS, WMS and WMTS service
 
@@ -47,7 +41,6 @@ To download data from IGN web services at least two elements are needed :
 It is possible to find the names of available layers from the IGN website. For example, the first layer name in **WFS format** for ["Administratif" category](https://geoservices.ign.fr/services-web-experts-administratif) is *"ADMINEXPRESS-COG-CARTO.LATEST:arrondissement"*
 
 All layer's name can be accessed from R with the `get_layers_metadata()` function. This one connects directly to the IGN site which allows to have the last updated resources. It can be used for WMS and WFS :
-
 
 
 ``` r
@@ -90,14 +83,12 @@ get_apikeys()
 ```
 
 ```
-##  [1] "administratif" "adresse"       "agriculture"  
-##  [4] "altimetrie"    "cartes"        "cartovecto"   
-##  [7] "clc"           "economie"      "enr"          
-## [10] "environnement" "geodesie"      "lambert93"    
-## [13] "ocsge"         "ortho"         "orthohisto"   
-## [16] "parcellaire"   "satellite"     "sol"          
+##  [1] "administratif" "adresse"       "agriculture"   "altimetrie"    "cartes"        "cartovecto"   
+##  [7] "clc"           "economie"      "enr"           "environnement" "geodesie"      "lambert93"    
+## [13] "ocsge"         "ortho"         "orthohisto"    "parcellaire"   "satellite"     "sol"          
 ## [19] "topographie"   "transports"
 ```
+
 
 ``` r
 administratif_wmts <- get_layers_metadata("wmts", "administratif")
@@ -148,11 +139,6 @@ penmarch_borders <- get_wfs(x = penmarch,
                             layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
 ```
 
-```
-## Error: Please check that :
-## - x is not empty ;
-## - layer is valid by running
-```
 
 ``` r
 # Checking result
@@ -170,6 +156,7 @@ tm_title("Penmarch borders from IGN",
    tm_scalebar()
 ```
 
+
 <div class="figure" style="text-align: center">
 <img src="get_wfs-1.jpeg" alt="plot of chunk get_wfs"  />
 </div>
@@ -180,12 +167,12 @@ Now you have to rely on your curiosity to explore the multiple possibilities tha
 *Spoiler : there are 434 of them !*
 
 
-
 ``` r
 hedges <- get_wfs(x = penmarch_borders,
                  layer = "BDTOPO_V3:haie",
                  spatial_filter = "intersects")
 ```
+
 
 ``` r
 # Checking result
@@ -202,6 +189,7 @@ tm_compass(type = "arrow")+
 tm_scalebar()
 ```
 
+
 <div class="figure" style="text-align: center">
 <img src="get_wfs2-1.jpeg" alt="plot of chunk get_wfs2"  />
 </div>
@@ -209,7 +197,6 @@ tm_scalebar()
 ### WMS raster
 
 For raster, the process is the same, but with the function `get_wms_raster()`. However, you also need to specify the resolution (note that it must be in the same coordinate system as the crs parameter). There's plenty of elevation resources inside ["altimetrie" category](https://geoservices.ign.fr/services-web-experts-altimetrie). A basic one is the Digital Elevation Model (DEM or MNT in French). Borders of Penmarch are used to download the DEM. Note that for DEM, we don't want an RGB image but values of each pixels. That why `rgb=FALSE` is used below.
-
 
 
 ``` r
@@ -227,6 +214,7 @@ mnt <- get_wms_raster(x = st_buffer(penmarch_borders, 800),
 ## 0...10...20...30...40...50...60...70...80...90...100 - done.
 ```
 
+
 ``` r
 mnt[mnt < 0] <- NA # remove negative values in case of singularity
 
@@ -241,6 +229,7 @@ tm_compass(type = "arrow")+
 tm_scalebar()
 ```
 
+
 <div class="figure" style="text-align: center">
 <img src="get_wms_raster-1.jpeg" alt="plot of chunk get_wms_raster"  />
 </div>
@@ -252,7 +241,6 @@ __*Rq :*__
 ### WMTS
 
 For WMTS, no resolution is needed because images are precalculated but a zoom level is needed. The higher the zoom level is, the more precis image is. If you only need visualisation, i recommend to use WMTS instead of WMS.
-
 
 
 ``` r
@@ -271,6 +259,7 @@ tm_title("Orthophoto Hight Resolution", position = tm_pos_out("center", "top", p
 tm_compass(type = "arrow")+
 tm_scalebar()
 ```
+
 
 <div class="figure" style="text-align: center">
 <img src="get_wmts-1.jpeg" alt="plot of chunk get_wmts"  />
