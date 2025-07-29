@@ -2,7 +2,7 @@
 
 I sucessfully pass R-CMD-Check test from rhun::rhub_chek().
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16589706655)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16590340052)
 
 Windows only failed beacause of `htmlwidget` package.
 
@@ -17,7 +17,7 @@ I sucessfully pass R-CMD-Check test for 7 OS :
    - {os: ubuntu-latest,  r: 'oldrel-1'}
    - {os: ubuntu-22.04,   r: 'release'}
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16474338139)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16590241629)
 
 ## devtools::check_win_devel() results
 
