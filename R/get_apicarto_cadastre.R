@@ -90,20 +90,9 @@
 #'
 #' ## get parcels numbered "0001", "0010" of section "AW" and "BR"
 #' section <- c("AW", "BR")
-#' numero <- rep(c("0001", "0010"), each = 2)
+#' numero <- c("0001", "0010")
 #' parcels <- get_apicarto_cadastre("29158", section = section, numero = numero, type = "parcelle")
 #' qtm(penmarch_borders, fill = NA)+qtm(parcels)
-#'
-#' ## generalization with expand.grid
-#' params <- expand.grid(code_insee = c("29158", "29135"),
-#'                       section = c("AW", "BR"),
-#'                       numero = c("0001", "0010"),
-#'                       stringsAsFactors = FALSE)
-#' parcels <- get_apicarto_cadastre(params$code_insee,
-#'                                  section = params$section,
-#'                                  numero = params$numero,
-#'                                  type = "parcelle")
-#' qtm(penmarch_borders, fill = NA)+qtm(parcels$geometry)
 #'
 #'}
 #'
@@ -183,43 +172,31 @@ process_character_input <- function(x) {
 #' @noRd
 #' @description Create request paramaeter and vectorized it
 create_params <- function(geom, code_insee, code_dep, code_com, section, numero, code_arr, code_abs, source) {
-   add_leading_zero <- function(x, n){
+
+   pad0 <- function(x, n){
       if (is.null(x)) return (NULL)
       gsub(" ", "0", sprintf(paste0("%0", n, "s"), x))
    }
-   # Helper function to create single parameter set
-   create_single_params <- function(geom, code_insee, code_dep, code_com, section, numero, code_arr, code_abs, source) {
-      params <- list(
-         "geom" = geom,
-         "code_insee" = code_insee,
-         "code_dep" = code_dep,
-         "code_com" = add_leading_zero(code_com, 3),
-         "section" = add_leading_zero(section, 2),
-         "numero" = add_leading_zero(numero, 4),
-         "code_arr" = add_leading_zero(code_arr, 3),
-         "code_abs" = add_leading_zero(code_abs, 3),
-         "source_ign" = toupper(source),
-         "_start" = 0,
-         "_limit" = 500
-      )
-      return(params)
-   }
 
-   # Use Map to apply create_single_params over all combinations
-   all_params <- Map(
-      create_single_params,
-      if (is.null(geom)) list(NULL) else geom,
-      if (is.null(code_insee)) list(NULL) else code_insee,
-      if (is.null(code_dep)) list(NULL) else code_dep,
-      if (is.null(code_com)) list(NULL) else code_com,
-      if (is.null(section)) list(NULL) else section,
-      if (is.null(numero)) list(NULL) else numero,
-      if (is.null(code_arr)) list(NULL) else code_arr,
-      if (is.null(code_abs)) list(NULL) else code_abs,
-      if (is.null(source)) list(NULL) else source
+   args <- list(
+      "geom" = geom,
+      "code_insee" = code_insee,
+      "code_dep" = code_dep,
+      "code_com" = pad0(code_com, 3),
+      "section" = pad0(section , 2),
+      "numero" = pad0(numero  , 4),
+      "code_arr" = pad0(code_arr, 3),
+      "code_abs" = pad0(code_abs, 3),
+      "source_ign" = toupper(source),
+      "_start" = 0,
+      "_limit" = 500
    )
 
-   return(all_params)
+   args_not_null <- Filter(Negate(is.null), args) |> lapply(unique)
+   args_df <- expand.grid(args_not_null, stringsAsFactors = FALSE, KEEP.OUT.ATTRS = FALSE)
+   args_list <- split(args_df, seq(nrow(args_df))) |> lapply(as.list)
+
+   return(args_list)
 }
 
 

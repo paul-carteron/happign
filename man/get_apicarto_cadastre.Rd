@@ -101,20 +101,9 @@ qtm(borders, fill = NA)+qtm(parcels)
 
 ## get parcels numbered "0001", "0010" of section "AW" and "BR"
 section <- c("AW", "BR")
-numero <- rep(c("0001", "0010"), each = 2)
+numero <- c("0001", "0010")
 parcels <- get_apicarto_cadastre("29158", section = section, numero = numero, type = "parcelle")
 qtm(penmarch_borders, fill = NA)+qtm(parcels)
-
-## generalization with expand.grid
-params <- expand.grid(code_insee = c("29158", "29135"),
-                      section = c("AW", "BR"),
-                      numero = c("0001", "0010"),
-                      stringsAsFactors = FALSE)
-parcels <- get_apicarto_cadastre(params$code_insee,
-                                 section = params$section,
-                                 numero = params$numero,
-                                 type = "parcelle")
-qtm(penmarch_borders, fill = NA)+qtm(parcels$geometry)
 
 }
 

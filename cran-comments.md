@@ -2,7 +2,9 @@
 
 I sucessfully pass R-CMD-Check test from rhun::rhub_chek().
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16474357206)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16589706655)
+
+Windows only failed beacause of `htmlwidget` package.
 
 ## R CMD check results
 
@@ -28,8 +30,8 @@ Maintainer: 'Paul Carteron <carteronpaul@gmail.com>'
 Result can be found [here](https://win-builder.r-project.org/wDsiITp644Ye/)
 
 ## local devtools::check() results
-── R CMD check results ──────── happign 0.3.5 ────
-Duration: 2m 46.7s
+── R CMD check results ───────────────────────── happign 0.3.5 ────
+Duration: 3m 55.2s
 
 ❯ checking for future file timestamps ... NOTE
   unable to verify current time

@@ -22,41 +22,31 @@ test_that("process_character_input work", {
 
 test_that("create_params work", {
    simple_params <- create_params(1, 2, 3, 4, 5, 6, 7, 8, "pci")
-   expect_equal(simple_params,
-                list(
-                   list(geom = 1, code_insee = 2, code_dep = 3, code_com = "004",
-                        section = '05', numero = '0006', code_arr = '007', code_abs = '008',
-                        source_ign = "PCI", `_start` = 0, `_limit` = 500)
-                )
-   )
+   expect_equal(simple_params, list(
+      `1` =
+         list(
+            geom = 1,
+            code_insee = 2,
+            code_dep = 3,
+            code_com = "004",
+            section = "05",
+            numero = "0006",
+            code_arr = "007",
+            code_abs = "008",
+            source_ign = "PCI",
+            `_start` = 0,
+            `_limit` = 500
+         )
+   ))
 
-   multiple_params <- create_params(c(1, 1), c(2, 2), NULL, NULL, NULL, NULL, NULL, NULL, "pci")
+
+   multiple_params <- create_params(c(1, 2), c("A", "B"), NULL, NULL, NULL, NULL, NULL, NULL, "pci")
    expect_equal(multiple_params,
                 list(
-                   list(
-                      geom = 1,
-                      code_insee = 2,
-                      code_dep = NULL,
-                      code_com = NULL,
-                      section = NULL,
-                      numero = NULL,
-                      code_arr = NULL,
-                      code_abs = NULL,
-                      source_ign = "PCI",
-                      `_start` = 0,
-                      `_limit` = 500
-                   ),
-                   list(
-                      geom = 1,
-                      code_insee = 2,
-                      code_dep = NULL,
-                      code_com = NULL,
-                      section = NULL,
-                      numero = NULL,
-                      code_arr = NULL,
-                      code_abs = NULL,
-                      source_ign = "PCI",
-                      `_start` = 0, `_limit` = 500)
+                   `1` = list(geom = 1, code_insee = "A", source_ign = "PCI", `_start` = 0, `_limit` = 500),
+                   `2` = list(geom = 2, code_insee = "A", source_ign = "PCI", `_start` = 0, `_limit` = 500),
+                   `3` = list(geom = 1, code_insee = "B", source_ign = "PCI", `_start` = 0, `_limit` = 500),
+                   `4` = list(geom = 2, code_insee = "B", source_ign = "PCI", `_start` = 0, `_limit` = 500)
                    )
                 )
 
@@ -150,6 +140,6 @@ with_mock_dir("get_apicarto_cadastre", {
                                        type = "parcelle")
 
       expect_s3_class(parcels, "sf")
-      expect_equal(dim(parcels), c(4, 13))
+      expect_equal(dim(parcels), c(4, 14))
    })
 }, simplify = FALSE)
