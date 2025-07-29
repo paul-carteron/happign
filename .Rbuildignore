@@ -32,3 +32,4 @@
 ^data-raw$
 ^revdep$
 ^vignettes/articles$
+\.orig$
