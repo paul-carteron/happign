@@ -9,7 +9,7 @@ Description: Automatic open data acquisition from resources of IGN
     ('Institut National de Information Geographique et forestiere')
     (<https://www.ign.fr/>). Available datasets include various types of
     raster and vector data, such as digital elevation models, state
-    borders, spatial databases, cadastral parcels, and more. 'happign also 
+    borders, spatial databases, cadastral parcels, and more. 'happign' also 
     provide access to API Carto (<https://apicarto.ign.fr/api/doc/>).
 License: GPL (>= 3)
 URL: https://github.com/paul-carteron,

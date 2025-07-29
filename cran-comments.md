@@ -22,12 +22,16 @@ Result can be found [here](https://github.com/paul-carteron/happign/actions/runs
 ## devtools::check_win_devel() results
 
 ```
-* checking CRAN incoming feasibility ... NOTE
+* checking CRAN incoming feasibility ... [15s] NOTE
 Maintainer: 'Paul Carteron <carteronpaul@gmail.com>'
+
+Possibly misspelled words in DESCRIPTION:
+  Carto (13:27)
+  happign (12:63)
 
 ```
 
-Result can be found [here](https://win-builder.r-project.org/wDsiITp644Ye/)
+Result can be found [here](https://win-builder.r-project.org/3MDcn7WSYkyl/)
 
 ## local devtools::check() results
 ── R CMD check results ───────────────────────── happign 0.3.5 ────
