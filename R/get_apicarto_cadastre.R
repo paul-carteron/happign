@@ -203,7 +203,7 @@ fetch_data <- function(args, type, progress) {
       req_method("POST") |>
       req_url_query(!!!unlist(args))
 
-   error_message <- paste(
+   error_na_data_found <- paste(
       unlist(args[c("code_insee", "code_dep", "code_com", "section", "numero", "code_arr", "code_abs")]),
       collapse = " - "
    )
@@ -226,7 +226,7 @@ fetch_data <- function(args, type, progress) {
       if (grepl("URI Too Long", e$message)) {
          stop("Shape is too complex. \nTry increase `dTolerance` parameter.", call. = F)
       } else if (grepl("whole number", e$message)) {
-         warning("No data found for : ", error_message, call. = F)
+         warning("No data found for : ", error_na_data_found, call. = F)
          return(NULL)
       } else {
          stop(e)  # Re-throw the original error if no condition matches
