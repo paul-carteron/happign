@@ -26,21 +26,12 @@ get_apicarto_cadastre(x,
 \item{type}{A \code{character} from \code{"parcelle"}, \code{"commune"}, \code{"feuille"},
 \code{"division"}, \code{"localisant"}}
 
-\item{code_com}{A \code{character} of length 5 corresponding to the commune code. Only use with
-\code{type = "division"} or \code{type = "feuille"}}
-
 \item{section}{A \code{character} of length 2}
 
 \item{numero}{A \code{character} of length 4}
 
-\item{code_arr}{A \code{character} corresponding to district code for Paris,
-Lyon, Marseille}
-
 \item{code_abs}{A \code{character} corresponding to the code of absorbed commune.
 This prefix is useful to differentiate between communes that have merged}
-
-\item{dTolerance}{numeric; Complex shape cannot be handle by API; using \code{dTolerance}
-allow to simplify them. See \code{?sf::st_simplify}}
 
 \item{source}{Can be "bdp" for BD Parcellaire or "pci" for Parcellaire express.
 See detail for more info.}
