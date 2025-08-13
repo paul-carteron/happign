@@ -90,6 +90,11 @@
 #' parcels <- get_apicarto_cadastre(insee, section = section, numero = numero, type = "parcelle")
 #' qtm(penmarch_borders, fill = NA)+qtm(parcels)
 #'
+#' # Arrondissement insee code should be used for paris, lyon, marseille
+#' error <- get_apicarto_cadastre(c(75056, 69123, 13055))
+#' paris_arr123 <- get_apicarto_cadastre(c(75101, 75102, 75103))
+#' qtm(paris_arr123, fill = "code_insee")
+#'
 #'}
 #'
 #' @name get_apicarto_cadastre
@@ -105,14 +110,14 @@ get_apicarto_cadastre <- function(x,
 
    pad0 <- \(x, n) if (is.null(x)) NULL else gsub(" ", "0", sprintf(paste0("%", n, "s"), x))
 
-   # TODO affiner pour mettre en évidence les codes insee faux
+   is_geom <- inherits(x, c("sf", "sfc"))
    is_code_insee <- all(pad0(x, 5) %in% happign::com_2025$COM)
    is_code_dep <- all(pad0(x, 2) %in% happign::dep_2025$DEP)
-   is_geom <- inherits(x, c("sf", "sfc"))
 
    if (!(is_geom || is_code_insee || is_code_dep)) {
       stop("`x` must be either an `sf` / `sfc` object, or a character vector",
-           " of valid 5-digit INSEE or 2/3-digit department codes.", call. = FALSE)
+           " of valid 5-digit INSEE codes or valid department codes. See",
+           "`data(com_2025, dep_025)`." , call. = FALSE)
    }
 
    if (is_geom) {
@@ -124,6 +129,8 @@ get_apicarto_cadastre <- function(x,
       }
 
    }
+
+   if(is_code_insee) ensure_is_not_arr(x)
 
    default_args <- list(
       "source_ign" = toupper(source),
@@ -242,3 +249,22 @@ process_responses <- function(resps) {
 
    return(result)
 }
+
+#' @name ensure_is_not_arr
+#' @noRd
+#' @description Throw error when insee_code is from citie with arrondissement
+ensure_is_not_arr <- function(insee_code){
+   arr_to_check <- c(paris = 75056, lyon = 69123, marseille = 13055)
+   is_arr <- insee_code %in% arr_to_check
+   what_is_arr <- arr_to_check[is_arr]
+
+   if (any(is_arr)) {
+      stop(
+         "Codes ", paste(what_is_arr, collapse = ", "),
+         " correspond to cities with arrondissements : use arrondissement codes instead.\n",
+         "See `subset(happign::com_2025, TYPECOM == \"ARM\")`.",
+         call. = FALSE)
+
+   }
+}
+
