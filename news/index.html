@@ -45,7 +45,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.5" id="happign-035">happign 0.3.5<a class="anchor" aria-label="anchor" href="#happign-035"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.6" id="happign-036">happign 0.3.6<a class="anchor" aria-label="anchor" href="#happign-036"></a></h2>
+<p>Refactor <code>get_apicarto_cadastre</code> : * Add explicite vectorization ; * Remove <code>code_com</code> and <code>code_arr</code> whic aren’t mandatory ; * Special arrondissement case for <code>Paris</code>, <code>Lyon</code> and <code>Marseille</code> is implemented</p>
+<p>Breaking changes: * Remove <code>get_apicarto_rpg</code> which isn’t update anymore</p>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.5" id="happign-035">happign 0.3.5<a class="anchor" aria-label="anchor" href="#happign-035"></a></h2><p class="text-muted">CRAN release: 2025-07-29</p>
 <p>Bug fixes: * add support to <code>get_wfs</code> to find geometry name <a href="https://github.com/paul-carteron/happign/issues/40" class="external-link">#40</a></p>
 <p>Vignettes : * Simplification of : - <a href="https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html">happign for foresters</a> - <a href="https://paul-carteron.github.io/happign/articles/web_only/api_carto.html">API Carto</a></p>
 </div>
@@ -141,7 +146,7 @@
 </li>
 <li>add <code><a href="../reference/get_apicarto_codes_postaux.html">get_apicarto_codes_postaux()</a></code>
 </li>
-<li>add <code><a href="../reference/get_apicarto_rpg.html">get_apicarto_rpg()</a></code>
+<li>add <code>get_apicarto_rpg()</code>
 </li>
 <li>rework of <code><a href="../reference/get_apicarto_gpu.html">get_apicarto_gpu()</a></code>
 </li>

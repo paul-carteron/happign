@@ -56,12 +56,9 @@ IGN's apicarto"></head><body>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_apicarto_cadastre</span><span class="op">(</span><span class="va">x</span>,</span>
 <span>                      type <span class="op">=</span> <span class="st">"commune"</span>,</span>
-<span>                      code_com <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>                      section <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>                      numero <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>                      code_arr <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>                      code_abs <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>                      dTolerance <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>                      source <span class="op">=</span> <span class="st">"pci"</span>,</span>
 <span>                      progress <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -71,48 +68,34 @@ IGN's apicarto"></head><body>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>It can be a shape, insee codes or departement codes :</p><ul><li><p>Shape : must be an object of class <code>sf</code> or <code>sfc</code>.</p></li>
-<li><p>Code insee : must be a <code>character</code> of length 5</p></li>
-<li><p>Code departement : must be a <code>character</code> of length  2 or 3 (DOM-TOM)</p></li>
+<dd><p><code>sf</code>, <code>sfc</code>, <code>character</code> or <code>numeric</code> :</p><ul><li><p>Shape : must be an object of class <code>sf</code> or <code>sfc</code>.</p></li>
+<li><p>Code insee : must be a <code>character</code> of length 5 (see <a href="com_2025.html">com_2025</a>)</p></li>
+<li><p>Code departement : must be a <code>character</code> of length  2 or 3 (DOM-TOM)
+(see <a href="dep_2025.html">dep_2025</a>)</p></li>
 </ul></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>A <code>character</code> from <code>"parcelle"</code>, <code>"commune"</code>, <code>"feuille"</code>,
-<code>"division"</code>, <code>"localisant"</code></p></dd>
-
-
-<dt id="arg-code-com">code_com<a class="anchor" aria-label="anchor" href="#arg-code-com"></a></dt>
-<dd><p>A <code>character</code> of length 5 corresponding to the commune code. Only use with
-<code>type = "division"</code> or <code>type = "feuille"</code></p></dd>
+<dd><p><code>character</code> : type of data needed, default to <code>"commune"</code>.
+One of <code>"commune"</code>, <code>"parcelle"</code>, <code>"section"</code>, <code>"localisant"</code>.</p></dd>
 
 
 <dt id="arg-section">section<a class="anchor" aria-label="anchor" href="#arg-section"></a></dt>
-<dd><p>A <code>character</code> of length 2</p></dd>
+<dd><p><code>character</code> : corresponding to section of a city.</p></dd>
 
 
 <dt id="arg-numero">numero<a class="anchor" aria-label="anchor" href="#arg-numero"></a></dt>
-<dd><p>A <code>character</code> of length 4</p></dd>
-
-
-<dt id="arg-code-arr">code_arr<a class="anchor" aria-label="anchor" href="#arg-code-arr"></a></dt>
-<dd><p>A <code>character</code> corresponding to district code for Paris,
-Lyon, Marseille</p></dd>
+<dd><p><code>character</code> : corresponding to numero of cadastral parcels.</p></dd>
 
 
 <dt id="arg-code-abs">code_abs<a class="anchor" aria-label="anchor" href="#arg-code-abs"></a></dt>
-<dd><p>A <code>character</code> corresponding to the code of absorbed commune.
+<dd><p><code>character</code> : corresponding to the code of absorbed commune.
 This prefix is useful to differentiate between communes that have merged</p></dd>
 
 
-<dt id="arg-dtolerance">dTolerance<a class="anchor" aria-label="anchor" href="#arg-dtolerance"></a></dt>
-<dd><p>numeric; Complex shape cannot be handle by API; using <code>dTolerance</code>
-allow to simplify them. See <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">?sf::st_simplify</a></code></p></dd>
-
-
 <dt id="arg-source">source<a class="anchor" aria-label="anchor" href="#arg-source"></a></dt>
-<dd><p>Can be "bdp" for BD Parcellaire or "pci" for Parcellaire express.
-See detail for more info.</p></dd>
+<dd><p><code>character</code> : <code>"bdp"</code> for BD Parcellaire or <code>"pci"</code> for
+Parcellaire express. Default to <code>"pci"</code>. See detail for more info.</p></dd>
 
 
 <dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
@@ -126,13 +109,30 @@ bar, use a string to give it a name. See <code><a href="https://httr2.r-lib.org/
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>x</code>, <code>section</code>, <code>numero</code>, <code>code_arr</code>, <code>code_abs</code>, <code>code_com</code> can take vector of character.
-In this case vector recycling is done. See the example section below.</p>
-<p><code>source</code>: BD Parcellaire is a discontinued product. Its use is no longer
-recommended because it is no longer updated. The use of PCI Express is
-strongly recommended and will become mandatory. More information on the
-comparison of this two products can be found
-<a href="https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf" class="external-link">here</a></p>
+    <p><strong>Vectorisation</strong>:</p>
+<p>Arguments <code>x</code>, <code>section</code>, <code>numero</code>, and <code>code_abs</code> are vectorized
+if only one argument has <code>length &gt; 1</code> (<strong>Cartesian product</strong>)</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>x <span class="ot">=</span> <span class="dv">29158</span>; section <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>→ (<span class="dv">29158</span>, <span class="st">"A"</span>), (<span class="dv">29158</span>, <span class="st">"B"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>x <span class="ot">=</span> <span class="dv">29158</span>, section <span class="ot">=</span> <span class="st">"A"</span>, numero <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>→ (<span class="dv">29158</span>, <span class="st">"A"</span>, <span class="dv">1</span>); (<span class="dv">29158</span>, <span class="st">"A"</span>, <span class="dv">2</span>); (<span class="dv">29158</span>, <span class="st">"A"</span>, <span class="dv">3</span>)</span></code></pre><p></p></div>
+<p>In case all vectorised arguments have the same length <strong>Pairwise matching</strong>
+is used</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">29158</span>, <span class="dv">29158</span>); section <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>); numero <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>→ (<span class="dv">29158</span>, <span class="st">"A"</span>, <span class="dv">1</span>), (<span class="dv">29158</span>, <span class="st">"B"</span>, <span class="dv">2</span>)</span></code></pre><p></p></div>
+<p><strong>Ambiguous vectorisation</strong>:</p>
+<p>If more than one argument has <code>length &gt; 1</code> but lengths differ, it is unclear
+whether to combine them pairwise or via cartesian product. This is rejected
+with an error to avoid unintended queries.</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>x <span class="ot">=</span> <span class="dv">29158</span>, section <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), numero <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>Possible interpretations<span class="sc">:</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fl">1.</span> Pairwise<span class="sc">:</span> (<span class="dv">29158</span>, <span class="st">"A"</span>, <span class="dv">1</span>), (<span class="dv">29158</span>, <span class="st">"B"</span>, <span class="dv">2</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fl">2.</span> Cartesian<span class="sc">:</span> (<span class="dv">29158</span>, <span class="st">"A"</span>, <span class="dv">1</span>), (<span class="dv">29158</span>, <span class="st">"A"</span>, <span class="dv">2</span>), (<span class="dv">29158</span>, <span class="st">"B"</span>, <span class="dv">1</span>), (<span class="dv">29158</span>, <span class="st">"B"</span>, <span class="dv">2</span>)</span></code></pre><p></p></div>
+<p><strong>Source</strong>:</p>
+<p>BD Parcellaire (<code>"bdp"</code>) is no longer updated and its use is discouraged.
+PCI Express (<code>"pci"</code>) is strongly recommended and will become mandatory.
+See IGN's <a href="https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf" class="external-link">product comparison table</a>.</p>
     </div>
 
     <div class="section level2">
@@ -157,24 +157,31 @@ comparison of this two products can be found
 <span class="r-in"><span><span class="co"># get cadastral parcels</span></span></span>
 <span class="r-in"><span><span class="co">## from shape</span></span></span>
 <span class="r-in"><span><span class="va">parcels</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_cadastre</span><span class="op">(</span><span class="va">penmarch</span>, type <span class="op">=</span> <span class="st">"parcelle"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">parcels</span>, fill<span class="op">=</span><span class="st">"section"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## from insee code</span></span></span>
 <span class="r-in"><span><span class="va">parcels</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_cadastre</span><span class="op">(</span><span class="st">"29158"</span>, type <span class="op">=</span> <span class="st">"parcelle"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">parcels</span>, fill<span class="op">=</span><span class="st">"section"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use parameter recycling</span></span></span>
 <span class="r-in"><span><span class="co">## get sections "AW" parcels from multiple insee_code</span></span></span>
-<span class="r-in"><span><span class="va">parcels</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_cadastre</span><span class="op">(</span></span></span>
-<span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"29158"</span>, <span class="st">"29135"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>   section <span class="op">=</span> <span class="st">"AW"</span>,</span></span>
-<span class="r-in"><span>   type <span class="op">=</span> <span class="st">"parcelle"</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">parcels</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_cadastre</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"29158"</span>, <span class="st">"29135"</span><span class="op">)</span>, section <span class="op">=</span> <span class="st">"AW"</span>, type <span class="op">=</span> <span class="st">"parcelle"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">borders</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">parcels</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## if multiple args with length &gt; 1 result is ambigous</span></span></span>
+<span class="r-in"><span><span class="va">parcels</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_cadastre</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"29158"</span>, <span class="st">"29135"</span><span class="op">)</span>, section <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AW"</span>, <span class="st">"AB"</span><span class="op">)</span>, numero <span class="op">=</span> <span class="fl">1</span>, type <span class="op">=</span> <span class="st">"parcelle"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## get parcels numbered "0001", "0010" of section "AW" and "BR"</span></span></span>
+<span class="r-in"><span><span class="va">insee</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"29158"</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">section</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AW"</span>, <span class="st">"BR"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">numero</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0001"</span>, <span class="st">"0010"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">parcels</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_cadastre</span><span class="op">(</span><span class="st">"29158"</span>, section <span class="op">=</span> <span class="va">section</span>, numero <span class="op">=</span> <span class="va">numero</span>, type <span class="op">=</span> <span class="st">"parcelle"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">parcels</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_cadastre</span><span class="op">(</span><span class="va">insee</span>, section <span class="op">=</span> <span class="va">section</span>, numero <span class="op">=</span> <span class="va">numero</span>, type <span class="op">=</span> <span class="st">"parcelle"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">penmarch_borders</span>, fill <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">parcels</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Arrondissement insee code should be used for paris, lyon, marseille</span></span></span>
+<span class="r-in"><span><span class="va">error</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_cadastre</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75056</span>, <span class="fl">69123</span>, <span class="fl">13055</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">paris_arr123</span> <span class="op">&lt;-</span> <span class="fu">get_apicarto_cadastre</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75101</span>, <span class="fl">75102</span>, <span class="fl">75103</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html" class="external-link">qtm</a></span><span class="op">(</span><span class="va">paris_arr123</span>, fill <span class="op">=</span> <span class="st">"code_insee"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
