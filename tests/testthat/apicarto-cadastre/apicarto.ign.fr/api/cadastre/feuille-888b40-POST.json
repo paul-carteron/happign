@@ -1,0 +1,74 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "id": "feuille.68610",
+            "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [
+                    [
+                        [
+                            [
+                                -4.5655745,
+                                48.19197741
+                            ],
+                            [
+                                -4.56662816,
+                                48.19881129
+                            ],
+                            [
+                                -4.55344453,
+                                48.19418156
+                            ],
+                            [
+                                -4.55723644,
+                                48.18905211
+                            ],
+                            [
+                                -4.5655745,
+                                48.19197741
+                            ]
+                        ]
+                    ]
+                ]
+            },
+            "geometry_name": "geom",
+            "properties": {
+                "gid": 277078,
+                "feuille": 1,
+                "section": "FG",
+                "code_dep": "29",
+                "nom_com": "Crozon",
+                "code_com": "042",
+                "com_abs": "000",
+                "echelle": "2000",
+                "edition": "2025-04-01",
+                "code_arr": "000",
+                "code_insee": "29042"
+            },
+            "bbox": [
+                -4.56662816,
+                48.18905211,
+                -4.55344453,
+                48.19881129
+            ]
+        }
+    ],
+    "totalFeatures": 1,
+    "numberMatched": 1,
+    "numberReturned": 1,
+    "timeStamp": "2025-08-14T08:46:18.656Z",
+    "crs": {
+        "type": "name",
+        "properties": {
+            "name": "urn:ogc:def:crs:EPSG::4326"
+        }
+    },
+    "bbox": [
+        -4.56662816,
+        48.18905211,
+        -4.55344453,
+        48.19881129
+    ]
+}

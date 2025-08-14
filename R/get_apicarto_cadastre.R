@@ -1,50 +1,76 @@
 #' Apicarto Cadastre
 #'
 #' Implementation of the cadastre module from the
-#'  [IGN's apicarto](https://apicarto.ign.fr/api/doc/cadastre)
+#' [IGN's apicarto](https://apicarto.ign.fr/api/doc/cadastre)
 #'
 #' @usage
 #' get_apicarto_cadastre(x,
 #'                       type = "commune",
-#'                       code_com = NULL,
 #'                       section = NULL,
 #'                       numero = NULL,
-#'                       code_arr = NULL,
 #'                       code_abs = NULL,
-#'                       dTolerance = 0L,
 #'                       source = "pci",
 #'                       progress = TRUE)
 #'
-#' @param x It can be a shape, insee codes or departement codes :
+#' @param x `sf`, `sfc`, `character` or `numeric` :
 #' * Shape : must be an object of class `sf` or `sfc`.
-#' * Code insee : must be a `character` of length 5
+#' * Code insee : must be a `character` of length 5 (see [happign::com_2025])
 #' * Code departement : must be a `character` of length  2 or 3 (DOM-TOM)
-#' @param type A `character` from `"parcelle"`, `"commune"`, `"feuille"`,
-#'  `"division"`, `"localisant"`
-#' @param section A `character` of length 2
-#' @param numero A `character` of length 4
-#' @param code_abs A `character` corresponding to the code of absorbed commune.
+#' (see [happign::dep_2025])
+#' @param type `character` : type of data needed, default to `"commune"`.
+#' One of `"commune"`, `"parcelle"`, `"section"`, `"localisant"`.
+#' @param section `character` : corresponding to section of a city.
+#' @param numero `character` : corresponding to numero of cadastral parcels.
+#' @param code_abs `character` : corresponding to the code of absorbed commune.
 #' This prefix is useful to differentiate between communes that have merged
-#' @param source Can be "bdp" for BD Parcellaire or "pci" for Parcellaire express.
-#' See detail for more info.
+#' @param source `character` : `"bdp"` for BD Parcellaire or `"pci"` for
+#' Parcellaire express. Default to `"pci"`. See detail for more info.
 #' @param progress Display a progress bar? Use TRUE to turn on a basic progress
 #' bar, use a string to give it a name. See [httr2::req_perform_iterative()].
 #'
 #' @details
-#' `x`, `section`, `numero`, `code_arr`, `code_abs`, `code_com` can take vector of character.
-#' In this case vector recycling is done. See the example section below.
+#' **Vectorisation**:
 #'
-#' `source`: BD Parcellaire is a discontinued product. Its use is no longer
-#'  recommended because it is no longer updated. The use of PCI Express is
-#'  strongly recommended and will become mandatory. More information on the
-#'  comparison of this two products can be found
-#'  [here](https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf)
+#' Arguments `x`, `section`, `numero`, and `code_abs` are vectorized
+#' if only one argument has `length > 1` (**Cartesian product**)
+#' ```
+#' x = 29158; section = c("A", "B")
+#' → (29158, "A"), (29158, "B")
+#'
+#' x = 29158, section = "A", numero = 1:3
+#' → (29158, "A", 1); (29158, "A", 2); (29158, "A", 3)
+#' ```
+#'
+#' In case all vectorised arguments have the same length **Pairwise matching**
+#' is used
+#' ```
+#' x = c(29158, 29158); section = c("A", "B"); numero = 1:2
+#' → (29158, "A", 1), (29158, "B", 2)
+#' ```
+#'
+#' **Ambiguous vectorisation**:
+#'
+#' If more than one argument has `length > 1` but lengths differ, it is unclear
+#' whether to combine them pairwise or via cartesian product. This is rejected
+#' with an error to avoid unintended queries.
+#' ```
+#' x = 29158, section = c("A", "B"), numero = 1:2
+#' Possible interpretations:
+#' 1. Pairwise: (29158, "A", 1), (29158, "B", 2)
+#' 2. Cartesian: (29158, "A", 1), (29158, "A", 2), (29158, "B", 1), (29158, "B", 2)
+#' ```
+#'
+#' **Source**:
+#'
+#' BD Parcellaire (`"bdp"`) is no longer updated and its use is discouraged.
+#' PCI Express (`"pci"`) is strongly recommended and will become mandatory.
+#' See IGN's [product comparison table](https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf).
 #'
 #' @return Object of class `sf`
 #' @export
 #'
-#' @importFrom sf st_as_sfc st_make_valid st_transform st_simplify
-#' @importFrom yyjsonr write_geojson_str
+#' @importFrom sf st_geometry st_geometry_type st_make_valid st_transform
+#' @importFrom jsonlite toJSON
 #' @importFrom httr2 req_perform_iterative iterate_with_offset resp_body_string
 #' req_options req_url_path req_url_query resp_body_json resps_data req_url_path_append
 #'
@@ -108,6 +134,7 @@ get_apicarto_cadastre <- function(x,
                                   source = "pci",
                                   progress = TRUE) {
 
+   type <- match.arg(type, c("parcelle", "commune", "section", "localisant"))
    pad0 <- \(x, n) if (is.null(x)) NULL else gsub(" ", "0", sprintf(paste0("%", n, "s"), x))
 
    is_geom <- inherits(x, c("sf", "sfc"))
@@ -127,10 +154,16 @@ get_apicarto_cadastre <- function(x,
               "Use `sf::st_union()` to combine them or split into multiple requests.",
               call. = FALSE)
       }
-
+      if (st_geometry_type(x) == "MULTIPOINT"){
+         stop("`MULTIPOINT` geometry aren't supported by apicarto.", call. = FALSE)
+      }
    }
 
    if(is_code_insee) ensure_is_not_arr(x)
+
+   if (type == "section"){
+      type <- if (source == "pci") "feuille" else "division"
+   }
 
    default_args <- list(
       "source_ign" = toupper(source),
@@ -152,7 +185,7 @@ get_apicarto_cadastre <- function(x,
    can_use <- length(unique(vectorized_args_size)) == 2 # all args have same length or 0 (NULL)
 
    if (!can_expand & !can_use){
-      stop("Ambiguous vectorization: multiple arguments have length > 1: ")
+      stop("Ambiguous vectorization: multiple arguments have length > 1: ", call. = FALSE)
    }
 
    args <- c(vectorized_args, default_args)
@@ -201,7 +234,7 @@ fetch_data <- function(args, type, progress) {
       req_url_path_append(type) |>
       req_options(ssl_verifypeer = 0) |>
       req_method("POST") |>
-      req_url_query(!!!unlist(args))
+      req_url_query(!!!args)
 
    error_na_data_found <- paste(
       unlist(args[c("code_insee", "code_dep", "code_com", "section", "numero", "code_arr", "code_abs")]),
@@ -256,7 +289,7 @@ process_responses <- function(resps) {
 ensure_is_not_arr <- function(insee_code){
    arr_to_check <- c(paris = 75056, lyon = 69123, marseille = 13055)
    is_arr <- insee_code %in% arr_to_check
-   what_is_arr <- arr_to_check[is_arr]
+   what_is_arr <- arr_to_check[which(is_arr, arr_to_check)]
 
    if (any(is_arr)) {
       stop(

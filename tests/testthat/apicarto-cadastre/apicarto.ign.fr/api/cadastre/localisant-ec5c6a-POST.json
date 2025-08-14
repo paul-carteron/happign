@@ -1,0 +1,54 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "id": "localisant.3350940",
+            "geometry": {
+                "type": "MultiPoint",
+                "coordinates": [
+                    [
+                        -4.36577745,
+                        47.80538316
+                    ]
+                ]
+            },
+            "geometry_name": "geom",
+            "properties": {
+                "gid": 151822,
+                "numero": "0001",
+                "feuille": 1,
+                "section": "AW",
+                "code_dep": "29",
+                "nom_com": "Penmarch",
+                "code_com": "158",
+                "com_abs": "000",
+                "code_arr": "000",
+                "idu": "29158000AW0001",
+                "code_insee": "29158"
+            },
+            "bbox": [
+                -4.36577745,
+                47.80538316,
+                -4.36577745,
+                47.80538316
+            ]
+        }
+    ],
+    "totalFeatures": 1,
+    "numberMatched": 1,
+    "numberReturned": 1,
+    "timeStamp": "2025-08-14T08:46:25.430Z",
+    "crs": {
+        "type": "name",
+        "properties": {
+            "name": "urn:ogc:def:crs:EPSG::4326"
+        }
+    },
+    "bbox": [
+        -4.36577745,
+        47.80538316,
+        -4.36577745,
+        47.80538316
+    ]
+}

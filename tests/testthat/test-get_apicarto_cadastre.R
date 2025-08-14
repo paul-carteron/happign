@@ -1,145 +1,117 @@
-test_that("get_geojson work", {
-   poly <- happign:::poly
-   poly_json <- get_geojson(poly)
-   expect_match(poly_json,
-                paste0('\\{"type":"Polygon","coordinates":\\[\\[',
-                       '\\[-4\\.34.*,47\\.81.*\\],',
-                       '\\[-4\\.34.*,47\\.81.*\\],',
-                       '\\[-4\\.34.*,47\\.81.*\\],',
-                       '\\[-4\\.34.*,47\\.81.*\\]',
-                       '\\]\\]\\}'))
+f_test <- \(x, ...) get_apicarto_cadastre(x, ..., progress = FALSE)
+
+test_that("bad type", {
+   err_msg <- "'arg' doit être un de “parcelle”, “commune”, “section”, “localisant”"
+   expect_error(f_test("29158", type = "bad"), err_msg)
 })
 
-test_that("process_character_input work", {
-   expect_equal(process_character_input("123"),
-                list(code_insee = NULL, code_dep = "123"))
-   expect_equal(process_character_input("12"),
-                list(code_insee = NULL, code_dep = "12"))
-   expect_equal(process_character_input("12345"),
-                list(code_insee = "12345", code_dep = NULL))
-   expect_error(process_character_input("123245"),"Character input 'x' must be")
+test_that("multipoint aren't supported", {
+   err_msg <- "`MULTIPOINT` geometry aren't supported by apicarto."
+   expect_error(f_test(happign:::multipoint), err_msg)
 })
 
-test_that("create_params work", {
-   simple_params <- create_params(1, 2, 3, 4, 5, 6, 7, 8, "pci")
-   expect_equal(simple_params, list(
-      `1` =
+
+test_that("x must be sf/sfc or valid INSEE/DEP", {
+   err_msg <- "must be either an `sf` / `sfc` object, or a character vector"
+
+   expect_error(f_test("oops"), err_msg)
+   expect_error(f_test("00000"), err_msg)
+   expect_error(f_test("123"), err_msg)
+   expect_error(f_test(123), err_msg)
+})
+
+test_that("geometry must contain exactly one feature", {
+   err_msg <- "Cadastre API only accepts one geometry per request"
+   two_features <- c(happign:::poly, happign:::poly)
+   expect_error(f_test(two_features), err_msg)
+})
+
+test_that("arrondissement INSEE codes are enforced", {
+
+   err_msg <- \(x) paste("Codes", paste(x, collapse = ", "), "correspond to cities with arrondissements")
+   arr <- c(75056, 69123, 13055)
+
+   expect_error(ensure_is_not_arr(arr[1]), err_msg(arr[1]))
+   expect_error(ensure_is_not_arr(arr), err_msg(arr))
+
+   # nothing happened when insee_code is valid
+   expect_null(ensure_is_not_arr(29158))
+
+})
+
+test_that("ambiguous vectorisation", {
+
+   err_msg <- "Ambiguous vectorization: multiple arguments have length > 1"
+   expect_error(
+      f_test(c("29158", "29135"), section = c("AW", "BR"), numero  = "0001"),
+      err_msg
+   )
+
+   expect_error(
+      f_test("29158", section = c("AW", "BR"), numero  = c("0001", "0002")),
+      err_msg
+   )
+
+})
+
+# tests/testthat/test-cadastre-httptest2.R
+with_mock_dir("apicarto-cadastre", {
+   skip_on_cran()
+   skip_if_offline()
+
+   expect_sf <- \(x, type = c("POLYGON", "MULTIPOLYGON"), row = 1) {
+      expect_s3_class(x, "sf")
+      expect_true(any(st_geometry_type(x) %in% type))
+      expect_true(nrow(x) >= row)
+   }
+
+   test_that("apicarto cadastre works insee", {
+      expect_sf(f_test("29158"))
+   })
+
+   test_that("apicarto cadastre works dep", {
+      expect_sf(f_test("29", section="FG", type = "section"))
+   })
+
+   test_that("apicarto cadastre geom", {
+      lapply(
          list(
-            geom = 1,
-            code_insee = 2,
-            code_dep = 3,
-            code_com = "004",
-            section = "05",
-            numero = "0006",
-            code_arr = "007",
-            code_abs = "008",
-            source_ign = "PCI",
-            `_start` = 0,
-            `_limit` = 500
-         )
-   ))
+            happign:::poly, happign:::multipoly,
+            happign:::point, #happign:::multipoint,
+            happign:::line, happign:::multiline
+            ),
+         \(x) {expect_sf(f_test(x))}
+      )
 
+   })
 
-   multiple_params <- create_params(c(1, 2), c("A", "B"), NULL, NULL, NULL, NULL, NULL, NULL, "pci")
-   expect_equal(multiple_params,
-                list(
-                   `1` = list(geom = 1, code_insee = "A", source_ign = "PCI", `_start` = 0, `_limit` = 500),
-                   `2` = list(geom = 2, code_insee = "A", source_ign = "PCI", `_start` = 0, `_limit` = 500),
-                   `3` = list(geom = 1, code_insee = "B", source_ign = "PCI", `_start` = 0, `_limit` = 500),
-                   `4` = list(geom = 2, code_insee = "B", source_ign = "PCI", `_start` = 0, `_limit` = 500)
-                   )
-                )
+   test_that("apicarto cadastre vectorization works", {
+      expect_sf(
+         f_test("29158", section = "AW", numero = 1:2, type = "parcelle"),
+         row = 2
+      )
+   })
+
+   test_that("apicarto cadastre localisant works", {
+      expect_sf(
+         f_test("29158", section = "AW", numero = 1, type = "localisant"),
+         type = c("POINT", "MULTIPOINT")
+      )
+   })
+
+   test_that("apicarto cadastre section works", {
+      expect_sf(f_test("29158", section = "AW", type = "section"))
+      expect_sf(f_test("29158", section = "AW", type = "section", source = "bdp"))
+   })
+
+   test_that("empty results are handled", {
+         expect_warning(
+            f_test("29158", type = "parcelle", section = "ZZ", numero = "9999"),
+            "No data found for : 29158 - ZZ - 9999"
+            )
+
+         expect_null(f_test("29158", type = "parcelle", section = "ZZ") |> suppressWarnings())
+
+      })
 
 })
-
-with_mock_dir("fetch_data", {
-   #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
-   test_that("fetch_data", {
-      skip_on_cran()
-      skip_if_offline()
-      skip_on_ci()
-
-      simple_params <- list(list(geom = NULL, code_insee = "29158", code_dep = NULL,
-                                 code_com = NULL, section = NULL, numero = NULL, code_arr = NULL,
-                                 code_abs = NULL, source_ign = "PCI", `_start` = 0, `_limit` = 500))
-      res = fetch_data(simple_params[[1]], "commune", F)
-
-      expect_equal(class(res), "list")
-      expect_s3_class(res[[1]], "httr2_response")
-      expect_equal(res[[1]]$url, "https://apicarto.ign.fr/api/cadastre/commune?code_insee=29158&source_ign=PCI&_start=0&_limit=500")
-   })
-}, simplify = FALSE)
-
-with_mock_dir("fetch_data error dtolerance", {
-   #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
-   test_that("fetch_data", {
-      skip_on_cran()
-      skip_if_offline()
-      skip_on_ci()
-
-      # Error
-      dtolerance_params <- list(list(geom = get_geojson(st_buffer(happign:::point, 10000)),
-                                     code_insee = NULL, code_dep = NULL,
-                                     code_com = NULL, section = NULL, numero = NULL, code_arr = NULL,
-                                     code_abs = NULL, source_ign = "PCI", `_start` = 0, `_limit` = 500))
-      expect_error(fetch_data(dtolerance_params[[1]], "commune", F),
-                   "Shape is too complex.")
-      })
-}, simplify = FALSE)
-
-with_mock_dir("fetch_data error no data", {
-   #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
-   test_that("fetch_data", {
-      skip_on_cran()
-      skip_if_offline()
-      skip_on_ci()
-
-      # Error
-      no_data_params <- list(list(geom = NULL,
-                                  code_insee = "29760", code_dep = NULL,
-                                  code_com =  NULL, section = "0001", numero = NULL, code_arr = NULL,
-                                  code_abs = NULL, source_ign = "PCI", `_start` = 0, `_limit` = 500))
-      expect_warning(fetch_data(no_data_params[[1]], "commune", F),
-                     "No data found for : 29760 - 0001")
-      })
-}, simplify = FALSE)
-
-
-with_mock_dir("process_responses", {
-   #/!\ Again, you have to manually change encoding "UTF-8" to "ISO-8859-1" !
-   test_that("fetch_data", {
-      skip_on_cran()
-      skip_if_offline()
-      skip_on_ci()
-
-      simple_params <- list(list(geom = NULL, code_insee = "29158", code_dep = NULL,
-                                 code_com = NULL, section = NULL, numero = NULL, code_arr = NULL,
-                                 code_abs = NULL, source_ign = "PCI", `_start` = 0, `_limit` = 500))
-      resp1 = fetch_data(simple_params[[1]], "commune", F)
-      res = process_responses(resp1)
-
-      expect_s3_class(res, "sf")
-      expect_equal(dim(res), c(1, 5))
-
-   })
-}, simplify = FALSE)
-
-with_mock_dir("get_apicarto_cadastre", {
-   test_that("fetch_data", {
-      skip_on_cran()
-      skip_if_offline()
-      skip_on_ci()
-
-      params <- expand.grid(code_insee = c("29158", "29135"),
-                            section = c("AX"),
-                            numero = c("0001", "0010"),
-                            stringsAsFactors = FALSE)
-      parcels <- get_apicarto_cadastre(params$code_insee,
-                                       section = params$section,
-                                       numero = params$numero,
-                                       type = "parcelle")
-
-      expect_s3_class(parcels, "sf")
-      expect_equal(dim(parcels), c(4, 14))
-   })
-}, simplify = FALSE)

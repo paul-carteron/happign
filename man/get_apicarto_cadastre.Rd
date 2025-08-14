@@ -6,35 +6,33 @@
 \usage{
 get_apicarto_cadastre(x,
                       type = "commune",
-                      code_com = NULL,
                       section = NULL,
                       numero = NULL,
-                      code_arr = NULL,
                       code_abs = NULL,
-                      dTolerance = 0L,
                       source = "pci",
                       progress = TRUE)
 }
 \arguments{
-\item{x}{It can be a shape, insee codes or departement codes :
+\item{x}{\code{sf}, \code{sfc}, \code{character} or \code{numeric} :
 \itemize{
 \item Shape : must be an object of class \code{sf} or \code{sfc}.
-\item Code insee : must be a \code{character} of length 5
+\item Code insee : must be a \code{character} of length 5 (see \link{com_2025})
 \item Code departement : must be a \code{character} of length  2 or 3 (DOM-TOM)
+(see \link{dep_2025})
 }}
 
-\item{type}{A \code{character} from \code{"parcelle"}, \code{"commune"}, \code{"feuille"},
-\code{"division"}, \code{"localisant"}}
+\item{type}{\code{character} : type of data needed, default to \code{"commune"}.
+One of \code{"commune"}, \code{"parcelle"}, \code{"section"}, \code{"localisant"}.}
 
-\item{section}{A \code{character} of length 2}
+\item{section}{\code{character} : corresponding to section of a city.}
 
-\item{numero}{A \code{character} of length 4}
+\item{numero}{\code{character} : corresponding to numero of cadastral parcels.}
 
-\item{code_abs}{A \code{character} corresponding to the code of absorbed commune.
+\item{code_abs}{\code{character} : corresponding to the code of absorbed commune.
 This prefix is useful to differentiate between communes that have merged}
 
-\item{source}{Can be "bdp" for BD Parcellaire or "pci" for Parcellaire express.
-See detail for more info.}
+\item{source}{\code{character} : \code{"bdp"} for BD Parcellaire or \code{"pci"} for
+Parcellaire express. Default to \code{"pci"}. See detail for more info.}
 
 \item{progress}{Display a progress bar? Use TRUE to turn on a basic progress
 bar, use a string to give it a name. See \code{\link[httr2:req_perform_iterative]{httr2::req_perform_iterative()}}.}
@@ -47,14 +45,42 @@ Implementation of the cadastre module from the
 \href{https://apicarto.ign.fr/api/doc/cadastre}{IGN's apicarto}
 }
 \details{
-\code{x}, \code{section}, \code{numero}, \code{code_arr}, \code{code_abs}, \code{code_com} can take vector of character.
-In this case vector recycling is done. See the example section below.
+\strong{Vectorisation}:
 
-\code{source}: BD Parcellaire is a discontinued product. Its use is no longer
-recommended because it is no longer updated. The use of PCI Express is
-strongly recommended and will become mandatory. More information on the
-comparison of this two products can be found
-\href{https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf}{here}
+Arguments \code{x}, \code{section}, \code{numero}, and \code{code_abs} are vectorized
+if only one argument has \code{length > 1} (\strong{Cartesian product})
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{x = 29158; section = c("A", "B")
+→ (29158, "A"), (29158, "B")
+
+x = 29158, section = "A", numero = 1:3
+→ (29158, "A", 1); (29158, "A", 2); (29158, "A", 3)
+}\if{html}{\out{</div>}}
+
+In case all vectorised arguments have the same length \strong{Pairwise matching}
+is used
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{x = c(29158, 29158); section = c("A", "B"); numero = 1:2
+→ (29158, "A", 1), (29158, "B", 2)
+}\if{html}{\out{</div>}}
+
+\strong{Ambiguous vectorisation}:
+
+If more than one argument has \code{length > 1} but lengths differ, it is unclear
+whether to combine them pairwise or via cartesian product. This is rejected
+with an error to avoid unintended queries.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{x = 29158, section = c("A", "B"), numero = 1:2
+Possible interpretations:
+1. Pairwise: (29158, "A", 1), (29158, "B", 2)
+2. Cartesian: (29158, "A", 1), (29158, "A", 2), (29158, "B", 1), (29158, "B", 2)
+}\if{html}{\out{</div>}}
+
+\strong{Source}:
+
+BD Parcellaire (\code{"bdp"}) is no longer updated and its use is discouraged.
+PCI Express (\code{"pci"}) is strongly recommended and will become mandatory.
+See IGN's \href{https://geoservices.ign.fr/sites/default/files/2021-07/Comparatif_PEPCI_BDPARCELLAIRE.pdf}{product comparison table}.
 }
 \examples{
 \dontrun{
@@ -77,24 +103,31 @@ qtm(borders, fill="nom_com")
 # get cadastral parcels
 ## from shape
 parcels <- get_apicarto_cadastre(penmarch, type = "parcelle")
+qtm(parcels, fill="section")
 
 ## from insee code
 parcels <- get_apicarto_cadastre("29158", type = "parcelle")
+qtm(parcels, fill="section")
 
 # Use parameter recycling
 ## get sections "AW" parcels from multiple insee_code
-parcels <- get_apicarto_cadastre(
-   c("29158", "29135"),
-   section = "AW",
-   type = "parcelle"
-)
+parcels <- get_apicarto_cadastre(c("29158", "29135"), section = "AW", type = "parcelle")
 qtm(borders, fill = NA)+qtm(parcels)
 
+## if multiple args with length > 1 result is ambigous
+parcels <- get_apicarto_cadastre(c("29158", "29135"), section = c("AW", "AB"), numero = 1, type = "parcelle")
+
 ## get parcels numbered "0001", "0010" of section "AW" and "BR"
+insee <- rep("29158", 2)
 section <- c("AW", "BR")
 numero <- c("0001", "0010")
-parcels <- get_apicarto_cadastre("29158", section = section, numero = numero, type = "parcelle")
+parcels <- get_apicarto_cadastre(insee, section = section, numero = numero, type = "parcelle")
 qtm(penmarch_borders, fill = NA)+qtm(parcels)
+
+# Arrondissement insee code should be used for paris, lyon, marseille
+error <- get_apicarto_cadastre(c(75056, 69123, 13055))
+paris_arr123 <- get_apicarto_cadastre(c(75101, 75102, 75103))
+qtm(paris_arr123, fill = "code_insee")
 
 }
 
