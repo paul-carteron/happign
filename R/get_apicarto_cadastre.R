@@ -103,7 +103,11 @@
 #'
 #' # Use parameter recycling
 #' ## get sections "AW" parcels from multiple insee_code
-#' parcels <- get_apicarto_cadastre(c("29158", "29135"), section = "AW", type = "parcelle")
+#' parcels <- get_apicarto_cadastre(
+#'    c("29158", "29135"),
+#'    section = "AW",
+#'    type = "parcelle"
+#'    )
 #' qtm(borders, fill = NA)+qtm(parcels)
 #'
 #' ## if multiple args with length > 1 result is ambigous

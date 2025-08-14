@@ -24,8 +24,7 @@ Imports:
     methods,
     sf (>= 1.0-7),
     terra,
-    xml2,
-    yyjsonr
+    xml2
 Suggests: 
     covr,
     ggplot2,

@@ -1,8 +1,7 @@
 f_test <- \(x, ...) get_apicarto_cadastre(x, ..., progress = FALSE)
 
 test_that("bad type", {
-   err_msg <- "'arg' doit être un de “parcelle”, “commune”, “section”, “localisant”"
-   expect_error(f_test("29158", type = "bad"), err_msg)
+   expect_error(f_test("29158", type = "bad"), regexp = "should be one of")
 })
 
 test_that("multipoint aren't supported", {

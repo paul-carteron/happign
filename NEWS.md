@@ -1,3 +1,13 @@
+# happign 0.3.6
+Refactor `get_apicarto_cadastre` :
+   * Add explicite vectorization ;
+   * Remove `code_com` and `code_arr` whic aren't mandatory ;
+   * Special arrondissement case for `Paris`, `Lyon` and `Marseille` is implemented
+
+Breaking changes:
+   * Remove `get_apicarto_rpg` which isn't update anymore
+
+
 # happign 0.3.5
 Bug fixes:
 * add support to `get_wfs` to find geometry name [#40](https://github.com/paul-carteron/happign/issues/40)
