@@ -76,177 +76,178 @@
 #'}
 #'
 
-get_municipality <- function(x){
+get_gpu_layers <- function(type = NULL){
+   ressources <- list(
+      "document" = "commune",
+      "zone-urba" = "du",
+      "secteur-cc" = "du",
+      "prescription-surf" = "du",
+      "prescription-lin" = "du",
+      "prescription-pct" = "du",
+      "info-surf" = "du",
+      "info-lin" = "du",
+      "info-pct" = "du",
+      "acte-sup" = "acte-sup",
+      "assiette-sup-s" = "sup",
+      "assiette-sup-l" = "sup",
+      "assiette-sup-p" = "sup",
+      "generateur-sup-s" = "sup",
+      "generateur-sup-l" = "sup",
+      "generateur-sup-p" = "sup"
+   )
+
+   if (is.null(type)) return(ressources)
+
+   ressources[ressources %in% type]
+
+}
+
+get_apicarto_gpu(x, layer, category = NULL, progress){
+
+   match.arg(layer, names(get_gpu_layers()), several.ok = TRUE)
+
    is_geom <- inherits(x, c("sf", "sfc"))
+   is_partition <- lapply(x, \(x) is_valid_gpu_partition(x)$valid) |> unlist()
    is_insee_code <- pad0(x, 5) %in% happign::com_2025$COM
 
-   if (!all(is_insee_code)){
-      bad_codes <- x[!is_insee_code]
+   layers_type <- unlist(unique(get_gpu_layers()[layer]))
+   is_same_layer_type <- length(layers_type) == 1
 
-      if (length(bad_codes) > 0){
-         search_insee <- get_apicarto_codes_postaux(bad_codes)
-
-         if (nrow(search_insee) > 0) {
-            msg <- apply(suggestions, 1, function(row) {
-               sprintf(
-                  "\nx = %s is perhaps a postal code; did you mean commune %s (%s)?",
-                  row[["codePostal"]], row[["codeCommune"]], row[["nomCommune"]]
-               )
-            })
-            stop(msg, call. = FALSE)
-         }
-      }
+   if (!is_same_layer_type){
+      stop("`layer` can't mix type `",
+           paste(layers_type, collapse = "`, `"),
+           "`. See ?get_gpu_layers for more info.",
+           call. = FALSE)
    }
 
-}
-get_apicarto_gpu <- function(x,
-                             ressource = "zone-urba",
-                             categorie = list(NULL),
-                             dTolerance = 0){
-
-   # initialisation
-
-   geom <- partition <- insee <- list(NULL)
-
-   # check input ----
-   # x
-   if (!inherits(x, c("character", "sf", "sfc"))) { # x can have 3 class
-      stop("x must be of class character, sf or sfc.")
-   }
-
-   # ressource
-   match.arg(ressource,
-             c("municipality", "document","zone-urba", "secteur-cc", "prescription-surf",
-               "prescription-lin", "prescription-pct",
-               "info-surf", "info-lin", "info-pct", "acte-sup",
-               "assiette-sup-s", "assiette-sup-l", "assiette-sup-p",
-               "generateur-sup-s", "generateur-sup-l", "generateur-sup-p"),
-             several.ok = TRUE)
-
-   # dTolerance
-   bad_dTolerance <- inherits(dTolerance, "numeric") &
-      dTolerance < 0
-   if (bad_dTolerance) {
-      stop("dTolerance must be a positive numeric.")
-   }
-
-   # if ressource == acte-sup, x can't be geometry
-   if (any(ressource == "acte-sup") & inherits(x, c("sf", "sfc"))){
-      stop("geometry can't be used when `ressource = \"acte-sup\"`.",
-           " Use partition instead.",
-           call. = F)
-   }
-
-   # prepare x to request ----
-   # spatial object ie geom
-   if(inherits(x, c("sf", "sfc"))){
-      geom <- shp_to_geojson(x, 4326, dTolerance)
-   }
-
-   # character object : partition
-   is_partition <- all(inherits(x, "character") & nchar(x) > 5)
-   if (is_partition){
-      # municipality only used with geom or insee code
-      if (any(ressource == "municipality")){
-         stop("partition can't be used when `ressource = \"municipality\"`.",
-              " Use insee code instead.",
-              call. = F)
-      }
-
-      # test format of partition
-      if (all(incorrect_partition(x))) {
-         stop(sprintf("\"%s\" isn't a valid format for `partition`.",
-                      paste(x, collapse = "\" or \"")),
-              call. = F)
-      }
-
-      partition <- x
-
-   }
-
-   # character object : insee code
-   is_insee_code <- all(inherits(x, "character") & nchar(x) == 5)
-   if (is_insee_code){
-      insee <- x
-      if(any(ressource != "municipality")){
-         stop("insee code can only be used when `ressource = \"municipality\"`.",
-              call. = F)
-      }
-   }
-
-   # hit api ----
-   message("Features downloaded : ", appendLF = F)
-
-   tryCatch({
-      resp <- Map(build_req_hit_api,
-                  path = paste0("/api/gpu/", ressource),
-                  "geom" = geom,
-                  "partition" = partition,
-                  "insee" = insee,
-                  "categorie" = categorie)
-   }, error = function(cnd){
-      if (grepl(cnd, "HTTP 500")) {
-         stop(cnd,
-              "Apicarto gpu is currently unavailable, please try again later.", call. = F)
-      }
-   })
-
-
-   # processing result ----
-   if (all(is_empty(unlist(resp)))){
-      warning("No data found, NULL is returned.", call. = FALSE)
-      return(NULL)
-   }
-
-   # bind rows of each Map call
-   tryCatch({
-      resp <- suppressWarnings(do.call(rbind, resp))
-      # Cleaning list column from features
-      resp <- resp[ , !sapply(resp, is.list)]
-      message(nrow(resp), appendLF = F)
-
-   }, error = function(cnd){
-      message(length(resp), appendLF = T)
-      warning("Resources have different attributes and cannot be",
-              " joined. List is returned.",
+   if (is_geom) {
+      if (length(st_geometry(x)) > 1) {
+         stop("GPU API only accepts one geometry per request. ",
+              "You provided ", length(x), " geometries.\n",
+              "Use `sf::st_union()` to combine them or split into multiple requests.",
               call. = FALSE)
-   })
+      }
+      if (layer == "acte-sup"){
+         stop("`x` can't be an object of class `sf` or `sfc` when `layer` ", "
+              == \"acte-sup\". Use partition instead.",
+              call. = F)
+      }
+   }
 
-   return(resp)
+   if (!is_geom){
+      info <- switch(
+         type,
+         "municipality" = list(validator = is_insee_code,
+                               what = "INSEE code(s)",
+                               help = "`data(com_2025)`"),
+         list(validator = is_partition,
+              what = "partition code(s)",
+              help = "https://www.geoportail-urbanisme.gouv.fr/image/UtilisationAPI_GPU_1-0.pdf")
+      )
 
+      if (!all(info$validator)) {
+         bad <- paste(x[!info$validator], collapse = ", ")
+         stop(sprintf("Unknown %s: %s. See %s", info$what, bad, info$help), call. = FALSE)
+      }
+   }
+
+   is_sup <- layers_type == "sup"
+
+   vectorized_args <- list(
+      "geom" = if (is_geom) as_geojson(x) else NULL,
+      "insee" = if (all(is_insee_code)) x else NULL,
+      "partition" = if (all(is_partition)) x else NULL,
+      "category" = if (is_sup) category else NULL,
+   )
+
+   args_not_null <- Filter(Negate(is.null), vectorized_args)
+   args_df <- expand.grid(args_not_null, stringsAsFactors = FALSE, KEEP.OUT.ATTRS = FALSE)
+
+   args_list <- split(args_df, seq(nrow(args_df))) |> lapply(as.list)
+   resps <- lapply(args_list, fetch_gpu_data, type = type, progress = progress)
+
+   result <- lapply(resps, process_gpu_resp)
+
+   result <- do.call(rbind, result)
+   result <- result[, !sapply(result, is.list)]
+
+   return(result)
 }
+
+
+#' @name fetch_gpu_data
+#' @noRd
+#' @description Fecth data from args
+fetch_gpu_data <- function(args, type, progress) {
+
+   req <- request("https://apicarto.ign.fr") |>
+      req_url_path("api/gpu") |>
+      req_url_path_append(type) |>
+      req_options(ssl_verifypeer = 0) |>
+      req_method("POST") |>
+      req_url_query(!!!args)
+
+   error_na_data_found <- unlist(args["code_insee"])
+
+   resps <- tryCatch({
+      req_perform(req)
+      },
+      error = function(e) {
+      warning("No data found for : ", error_na_data_found, call. = F)
+         return(NULL)
+      }
+   )
+
+   return(resps)
+}
+
+#' @name process_gpu_resps
+#' @noRd
+#' @description Combines all responses in one sf object
+process_gpu_resp <- function(resp) {
+   res <- resp_body_string(resp) |>
+      lapply(read_sf)
+
+   result <- do.call(rbind, res)
+   result <- result[, !sapply(result, is.list)]
+
+   return(result)
+}
+
 
 #' @description test partition parameter format from `get_apicarto_gpu`
 #' @param x character
 #' @return logical
 #' @noRd
 #'
-incorrect_partition <- function(x){
+is_valid_gpu_partition <- function(x) {
+   # normalize
+   x <- toupper(trimws(x))
 
-   # see : https://apicarto.ign.fr/api/doc/pdf/docUser_moduleUrbanisme.pdf
+   # elementary tokens
+   re_insee  <- "[0-9]{5}"                       # commune INSEE
+   re_siren  <- "[0-9]{9}"                       # SIREN
+   re_codedu <- "[A-Z0-9]+"                      # fallback: CodeDU (alnum)
 
-   # DU_<codeINSEE> : "DU_93014" (POS, PLU, CC)
-   # DU_<codeSIREN> : "DU_200057867" (PLUi)
-   pattern1 <- "(?:DU)_(?:\\d{5}|\\d{9})$"
+   # codeGeo: INSEE|dept(2,3 or 2A/2B)|region RXX|FR... (broad)
+   re_dept   <- "(?:[0-9]{2}|[0-9]{3}|2A|2B)"
+   re_region <- "R[0-9]{2}"
+   re_codefr <- "FR[A-Z0-9-]+"
+   re_codegeo <- paste0("(?:", re_insee, "|", re_dept, "|", re_region, "|", re_codefr, ")")
+   re_catsup <- "[A-Z0-9]+"                      # SUP category (national nomenclature, broad)
 
-   # PSMV_<codeINSEE> : PSMV_78646 (PSMV)
-   pattern2 <- "(?:PSMV)_(?:\\d){5}$"
+   patterns <- list(
+      DU_communal          = paste0("^DU_", re_insee, "$"),
+      DU_intercommunal     = paste0("^DU_", re_siren, "(?:_", re_codedu, ")?$"),
+      PSMV                 = paste0("^PSMV_", re_insee, "(?:_", re_codedu, ")?$"),
+      SUP_with_idgest      = paste0("^", re_siren, "_SUP_", re_codegeo, "_", re_catsup, "$"),
+      SUP_no_idgest        = paste0("^SUP_", re_codegeo, "_", re_catsup, "$"),
+      SCOT                 = paste0("^", re_siren, "_SCOT(?:_", re_codedu, ")?$")
+   )
 
-   # {<idGest>_}SUP_<codeGeo>_<categorie> :
-   ## "130007123_SUP_93_A7"
-   ## "130007123_SUP_934_A7"
-   ## "130007123_SUP_93014_A7"
-   ## "SUP_93_A7"
-   pattern3 <- "(?:\\d{9}_)?SUP_(?:\\d{2}|\\d{3}|\\d{5})_(?:\\w{2,6})$"
-
-   # if one is FALSE then is incorrect partition
-   !c(all(grepl(pattern1, x)),
-      all(grepl(pattern2, x)),
-      all(grepl(pattern3, x)))
-
+   which_match <- names(patterns)[vapply(patterns, function(p) grepl(p, x, perl = TRUE), logical(1))]
+   list(valid = length(which_match) == 1L, type = if (length(which_match)) which_match else NA_character_)
 }
-
-
 
 
 
