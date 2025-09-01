@@ -183,3 +183,10 @@ interactive_mode <- function(data_type){
 
    return(list("layer" = layer))
 }
+
+
+#' @title pad0
+#'
+#' @return
+#' @noRd
+pad0 <- \(x, n) if (is.null(x)) NULL else gsub(" ", "0", sprintf(paste0("%", n, "s"), x))

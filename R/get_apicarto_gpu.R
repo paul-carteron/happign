@@ -74,12 +74,38 @@
 #' all_gen <- get_apicarto_gpu(x, ressource = ressources)
 #'
 #'}
+#'
+
+get_municipality <- function(x){
+   is_geom <- inherits(x, c("sf", "sfc"))
+   is_insee_code <- pad0(x, 5) %in% happign::com_2025$COM
+
+   if (!all(is_insee_code)){
+      bad_codes <- x[!is_insee_code]
+
+      if (length(bad_codes) > 0){
+         search_insee <- get_apicarto_codes_postaux(bad_codes)
+
+         if (nrow(search_insee) > 0) {
+            msg <- apply(suggestions, 1, function(row) {
+               sprintf(
+                  "\nx = %s is perhaps a postal code; did you mean commune %s (%s)?",
+                  row[["codePostal"]], row[["codeCommune"]], row[["nomCommune"]]
+               )
+            })
+            stop(msg, call. = FALSE)
+         }
+      }
+   }
+
+}
 get_apicarto_gpu <- function(x,
                              ressource = "zone-urba",
                              categorie = list(NULL),
                              dTolerance = 0){
 
    # initialisation
+
    geom <- partition <- insee <- list(NULL)
 
    # check input ----

@@ -144,7 +144,6 @@ get_apicarto_cadastre <- function(x,
                                   progress = TRUE) {
 
    type <- match.arg(type, c("parcelle", "commune", "section", "localisant"))
-   pad0 <- \(x, n) if (is.null(x)) NULL else gsub(" ", "0", sprintf(paste0("%", n, "s"), x))
 
    is_geom <- inherits(x, c("sf", "sfc"))
    is_code_insee <- all(pad0(x, 5) %in% happign::com_2025$COM)

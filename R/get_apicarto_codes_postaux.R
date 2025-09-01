@@ -35,7 +35,6 @@
 
 get_apicarto_codes_postaux <- function(code_post){
 
-   pad0 <- \(x, n) if (is.null(x)) NULL else gsub(" ", "0", sprintf(paste0("%", n, "s"), x))
    code_post <- pad0(code_post, 5) |> unique()
 
    fetch_data <- function(code_post){
