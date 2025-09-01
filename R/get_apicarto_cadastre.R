@@ -217,19 +217,6 @@ get_apicarto_cadastre <- function(x,
    return(result)
 }
 
-#' @name get_geojson
-#' @noRd
-#' @description Function to convert sf object to geojson
-as_geojson <- function(x, crs = 4326) {
-   geom <- x |>
-      st_make_valid() |>
-      st_transform(crs) |>
-      st_geometry() |>
-      toJSON(collapse = FALSE, digits = 4)
-
-   return(geom)
-}
-
 
 #' @name fetch_data
 #' @noRd

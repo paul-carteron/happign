@@ -133,39 +133,17 @@ is_empty <- function(x){
    identical(nrow(x), 0L) | identical(length(x), 0L)
 }
 
-#' @title shp_to_geojson
-#' @description Convert sf or sfc object to geojson.
-#'
-#' @param x `sf` or `sfc` object.
-#' @param crs target coordinate reference system: object of class 'crs',
-#' or input string for `st_crs`
-#' @param dTolerance `numeric`; tolerance parameter. The value of `dTolerance`
-#' must be specified in meters.
-#'
-#' @importFrom jsonlite toJSON
-#' @importFrom sf st_make_valid st_transform st_geometry st_simplify sf_use_s2
-#'
-#' @return A json string of class `character`
+#' @name as_geojson
 #' @noRd
-#'
-shp_to_geojson <- function(x, crs = 4326, dTolerance = 0){
-
-   default_s2 <- suppressMessages(sf_use_s2())
-   suppressMessages(sf_use_s2(TRUE))
-   on.exit(suppressMessages(sf_use_s2(default_s2)))
-
-   x <- x |>
+#' @description Function to convert sf object to geojson
+as_geojson <- function(x, crs = 4326) {
+   geom <- x |>
       st_make_valid() |>
-      st_simplify(dTolerance = dTolerance) |>
       st_transform(crs) |>
       st_geometry() |>
-      toJSON()
+      toJSON(collapse = FALSE, digits = 4)
 
-   # remove first and last bracket unless apicarto doesn't work
-   x <- gsub('^.|.$', '', x)
-
-   return(x)
-
+   return(geom)
 }
 
 #' @title interactive_mode
