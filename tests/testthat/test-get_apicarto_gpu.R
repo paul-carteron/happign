@@ -1,28 +1,19 @@
 test_that("incorrect_partition", {
-   p1 = "DU_93014"
-   p2 = "DU_200057867"
-   p3 = "PSMV_78646"
-   p4 = "130007123_SUP_93_A7"
-   p5 = "130007123_SUP_934_A7"
-   p6 = "130007123_SUP_93014_A7"
-   p7 = "SUP_93_A7"
-   expect_false(all(incorrect_partition(p1)))
-   expect_false(all(incorrect_partition(p2)))
-   expect_false(all(incorrect_partition(p3)))
-   expect_false(all(incorrect_partition(p4)))
-   expect_false(all(incorrect_partition(p5)))
-   expect_false(all(incorrect_partition(p6)))
-   expect_false(all(incorrect_partition(p7)))
+   good_partition <- c(
+      "DU_93014", "DU_200057867", "PSMV_78646", "130007123_SUP_93_A7",
+      "130007123_SUP_934_A7", "130007123_SUP_93014_A7", "SUP_93_A7"
+   )
 
-   p8 = "DU_9301"
-   p9 = "error"
-   p10 = "PSMV_200057867"
-   p11 = "ERRR_200057867"
-   p12 = "SUP_93A_A7"
-   expect_true(all(incorrect_partition(p8)))
-   expect_true(all(incorrect_partition(p9)))
-   expect_true(all(incorrect_partition(p10)))
-   expect_true(all(incorrect_partition(p11)))
+   lapply(good_partition, \(x) expect_false(all(incorrect_partition(x)))) |>
+      invisible()
+
+   bad_partition <- c(
+      "DU_9301", "error", "PSMV_200057867",
+      "ERRR_200057867", "SUP_93A_A7"
+      )
+   lapply(bad_partition, \(x) expect_true(all(incorrect_partition(x)))) |>
+      invisible()
+
 
    x = c("DU_93014", "DU_93014")
    expect_false(all(incorrect_partition(x)))
@@ -34,12 +25,11 @@ test_that("incorrect_partition", {
 
 x <- st_sfc(st_point(c(5.270, 44.559)), crs = 4326)
 
-with_mock_dir("api_gpu_x_input", {
-   test_that("api_gpu_x_input", {
-      skip_on_cran()
-      skip_if_offline()
-      skip_on_os("mac")
+with_mock_dir("apicarto-gpu", {
+   skip_on_cran()
+   skip_if_offline()
 
+   test_that("apicarto GPU works geom", {
       # geom
       res <- get_apicarto_gpu(x, ressource = "document")
       expect_true(nrow(res) == 1)

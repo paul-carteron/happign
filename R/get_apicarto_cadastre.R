@@ -71,8 +71,8 @@
 #'
 #' @importFrom sf st_geometry st_geometry_type st_make_valid st_transform
 #' @importFrom jsonlite toJSON
-#' @importFrom httr2 req_perform_iterative iterate_with_offset resp_body_string
-#' req_options req_url_path req_url_query resp_body_json resps_data req_url_path_append
+#' @importFrom httr2 req_method req_perform_iterative iterate_with_offset resp_body_string
+#' req_options req_url_path req_url_query resp_body_json resps_data req_url_path_append req_method
 #'
 #' @examples
 #' \dontrun{
@@ -111,7 +111,12 @@
 #' qtm(borders, fill = NA)+qtm(parcels)
 #'
 #' ## if multiple args with length > 1 result is ambigous
-#' parcels <- get_apicarto_cadastre(c("29158", "29135"), section = c("AW", "AB"), numero = 1, type = "parcelle")
+#' parcels <- get_apicarto_cadastre(
+#'    x = c("29158", "29135"),
+#'    section = c("AW", "AB"),
+#'    numero = 1,
+#'    type = "parcelle"
+#' )
 #'
 #' ## get parcels numbered "0001", "0010" of section "AW" and "BR"
 #' insee <- rep("29158", 2)
@@ -169,12 +174,6 @@ get_apicarto_cadastre <- function(x,
       type <- if (source == "pci") "feuille" else "division"
    }
 
-   default_args <- list(
-      "source_ign" = toupper(source),
-      "_start" = 0,
-      "_limit" = 500
-   )
-
    vectorized_args <- list(
       "geom" = if (is_geom) as_geojson(x) else NULL,
       "code_insee" = if (is_code_insee) x else NULL,
@@ -184,16 +183,15 @@ get_apicarto_cadastre <- function(x,
       "code_abs" = pad0(code_abs, 3)
    )
 
-   vectorized_args_size <- lapply(vectorized_args, length)
+   args_not_null <- Filter(Negate(is.null), vectorized_args)
+
+   vectorized_args_size <- lapply(args_not_null, length)
    can_expand <- sum(vectorized_args_size > 1) == 1
-   can_use <- length(unique(vectorized_args_size)) == 2 # all args have same length or 0 (NULL)
+   can_use <- length(unique(vectorized_args_size)) == 1 # all args have same length
 
    if (!can_expand & !can_use){
       stop("Ambiguous vectorization: multiple arguments have length > 1: ", call. = FALSE)
    }
-
-   args <- c(vectorized_args, default_args)
-   args_not_null <- Filter(Negate(is.null), args) |> lapply(unique)
 
    # expand if possible
    if (can_expand){
@@ -204,6 +202,12 @@ get_apicarto_cadastre <- function(x,
    if (can_use){
       args_df <- as.data.frame(args_not_null, check.names = FALSE)
    }
+
+   args_df <- transform(args_df,
+      "source_ign" = toupper(source),
+      "_start" = 0,
+      "_limit" = 500
+   )
 
    args_list <- split(args_df, seq(nrow(args_df))) |> lapply(as.list)
    resps <- lapply(args_list, fetch_data, type = type, progress = progress)

@@ -1,0 +1,32 @@
+[
+    {
+        "codePostal": "08170",
+        "codeCommune": "08166",
+        "nomCommune": "Fépin",
+        "libelleAcheminement": "FEPIN"
+    },
+    {
+        "codePostal": "08170",
+        "codeCommune": "08185",
+        "nomCommune": "Fumay",
+        "libelleAcheminement": "FUMAY"
+    },
+    {
+        "codePostal": "08170",
+        "codeCommune": "08214",
+        "nomCommune": "Hargnies",
+        "libelleAcheminement": "HARGNIES"
+    },
+    {
+        "codePostal": "08170",
+        "codeCommune": "08222",
+        "nomCommune": "Haybes",
+        "libelleAcheminement": "HAYBES"
+    },
+    {
+        "codePostal": "08170",
+        "codeCommune": "08304",
+        "nomCommune": "Montigny-sur-Meuse",
+        "libelleAcheminement": "MONTIGNY SUR MEUSE"
+    }
+]

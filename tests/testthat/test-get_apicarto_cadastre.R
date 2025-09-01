@@ -9,7 +9,6 @@ test_that("multipoint aren't supported", {
    expect_error(f_test(happign:::multipoint), err_msg)
 })
 
-
 test_that("x must be sf/sfc or valid INSEE/DEP", {
    err_msg <- "must be either an `sf` / `sfc` object, or a character vector"
 
@@ -87,6 +86,17 @@ with_mock_dir("apicarto-cadastre", {
    test_that("apicarto cadastre vectorization works", {
       expect_sf(
          f_test("29158", section = "AW", numero = 1:2, type = "parcelle"),
+         row = 2
+      )
+   })
+
+   test_that("apicarto cadastre no vectorization works with multiple insee_code", {
+      expect_sf(
+         f_test(
+            c("41046","41231"),
+            section = c("AK", "A"),
+            numero = c("279", "75"),
+            type = "parcelle"),
          row = 2
       )
    })

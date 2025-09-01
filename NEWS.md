@@ -4,8 +4,11 @@ Refactor `get_apicarto_cadastre` :
    * Remove `code_com` and `code_arr` whic aren't mandatory ;
    * Special arrondissement case for `Paris`, `Lyon` and `Marseille` is implemented
 
+Refactor `get_apicarto_codes_postaux`
+
 Breaking changes:
    * Remove `get_apicarto_rpg` which isn't update anymore
+   * Remove `get_apicarto_viticole` which doesn't exist anymore
 
 
 # happign 0.3.5

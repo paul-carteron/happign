@@ -22,7 +22,13 @@ API give information about commune from postal code.
 
 info_commune <- get_apicarto_codes_postaux("29760")
 
-code_post <- c("29760", "29260")
+code_post <- c("29760", "08170")
+info_communes <- get_apicarto_codes_postaux(code_post)
+
+code_post <- c("12345")
+info_communes <- get_apicarto_codes_postaux(code_post)
+
+code_post <- c("12345", "08170")
 info_communes <- get_apicarto_codes_postaux(code_post)
 }
 
