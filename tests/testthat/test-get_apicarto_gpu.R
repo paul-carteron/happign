@@ -17,6 +17,7 @@ test_that("is_valide_gpu_partition work", {
 with_mock_dir("apicarto-gpu", {
    skip_on_cran()
    skip_if_offline()
+   skip_on_ci()
 
    test_that("apicarto GPU works geom", {
       # geom
