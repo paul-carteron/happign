@@ -1,125 +1,105 @@
 #' Apicarto module Geoportail de l'urbanisme
 #'
 #' @usage
-#' get_apicarto_gpu(x,
-#'                  ressource = "zone-urba",
-#'                  categorie = list(NULL),
-#'                  dTolerance = 0)
+#' get_apicarto_gpu(x, layer, category = NULL)
 #'
-#' @param x An object of class `sf` or `sfc` for geometric intersection. Otherwise
-#' a `character` corresponding to __GPU partition__ or
-#' __insee code__ when `ressource` is set to `municipality`.
-#' @param ressource A character from this list : "document", "zone-urba",
-#' "secteur-cc", "prescription-surf", "prescription-lin", "prescription-pct",
-#' "info-surf", "info-lin", "info-pct". See detail for more info.
-#' @param categorie public utility easement according to the
+#' @param x `sf`, `sfc` or `character` :
+#' * Shape : must be an object of class `sf` or `sfc`.
+#' * Code insee (layer = `"municipality"`) : must be a `character` of length 5 (see [happign::com_2025])
+#' * Partition : must be a valid partition `character` (see [happign::is_valid_gpu_partition()]
+#' for checking and
+#' [Geoportail](https://www.geoportail-urbanisme.gouv.fr/image/UtilisationAPI_GPU_1-0.pdf")
+#' for documentation
+#' @param layer `character`; Layer name from [happign::get_gpu_layers()]
+#' @param category public utility easement according to the
 #' [national nomenclature](https://www.geoportail-urbanisme.gouv.fr/infos_sup/)
-#' @param dTolerance numeric; Complex shape cannot be handle by API; using `dTolerance` allow to simplify them. See `?sf::st_simplify`
+#' @param progress Display a progress bar? Use `TRUE` to turn on a basic progress
+#' bar, use a string to give it a name. See [httr2::req_perform_iterative()].
 #'
 #' @details
-#' **/!\ For the moment the API cannot returned more than 5000 features.**
+#' **/!\ API cannot returned more than 5000 features.**
 #'
-#' All existing parameters for `ressource` :
-#' * "municipality : information on the communes (commune with RNU, merged commune)
-#' * "document' : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)
-#' * "zone-urba" : zoning of urban planning documents,
-#' * "secteur-cc" : communal map sectors
-#' * "prescription-surf", "prescription-lin", "prescription-pct" : its's a constraint or a possibility indicated in an urban planning document (PLU, PLUi, ...)
-#' * "info-surf", "info-lin", "info-pct" : its's an information indicated in an urban planning document (PLU, PLUi, ...)
-#' * "acte-sup" : act establishing the SUP
-#' * "generateur-sup-s", "generateur-sup-l", "generateur-sup-p" : an entity (site or monument, watercourse, water catchment, electricity or gas distribution of electricity or gas, etc.) which generates on the surrounding SUP  (of passage, alignment, protection, land reservation, etc.)
-#' * "assiette-sup-s", "assiette-sup-l", "assiette-sup-p" : spatial area to which SUP it applies.
+#' All existing parameters for `layer` :
+#' * `"municipality"` : information on the communes (commune with RNU, merged commune)
+#' * `"document"` : information on urban planning documents (POS, PLU, PLUi, CC, PSMV, SCoT)
+#' * `"zone-urba"` : zoning of urban planning documents,
+#' * `"secteur-cc"` : communal map sectors
+#' * `"prescription-surf"`, `"prescription-lin"`, `"prescription-pct"` : its's
+#' a constraint or a possibility indicated in an urban planning document (PLU, PLUi, ...)
+#' * `"info-surf"`, `"info-lin"`, `"info-pct"` : its's an information indicated
+#' in an urban planning document (PLU, PLUi, ...)
+#' * `"acte-sup"` : act establishing the SUP
+#' * `"generateur-sup-s"`, `"generateur-sup-l"`, `"generateur-sup-p"` : an
+#' entity (site or monument, watercourse, water catchment, electricity or gas
+#' distribution of electricity or gas, etc.) which generates on the surrounding
+#' SUP  (of passage, alignment, protection, land reservation, etc.)
+#' * `"assiette-sup-s"`, `"assiette-sup-l"`, `"assiette-sup-p"` : spatial area
+#' to which SUP it applies.
 #'
-#' @return A object of class `sf` or `df`
+#' @return `sf`
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' library(sf)
+#' library(tmap)
 #'
-#' # find if commune is under the RNU (national urbanism regulation)
-#' rnu <- get_apicarto_gpu("93014", "municipality")
+#' # Find if commune is under the RNU (national urbanism regulation)
+#' # If no RNU it means communes probably have a PLU
+#' rnu <- get_apicarto_gpu("29158", "municipality")
 #' rnu$is_rnu
 #'
-#' # get urbanism document
-#' x <- get_apicarto_cadastre("93014", "commune")
-#' document <- get_apicarto_gpu(x, ressource = "document")
-#' partition <- document$partition
+#' # Get urbanism document
+#' # Rq : when using geometry, multiple documents can be returned due to intersection
+#' x <- get_apicarto_cadastre("29158", "commune")
+#' document <- get_apicarto_gpu(x, "document")
+#' document$partition
+#' penmarch <- document$partition[2]
 #'
 #' # get gpu features
 #' ## from shape
-#' gpu <- get_apicarto_gpu(x, ressource = "zone-urba")
+#' gpu <- get_apicarto_gpu(x, "zone-urba")
+#' qtm(gpu, fill="typezone")
 #'
 #' ## from partition
-#' gpu <- get_apicarto_gpu("DU_93014", ressource = "zone-urba")
+#' gpu <- get_apicarto_gpu(penmarch, "zone-urba")
+#' qtm(gpu, fill="typezone")
 #'
-#' # example : all prescriptions
-#' ressources <- c("prescription-surf",
-#'                 "prescription-lin",
-#'                 "prescription-pct")
-#' prescriptions <- get_apicarto_gpu("DU_93014",
-#'                                   ressource = ressources)
+#' # example : all prescription
+#' layers <- names(get_gpu_layers("prescription"))
+#' prescriptions <- lapply(layers, \(x) get_apicarto_gpu(penmarch, x)) |>
+#'    setNames(layers)
 #'
-#' # example : public utility servitude (SUP) assiette
-#' assiette_sup_s <- get_apicarto_gpu(x, ressource = "assiette-sup-s")
-#' protection_forest <- get_apicarto_gpu(x,
-#'                                       ressource = "assiette-sup-s",
-#'                                       categorie = "A7")
+#' qtm(prescriptions$`prescription-pct`, fill = "libelle")+
+#' qtm(prescriptions$`prescription-lin`, col = "libelle")+
+#' qtm(prescriptions$`prescription-surf`, fill = "libelle")
+#'
+#' # When using SUP, category can be used for filtering
+#' # AC1 : Monuments historiques
+#' penmarch <- get_apicarto_cadastre(29158)
+#' mh <- get_apicarto_gpu(penmarch, "assiette-sup-s", category = "AC1")
 #'
 #' # example : public utility servitude (SUP) generateur
 #' ## /!\ a generator can justify several assiette
-#' ressources <- c("generateur-sup-p",
-#'                 "generateur-sup-l",
-#'                 "generateur-sup-s")
-#' all_gen <- get_apicarto_gpu(x, ressource = ressources)
+#' gen_mh <- get_apicarto_gpu(penmarch, "generateur-sup-s", "AC1")
+#'
+#' qtm(mh, fill = "lightblue")+qtm(gen_mh, fill = "red")
 #'
 #'}
 #'
+get_apicarto_gpu <- function(x, layer, category = NULL, progress = TRUE){
 
-get_gpu_layers <- function(type = NULL){
-   ressources <- list(
-      "document" = "commune",
-      "zone-urba" = "du",
-      "secteur-cc" = "du",
-      "prescription-surf" = "du",
-      "prescription-lin" = "du",
-      "prescription-pct" = "du",
-      "info-surf" = "du",
-      "info-lin" = "du",
-      "info-pct" = "du",
-      "acte-sup" = "acte-sup",
-      "assiette-sup-s" = "sup",
-      "assiette-sup-l" = "sup",
-      "assiette-sup-p" = "sup",
-      "generateur-sup-s" = "sup",
-      "generateur-sup-l" = "sup",
-      "generateur-sup-p" = "sup"
-   )
+   layer <- match.arg(layer, names(get_gpu_layers()), several.ok = TRUE)
 
-   if (is.null(type)) return(ressources)
-
-   ressources[ressources %in% type]
-
-}
-
-get_apicarto_gpu(x, layer, category = NULL, progress){
-
-   match.arg(layer, names(get_gpu_layers()), several.ok = TRUE)
-
-   is_geom <- inherits(x, c("sf", "sfc"))
-   is_partition <- lapply(x, \(x) is_valid_gpu_partition(x)$valid) |> unlist()
-   is_insee_code <- pad0(x, 5) %in% happign::com_2025$COM
-
-   layers_type <- unlist(unique(get_gpu_layers()[layer]))
-   is_same_layer_type <- length(layers_type) == 1
-
-   if (!is_same_layer_type){
-      stop("`layer` can't mix type `",
-           paste(layers_type, collapse = "`, `"),
-           "`. See ?get_gpu_layers for more info.",
+   if (length(layer) != 1){
+      stop("`layer` can't have multiple argument",
+           "`. See ?get_gpu_layers for available layers.",
            call. = FALSE)
    }
 
+   is_geom <- inherits(x, c("sf", "sfc"))
+   is_partition <- if (!is_geom) lapply(x, \(x) is_valid_gpu_partition(x)$valid) |> unlist() else NULL
+   is_insee_code <- if (!is_geom) pad0(x, 5) %in% happign::com_2025$COM else NULL
    if (is_geom) {
       if (length(st_geometry(x)) > 1) {
          stop("GPU API only accepts one geometry per request. ",
@@ -135,9 +115,10 @@ get_apicarto_gpu(x, layer, category = NULL, progress){
    }
 
    if (!is_geom){
+      is_municipality <- all(layer == "municipality")
       info <- switch(
-         type,
-         "municipality" = list(validator = is_insee_code,
+         is_municipality,
+         "TRUE" = list(validator = is_insee_code,
                                what = "INSEE code(s)",
                                help = "`data(com_2025)`"),
          list(validator = is_partition,
@@ -151,22 +132,28 @@ get_apicarto_gpu(x, layer, category = NULL, progress){
       }
    }
 
-   is_sup <- layers_type == "sup"
+   is_sup <- layer %in% names(get_gpu_layers(c("acte-sup", "assiette", "generateur")))
 
    vectorized_args <- list(
       "geom" = if (is_geom) as_geojson(x) else NULL,
-      "insee" = if (all(is_insee_code)) x else NULL,
-      "partition" = if (all(is_partition)) x else NULL,
-      "category" = if (is_sup) category else NULL,
+      "insee" = if (all(is_insee_code) && !is_geom) x else NULL,
+      "partition" = if (all(is_partition) && !is_geom) x else NULL,
+      "categorie" = if (is_sup) category else NULL
    )
 
    args_not_null <- Filter(Negate(is.null), vectorized_args)
    args_df <- expand.grid(args_not_null, stringsAsFactors = FALSE, KEEP.OUT.ATTRS = FALSE)
 
    args_list <- split(args_df, seq(nrow(args_df))) |> lapply(as.list)
-   resps <- lapply(args_list, fetch_gpu_data, type = type, progress = progress)
+   resps <- lapply(args_list, fetch_gpu_data, layer = layer, progress = progress)
 
-   result <- lapply(resps, process_gpu_resp)
+   result <- lapply(resps, \(x) resp_body_string(x) |> read_sf())
+   result_not_null <- Filter(\(x) !is_empty(x), result)
+
+   if (length(result_not_null) == 0){
+      warning("No data found, NUll is returned", call. = FALSE)
+      return(NULL)
+   }
 
    result <- do.call(rbind, result)
    result <- result[, !sapply(result, is.list)]
@@ -174,46 +161,86 @@ get_apicarto_gpu(x, layer, category = NULL, progress){
    return(result)
 }
 
+#' Available GPU layers
+#'
+#' Helpers that return available GPU layers and their type.
+#'
+#' @usage get_gpu_layers(type = NULL)
+#'
+#' @param type `character` One of `"commune"`, `"du"`, `"prescription"`,
+#' `"acte-sup"`, `"assiette"`, `"generateur"`.
+#' If `NULL`, all layers are retuned. `NULL` by default
+#'
+#' @details
+#' `"du"`: "Document d'urbanisme"
+#' `"sup"`: "Servitude d'utilité publique"
+#'
+#' @return list
+#'
+#' @export
+#'
+#' @examples
+#' # All layers
+#' names(get_gpu_layers())
+#'
+#' # All sup layers
+#' names(get_gpu_layers("generateur"))
+#'
+#' # All sup and du layers
+#' names(get_gpu_layers(c("generateur", "prescription")))
+#'
+get_gpu_layers <- function(type = NULL){
+
+   layers <- list(
+      "municipality" = "commune",
+      "document" = "du",
+      "zone-urba" = "du",
+      "secteur-cc" = "du",
+      "prescription-surf" = "prescription",
+      "prescription-lin" = "prescription",
+      "prescription-pct" = "prescription",
+      "info-surf" = "info",
+      "info-lin" = "info",
+      "info-pct" = "info",
+      "acte-sup" = "acte-sup",
+      "assiette-sup-s" = "assiette",
+      "assiette-sup-l" = "assiette",
+      "assiette-sup-p" = "assiette",
+      "generateur-sup-s" = "generateur",
+      "generateur-sup-l" = "generateur",
+      "generateur-sup-p" = "generateur"
+   )
+
+   if (is.null(type)) return(layers)
+
+   type <- match.arg(type, unique(layers), several.ok = TRUE)
+   layers[layers %in% type]
+
+}
+
 
 #' @name fetch_gpu_data
 #' @noRd
 #' @description Fecth data from args
-fetch_gpu_data <- function(args, type, progress) {
+fetch_gpu_data <- function(args, layer,  progress) {
 
    req <- request("https://apicarto.ign.fr") |>
       req_url_path("api/gpu") |>
-      req_url_path_append(type) |>
+      req_url_path_append(layer) |>
       req_options(ssl_verifypeer = 0) |>
-      req_method("POST") |>
-      req_url_query(!!!args)
-
-   error_na_data_found <- unlist(args["code_insee"])
+      req_body_json(args)
 
    resps <- tryCatch({
       req_perform(req)
       },
       error = function(e) {
-      warning("No data found for : ", error_na_data_found, call. = F)
+         warning("No data found, NUll is returned", call. = FALSE)
          return(NULL)
       }
    )
 
    return(resps)
 }
-
-#' @name process_gpu_resps
-#' @noRd
-#' @description Combines all responses in one sf object
-process_gpu_resp <- function(resp) {
-   res <- resp_body_string(resp) |>
-      lapply(read_sf)
-
-   result <- do.call(rbind, res)
-   result <- result[, !sapply(result, is.list)]
-
-   return(result)
-}
-
 
 #' @description test partition parameter format from `get_apicarto_gpu`
 #' @param x character
