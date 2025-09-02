@@ -6,13 +6,15 @@
 #' @param x `sf`, `sfc` or `character` :
 #' * Shape : must be an object of class `sf` or `sfc`.
 #' * Code insee (layer = `"municipality"`) : must be a `character` of length 5 (see [happign::com_2025])
-#' * Partition : must be a valid partition `character` (see [happign::is_valid_gpu_partition()]
+#' * Partition : must be a valid partition `character`
 #' for checking and
 #' [Geoportail](https://www.geoportail-urbanisme.gouv.fr/image/UtilisationAPI_GPU_1-0.pdf")
 #' for documentation
 #' @param layer `character`; Layer name from [happign::get_gpu_layers()]
 #' @param category public utility easement according to the
 #' [national nomenclature](https://www.geoportail-urbanisme.gouv.fr/infos_sup/)
+#'
+#' @importFrom sf st_geometry read_sf
 #'
 #' @details
 #' **/!\ API cannot returned more than 5000 features.**
@@ -219,6 +221,7 @@ get_gpu_layers <- function(type = NULL){
 
 
 #' @name fetch_gpu_data
+#' @importFrom httr2 request req_url_path req_url_path_append req_options req_body_json req_perform
 #' @noRd
 #' @description Fecth data from args
 fetch_gpu_data <- function(args, layer) {

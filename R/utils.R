@@ -134,6 +134,8 @@ is_empty <- function(x){
 }
 
 #' @name as_geojson
+#' @importFrom jsonlite toJSON
+#' @importFrom sf st_make_valid st_transform st_geometry
 #' @noRd
 #' @description Function to convert sf object to geojson
 as_geojson <- function(x, crs = 4326) {

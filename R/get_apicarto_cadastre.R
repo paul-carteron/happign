@@ -69,10 +69,7 @@
 #' @return Object of class `sf`
 #' @export
 #'
-#' @importFrom sf st_geometry st_geometry_type st_make_valid st_transform
-#' @importFrom jsonlite toJSON
-#' @importFrom httr2 req_method req_perform_iterative iterate_with_offset resp_body_string
-#' req_options req_url_path req_url_query resp_body_json resps_data req_url_path_append req_method
+#' @importFrom sf st_geometry st_geometry_type
 #'
 #' @examples
 #' \dontrun{
@@ -219,7 +216,10 @@ get_apicarto_cadastre <- function(x,
 
 
 #' @name fetch_data
+#' @importFrom httr2 request req_url_path req_url_path_append req_options req_method
+#' req_url_query req_perform_iterative iterate_with_offset
 #' @noRd
+#'
 #' @description Fecth data from args
 fetch_data <- function(args, type, progress) {
 
@@ -264,6 +264,7 @@ fetch_data <- function(args, type, progress) {
 }
 
 #' @name process_responses
+#' @importFrom httr2 resps_data resp_body_string
 #' @noRd
 #' @description Combines all responses in one sf object
 process_responses <- function(resps) {

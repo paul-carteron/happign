@@ -39,16 +39,15 @@ with_mock_dir("apicarto-gpu", {
       res <- get_apicarto_gpu(c("29158", "29072"), "municipality")
       expect_true(nrow(res) == 2)
 
-   })},
-
-   test_that("apicarto return NULL when no data", {
+      #apicarto return NULL when no data"
       expect_warning(
          null <- get_apicarto_gpu("DU_29158", "generateur-sup-l", "AC1"),
          "No data found, NUll is returned"
-         )
+      )
 
       expect_null(null)
-   }),
+
+   })},
 
 simplify = FALSE)
 

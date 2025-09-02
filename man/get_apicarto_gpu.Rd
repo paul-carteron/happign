@@ -11,7 +11,7 @@ get_apicarto_gpu(x, layer, category = NULL)
 \itemize{
 \item Shape : must be an object of class \code{sf} or \code{sfc}.
 \item Code insee (layer = \code{"municipality"}) : must be a \code{character} of length 5 (see \link{com_2025})
-\item Partition : must be a valid partition \code{character} (see \code{\link[=is_valid_gpu_partition]{is_valid_gpu_partition()}}
+\item Partition : must be a valid partition \code{character}
 for checking and
 \href{https://www.geoportail-urbanisme.gouv.fr/image/UtilisationAPI_GPU_1-0.pdf"}{Geoportail}
 for documentation
