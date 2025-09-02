@@ -8,7 +8,7 @@
 #' * Code insee (layer = `"municipality"`) : must be a `character` of length 5 (see [happign::com_2025])
 #' * Partition : must be a valid partition `character`
 #' for checking and
-#' [Geoportail](https://www.geoportail-urbanisme.gouv.fr/image/UtilisationAPI_GPU_1-0.pdf")
+#' [Geoportail](https://www.geoportail-urbanisme.gouv.fr/image/UtilisationAPI_GPU_1-0.pdf)
 #' for documentation
 #' @param layer `character`; Layer name from [happign::get_gpu_layers()]
 #' @param category public utility easement according to the

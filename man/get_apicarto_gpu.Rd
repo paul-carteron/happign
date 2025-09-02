@@ -13,7 +13,7 @@ get_apicarto_gpu(x, layer, category = NULL)
 \item Code insee (layer = \code{"municipality"}) : must be a \code{character} of length 5 (see \link{com_2025})
 \item Partition : must be a valid partition \code{character}
 for checking and
-\href{https://www.geoportail-urbanisme.gouv.fr/image/UtilisationAPI_GPU_1-0.pdf"}{Geoportail}
+\href{https://www.geoportail-urbanisme.gouv.fr/image/UtilisationAPI_GPU_1-0.pdf}{Geoportail}
 for documentation
 }}
 

@@ -32,8 +32,10 @@ Possibly misspelled words in DESCRIPTION:
 Result can be found [here](https://win-builder.r-project.org/Cc60ecHcXVE8/00check.log)
 
 ## local devtools::check() results
-── R CMD check results ───────────────────────── happign 0.3.5 ────
-Duration: 3m 55.2s
+── R CMD check results ────────────────────────── happign 0.3.6 ────
+Duration: 2m 41.3s
+
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
 ❯ checking for future file timestamps ... NOTE
   unable to verify current time

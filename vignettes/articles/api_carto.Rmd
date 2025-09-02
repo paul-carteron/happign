@@ -248,7 +248,7 @@ tm_shape(generateur)+
 ```
 When using SUP layers, you can filter by category. Here all historical monument of Penmarch.
 
-```{r assiette_vs_generateur, message=FALSE}
+```{r using_category, message=FALSE}
 mh <- get_apicarto_gpu(penmarch, "assiette-sup-s", "AC1")
 
 tm_shape(penmarch)+
@@ -259,17 +259,16 @@ tm_shape(mh)+
 
 All layer "assiette", "generateur", "info", "prescription" have three type : point, line, polygon. If you want to query them all you can loop over it.
 
-```{r assiette_vs_generateur, message=FALSE}
+```{r sup_generalization, message=FALSE}
 all_generateur_layers <- names(get_gpu_layers("generateur"))
 generateurs <- lapply(all_generateur_layers, \(x) get_apicarto_gpu(penmarch, x)) |>
    setNames(all_generateur_layers)
 
+# Spoiler there is no point data : length(generateurs$`generateur-sup-p`) == 0
 tm_shape(penmarch)+
    tm_borders()+
-tm_shape(generateurs$`generateur-sup-p`)+
-   tm_point()
-tm_shape(generateurs$`generateur-sup-l`)+
-   tm_lines()
 tm_shape(generateurs$`generateur-sup-s`)+
-   tm_polygons()
+   tm_polygons(fill = "type")+
+tm_shape(generateurs$`generateur-sup-l`)+
+   tm_lines(col = "firebrick", lwd = 3)
 ```
