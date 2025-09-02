@@ -1,7 +1,7 @@
 ---
 title: "API Carto"
 author: "Paul Carteron"
-date: "2025-07-23"
+date: "2025-09-02"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{API Carto}
@@ -28,7 +28,7 @@ tmap_mode("view")
 
 # Presentation
 
-APIs carto were developed to automatically retrieve certain spatial information required in administrative forms. The main advantage of these APIs is that they can be queried without spatial data. To do this with `get_wfs`, you would have to use an ECQL query with the `ecql_filter` argument which can be tricky.
+APIs carto were developed to automatically retrieve certain spatial information required in administrative forms. The main advantage of these APIs is that they can be queried without spatial data. To do this with `get_wfs`, you would have to use an ECQL query with the `ecql_filter`.
 
 `happign` implements APIs carto through `get_apicarto_*` functions.
 
@@ -39,25 +39,37 @@ Documentation : [https://apicarto.ign.fr/api/doc/cadastre](https://apicarto.ign.
 The API carto cadastre provides following informations :
 
 * the boundaries of a town (`type = "commune"`)
-* the parcel sections or divisions (`type = "section"` or `type = "division"`)
-* the cadastral parcels (`type = "cadastre"`)
+* the parcel sections or divisions (`type = "section"`)
+* the cadastral parcels (`type = "parcelle"`)
 * information on non-vectorized parcels (`type = "localisant"`)
 
 At least three parameters must be set :
 
 * `x` : An indication about the location. Could be a shape, an insee code or a departement code
 * `type` : What service do you want to use? (see above)
-* `source` : The data source `"PCI"` for "Parcellaire Express" or `"BDP"` for "BD Parcellaire". The BD Parcellaire product is a historical product that is no longer updated. It is therefore strongly recommended to use the Parcellaire Express product which is updated every six months.
+* `source` : The data source `"PCI"` for "Parcellaire Express" or `"BDP"` for "BD Parcellaire". The BD Parcellaire product is a historical product that is no longer updated (but quite even with better
+geospatialisation). It is therefore strongly recommended to use the Parcellaire Express 
+product which is updated every six months.
  
 All other parameters are used to refine the query.
 
 ### Usage
 
-We’ll start with a simple example : retrieve borders of multiple town. 
-Because `get_apicaro_cadastre` is a vectorized function, it's possible to set multiple insee code.
-If you do not know insee codes, you can consult existing codes from the internal dataframe `com_2025`.
+We’ll start with a simple example : retrieve borders of a town.
 
-```{r plou_borders, message=TRUE}
+```{r penmarch_borders, message=TRUE}
+
+penmarch <- get_apicarto_cadastre("29158", type = "commune")
+
+# result
+tm_shape(penmarch)+
+   tm_polygons(col = "black")
+```
+
+Because `get_apicaro_cadastre` is a vectorized function, it's possible to set multiple insee code.
+If you do not know insee codes, you can consult existing codes from the internal dataframe `com_2025`. Below an exemple that find all commune starting with "ker"
+
+```{r ker_borders, message=TRUE}
 data("com_2025", package = "happign")
 
 # all town starting with "KER", yes I'm coming from "La Bretagne"
@@ -81,10 +93,9 @@ cad_mat <- data.frame(CODE_DEP = rep("29", 10),
 parcels <- get_apicarto_cadastre(paste0(cad_mat$CODE_DEP, cad_mat$CODE_COM),
                                  section = cad_mat$SECTION,
                                  numero = cad_mat$N_PARC,
-                                 type="parcelle")
-
+                                 type = "parcelle")
 tm_shape(parcels)+
-   tm_borders(col = "black")
+   tm_borders(fill = "red")
 
 ```
 
@@ -154,19 +165,24 @@ tm_shape(rpg)+
 
 Documentation : [https://apicarto.ign.fr/api/doc/gpu](https://apicarto.ign.fr/api/doc/gpu)
 
-The API carto GPU allows you to obtain urban planning information intersecting a geometry. Beware, not all municipalities are in the geoportal of urbanism!
+All layer available have the GPU are retrieved using `get_gpu_layers()`
+
+```{r gpu_layer}
+all <- names(get_gpu_layers())
+document_urbanisme <- names(get_gpu_layers("du"))
+```
 
 ### RNU
 
 First of all, you can check if a commune is under the National Urbanism Regulation from is insee code. The RNU fully apply in communes that have neither a local map nor a local urban plan (PLU, PLUi) nor a document in replacement of a PLU.
 
 ```{r is_gpu}
-is_rnu <- get_apicarto_gpu("29158", ressource = "municipality")
+is_rnu <- get_apicarto_gpu("29158", layer = "municipality")
 is_rnu$is_rnu
 
-# Penmarch is under the RNU and therefore has a document of urbanism
+# Penmarch isn't under the RNU and therefore has a document of urbanism
 
-is_rnu <- get_apicarto_gpu("23004", ressource = "municipality")
+is_rnu <- get_apicarto_gpu("23004", layer = "municipality")
 is_rnu$is_rnu
 
 # Anzeme is under the RNU and therefore has a town planning document
@@ -189,15 +205,13 @@ penmarch <- get_apicarto_cadastre("29158", "commune")
 doc <- get_apicarto_gpu(st_centroid(penmarch), "document") 
 # It's better to use centroid instead of borders to avoid conflict with other communes
 
-partition <- doc |>
-   filter(grid_title == "PENMARCH") |>
-   pull(partition)
+partition <- doc$partition
 ```
 
 Now that the partition is recovered, it is possible to obtain several resources for a specific document. The different resources available are specified in the documentation of the function `?get_apicarto_gpu()`
 
 ```{r zone_urba, message=FALSE}
-zone_urba <- get_apicarto_gpu(partition, ressource = "zone-urba")
+zone_urba <- get_apicarto_gpu(partition, "zone-urba")
 
 # click on polygon for legend
 tm_shape(zone_urba)+
@@ -205,58 +219,57 @@ tm_shape(zone_urba)+
 
 ```
 
-Because `get_apicarto_gpu` is vectorized, many resources can be returned at the same time. This allows to identify all the prescriptions at once for example :
+Because `get_apicarto_gpu` is vectorized on `x`, many insee code or partition can be queried.
 
 ```{r gpu_vect_prescription, message=FALSE}
-ressources <- c("prescription-surf", "prescription-lin", "prescription-pct")
-prescriptions <- get_apicarto_gpu(partition,
-                                  ressource = ressources,
-                                  dTolerance = 10)
-tm_shape(prescriptions[[1]])+
-   tm_polygons("libelle", legend.col.show = FALSE, lwd = 2)+
-tm_shape(prescriptions[[2]])+
-   tm_lines("libelle", legend.col.show = FALSE, lwd = 2)+
-tm_shape(prescriptions[[3]])+
-   tm_dots("libelle",  legend.show = FALSE, size = 0.1)
-
+all_ker_gpu <- get_apicarto_gpu(ker_borders$code_insee, "municipality")
 ```
 
+### SUP : Servitude d'utilité publique
 
-<!-- ## API carto "Appellations viticoles" -->
+GPU also give access to SUP databases which contain multiple category such as : protection forest, agricultural protected area, historical monument, ...)
+See [national nomenclature](https://www.geoportail-urbanisme.gouv.fr/infos_sup/) for more info.
 
-<!-- Documentation : [https://apicarto.ign.fr/api/doc/aoc](https://apicarto.ign.fr/api/doc/aoc) -->
+It give access to "assiette" and "generateur". First one is the restructed area, second one is what generated this area.
 
-<!-- This api returns from a shape : -->
-<!-- * "Appellation d'origine contrôlée" (AOC) -->
-<!-- * Protected geographical indication areas (IGP) -->
-<!-- * Wine growing areas without geographical indication (VSIG) -->
+Partition of "assiette" and "generateur" are quite complicated to found so generally geometry is used.
 
-<!-- This function is quite simple to use, only shape is needed. -->
+```{r assiette_vs_generateur, message=FALSE}
+penmarch <- get_apicarto_cadastre("29158")
+assiette <- get_apicarto_gpu(penmarch, "assiette-sup-s")
+generateur <- get_apicarto_gpu(penmarch, "generateur-sup-s")
 
-<!-- ```{r viticole_penmarch, message=FALSE} -->
-<!-- viticole <- get_apicarto_viticole(penmarch, dTolerance = 50) -->
+tm_shape(penmarch)+
+   tm_borders()+
+tm_shape(assiette)+
+   tm_fill("suptype")+
+tm_shape(generateur)+
+   tm_fill("firebrick")
+```
+When using SUP layers, you can filter by category. Here all historical monument of Penmarch.
 
-<!-- # plot result -->
-<!-- tm_shape(viticole)+ -->
-<!--    tm_borders() -->
+```{r assiette_vs_generateur, message=FALSE}
+mh <- get_apicarto_gpu(penmarch, "assiette-sup-s", "AC1")
 
-<!-- ``` -->
+tm_shape(penmarch)+
+   tm_borders()+
+tm_shape(mh)+
+   tm_polygons()
+```
 
-<!-- Let's find how many wine appellations are there in Finistère, France (spoiler, there only VSIG ie wines without geographical indication, we prefer microbreweries). -->
+All layer "assiette", "generateur", "info", "prescription" have three type : point, line, polygon. If you want to query them all you can loop over it.
 
-<!-- ```{r vitivole_finistere, message=FALSE} -->
-<!-- finistere <- get_wfs(penmarch, -->
-<!--                     "ADMINEXPRESS-COG-CARTO.LATEST:departement") -->
-<!-- # finistere borders are quite complex, and dTolerance cant be used. In this case convex hull of shape -->
-<!-- # can be used with intersection of the results -->
-<!-- convex_finistere <- st_convex_hull(finistere) -->
-<!-- viticole <- get_apicarto_viticole(convex_finistere) |> -->
-<!--    st_intersection(finistere) -->
+```{r assiette_vs_generateur, message=FALSE}
+all_generateur_layers <- names(get_gpu_layers("generateur"))
+generateurs <- lapply(all_generateur_layers, \(x) get_apicarto_gpu(penmarch, x)) |>
+   setNames(all_generateur_layers)
 
-<!-- # plot result -->
-<!-- tm_shape(viticole)+ -->
-<!--    tm_polygons("appellation")+ -->
-<!-- tm_shape(finistere)+ -->
-<!--    tm_borders() -->
-
-<!-- ``` -->
+tm_shape(penmarch)+
+   tm_borders()+
+tm_shape(generateurs$`generateur-sup-p`)+
+   tm_point()
+tm_shape(generateurs$`generateur-sup-l`)+
+   tm_lines()
+tm_shape(generateurs$`generateur-sup-s`)+
+   tm_polygons()
+```

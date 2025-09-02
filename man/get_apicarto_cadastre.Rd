@@ -119,7 +119,12 @@ parcels <- get_apicarto_cadastre(
 qtm(borders, fill = NA)+qtm(parcels)
 
 ## if multiple args with length > 1 result is ambigous
-parcels <- get_apicarto_cadastre(c("29158", "29135"), section = c("AW", "AB"), numero = 1, type = "parcelle")
+parcels <- get_apicarto_cadastre(
+   x = c("29158", "29135"),
+   section = c("AW", "AB"),
+   numero = 1,
+   type = "parcelle"
+)
 
 ## get parcels numbered "0001", "0010" of section "AW" and "BR"
 insee <- rep("29158", 2)

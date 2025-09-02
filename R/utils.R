@@ -165,6 +165,6 @@ interactive_mode <- function(data_type){
 
 #' @title pad0
 #'
-#' @return
+#' @return `character`
 #' @noRd
 pad0 <- \(x, n) if (is.null(x)) NULL else gsub(" ", "0", sprintf(paste0("%", n, "s"), x))

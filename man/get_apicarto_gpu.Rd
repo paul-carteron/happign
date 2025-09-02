@@ -4,86 +4,98 @@
 \alias{get_apicarto_gpu}
 \title{Apicarto module Geoportail de l'urbanisme}
 \usage{
-get_apicarto_gpu(x,
-                 ressource = "zone-urba",
-                 categorie = list(NULL),
-                 dTolerance = 0)
+get_apicarto_gpu(x, layer, category = NULL)
 }
 \arguments{
-\item{x}{An object of class \code{sf} or \code{sfc} for geometric intersection. Otherwise
-a \code{character} corresponding to \strong{GPU partition} or
-\strong{insee code} when \code{ressource} is set to \code{municipality}.}
+\item{x}{\code{sf}, \code{sfc} or \code{character} :
+\itemize{
+\item Shape : must be an object of class \code{sf} or \code{sfc}.
+\item Code insee (layer = \code{"municipality"}) : must be a \code{character} of length 5 (see \link{com_2025})
+\item Partition : must be a valid partition \code{character} (see \code{\link[=is_valid_gpu_partition]{is_valid_gpu_partition()}}
+for checking and
+\href{https://www.geoportail-urbanisme.gouv.fr/image/UtilisationAPI_GPU_1-0.pdf"}{Geoportail}
+for documentation
+}}
 
-\item{ressource}{A character from this list : "document", "zone-urba",
-"secteur-cc", "prescription-surf", "prescription-lin", "prescription-pct",
-"info-surf", "info-lin", "info-pct". See detail for more info.}
+\item{layer}{\code{character}; Layer name from \code{\link[=get_gpu_layers]{get_gpu_layers()}}}
 
-\item{categorie}{public utility easement according to the
+\item{category}{public utility easement according to the
 \href{https://www.geoportail-urbanisme.gouv.fr/infos_sup/}{national nomenclature}}
-
-\item{dTolerance}{numeric; Complex shape cannot be handle by API; using \code{dTolerance} allow to simplify them. See \code{?sf::st_simplify}}
 }
 \value{
-A object of class \code{sf} or \code{df}
+\code{sf}
 }
 \description{
 Apicarto module Geoportail de l'urbanisme
 }
 \details{
-\strong{/!\ For the moment the API cannot returned more than 5000 features.}
+\strong{/!\ API cannot returned more than 5000 features.}
 
-All existing parameters for \code{ressource} :
+All existing parameters for \code{layer} :
 \itemize{
-\item "municipality : information on the communes (commune with RNU, merged commune)
-\item "document' : information on urban planning documents (POS, PLU, PLUi, CC, PSMV)
-\item "zone-urba" : zoning of urban planning documents,
-\item "secteur-cc" : communal map sectors
-\item "prescription-surf", "prescription-lin", "prescription-pct" : its's a constraint or a possibility indicated in an urban planning document (PLU, PLUi, ...)
-\item "info-surf", "info-lin", "info-pct" : its's an information indicated in an urban planning document (PLU, PLUi, ...)
-\item "acte-sup" : act establishing the SUP
-\item "generateur-sup-s", "generateur-sup-l", "generateur-sup-p" : an entity (site or monument, watercourse, water catchment, electricity or gas distribution of electricity or gas, etc.) which generates on the surrounding SUP  (of passage, alignment, protection, land reservation, etc.)
-\item "assiette-sup-s", "assiette-sup-l", "assiette-sup-p" : spatial area to which SUP it applies.
+\item \code{"municipality"} : information on the communes (commune with RNU, merged commune)
+\item \code{"document"} : information on urban planning documents (POS, PLU, PLUi, CC, PSMV, SCoT)
+\item \code{"zone-urba"} : zoning of urban planning documents,
+\item \code{"secteur-cc"} : communal map sectors
+\item \code{"prescription-surf"}, \code{"prescription-lin"}, \code{"prescription-pct"} : its's
+a constraint or a possibility indicated in an urban planning document (PLU, PLUi, ...)
+\item \code{"info-surf"}, \code{"info-lin"}, \code{"info-pct"} : its's an information indicated
+in an urban planning document (PLU, PLUi, ...)
+\item \code{"acte-sup"} : act establishing the SUP
+\item \code{"generateur-sup-s"}, \code{"generateur-sup-l"}, \code{"generateur-sup-p"} : an
+entity (site or monument, watercourse, water catchment, electricity or gas
+distribution of electricity or gas, etc.) which generates on the surrounding
+SUP  (of passage, alignment, protection, land reservation, etc.)
+\item \code{"assiette-sup-s"}, \code{"assiette-sup-l"}, \code{"assiette-sup-p"} : spatial area
+to which SUP it applies.
 }
 }
 \examples{
 \dontrun{
 library(sf)
+library(tmap)
 
-# find if commune is under the RNU (national urbanism regulation)
-rnu <- get_apicarto_gpu("93014", "municipality")
+# Find if commune is under the RNU (national urbanism regulation)
+# If no RNU it means communes probably have a PLU
+rnu <- get_apicarto_gpu("29158", "municipality")
 rnu$is_rnu
 
-# get urbanism document
-x <- get_apicarto_cadastre("93014", "commune")
-document <- get_apicarto_gpu(x, ressource = "document")
-partition <- document$partition
+# Get urbanism document
+# Rq : when using geometry, multiple documents can be returned due to intersection
+x <- get_apicarto_cadastre("29158", "commune")
+document <- get_apicarto_gpu(x, "document")
+document$partition
+penmarch <- document$partition[2]
 
 # get gpu features
 ## from shape
-gpu <- get_apicarto_gpu(x, ressource = "zone-urba")
+gpu <- get_apicarto_gpu(x, "zone-urba")
+qtm(gpu, fill="typezone")
 
 ## from partition
-gpu <- get_apicarto_gpu("DU_93014", ressource = "zone-urba")
+gpu <- get_apicarto_gpu(penmarch, "zone-urba")
+qtm(gpu, fill="typezone")
 
-# example : all prescriptions
-ressources <- c("prescription-surf",
-                "prescription-lin",
-                "prescription-pct")
-prescriptions <- get_apicarto_gpu("DU_93014",
-                                  ressource = ressources)
+# example : all prescription
+layers <- names(get_gpu_layers("prescription"))
+prescriptions <- lapply(layers, \(x) get_apicarto_gpu(penmarch, x)) |>
+   setNames(layers)
 
-# example : public utility servitude (SUP) assiette
-assiette_sup_s <- get_apicarto_gpu(x, ressource = "assiette-sup-s")
-protection_forest <- get_apicarto_gpu(x,
-                                      ressource = "assiette-sup-s",
-                                      categorie = "A7")
+qtm(prescriptions$`prescription-pct`, fill = "libelle")+
+qtm(prescriptions$`prescription-lin`, col = "libelle")+
+qtm(prescriptions$`prescription-surf`, fill = "libelle")
+
+# When using SUP, category can be used for filtering
+# AC1 : Monuments historiques
+penmarch <- get_apicarto_cadastre(29158)
+mh <- get_apicarto_gpu(penmarch, "assiette-sup-s", category = "AC1")
 
 # example : public utility servitude (SUP) generateur
 ## /!\ a generator can justify several assiette
-ressources <- c("generateur-sup-p",
-                "generateur-sup-l",
-                "generateur-sup-s")
-all_gen <- get_apicarto_gpu(x, ressource = ressources)
+gen_mh <- get_apicarto_gpu(penmarch, "generateur-sup-s", "AC1")
+
+qtm(mh, fill = "lightblue")+qtm(gen_mh, fill = "red")
 
 }
+
 }

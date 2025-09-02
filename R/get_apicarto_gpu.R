@@ -13,8 +13,6 @@
 #' @param layer `character`; Layer name from [happign::get_gpu_layers()]
 #' @param category public utility easement according to the
 #' [national nomenclature](https://www.geoportail-urbanisme.gouv.fr/infos_sup/)
-#' @param progress Display a progress bar? Use `TRUE` to turn on a basic progress
-#' bar, use a string to give it a name. See [httr2::req_perform_iterative()].
 #'
 #' @details
 #' **/!\ API cannot returned more than 5000 features.**
@@ -87,13 +85,13 @@
 #'
 #'}
 #'
-get_apicarto_gpu <- function(x, layer, category = NULL, progress = TRUE){
+get_apicarto_gpu <- function(x, layer, category = NULL){
 
    layer <- match.arg(layer, names(get_gpu_layers()), several.ok = TRUE)
 
    if (length(layer) != 1){
       stop("`layer` can't have multiple argument",
-           "`. See ?get_gpu_layers for available layers.",
+           ". See ?get_gpu_layers for available layers.",
            call. = FALSE)
    }
 
@@ -115,16 +113,17 @@ get_apicarto_gpu <- function(x, layer, category = NULL, progress = TRUE){
    }
 
    if (!is_geom){
+      info <- list(validator = is_partition,
+                   what = "partition code(s)",
+                   help = "https://www.geoportail-urbanisme.gouv.fr/image/UtilisationAPI_GPU_1-0.pdf")
+
       is_municipality <- all(layer == "municipality")
-      info <- switch(
-         is_municipality,
-         "TRUE" = list(validator = is_insee_code,
-                               what = "INSEE code(s)",
-                               help = "`data(com_2025)`"),
-         list(validator = is_partition,
-              what = "partition code(s)",
-              help = "https://www.geoportail-urbanisme.gouv.fr/image/UtilisationAPI_GPU_1-0.pdf")
-      )
+      if (is_municipality){
+         info <- list(validator = is_insee_code,
+                      what = "INSEE code(s)",
+                      help = "`data(com_2025)`")
+      }
+
 
       if (!all(info$validator)) {
          bad <- paste(x[!info$validator], collapse = ", ")
@@ -145,7 +144,7 @@ get_apicarto_gpu <- function(x, layer, category = NULL, progress = TRUE){
    args_df <- expand.grid(args_not_null, stringsAsFactors = FALSE, KEEP.OUT.ATTRS = FALSE)
 
    args_list <- split(args_df, seq(nrow(args_df))) |> lapply(as.list)
-   resps <- lapply(args_list, fetch_gpu_data, layer = layer, progress = progress)
+   resps <- lapply(args_list, fetch_gpu_data, layer = layer)
 
    result <- lapply(resps, \(x) resp_body_string(x) |> read_sf())
    result_not_null <- Filter(\(x) !is_empty(x), result)
@@ -222,7 +221,7 @@ get_gpu_layers <- function(type = NULL){
 #' @name fetch_gpu_data
 #' @noRd
 #' @description Fecth data from args
-fetch_gpu_data <- function(args, layer,  progress) {
+fetch_gpu_data <- function(args, layer) {
 
    req <- request("https://apicarto.ign.fr") |>
       req_url_path("api/gpu") |>
