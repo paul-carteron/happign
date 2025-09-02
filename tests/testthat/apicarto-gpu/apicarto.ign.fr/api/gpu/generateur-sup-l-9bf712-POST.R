@@ -1,0 +1,11 @@
+structure(list(method = "POST", url = "https://apicarto.ign.fr/api/gpu/generateur-sup-l", 
+    status_code = 200L, headers = structure(list(date = "Tue, 02 Sep 2025 15:43:45 GMT", 
+        `content-type` = "application/json; charset=utf-8", `content-length` = "147", 
+        `x-powered-by` = "Express", `access-control-allow-origin` = "*", 
+        `cache-control` = "private, no-cache, no-store, must-revalidate", 
+        expires = "-1", pragma = "no-cache", vary = "Origin", 
+        `access-control-allow-credentials` = "true", etag = "W/\"93-kVTGrS9U6HNc1Fz7jNJaa7gyBmc\"", 
+        `strict-transport-security` = "max-age=31536000; includeSubDomains"), class = "httr2_headers"), 
+    body = charToRaw("{\"type\":\"FeatureCollection\",\"features\":[],\"totalFeatures\":0,\"numberMatched\":0,\"numberReturned\":0,\"timeStamp\":\"2025-09-02T15:43:45.869Z\",\"crs\":null}"), 
+    timing = c(redirect = 0, namelookup = 0, connect = 0, pretransfer = 0.000166, 
+    starttransfer = 0.488009, total = 0.488051), cache = new.env(parent = emptyenv())), class = "httr2_response")
