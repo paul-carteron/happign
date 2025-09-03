@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, warning = FALSE, message = FALSE}
 library(happign)
 library(dplyr)
 library(sf)
@@ -246,15 +246,19 @@ tm_shape(assiette)+
 tm_shape(generateur)+
    tm_fill("firebrick")
 ```
+
 When using SUP layers, you can filter by category. Here all historical monument of Penmarch.
 
 ```{r using_category, message=FALSE}
-mh <- get_apicarto_gpu(penmarch, "assiette-sup-s", "AC1")
+assiette_mh <- get_apicarto_gpu(penmarch, "assiette-sup-s", "AC1")
+generateur_mh <- get_apicarto_gpu(penmarch, "generateur-sup-s", "AC1")
 
 tm_shape(penmarch)+
    tm_borders()+
-tm_shape(mh)+
-   tm_polygons()
+tm_shape(assiette_mh)+
+   tm_fill("suptype")+
+tm_shape(generateur_mh)+
+   tm_fill("firebrick")
 ```
 
 All layer "assiette", "generateur", "info", "prescription" have three type : point, line, polygon. If you want to query them all you can loop over it.

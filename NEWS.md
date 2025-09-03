@@ -13,6 +13,7 @@ Vignettes :
 Breaking changes:
    * Remove `get_apicarto_rpg` which isn't update anymore
    * Remove `get_apicarto_viticole` which doesn't exist anymore
+   * Arg `ressource` of `get_apicarto` is change to `layer`
 
 Other :
    * Remove `yyjsonr` dependency

@@ -7,7 +7,7 @@ test_that("is_valide_gpu_partition work", {
   good <- lapply(good_partition, \(x) is_valid_gpu_partition(x)$valid) |> unlist()
   expect_true(all(good))
 
-  bad_partition <- c("DU_9301", "error", "PSMV_200057867","ERRR_200057867", "SUP_93A_A7")
+  bad_partition <- c("DU_9301", "error", "PSMV_200057867", "ERRR_200057867", "SUP_93A_A7")
   not_good <- lapply(bad_partition, \(x) is_valid_gpu_partition(x)$valid) |> unlist()
   expect_false(all(not_good))
 
