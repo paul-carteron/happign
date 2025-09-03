@@ -2,9 +2,9 @@
 
 I sucessfully pass R-CMD-Check test from rhun::rhub_chek().
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16590340052)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/17428471751)
 
-Windows only failed beacause of `htmlwidget` package.
+ubuntu-release failed because of package out of my control
 
 ## R CMD check results
 
@@ -17,27 +17,15 @@ I sucessfully pass R-CMD-Check test for 7 OS :
    - {os: ubuntu-latest,  r: 'oldrel-1'}
    - {os: ubuntu-22.04,   r: 'release'}
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/16590241629)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/17428457231)
 
 ## devtools::check_win_devel() results
+Status: OK
 
-```
-* checking CRAN incoming feasibility ... [13s] NOTE
-Maintainer: 'Paul Carteron <carteronpaul@gmail.com>'
-
-Possibly misspelled words in DESCRIPTION:
-  Carto (13:27)
-```
-
-Result can be found [here](https://win-builder.r-project.org/Cc60ecHcXVE8/00check.log)
+Result can be found [here](https://win-builder.r-project.org/cNRSWOIfHo46/00check.log)
 
 ## local devtools::check() results
 ── R CMD check results ────────────────────────── happign 0.3.6 ────
 Duration: 2m 41.3s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
-
-❯ checking for future file timestamps ... NOTE
-  unable to verify current time
-
-0 errors ✔ | 0 warnings ✔ | 1 note ✖
