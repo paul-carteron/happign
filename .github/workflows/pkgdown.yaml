@@ -4,15 +4,13 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
   release:
     types: [published]
   workflow_dispatch:
 
-name: pkgdown
+name: pkgdown.yaml
 
-permissions:
-  contents: read
+permissions: read-all
 
 jobs:
   pkgdown:
@@ -25,15 +23,15 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v4
 
-      - uses: r-lib/actions/setup-pandoc@bd49c52ffe281809afa6f0fecbf37483c5dd0b93 # v2.11.3
+      - uses: r-lib/actions/setup-pandoc@v2
 
-      - uses: r-lib/actions/setup-r@bd49c52ffe281809afa6f0fecbf37483c5dd0b93 # v2.11.3
+      - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@bd49c52ffe281809afa6f0fecbf37483c5dd0b93 # v2.11.3
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::pkgdown, local::.
           needs: website
@@ -44,7 +42,7 @@ jobs:
 
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'
-        uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8 # v4.7.3
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:
           clean: false
           branch: gh-pages
