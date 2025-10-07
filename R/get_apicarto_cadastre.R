@@ -149,7 +149,7 @@ get_apicarto_cadastre <- function(x,
    if (!(is_geom || is_code_insee || is_code_dep)) {
       stop("`x` must be either an `sf` / `sfc` object, or a character vector",
            " of valid 5-digit INSEE codes or valid department codes. See",
-           "`data(com_2025, dep_025)`." , call. = FALSE)
+           "`data(com_2025, dep_2025)`." , call. = FALSE)
    }
 
    if (is_geom) {
@@ -176,7 +176,7 @@ get_apicarto_cadastre <- function(x,
       "code_dep" = if (is_code_dep) x else NULL,
       "section" = pad0(section, 2),
       "numero" = pad0(numero, 4),
-      "code_abs" = pad0(code_abs, 3)
+      "com_abs" = pad0(code_abs, 3)
    )
 
    args_not_null <- Filter(Negate(is.null), vectorized_args)
