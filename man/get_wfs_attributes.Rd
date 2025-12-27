@@ -4,14 +4,11 @@
 \alias{get_wfs_attributes}
 \title{get_wfs_attributes}
 \usage{
-get_wfs_attributes(layer = NULL, interactive = FALSE)
+get_wfs_attributes(layer = NULL)
 }
 \arguments{
-\item{layer}{\code{character}; name of the layer from \code{get_layers_metadata("wfs")}
-or directly from
-\href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
-
-\item{interactive}{\code{character}; if TRUE, no need to specify \code{layer}, you'll be ask.}
+\item{layer}{\code{character}; name of the WFS layer. Must correspond to a
+layer available on the IGN WFS service (see \code{\link[=get_layers_metadata]{get_layers_metadata()}}).}
 }
 \value{
 \code{character}vector with layer attributes
@@ -22,10 +19,7 @@ Helper to write ecql filter. Retrieve all attributes from a layer.
 \examples{
 \dontrun{
 
-get_wfs_attributes("administratif", "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
-
-# Interactive session
-get_wfs_attributes(interactive = TRUE)
+get_wfs_attributes("LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
 
 }
 }

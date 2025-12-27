@@ -12,15 +12,13 @@ Description: Automatic open data acquisition from resources of IGN
     borders, spatial databases, cadastral parcels, and more. 'happign' also 
     provide access to API Carto (<https://apicarto.ign.fr/api/doc/>).
 License: GPL (>= 3)
-URL: https://github.com/paul-carteron,
-    https://paul-carteron.github.io/happign/
+URL: https://github.com/paul-carteron, https://paul-carteron.github.io/happign/
 BugReports: https://github.com/paul-carteron/happign/issues
 Depends: 
     R (>= 4.1.0)
 Imports: 
     jsonlite,
     httr2 (>= 1.1.0),
-    methods,
     sf (>= 1.0-7),
     terra,
     xml2
@@ -28,6 +26,7 @@ Suggests:
     covr,
     ggplot2,
     httptest2,
+    tibble,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),

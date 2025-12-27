@@ -37,36 +37,46 @@
 #' @name spatial_predicates
 NULL
 
+#' @keywords internal
 #' @noRd
 predicate <- function(type, ...) {
    list(type = type, ...)
 }
 
 #' @rdname spatial_predicates
+#' @export
 intersects <- function() predicate("intersects")
 
 #' @rdname spatial_predicates
+#' @export
 within <- function() predicate("within")
 
 #' @rdname spatial_predicates
+#' @export
 contains <- function() predicate("contains")
 
 #' @rdname spatial_predicates
+#' @export
 touches <- function() predicate("touches")
 
 #' @rdname spatial_predicates
+#' @export
 crosses <- function() predicate("crosses")
 
 #' @rdname spatial_predicates
+#' @export
 overlaps <- function() predicate("overlaps")
 
 #' @rdname spatial_predicates
+#' @export
 equals <- function() predicate("equals")
 
 #' @rdname spatial_predicates
+#' @export
 bbox <- function() predicate("bbox")
 
 #' @rdname spatial_predicates
+#' @export
 dwithin <- function(distance, units = "meters") {
    # distance checks
    if (!is.numeric(distance) || length(distance) != 1 || is.na(distance)) {
@@ -103,6 +113,7 @@ dwithin <- function(distance, units = "meters") {
 }
 
 #' @rdname spatial_predicates
+#' @export
 beyond <- function(distance, units = "meters") {
    # distance checks
    if (!is.numeric(distance) || length(distance) != 1 || is.na(distance)) {
@@ -139,6 +150,7 @@ beyond <- function(distance, units = "meters") {
 }
 
 #' @rdname spatial_predicates
+#' @export
 relate <- function(pattern) {
    stopifnot(is.character(pattern), nchar(pattern) == 9)
    predicate("relate", pattern = pattern)

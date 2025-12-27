@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns:gml="http://www.opengis.net/gml"
+   elementFormDefault="qualified">
+
+<xsd:import
+   namespace="http://www.opengis.net/gml"
+   schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+
+<xsd:element
+   name="fake_geom"
+   type="gml:MultiSurfacePropertyType"
+   minOccurs="0"
+   maxOccurs="1"
+   nillable="true"/>
+</xsd:schema>

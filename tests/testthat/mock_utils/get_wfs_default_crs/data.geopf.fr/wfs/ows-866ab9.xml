@@ -1,0 +1,32 @@
+<wfs:WFS_Capabilities
+   xmlns:ows="http://www.opengis.net/ows/1.1"
+   xmlns:wfs="http://www.opengis.net/wfs/2.0">
+   <FeatureTypeList>
+      <FeatureType xmlns:GoodLayer1="http://GoodLayer1">
+         <Name>GoodLayer1</Name>
+         <Title><![CDATA[ OCSGE Gers 2016 ]]></Title>
+         <Abstract><![CDATA[ OCSGE Gers 2016 ]]></Abstract>
+         <ows:Keyword>Occupation du sol</ows:Keyword>
+         <DefaultCRS>good_crs</DefaultCRS>
+         <OtherCRS>urn:ogc:def:crs:EPSG::5490</OtherCRS>
+         <OtherCRS>urn:ogc:def:crs:EPSG::4967</OtherCRS>
+         <ows:WGS84BoundingBox>
+            <ows:LowerCorner>-0.306429 43.28809591</ows:LowerCorner>
+            <ows:UpperCorner>1.21178144 44.0914897</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+      </FeatureType>
+      <FeatureType xmlns:GoodLayer2="GoodLayer2">
+         <Name>GoodLayer2</Name>
+         <Title><![CDATA[ OCSGE Gers 2019 ]]></Title>
+         <Abstract><![CDATA[ OCSGE Gers 2019 ]]></Abstract>
+         <ows:Keyword>Occupation du sol</ows:Keyword>
+         <DefaultCRS>bad_crs</DefaultCRS>
+         <OtherCRS>urn:ogc:def:crs:EPSG::5490</OtherCRS>
+         <OtherCRS>urn:ogc:def:crs:EPSG::4967</OtherCRS>
+         <ows:WGS84BoundingBox>
+            <ows:LowerCorner>-0.306429 43.28809591</ows:LowerCorner>
+            <ows:UpperCorner>1.21178144 44.0914897</ows:UpperCorner>
+         </ows:WGS84BoundingBox>
+      </FeatureType>
+    </FeatureTypeList>
+</wfs:WFS_Capabilities>

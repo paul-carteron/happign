@@ -2,6 +2,7 @@
 % Please edit documentation in R/predicates.R
 \name{spatial_predicates}
 \alias{spatial_predicates}
+\alias{intersects}
 \alias{within}
 \alias{contains}
 \alias{touches}
@@ -14,6 +15,8 @@
 \alias{relate}
 \title{Spatial predicate constructors}
 \usage{
+intersects()
+
 within()
 
 contains()

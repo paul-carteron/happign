@@ -6,18 +6,14 @@
 #'
 #' @param x `sf`, `sfc` or `NULL`. If `NULL`, no spatial filter is applied
 #' and `query` must be provided.
-#'
 #' @param layer `character`; name of the WFS layer. Must correspond to a
-#' layer available on the IGN WFS service (see [get_layers_metadata("wfs")]).
-#'
+#' layer available on the IGN WFS service (see [get_layers_metadata()]).
 #' @param predicate `list`; a spatial predicate definition created with helper
 #' such as `bbox()`, `intersects()`, `within()`, `contains()`, `touches()`,
 #' `crosses()`, `overlaps()`, `equals()`, `dwithin()`, `beyond()` or
 #' `relate()`. See [spatial_predicates] for more info.
-#'
 #' @param query `character`; an ECQL attribute query. When both `x` and `query`
 #' are provided, the spatial predicate and the attribute query are combined.
-#'
 #' @param verbose `logical`; if `TRUE`, display progress information and
 #' other informative message.
 #'
@@ -107,6 +103,22 @@ get_wfs <- function(
    }
 
    if (!is.null(query)) {
+
+      attrs <- get_wfs_attributes(layer)
+      query_attrs <- extract_identifiers(query)
+      unknown <- setdiff(query_attrs, attrs)
+
+      if (length(unknown)) {
+         stop(
+            sprintf(
+               "Unknown attribute(s) in `query`: %s.\nAvailable attributes are: %s",
+               paste(unknown, collapse = ", "),
+               paste(attrs, collapse = ", ")
+            ),
+            call. = FALSE
+         )
+      }
+
       cql <- c(cql, sprintf("(%s)", query))
    }
 
@@ -126,20 +138,20 @@ get_wfs <- function(
       count = offset
    )
 
-   req <- request("https://data.geopf.fr/") |>
-      req_url_path_append("wfs/ows") |>
-      req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
-      req_url_query(!!!params) |>
-      req_body_form(cql_filter = cql)
+   req <- httr2::request("https://data.geopf.fr/") |>
+      httr2::req_url_path_append("wfs/ows") |>
+      httr2::req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
+      httr2::req_url_query(!!!params) |>
+      httr2::req_body_form(cql_filter = cql)
 
-   resps <- req_perform_iterative(
+   resps <- httr2::req_perform_iterative(
       req,
-      next_req = iterate_with_offset(
+      next_req = httr2::iterate_with_offset(
          "startindex",
          start = 0,
          offset = offset,
          resp_pages = function(resp) {
-            total <- resp_body_json(resp)$numberMatched
+            total <- httr2::resp_body_json(resp)$numberMatched
             max(1L, ceiling(total / offset)) # If total = 0 fake 1 page
          }
       ),
@@ -148,7 +160,7 @@ get_wfs <- function(
    )
 
    features <- resps |>
-      resps_data(\(resp) resp_body_string(resp)) |>
+      httr2::resps_data(\(resp) httr2::resp_body_string(resp)) |>
       lapply(read_sf)
 
    features <- do.call(rbind, features) |> suppressWarnings()
@@ -162,4 +174,24 @@ get_wfs <- function(
    return(features)
 }
 
+extract_identifiers <- function(query) {
+
+   # remove quoted strings
+   q <- gsub("'[^']*'", "", query)
+
+   # extract words (letters, digits, underscore)
+   tokens <- gregexpr("[A-Za-z_][A-Za-z0-9_]*", q)
+   words <- unique(regmatches(q, tokens)[[1]])
+
+   # ECQL keywords to ignore
+   keywords <- c(
+      "AND", "OR", "NOT",
+      "LIKE", "ILIKE", "IN", "BETWEEN",
+      "IS", "NULL",
+      "EXISTS", "DOES", "INCLUDE", "EXCLUDE",
+      "TRUE", "FALSE"
+   )
+
+   return(setdiff(words, keywords))
+}
 

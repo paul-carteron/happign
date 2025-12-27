@@ -2,95 +2,102 @@
 % Please edit documentation in R/get_wfs.R
 \name{get_wfs}
 \alias{get_wfs}
-\title{Download WFS layer}
+\title{Download data from IGN WFS layer}
 \usage{
-get_wfs(x = NULL,
-        layer = NULL,
-        predicate = bbox(),
-        query = NULL,
-        interactive = FALSE)
+get_wfs(
+  x = NULL,
+  layer = NULL,
+  predicate = bbox(),
+  query = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
-\item{x}{Object of class \code{sf} or \code{sfc}. Needs to be located in
-France.}
+\item{x}{\code{sf}, \code{sfc} or \code{NULL}. If \code{NULL}, no spatial filter is applied
+and \code{query} must be provided.}
 
-\item{layer}{\code{character}; name of the layer from \code{get_layers_metadata("wfs")}
-or directly from
-\href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
+\item{layer}{\code{character}; name of the WFS layer. Must correspond to a
+layer available on the IGN WFS service (see \code{\link[=get_layers_metadata]{get_layers_metadata()}}).}
 
-\item{predicate}{\code{character}; spatial predicate from ECQL language.
-See detail and examples for more info.}
+\item{predicate}{\code{list}; a spatial predicate definition created with helper
+such as \code{bbox()}, \code{intersects()}, \code{within()}, \code{contains()}, \code{touches()},
+\code{crosses()}, \code{overlaps()}, \code{equals()}, \code{dwithin()}, \code{beyond()} or
+\code{relate()}. See \link{spatial_predicates} for more info.}
 
-\item{query}{\code{character}; corresponding to an ECQL query.
-See detail and examples for more info.}
+\item{query}{\code{character}; an ECQL attribute query. When both \code{x} and \code{query}
+are provided, the spatial predicate and the attribute query are combined.}
 
-\item{interactive}{\code{character}; if TRUE, no need to specify \code{layer}, you'll be ask.}
+\item{verbose}{\code{logical}; if \code{TRUE}, display progress information and
+other informative message.}
 }
 \value{
-\code{sf} object from \code{sf} package or \code{NULL} if no data.
+An object of class \code{sf}.
 }
 \description{
-Read simple features from IGN Web Feature Service (WFS) from location
-and name of layer.
+Download features from the IGN Web Feature Service (WFS) using a
+spatial predicate, an ECQL attribute query, or both.
 }
 \details{
 \itemize{
-\item \code{get_wfs} use ECQL language : a query language created by the OpenGeospatial Consortium.
-It provide multiple spatial filter : "intersects", "disjoint", "contains", "within", "touches",
-"crosses", "overlaps", "equals", "relate", "beyond", "dwithin". For "relate", "beyond",
-"dwithin", argument can be provide using vector like :
-spatial_filter = c("dwithin", distance, units). More info about ECQL language
-\href{https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html}{here}.
-\item ECQL query can be provided to \code{ecql_filter}. This allows direct query of the IGN's WFS
-geoservers. If \code{x} is set, then the \code{ecql_filter} comes in addition to the
-\code{spatial_filter}. More info for writing ECQL
-\href{https://docs.geoserver.org/latest/en/user/tutorials/cql/cql_tutorial.html}{here}
+\item \code{get_wfs} use ECQL language : a query language created by the
+OpenGeospatial Consortium. More info about ECQL language can be
+found \href{https://docs.geoserver.org/latest/en/user/filter/ecql_reference.html}{here}.
 }
 }
 \examples{
 \dontrun{
 library(sf)
-library(tmap)
 
-# Shape from the best town in France
-penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
+# Load a geometry
+x <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
-# For quick testing, use interactive = TRUE
-shape <- get_wfs(x = penmarch,
-                 interactive = TRUE)
+# Retrieve commune boundaries intersecting x
+commune <- get_wfs(
+  x = x,
+  layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"
+)
 
-## Getting borders of best town in France
-metadata_table <- get_layers_metadata("wfs", "administratif")
-layer <- metadata_table[32,1] # LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune
+plot(st_geometry(commune), border = "firebrick")
 
-# Downloading borders
-borders <- get_wfs(penmarch, layer)
+# Attribute-only query (no spatial filter)
 
-# Plotting result
-qtm(borders, fill = NULL, borders = "firebrick") # easy map
+# If unknown, available attributes can be retrieved using `get_wfs_attributes()`
+attrs <- get_wfs_attributes("LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
+print(attrs)
 
-# Get forest_area of the best town in France
-forest_area <- get_wfs(x = borders,
-                       layer = "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape")
+plou_communes <- get_wfs(
+  x = NULL,
+  layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+  query = "nom_officiel ILIKE 'PLOU\%'"
+)
+plot(st_geometry(plou_communes))
 
-qtm(forest_area, fill = "nom_typn")
+# Multiple Attribute-only query (no spatial filter)
+plou_inf_2000 <- get_wfs(
+  x = NULL,
+  layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
+  query = "nom_officiel ILIKE 'PLOU\%' AND population < 2000"
+)
+plot(st_geometry(plou_communes))
+plot(st_geometry(plou_inf_2000), col = "firebrick", add = TRUE)
 
-# Using ECQL filters to query IGN server
-## First find attributes of the layer
-attrs <- get_wfs_attributes(layer)
+# Spatial predicate usage
 
-## e.g. : find all commune's name starting by "plou"
-plou_borders <- get_wfs(x = NULL, # When x is NULL, all France is query
-                        layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
-                        ecql_filter = "nom_m LIKE 'PLOU\%'")
-qtm(plou_borders)
+layer <- "BDCARTO_V5:rond_point"
 
-## Combining ecql_filters
-plou_borders_inf_2000 <- get_wfs(x = NULL, # When x is NULL, all France is query
-                                 layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune",
-                                 ecql_filter = "nom_m LIKE 'PLOU\%' AND population < 2000")
-qtm(plou_borders)+ qtm(plou_borders_inf_2000, fill = "red")
+bbox_feat <- get_wfs(commune, layer, predicate = bbox())
+plot(st_geometry(bbox_feat), col = "red")
+plot(st_geometry(commune), add = TRUE)
+
+intersects_feat <- get_wfs(commune, layer, predicate = intersects())
+plot(st_geometry(intersects_feat), col = "red")
+plot(st_geometry(commune), add = TRUE)
+
+dwithin_feat <- get_wfs(commune, layer, predicate = dwithin(5, "kilometers"))
+plot(st_geometry(dwithin_feat), col = "red")
+plot(st_geometry(commune), add = TRUE)
 }
+
 }
 \seealso{
 \code{\link[=get_layers_metadata]{get_layers_metadata()}}

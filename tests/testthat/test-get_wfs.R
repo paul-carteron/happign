@@ -107,6 +107,7 @@ test_that("get_wfs() works with query only", {
    local_mocked_bindings(
       get_wfs_default_geometry_name = function(...) "geometrie",
       get_wfs_default_crs = function(...) 4326,
+      get_wfs_attributes = function(...) "code_insee",
       .package = "happign"
    )
 
@@ -132,6 +133,7 @@ test_that("get_wfs() works with query and x", {
    local_mocked_bindings(
       get_wfs_default_geometry_name = function(...) "geometrie",
       get_wfs_default_crs = function(...) 4326,
+      get_wfs_attributes = function(...) "code_insee",
       .package = "happign"
    )
 
@@ -168,4 +170,22 @@ test_that("get_wfs() accepts x with different CRS", {
          )
       })
    })
+})
+
+test_that("get_wfs() abort when query is wrong", {
+
+   x <- sf::st_sfc(sf::st_point(c(1, 0)), crs = 4326)
+
+   local_mocked_bindings(
+      get_wfs_default_geometry_name = function(...) "geometrie",
+      get_wfs_default_crs = function(...) 4326,
+      get_wfs_attributes = function(...) "not_this_attrs",
+      .package = "happign"
+   )
+
+   expect_error(
+      get_wfs(x, layer = "layer", query = "attrs LIKE '%yo'"),
+      "Unknown attribute.*not_this_attrs"
+      )
+
 })

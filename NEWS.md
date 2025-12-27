@@ -1,3 +1,15 @@
+# happign 0.3.7
+Function:
+   * Refactor `get_wfs()` :
+      * Better iterative request using `httr2::req_perform_iterative()`;
+      * Better cql_filter construction with new predicate implementation ;
+      
+Breaking changes:
+   * Removing old dataset `cog_2023` and `com_2024`;
+   * Changing arg in `get_wfs()`:
+      * `spatial_filter` -> `predicate` : now use structured predicate (see ?`spatial_prediacte`)
+      * `ecql_filter` -> `query`  
+
 # happign 0.3.6
 Function:
    * Refactor `get_apicarto_cadastre` :

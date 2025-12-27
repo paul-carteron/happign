@@ -15,19 +15,11 @@
 #' @examples
 #' \dontrun{
 #'
-#' get_wfs_attributes("administratif", "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
-#'
-#' # Interactive session
-#' get_wfs_attributes(interactive = TRUE)
+#' get_wfs_attributes("LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune")
 #'
 #' }
-get_wfs_attributes <- function(layer = NULL,
-                               interactive = FALSE){
+get_wfs_attributes <- function(layer = NULL){
 
-   if (interactive){
-      choice <- interactive_mode("wfs")
-      layer <- choice$layer
-   }
 
    resp <- build_wfs_attributes(layer) |>
       req_perform() |>
