@@ -1,0 +1,28 @@
+{
+   "type": "FeatureCollection",
+   "features": [
+      {
+         "type": "Feature",
+         "id": "commune.2",
+         "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+               [
+                  [0, 0],
+                  [1, 0],
+                  [1, 1],
+                  [0, 1],
+                  [0, 0]
+               ]
+            ]
+         },
+         "geometry_name": "fake_geom",
+         "properties": {
+            "code_insee": "29158",
+            "nom_officiel": "Penmarch"
+         }
+      }
+   ],
+   "numberMatched": 1000,
+   "numberReturned": 1
+}

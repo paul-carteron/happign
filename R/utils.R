@@ -32,17 +32,15 @@ get_wfs_default_crs <- function(layer){
       req_perform() |>
       resp_body_xml()
 
-   name <- xml_find_all(req, "//d1:Name") |> xml_text()
-   default_crs <- xml_find_all(req, "//d1:DefaultCRS") |> xml_text()
+   name <- xml_find_all(req, ".//*[local-name() = 'Name']") |> xml_text()
+   default_crs <- xml_find_all(req, ".//*[local-name() = 'DefaultCRS']") |> xml_text()
 
    crs <- default_crs[match(layer, name)]
-   no_crs <- is.na(crs)
-   if (no_crs){
-      stop("No crs found, `layer` does not exist.", call. = F)
+   if (is.na(crs)) {
+      stop("No CRS found: layer does not exist: ", layer, call. = FALSE)
    }
 
-   epsg <- st_crs(crs)$epsg
-   return(epsg)
+   return(crs)
 }
 
 #' @title get_wfs_default_geometry_name
@@ -70,7 +68,6 @@ get_wfs_default_geometry_name <- function(layer){
       req_user_agent("happign (https://paul-carteron.github.io/happign/)") |>
       req_url_query(!!!params)
 
-   # ── run the request, return NULL on 404 ──────────────────────────────── #
    xml_doc <- tryCatch(
       req |> req_perform() |> resp_body_xml(),
       httr2_http = function(cnd) {
@@ -82,42 +79,6 @@ get_wfs_default_geometry_name <- function(layer){
       xml_attr("name")
 
    return(geometry_name)
-}
-
-
-#' @title st_as_text_happign
-#' @description Flip X and Y coord for ECQL filter.
-#'
-#' @param x `sf` or `sfc`; needs to be located in France.
-#' @param crs `integer`; an epsg code (e.g. `4326`).
-#'
-#' @importFrom sf st_axis_order st_geometry st_transform st_as_text st_as_sf
-#' @importFrom dplyr summarize
-#'
-#' @return An ecql filter as class `character`
-#' @noRd
-#'
-st_as_text_happign <- function(x, crs){
-
-   if(crs == 4326 & st_crs(x)$epsg == 4326){
-      on.exit(st_axis_order(F))
-      st_axis_order(T)
-      x <- st_transform(x, "CRS:84")
-   }else if (crs == 4326 & st_crs(x)$epsg != 4326){
-      on.exit(st_axis_order(F))
-      st_axis_order(T)
-      x <- st_transform(x, 4326)
-   }else{
-      x <- st_transform(x, crs)
-   }
-
-   if (methods::is(x, "sfc")){
-      x <- st_as_sf(x)
-   }
-
-   geom <- suppressMessages(st_as_text(st_geometry(summarize(x))))
-
-   return(geom)
 }
 
 #' @title is_empty

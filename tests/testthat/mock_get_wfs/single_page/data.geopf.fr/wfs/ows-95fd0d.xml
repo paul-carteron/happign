@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+xmlns:FakeLayer1="http://FakeLayer1"
+xmlns:gml="http://www.opengis.net/gml/3.2"
+xmlns:wfs="http://www.opengis.net/wfs/2.0"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified"
+targetNamespace="http://FakeLayer1">
+   <xsd:element maxOccurs="1" minOccurs="0" name="fake_geom" nillable="true" type="gml:MultiSurfacePropertyType"/>
+</xsd:schema>

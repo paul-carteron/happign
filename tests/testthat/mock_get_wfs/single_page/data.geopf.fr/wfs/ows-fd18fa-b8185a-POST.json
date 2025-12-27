@@ -1,0 +1,28 @@
+{
+   "type": "FeatureCollection",
+   "features": [
+      {
+         "type": "Feature",
+         "id": "commune.1",
+         "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+               [
+                  [0, 0],
+                  [1, 0],
+                  [1, 1],
+                  [0, 1],
+                  [0, 0]
+               ]
+            ]
+         },
+         "geometry_name": "fake_geom",
+         "properties": {
+            "code_insee": "29019",
+            "nom_officiel": "Brest"
+         }
+      }
+   ],
+   "numberMatched": 1,
+   "numberReturned": 1
+}

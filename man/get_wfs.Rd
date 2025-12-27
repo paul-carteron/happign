@@ -6,10 +6,8 @@
 \usage{
 get_wfs(x = NULL,
         layer = NULL,
-        filename = NULL,
-        spatial_filter = "bbox",
-        ecql_filter = NULL,
-        overwrite = FALSE,
+        predicate = bbox(),
+        query = NULL,
         interactive = FALSE)
 }
 \arguments{
@@ -20,16 +18,11 @@ France.}
 or directly from
 \href{https://geoservices.ign.fr/services-web-experts}{IGN website}}
 
-\item{filename}{\code{character};Either a string naming a file or a connection open
-for writing. (ex : "test.shp" or "~/test.shp")}
-
-\item{spatial_filter}{\code{character}; spatial predicate from ECQL language.
+\item{predicate}{\code{character}; spatial predicate from ECQL language.
 See detail and examples for more info.}
 
-\item{ecql_filter}{\code{character}; corresponding to an ECQL query.
+\item{query}{\code{character}; corresponding to an ECQL query.
 See detail and examples for more info.}
-
-\item{overwrite}{\code{logical}; if TRUE, file is overwrite.}
 
 \item{interactive}{\code{character}; if TRUE, no need to specify \code{layer}, you'll be ask.}
 }
