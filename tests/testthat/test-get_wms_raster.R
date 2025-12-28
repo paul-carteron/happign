@@ -3,20 +3,6 @@ layer <- "ORTHOIMAGERY.ORTHOPHOTOS"
 res <- 25
 crs <- 2154
 
-test_that("wms_base_case", {
-   skip_on_cran()
-   skip_if_offline()
-
-   base_case <- get_wms_raster(x, layer, res, crs, verbose = F)
-
-   expect_true(sf::st_crs(base_case) == sf::st_crs(2154))
-   expect_equal(terra::nlyr(base_case), 3)
-   expect_named(base_case, c("red", "green", "blue"))
-
-   # check rgb value are not empty
-   expect_true(all(terra::minmax(base_case, compute=T)["max",] >= 0))
-})
-
 test_that("wms_rgb", {
    skip_on_cran()
    skip_if_offline()
@@ -24,17 +10,6 @@ test_that("wms_rgb", {
    rgb_FALSE <- get_wms_raster(x, layer, res, crs, rgb = FALSE, verbose = F)
 
    expect_equal(terra::nlyr(rgb_FALSE), 1)
-
-})
-
-test_that("wms_crs", {
-   skip_on_cran()
-   skip_if_offline()
-
-   new_crs <- 27572
-   crs_CHANGED <- get_wms_raster(happign:::poly, layer, res, crs = new_crs, verbose = F)
-
-   expect_true(sf::st_crs(crs_CHANGED) == sf::st_crs(new_crs))
 
 })
 

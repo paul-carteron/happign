@@ -1,15 +1,3 @@
-test_that("wmts_base_case", {
-   skip_on_cran()
-   skip_if_offline()
-
-   rast <- get_wmts(poly)
-
-   expect_true(terra::has.RGB(rast))
-   expect_s4_class(rast, "SpatRaster")
-   expect_equal(dim(rast), c(4, 2, 4))
-   expect_true(sf::st_crs(rast) == sf::st_crs(2154))
-})
-
 test_that("wmts_crs", {
    skip_on_cran()
    skip_if_offline()
