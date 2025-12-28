@@ -223,7 +223,7 @@ spatial_cql <- function(x, layer, predicate) {
          predicate$pattern
       ),
 
-      stop("Unknown predicate type: ", predicate$type)
+      stop("Unknown predicate type: ", predicate$type, call. = FALSE)
    )
 }
 

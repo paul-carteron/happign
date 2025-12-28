@@ -9,7 +9,7 @@ test_that("wms_base_case", {
 
    base_case <- get_wms_raster(x, layer, res, crs, verbose = F)
 
-   expect_true(st_crs(base_case) == st_crs(2154))
+   expect_equal(sf::st_crs(base_case)$epsg, 2154)
    expect_equal(terra::nlyr(base_case), 3)
    expect_named(base_case, c("red", "green", "blue"))
 
@@ -34,7 +34,7 @@ test_that("wms_crs", {
    new_crs <- 27572
    crs_CHANGED <- get_wms_raster(happign:::poly, layer, res, crs = new_crs, verbose = F)
 
-   expect_true(st_crs(crs_CHANGED) == st_crs(new_crs))
+   expect_equal(sf::st_crs(crs_CHANGED)$epsg, sf::st_crs(new_crs)$epsg)
 
 })
 
