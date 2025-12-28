@@ -9,8 +9,9 @@
 #'
 #' - `bbox()`: Select features intersecting the bounding box of the reference geometry.
 #' - `intersects()`: Select features whose geometry intersects the reference geometry.
-#' - `within()`: Select features completely within the reference geometry.
+#' - `disjoint()`: Select features whose geometry intersects the reference geometry.
 #' - `contains()`: Select features that completely contain the reference geometry.
+#' - `within()`: Select features completely within the reference geometry.
 #' - `touches()`: Select features that touch the reference geometry at the boundary.
 #' - `crosses()`: Select features that cross the reference geometry.
 #' - `overlaps()`: Select features that partially overlap the reference geometry.
@@ -50,6 +51,10 @@ intersects <- function() predicate("intersects")
 #' @rdname spatial_predicates
 #' @export
 within <- function() predicate("within")
+
+#' @rdname spatial_predicates
+#' @export
+disjoint <- function() predicate("disjoint")
 
 #' @rdname spatial_predicates
 #' @export
@@ -189,8 +194,9 @@ spatial_cql <- function(x, layer, predicate) {
       return(bbox_cql(x, geom_name, crs))
    }
 
+   x <- sf::st_transform(x, sf::st_crs(crs))
    geom <- sf::st_as_text(sf::st_union(sf::st_geometry(x)))
-   if (!is.na(crs$epsg)) {
+   if (!is.na(crs$epsg)){
       geom <- sprintf("SRID=%s;%s", crs$epsg, geom)
    }
 
@@ -198,6 +204,7 @@ spatial_cql <- function(x, layer, predicate) {
       predicate$type,
 
       intersects = sprintf("INTERSECTS(%s, %s)", geom_name, geom),
+      disjoint   = sprintf("DISJOINT(%s, %s)", geom_name, geom),
       within     = sprintf("WITHIN(%s, %s)", geom_name, geom),
       contains   = sprintf("CONTAINS(%s, %s)", geom_name, geom),
       touches    = sprintf("TOUCHES(%s, %s)", geom_name, geom),

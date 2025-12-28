@@ -1,35 +1,50 @@
+# ---- RStudio ----
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^\.travis\.yml
-^inst/web$
-^docs
-^_pkgdown\.yml
-^README\.Rmd
-^README-.*\.png
-^pkgdown
-^codecov\.yml
-^CODE_OF_CONDUCT\.md$
-^LICENSE\.md
-^tests/testthat/assets/site-citation
-^tests/testthat/assets/site-dot-github/.github
-^cran-comments\.md
-^CRAN-RELEASE
-^revdep
-^appveyor\.yml
-^\.github
-^fake-index.html
-^doc
-^Meta
-^doc$
-^Meta$
-^CRAN-SUBMISSION$
+
+# ---- CI / automation (CRAN expects ignored) ----
 ^\.github$
+^\.travis\.yml$
+^appveyor\.yml$
+^codecov\.yml$
+
+# ---- pkgdown (must not be in tarball) ----
 ^_pkgdown\.yml$
-^docs$
 ^pkgdown$
+^docs$
+
+# ---- README sources ----
+^README\.Rmd$
+^README-.*\.png$
+
+# ---- CRAN submission files ----
 ^cran-comments\.md$
+^CRAN-RELEASE$
+^CRAN-SUBMISSION$
+
+# ---- License / conduct (metadata-only on CRAN) ----
 ^LICENSE\.md$
+^CODE_OF_CONDUCT\.md$
+
+# ---- Development-only ----
 ^data-raw$
 ^revdep$
+
+# ---- Non-standard vignettes ----
 ^vignettes/articles$
+
+# ---- R CMD check artifacts ----
+^doc$
+^Meta$
 \.orig$
+
+# ---- httptest2 / API real tests ----
+^tests/real-tests$
+
+# ---- Test assets not shipped ----
+^tests/testthat/assets/site-citation$
+^tests/testthat/assets/site-dot-github$
+
+# ---- Misc (non-package content) ----
+^inst/web$
+^fake-index\.html$
