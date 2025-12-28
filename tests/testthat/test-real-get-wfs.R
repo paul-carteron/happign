@@ -2,6 +2,7 @@ test_that("get_wfs() works", {
 
    skip_on_cran()
    skip_if_offline()
+   skip_if_not(Sys.getenv("RUN_REAL_API_TESTS") == "true")
 
    x <- sf::read_sf(system.file("extdata/penmarch.shp", package = "happign"))
    layer <- "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"
@@ -16,6 +17,7 @@ test_that("get_wfs() all predicate works", {
 
    skip_on_cran()
    skip_if_offline()
+   skip_if_not(Sys.getenv("RUN_REAL_API_TESTS") == "true")
 
    x <- sf::read_sf(system.file("extdata/penmarch.shp", package = "happign"))
    x_com <- get_wfs(x, "BDCARTO_V5:commune")

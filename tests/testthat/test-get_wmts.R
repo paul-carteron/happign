@@ -7,7 +7,7 @@ test_that("wmts_base_case", {
    expect_true(terra::has.RGB(rast))
    expect_s4_class(rast, "SpatRaster")
    expect_equal(dim(rast), c(4, 2, 4))
-   expect_equal(sf::st_crs(rast)$epsg, 2154)
+   expect_true(sf::st_crs(base_case) == sf::st_crs(2154))
 })
 
 test_that("wmts_crs", {
@@ -19,7 +19,7 @@ test_that("wmts_crs", {
    expect_true(terra::has.RGB(rast))
    expect_s4_class(rast, "SpatRaster")
    expect_equal(dim(rast), c(3, 3, 4))
-   expect_equal(sf::st_crs(rast)$epsg, 4326)
+   expect_true(sf::st_crs(base_case) == sf::st_crs(4326))
 })
 
 test_that("wmts_overwrite", {
