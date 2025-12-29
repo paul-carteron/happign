@@ -9,19 +9,19 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup}
 knitr::opts_chunk$set(
-   collapse = TRUE,
-   comment = "#>",
-   fig.center = TRUE,
-   fig.align = "center"
+  collapse = TRUE,
+  out.width = "100%",
+  dpi = 300,
+  fig.width = 7.2916667,
+  comment = "#>"
 )
 ```
 
-```{r setup}
+```{r package, message=FALSE, warning=FALSE}
 library(happign)
 library(sf)
-library(dplyr)
 library(ggplot2)
 library(terra)
 library(tmap)
@@ -30,7 +30,7 @@ tmap_mode("view")
 
 ## First choose a zone of interest
 
-For the example we will work with the Camors forest. First of all we need the commune border that can be obtained with `get_apicarto_commune` from the insee code. For convenience, `happign` provides a table containing all insee codes (`data("com_2025")`).
+For the example we will work with the Camors forest. First of all we need the commune border that can be obtained with `get_apicarto_cadastre()` from the insee code. For convenience, `happign` provides a table containing all insee codes (`data("com_2025")`).
 
 ```{r borders}
 data("com_2025", package = "happign")
@@ -51,8 +51,8 @@ An other way of getting borders without Apicarto is to use ECQL language to dire
 ```{r borders2}
 camors2 <- get_wfs(
    layer = "ADMINEXPRESS-COG-CARTO.LATEST:commune",
-   ecql_filter = "nom_officiel_en_majuscules LIKE 'CAMORS'"
-   )
+   query = "nom_officiel_en_majuscules LIKE 'CAMORS'"
+)
 
 # "nom_officiel_en_majuscules" attribut can be found using get_wfs_attributes(layer = "ADMINEXPRESS-COG-CARTO.LATEST:commune")
 ```
@@ -80,22 +80,20 @@ __*Rq :*__
 The first interesting layer for forester is the "BD Forêt" which is all vegetation type assigned to each area greater than or equal to 0.5 ha (5,000 m²). There is two layer for forest : the old one BD Forêt V1 and the new one BD Forêt V2 that can be accessed with "burger menu" on the top left of interactive map below.
 
 ```{r bd_foret, warning=FALSE}
-layers <- get_layers_metadata("wfs", "environnement")
-BDF1_layer <- layers[4,1]
-BDF2_layer <- layers[5,1]
+layer_v1 <- "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape"
+bd_foret_v1 <- get_wfs(camors, layer_v1, predicate = intersects())
 
-BDF1 <- get_wfs(camors, BDF1_layer, spatial_filter = "intersects")
-BDF2 <- get_wfs(camors, BDF2_layer, spatial_filter = "intersects")
+layer_v2 <- "LANDCOVER.FORESTINVENTORY.V2:formation_vegetale"
+bd_foret_v2 <- get_wfs(camors, layer_v2, predicate = intersects())
 
-# tmap V4 code
-tm_shape(BDF1) +
+tm_shape(bd_foret_v1) +
    tm_polygons(fill = "libelle",
-               popup.vars = names(BDF1)[1:(ncol(BDF1)-2)],
+               popup.vars = names(bd_foret_v1)[1:(ncol(bd_foret_v1)-2)],
                fill.legend = tm_legend_hide())+
-tm_shape(BDF2) +
+tm_shape(bd_foret_v2) +
     tm_polygons(fill = "tfv",
                 fill_alpha = 0.5,
-                popup.vars = names(BDF2)[1:(ncol(BDF2)-2)],
+                popup.vars = names(bd_foret_v2)[1:(ncol(bd_foret_v2)-2)],
                 fill.legend = tm_legend_hide()) +
 tm_shape(camors) +
    tm_borders(lwd = 2)
@@ -105,7 +103,7 @@ tm_shape(camors) +
 More calculations can be done to get a better understanding of forest type. Below, areas per species are calculated :
 
 ```{r bd_foret_calculation, warning=FALSE}
-forest_type_BDF2 <- BDF2 |>
+forest_type_v2 <- bd_foret_v2 |>
   mutate(area = as.numeric(st_area(geometry))) |>
   st_drop_geometry() |>
   group_by(essence) |>
@@ -114,7 +112,7 @@ forest_type_BDF2 <- BDF2 |>
   mutate(essence = as.factor(essence))
 
 ggplot()+
-  geom_col(data = forest_type_BDF2,
+  geom_col(data = forest_type_v2,
            aes(x = rev(reorder(essence, sum_area)),
                y = sum_area,
                fill = as.factor(essence)))+
@@ -135,32 +133,19 @@ One information you really want when you're a forest manager is if your zone of 
 Again, you can click on map, point and shape for more informations.
 
 ```{r protected_area, message=FALSE, warning=FALSE}
-znieff_layers <- get_layers_metadata("wfs", "environnement") |> 
-   filter(grepl(".*ZNIEFF.*", Name)) |> 
-   pull(Name)
+wfs <- get_layers_metadata("wfs")
+znieff_layers <- wfs$Name[grepl("ZNIEFF", wfs$Name, ignore.case = TRUE)]
 
-get_wfs_on_camors <- function(znieff_layer){
-   message(znieff_layers,"...")
-   layer <- try(
-      get_wfs(
-         camors,
-         znieff_layer,
-         spatial_filter = "intersects"
-         )
-      )
-   return(layer)
-}
-
-try_znieff <- lapply(znieff_layers, get_wfs_on_camors) |> 
-   setNames(znieff_layers)
+znieff <- lapply(znieff_layers, function(layer){get_wfs(camors, layer)})
+names(znieff) <- znieff_layers
 
 # remove empty layers
-znieffs <- Filter(function(x) !is.null(x), try_znieff)
+znieff <- Filter(function(x) nrow(x) >= 1 , znieff)
 
 # Plot the result
 tm_shape(camors) +
    tm_borders(lwd = 2)+
-tm_shape(znieffs[[1]])+
+tm_shape(znieff[[1]])+
    tm_polygons(fill_alpha = 0.8, col = "blue")
 ```
 
@@ -170,11 +155,10 @@ tm_shape(znieffs[[1]])+
 Terrain topologie is quite useful for forest management. IGN offers MNT and MNS for download. As a reminder, the MNT corresponds to the surface of the ground and the MNS to the real surface (in our case, the trees). It is thus easy to find the height of the trees by subtracting the MNT from the MNS.
 
 ```{r mnt_mns_mnh}
-layers <- get_layers_metadata("wms-r", "altimetrie")
-mnt_layer <- layers[3,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
-mns_layer <- layers[4,1] # "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
-
+mnt_layer <- "ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES"
 mnt <- get_wms_raster(camors_parcels, mnt_layer, res = 10, crs = 2154, rgb = FALSE)
+
+mns_layer <-"ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES.MNS"
 mns <- get_wms_raster(camors_parcels, mns_layer, res = 10, crs = 2154, rgb = FALSE)
 
 # Calculate digital height model i.e. tree height
@@ -264,42 +248,6 @@ tm_shape(camors_parcels, is.main = TRUE)+
 
 ```
 
-### Info on raster
-
-For some resources, it is essential to have additional information in order to use them properly. For example, in the forest field, the date the picture was taken is important because our object of study is dynamic. The function `get_location_info()` allows to get, if they exist, additional information on the raster layers. *Warning : only point are supported.*
-
-__*Rq :*__
-
- * *Note that the function returns a shape by default. If only the metadata is required, you can speed up the response time by setting read_sf to FALSE.*
-  * *To find all queryable layers from an apikey you can use `are_queryable(apikey)`*
- 
-
-```{r}
-# info_sup <- get_location_info(x = st_centroid(camors),
-#                               apikey = "ortho",
-#                               layer = "ORTHOIMAGERY.ORTHOPHOTOS.BDORTHO",
-#                               read_sf = F)
-# info_sup$date_vol
-```
-
-The call to the function `get_location_info` indicates that this orthophoto was taken the 2019-05-14.
-
-In some cases, the function can be used to retrieve resources that are not explicitly available. For example, there are no vector layers of public forests, only a raster layer. However, when additional information is requested, the outline of the forest is returned.
-
-```{r get_location_info}
-# x <- st_sfc(st_point(c(-3.549957, 47.83396)), crs = 4326) # Carnoet forest
-# 
-# forest <- get_location_info(x,
-#                             apikey = "environnement",
-#                             layer = "FORETS.PUBLIQUES",
-#                             read_sf = TRUE)
-# tm_shape(forest)+
-#    tm_borders()+
-# tm_shape(x)+
-#    tm_dots(size = 0.05, col = "red")
-```
-
-
 ## Last but not least... BD Topo
 
 BD topo from IGN covers in a coherent way all the geographical and administrative entities of the national territory. So you can find in it :
@@ -317,20 +265,16 @@ BD topo from IGN covers in a coherent way all the geographical and administrativ
 For the example below I choose to download all water-related data :
 
 ```{r bd_topo}
-cour_eau <- get_wfs(camors, "BDTOPO_V3:cours_d_eau") |> 
-   st_intersection(camors) 
-detail_hydro <- get_wfs(camors, "BDTOPO_V3:detail_hydrographique") |> 
-   st_intersection(camors) 
-# water detected by satellite
-surf_hydro <- get_wfs(camors, "BDTOPO_V3:surface_hydrographique") |> 
-   st_intersection(camors) 
+cour_eau <- get_wfs(camors, "BDTOPO_V3:cours_d_eau", intersects())
+detail_hydro <- get_wfs(camors, "BDTOPO_V3:detail_hydrographique", intersects())
+surf_hydro <- get_wfs(camors, "BDTOPO_V3:surface_hydrographique", intersects()) # water detected by satellite
 
+tm_shape(camors)+
+   tm_borders(lwd = 2)+
 tm_shape(cour_eau)+
    tm_lines(col = "blue")+
 tm_shape(detail_hydro)+
    tm_dots(col = "red")+
 tm_shape(surf_hydro)+
-   tm_polygons("steelblue")+
-tm_shape(camors)+
-   tm_borders(lwd = 2)
+   tm_polygons("steelblue")
 ```

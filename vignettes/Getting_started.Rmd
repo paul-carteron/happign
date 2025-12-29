@@ -159,7 +159,7 @@ tm_shape(penmarch_borders) +
 ```
 
 <div class="figure">
-<img src="figure/get_wfs-1.png" alt="plot of chunk get_wfs" width="100%" />
+<img src="get_wfs-1.png" alt="plot of chunk get_wfs" width="100%" />
 </div>
 
 That is all it takes to retrieve vector data using WFS.
@@ -205,7 +205,7 @@ tm_shape(roundabout) +
 ```
 
 <div class="figure">
-<img src="figure/get_wfs_roundabout-1.png" alt="plot of chunk get_wfs_roundabout" width="100%" />
+<img src="get_wfs_roundabout-1.png" alt="plot of chunk get_wfs_roundabout" width="100%" />
 </div>
 
 ### WMS raster
@@ -250,7 +250,7 @@ tm_shape(mnt) +
 ```
 
 <div class="figure">
-<img src="figure/get_wms_raster-1.png" alt="plot of chunk get_wms_raster" width="100%" />
+<img src="get_wms_raster-1.png" alt="plot of chunk get_wms_raster" width="100%" />
 </div>
 
 __*Note:*__
@@ -288,7 +288,7 @@ tm_shape(hr_ortho) +
 ```
 
 <div class="figure">
-<img src="figure/get_wmts-1.png" alt="plot of chunk get_wmts" width="100%" />
+<img src="get_wmts-1.png" alt="plot of chunk get_wmts" width="100%" />
 </div>
 
 WMTS layers are ideal for background maps, orthophotography, and any use case where visual clarity and performance are more important than direct access to raw pixel values.

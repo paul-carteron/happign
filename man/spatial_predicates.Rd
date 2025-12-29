@@ -4,6 +4,7 @@
 \alias{spatial_predicates}
 \alias{intersects}
 \alias{within}
+\alias{disjoint}
 \alias{contains}
 \alias{touches}
 \alias{crosses}
@@ -18,6 +19,8 @@
 intersects()
 
 within()
+
+disjoint()
 
 contains()
 
@@ -58,8 +61,9 @@ manually; instead, use the helper functions listed below.
 \itemize{
 \item \code{bbox()}: Select features intersecting the bounding box of the reference geometry.
 \item \code{intersects()}: Select features whose geometry intersects the reference geometry.
-\item \code{within()}: Select features completely within the reference geometry.
+\item \code{disjoint()}: Select features whose geometry intersects the reference geometry.
 \item \code{contains()}: Select features that completely contain the reference geometry.
+\item \code{within()}: Select features completely within the reference geometry.
 \item \code{touches()}: Select features that touch the reference geometry at the boundary.
 \item \code{crosses()}: Select features that cross the reference geometry.
 \item \code{overlaps()}: Select features that partially overlap the reference geometry.

@@ -52,9 +52,11 @@ jobs:
 
       - name: Replace testthat with real-tests
         run: |
-          Rscript -e "unlink('tests/testthat', recursive = TRUE, force = TRUE);
-                      dir.create('tests', showWarnings = FALSE);
-                      file.copy('real-tests', 'tests/testthat', recursive = TRUE)"
+          Rscript -e "
+            unlink('tests/testthat', recursive = TRUE, force = TRUE);
+            dir.create('tests/testthat', recursive = TRUE);
+            file.copy(list.files('real-tests', full.names = TRUE), 'tests/testthat')
+          "
 
       - uses: r-lib/actions/check-r-package@6f6e5bc62fba3a704f74e7ad7ef7676c5c6a2590 # v2.11.4
         with:
