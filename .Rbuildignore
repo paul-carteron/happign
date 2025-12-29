@@ -48,3 +48,5 @@
 # ---- Misc (non-package content) ----
 ^inst/web$
 ^fake-index\.html$
+^[.]?air[.]toml$
+^\.vscode$

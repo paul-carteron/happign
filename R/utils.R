@@ -21,6 +21,8 @@
 #'
 get_wfs_default_crs <- function(layer){
 
+   stopifnot(is.character(layer), length(layer) == 1)
+
    param <- list(service = "wfs",
                  version = "2.0.0",
                  request = "GetCapabilities",

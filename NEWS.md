@@ -7,7 +7,7 @@ Function:
 Breaking changes:
    * Removing old dataset `cog_2023` and `com_2024`;
    * Changing arg in `get_wfs()`:
-      * `spatial_filter` -> `predicate` : now use structured predicate (see ?`spatial_prediacte`)
+      * `spatial_filter` -> `predicate` : now use structured predicate (see ?`spatial_predicates`)
       * `ecql_filter` -> `query`  
 
 # happign 0.3.6
