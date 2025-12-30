@@ -1,0 +1,163 @@
+# isochronous/isodistance calculations
+
+Calculates isochrones or isodistances in France from an sf object using
+the IGN API on the Géoportail platform. The reference data comes from
+the IGN BD TOPO® database. For further information see IGN
+[documentation.](https://geoservices.ign.fr/documentation/services/api-et-services-ogc/isochrone/api)
+
+## Usage
+
+``` r
+get_iso(x,
+        value,
+        type = "time",
+        profile = "pedestrian",
+        time_unit = "minute",
+        distance_unit = "meter",
+        direction = "departure",
+        source = "pgr",
+        constraints = NULL)
+
+get_isodistance(x,
+                dist,
+                unit = "meter",
+                source = "pgr",
+                profile = "car",
+                direction = "departure",
+                constraints = NULL)
+
+get_isochrone(x,
+              time,
+              unit = "minute",
+              source = "pgr",
+              profile = "car",
+              direction = "departure",
+              constraints = NULL)
+```
+
+## Arguments
+
+- x:
+
+  Object of class `sf` or `sfc` with POINT geometry. There may be
+  several points in the object. In this case, the output will contain as
+  many polygons as points.
+
+- value:
+
+  `numeric`; A quantity of time or distance.
+
+- type:
+
+  `character`; Specifies the type of calculation performed: "time" for
+  isochrone or "distance" for isodistance (isochrone by default).
+
+- profile:
+
+  `character`; Type of cost used for calculation: "pedestrian" for \#'
+  pedestrians and "car" for cars. and "car" for cars ("pedestrian" by
+  default).
+
+- time_unit:
+
+  `character`; Allows you to specify the unit in which times are
+  expressed in the answer: "hour", "minute" or "second" (minutes by
+  default).
+
+- distance_unit:
+
+  `character`; Allows you to specify the unit in which distances are
+  expressed in the answer: "meter" or "kilometer" (meter by default).
+
+- direction:
+
+  `character`; Direction of travel. Either define a "departure" point
+  and obtain the potential arrival points. Or define an "arrival" point
+  and obtain the potential points ("departure" by default).
+
+- source:
+
+  `character`; This parameter specifies which source will be used for
+  the calculation. Currently, "valhalla" and "pgr" sources are available
+  (default "pgr"). See section `SOURCE` for further information.
+
+- constraints:
+
+  Used to express constraints on the characteristics to calculate
+  isochrones/isodistances. See section `CONSTRAINTS`.
+
+- dist:
+
+  `numeric`; A quantity of time.
+
+- unit:
+
+  see `time_unit` and `distance_unit` param.
+
+- time:
+
+  `numeric`; A quantity of time.
+
+## Value
+
+object of class `sf` with `POLYGON` geometry
+
+## Functions
+
+- `get_isodistance()`: Wrapper function to calculate isodistance from
+  get_iso.
+
+- `get_isochrone()`: Wrapper function to calculate isochrone from
+  get_iso.
+
+## SOURCE
+
+Isochrones are calculated using the same resources as for route
+calculation. PGR" and "VALHALLA" resources are used, namely
+"bdtopo-valhalla" and "bdtopo-pgr".
+
+- bdtopo-valhalla" : To-Do
+
+- bdtopo-iso" is based on the old services over a certain distance, to
+  solve performance problems. We recommend its use for large isochrones.
+
+PGR resources are resources that use the PGRouting engine to calculate
+isochrones. ISO resources are more generic. The engine used for
+calculations varies according to several parameters. At present, the
+parameter concerned is cost_value, i.e. the requested time or distance.
+
+## See also
+
+get_isodistance, get_isochrone
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+library(sf)
+library(tmap)
+
+# All area i can acces in less than 5 minute from penmarch centroid
+penmarch <- get_apicarto_cadastre("29158")
+penmarch_centroid <- st_centroid(penmarch)
+isochrone <- get_isochrone(penmarch_centroid, 5)
+
+qtm(penmarch, col = "red")+qtm(isochrone, col = "blue")+qtm(penmarch_centroid, fill = "red")
+
+# All area i can acces as pedestrian in less than 1km
+isodistance <- get_isodistance(penmarch_centroid, 1, unit = "kilometer", profile = "pedestrian")
+
+qtm(penmarch, col = "red")+qtm(isodistance, col = "blue")+qtm(penmarch_centroid, fill = "red")
+
+# In case of multiple point provided, the output will contain as many polygons as points.
+code_insee <- c("29158", "29072", "29171")
+communes_centroid <- get_apicarto_cadastre(code_insee) |> st_centroid()
+isochrones <- get_isochrone(communes_centroid, 8)
+isochrones$code_insee <- code_insee
+qtm(isochrones, fill = "code_insee")
+
+# Find area where i can acces all communes centroid in less than 8 minutes
+area <- st_intersection(isochrones)
+qtm(communes_centroid, fill = "red")+ qtm(area[area$origins == "1:3",])
+} # }
+```

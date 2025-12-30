@@ -1,7 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://paul-carteron.github.io/happign/404.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/CODE_OF_CONDUCT.html</loc></url>
-<url><loc>https://paul-carteron.github.io/happign/CONTRIBUTING.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/LICENSE.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/articles/Getting_started.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/articles/api_carto.html</loc></url>
@@ -11,9 +10,8 @@
 <url><loc>https://paul-carteron.github.io/happign/index.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/news/index.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/reference/are_queryable.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/bbox_cql.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/reference/build_iso_query.html</loc></url>
-<url><loc>https://paul-carteron.github.io/happign/reference/cog_2023.html</loc></url>
-<url><loc>https://paul-carteron.github.io/happign/reference/com_2024.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/reference/com_2025.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/reference/dep_2025.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/reference/get_apicarto_cadastre.html</loc></url>
@@ -31,5 +29,7 @@
 <url><loc>https://paul-carteron.github.io/happign/reference/get_wmts.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/reference/index.html</loc></url>
 <url><loc>https://paul-carteron.github.io/happign/reference/reg_2025.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/spatial_cql.html</loc></url>
+<url><loc>https://paul-carteron.github.io/happign/reference/spatial_predicates.html</loc></url>
 </urlset>
 

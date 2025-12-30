@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">happign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,7 @@ Carteron</h4>
             
             <h4 data-toc-skip class="date">2025-07-23</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/paul-carteron/happign/blob/v0.3.6/vignettes/Getting_started.Rmd" class="external-link"><code>vignettes/Getting_started.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/paul-carteron/happign/blob/main/vignettes/Getting_started.Rmd" class="external-link"><code>vignettes/Getting_started.Rmd</code></a></small>
       <div class="d-none name"><code>Getting_started.Rmd</code></div>
     </div>
 
@@ -85,238 +85,280 @@ Carteron</h4>
 packages we will need (<code>sf</code> to manipulate spatial data and
 <code>tmap</code> to create maps)</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html" class="external-link">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>warning <span class="op">=</span> <span class="cn">FALSE</span>, message <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-carteron" class="external-link">happign</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html" class="external-link">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span></span>
+<span>  collapse <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  out.width <span class="op">=</span> <span class="st">"100%"</span>,</span>
+<span>  dpi <span class="op">=</span> <span class="fl">300</span>,</span>
+<span>  fig.width <span class="op">=</span> <span class="fl">7.2916667</span>,</span>
+<span>  comment <span class="op">=</span> <span class="st">"#&gt;"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/paul-carteron" class="external-link">happign</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="wfs-wms-and-wmts-service">WFS, WMS and WMTS service<a class="anchor" aria-label="anchor" href="#wfs-wms-and-wmts-service"></a>
-</h2>
-<p><code>happign</code> use three web service from IGN :</p>
-<ul>
-<li>WMS raster : data in raster format e.g. images (.jpg, .png, .tif,
-…)</li>
-<li>WMTS : same as WMS raster but images are precalculated</li>
-<li>WFS : data in vector format (.shp, …).</li>
-</ul>
-<p>More detailed information are available <a href="https://www.ogc.org/standards/wms/" class="external-link">here</a> for WMS, <a href="https://www.ogc.org/standards/wmts/" class="external-link">here</a> for WMTS and <a href="https://www.ogc.org/standards/wfs/" class="external-link">here</a> for WFS.</p>
-<p>To download data from IGN web services at least two elements are
-needed :</p>
-<ul>
-<li>A layer name ;</li>
-<li>An input shape read by <a href="https://CRAN.R-project.org/package=sf" class="external-link"><code>sf</code></a>
-package.</li>
-</ul>
 <div class="section level3">
-<h3 id="layer-name">Layer name<a class="anchor" aria-label="anchor" href="#layer-name"></a>
+<h3 id="wfs-wms-and-wmts-services">WFS, WMS, and WMTS services<a class="anchor" aria-label="anchor" href="#wfs-wms-and-wmts-services"></a>
 </h3>
-<p>It is possible to find the names of available layers from the IGN
-website. For example, the first layer name in <strong>WFS
-format</strong> for <a href="https://geoservices.ign.fr/services-web-experts-administratif" class="external-link">“Administratif”
-category</a> is
-<em>“ADMINEXPRESS-COG-CARTO.LATEST:arrondissement”</em></p>
-<p>All layer’s name can be accessed from R with the
-<code><a href="../reference/get_layers_metadata.html">get_layers_metadata()</a></code> function. This one connects directly
-to the IGN site which allows to have the last updated resources. It can
-be used for WMS and WFS :</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">administratif_wfs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>data_type <span class="op">=</span> <span class="st">"wfs"</span><span class="op">)</span></span>
-<span><span class="va">administratif_wms</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>data_type <span class="op">=</span> <span class="st">"wms-r"</span><span class="op">)</span></span>
-<span><span class="va">administratif_wms</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>data_type <span class="op">=</span> <span class="st">"wmts"</span><span class="op">)</span></span>
+<p><code>happign</code> provides access to three web services published
+by <strong>IGN</strong> (Institut national de l’information géographique
+et forestière):</p>
+<ul>
+<li><p><strong>WFS (Web Feature Service)</strong> Vector data (points,
+lines, polygons), comparable to formats such as Shapefile or
+GeoPackage.</p></li>
+<li><p><strong>WMS (Web Map Service)</strong> Raster map images
+generated on the fly (e.g. PNG, JPEG, GeoTIFF).</p></li>
+<li><p><strong>WMTS (Web Map Tile Service)</strong> Raster map images
+served as pre-generated tiles, optimized for fast display.</p></li>
+</ul>
+<p>The official OGC specifications for these services are available
+online: - WFS: <a href="https://www.ogc.org/standards/wfs/" class="external-link uri">https://www.ogc.org/standards/wfs/</a> - WMS: <a href="https://www.ogc.org/standards/wms/" class="external-link uri">https://www.ogc.org/standards/wms/</a> - WMTS: <a href="https://www.ogc.org/standards/wmts/" class="external-link uri">https://www.ogc.org/standards/wmts/</a></p>
+</div>
+<div class="section level3">
+<h3 id="what-you-need-to-download-data-with-happign">What you need to download data with <code>happign</code><a class="anchor" aria-label="anchor" href="#what-you-need-to-download-data-with-happign"></a>
+</h3>
+<p>To retrieve data using <code>happign</code>, two pieces of
+information are required:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>What to download</strong> The name of the layer exposed
+by the IGN service.</p></li>
+<li><p><strong>Where to download it</strong> An <em>area of
+interest</em>, provided as an <a href="https://r-spatial.github.io/sf/" class="external-link">sf</a> geometry (from the <a href="https://CRAN.R-project.org/package=sf" class="external-link"><code>sf</code></a>
+package).</p></li>
+</ol>
+<p><code>happign</code> takes care of building the web service requests
+and returns data that are immediately usable in R.</p>
+</div>
+<div class="section level3">
+<h3 id="layer-names">Layer names<a class="anchor" aria-label="anchor" href="#layer-names"></a>
+</h3>
+<p>Layer names can be obtained directly from the IGN website. For
+example, in the <strong>WFS</strong> service, the first layer listed in
+the <em>Administratif</em> category is:</p>
+<p><em><code>ADMINEXPRESS-COG-CARTO.LATEST:arrondissement</code></em></p>
+<p>(see <a href="https://geoservices.ign.fr/services-web-experts-administratif" class="external-link uri">https://geoservices.ign.fr/services-web-experts-administratif</a>).</p>
+<p>To avoid copying layer names manually, <code>happign</code> provides
+the <code><a href="../reference/get_layers_metadata.html">get_layers_metadata()</a></code> function, which queries the IGN
+services directly and always returns the most up-to-date list of
+available layers.</p>
+<p>This function can be used with <strong>WFS</strong>,
+<strong>WMS</strong>, and <strong>WMTS</strong> services:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">wfs_layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>data_type <span class="op">=</span> <span class="st">"wfs"</span><span class="op">)</span></span>
+<span><span class="va">wms_layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>data_type <span class="op">=</span> <span class="st">"wms-r"</span><span class="op">)</span></span>
+<span><span class="va">wmts_layers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span>data_type <span class="op">=</span> <span class="st">"wmts"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">administratif_wfs</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                                              Name</span></span>
-<span><span class="co">## 1                     OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016</span></span>
-<span><span class="co">## 2                     OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019</span></span>
-<span><span class="co">## 3                                          IGNF_GEODESIE:site-rbf</span></span>
-<span><span class="co">## 4                                          IGNF_GEODESIE:site-rdf</span></span>
-<span><span class="co">## 5           LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement</span></span>
-<span><span class="co">## 6 LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement_municipal</span></span>
-<span><span class="co">##                                                              Title</span></span>
-<span><span class="co">## 1                                                  OCSGE Gers 2016</span></span>
-<span><span class="co">## 2                                                 OCSGE Gers 2019 </span></span>
-<span><span class="co">## 3                                              (obsolete) Site RBF</span></span>
-<span><span class="co">## 4                                              (obsolete) Site RDF</span></span>
-<span><span class="co">## 5           ADMIN EXPRESS mises a jour en continu - arrondissement</span></span>
-<span><span class="co">## 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal</span></span>
-<span><span class="co">##                                                           Abstract</span></span>
-<span><span class="co">## 1                                                  OCSGE Gers 2016</span></span>
-<span><span class="co">## 2                                                 OCSGE Gers 2019 </span></span>
-<span><span class="co">## 3                                                              RBF</span></span>
-<span><span class="co">## 4                                                              RDF</span></span>
-<span><span class="co">## 5           ADMIN EXPRESS mises a jour en continu - arrondissement</span></span>
-<span><span class="co">## 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal</span></span></code></pre>
-<p>You can specify an apikey to focus on specific category. API keys can
-be directly retrieved on the <a href="https://geoservices.ign.fr/services-web-experts" class="external-link">IGN website from
-the expert web services</a> or with <code><a href="../reference/get_apikeys.html">get_apikeys()</a></code>
-function.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">wfs_layers</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                                                              Name</span></span>
+<span><span class="co">#&gt; 1                     OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016</span></span>
+<span><span class="co">#&gt; 2                     OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019</span></span>
+<span><span class="co">#&gt; 3                                          IGNF_GEODESIE:site-rbf</span></span>
+<span><span class="co">#&gt; 4                                          IGNF_GEODESIE:site-rdf</span></span>
+<span><span class="co">#&gt; 5           LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement</span></span>
+<span><span class="co">#&gt; 6 LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement_municipal</span></span>
+<span><span class="co">#&gt;                                                              Title</span></span>
+<span><span class="co">#&gt; 1                                                  OCSGE Gers 2016</span></span>
+<span><span class="co">#&gt; 2                                                 OCSGE Gers 2019 </span></span>
+<span><span class="co">#&gt; 3                                              (obsolete) Site RBF</span></span>
+<span><span class="co">#&gt; 4                                              (obsolete) Site RDF</span></span>
+<span><span class="co">#&gt; 5           ADMIN EXPRESS mises a jour en continu - arrondissement</span></span>
+<span><span class="co">#&gt; 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal</span></span>
+<span><span class="co">#&gt;                                                           Abstract</span></span>
+<span><span class="co">#&gt; 1                                                  OCSGE Gers 2016</span></span>
+<span><span class="co">#&gt; 2                                                 OCSGE Gers 2019 </span></span>
+<span><span class="co">#&gt; 3                                                              RBF</span></span>
+<span><span class="co">#&gt; 4                                                              RDF</span></span>
+<span><span class="co">#&gt; 5           ADMIN EXPRESS mises a jour en continu - arrondissement</span></span>
+<span><span class="co">#&gt; 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal</span></span></code></pre></div>
+<p>The returned object contains metadata for each available layer,
+including its name, title, and service-specific information.</p>
+</div>
+<div class="section level3">
+<h3 id="downloading-data">Downloading data<a class="anchor" aria-label="anchor" href="#downloading-data"></a>
+</h3>
+<p>Now that we know how to identify a layer name, downloading data with
+<code>happign</code> only requires a few lines of code.</p>
+<p>In the following example, we focus on the town of
+<strong>Penmarc’h</strong> (France). A polygon representing part of this
+municipality is included in <code>happign</code> and will be used as the
+area of interest.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] "administratif" "adresse"       "agriculture"  </span></span>
-<span><span class="co">##  [4] "altimetrie"    "cartes"        "cartovecto"   </span></span>
-<span><span class="co">##  [7] "clc"           "economie"      "enr"          </span></span>
-<span><span class="co">## [10] "environnement" "geodesie"      "lambert93"    </span></span>
-<span><span class="co">## [13] "ocsge"         "ortho"         "orthohisto"   </span></span>
-<span><span class="co">## [16] "parcellaire"   "satellite"     "sol"          </span></span>
-<span><span class="co">## [19] "topographie"   "transports"</span></span></code></pre>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">administratif_wmts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="st">"wmts"</span>, <span class="st">"administratif"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">administratif_wmts</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                     Title</span></span>
-<span><span class="co">## 1                  ADMINEXPRESS COG CARTO</span></span>
-<span><span class="co">## 2 ADMINEXPRESS COG ; Edition : 2017-01-01</span></span>
-<span><span class="co">## 3 ADMINEXPRESS COG ; Edition : 2018-01-01</span></span>
-<span><span class="co">## 4 ADMINEXPRESS COG ; Edition : 2019-01-01</span></span>
-<span><span class="co">## 5 ADMINEXPRESS COG ; Edition : 2020-01-01</span></span>
-<span><span class="co">## 6 ADMINEXPRESS COG ; Edition : 2021-01-01</span></span>
-<span><span class="co">##                                                                                Abstract</span></span>
-<span><span class="co">## 1                Limites administratives mises à jour en continu ; Edition : 2025-01-01</span></span>
-<span><span class="co">## 2 Limites administratives Express COG code officiel géographique ; Edition : 2017-01-01</span></span>
-<span><span class="co">## 3 Limites administratives Express COG code officiel géographique ; Edition : 2018-01-01</span></span>
-<span><span class="co">## 4 Limites administratives Express COG code officiel géographique ; Edition : 2019-01-01</span></span>
-<span><span class="co">## 5 Limites administratives Express COG code officiel géographique ; Edition : 2020-01-01</span></span>
-<span><span class="co">## 6 Limites administratives Express COG code officiel géographique ; Edition : 2021-01-01</span></span>
-<span><span class="co">##                      Identifier</span></span>
-<span><span class="co">## 1 ADMINEXPRESS-COG-CARTO.LATEST</span></span>
-<span><span class="co">## 2         ADMINEXPRESS-COG.2017</span></span>
-<span><span class="co">## 3         ADMINEXPRESS-COG.2018</span></span>
-<span><span class="co">## 4         ADMINEXPRESS-COG.2019</span></span>
-<span><span class="co">## 5         ADMINEXPRESS-COG.2020</span></span>
-<span><span class="co">## 6         ADMINEXPRESS-COG.2021</span></span></code></pre>
-</div>
-<div class="section level3">
-<h3 id="downloading-the-data">Downloading the data<a class="anchor" aria-label="anchor" href="#downloading-the-data"></a>
-</h3>
-<p>Now that we know how to get a layer name, it only takes a few lines
-to get plethora of resources. For the example we will look at the
-beautiful town of Penmarch in France. A part of this town is stored as a
-shape in happign.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">penmarch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/penmarch.shp"</span>, package <span class="op">=</span> <span class="st">"happign"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">penmarch</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/penmarch.shp"</span>, package <span class="op">=</span> <span class="st">"happign"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="wfs">WFS<a class="anchor" aria-label="anchor" href="#wfs"></a>
 </h4>
-<p><code>get_wfs</code> can be used to download borders :</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">penmarch_borders</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch</span>,</span>
-<span>                            layer <span class="op">=</span> <span class="st">"LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error: Please check that :</span></span>
-<span><span class="co">## - x is not empty ;</span></span>
-<span><span class="co">## - layer is valid by running</span></span></code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Checking result</span></span>
+<p>The <code><a href="../reference/get_wfs.html">get_wfs()</a></code> function can be used to download vector
+data from IGN WFS services.</p>
+<p>In this first example, we retrieve the administrative boundaries of
+Penmarc’h.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">penmarch_borders</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">penmarch</span>,</span>
+<span>  layer <span class="op">=</span> <span class="st">"LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plotting result</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"polygons"</span>, position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"top"</span><span class="op">)</span>,</span>
-<span>                 labels <span class="op">=</span> <span class="st">"Penmarch borders from `get_wfs`"</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span>fill<span class="op">=</span><span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"polygons"</span>, fill<span class="op">=</span><span class="st">"red"</span>, position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"top"</span><span class="op">)</span>,</span>
-<span>                 labels <span class="op">=</span> <span class="st">"`penmarch` shape from `happign` package"</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html" class="external-link">tm_title</a></span><span class="op">(</span><span class="st">"Penmarch borders from IGN"</span>,</span>
-<span>         position <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_pos.html" class="external-link">tm_pos_out</a></span><span class="op">(</span><span class="st">"center"</span>, <span class="st">"top"</span>, pos.h <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<p><img src="get_wfs-1.jpeg" alt="plot of chunk get_wfs"></p>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span></span>
+<span>    type <span class="op">=</span> <span class="st">"polygons"</span>,</span>
+<span>    position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"top"</span><span class="op">)</span>,</span>
+<span>    labels <span class="op">=</span> <span class="st">"Penmarc’h borders from `get_wfs()`"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span></span>
+<span>    type <span class="op">=</span> <span class="st">"polygons"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span>    position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"top"</span><span class="op">)</span>,</span>
+<span>    labels <span class="op">=</span> <span class="st">"`penmarch` shape from `happign`"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html" class="external-link">tm_title</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Penmarc’h administrative boundaries (IGN)"</span>,</span>
+<span>    position <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_pos.html" class="external-link">tm_pos_out</a></span><span class="op">(</span><span class="st">"center"</span>, <span class="st">"top"</span>, pos.h <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<p><img src="get_wfs-1.png" alt="plot of chunk get_wfs" width="100%"></p>
 </div>
-<p>It’s as simple as that! Now you have to rely on your curiosity to
-explore the multiple possibilities that IGN offers. For example, who has
-never wondered how many hedges for biodiversity there are in
-Penmarch?</p>
-<p><em>Spoiler : there are 434 of them !</em></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">hedges</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch_borders</span>,</span>
-<span>                 layer <span class="op">=</span> <span class="st">"BDTOPO_V3:haie"</span>,</span>
-<span>                 spatial_filter <span class="op">=</span> <span class="st">"intersects"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Checking result</span></span>
+<p>That is all it takes to retrieve vector data using WFS.</p>
+<p>From there, you can explore the wide range of datasets provided by
+IGN. For instance, you may wonder how many roundabout are recorded in
+Penmarc’h.</p>
+<p><em>Spoiler: there are 8 of them!</em></p>
+<p>Note that the spatial relationship between the area of interest and
+the queried features can be refined using a spatial predicate.</p>
+<p>In the example below, the <code>predicate</code> argument is set to
+<code><a href="../reference/spatial_predicates.html">within()</a></code>, meaning that only roundabout <em>entirely
+contained</em> within the Penmarc’h administrative boundaries are
+returned. Available predicates follow the OGC spatial predicates and are
+documented in <code><a href="../reference/spatial_predicates.html">?spatial_predicates</a></code>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">roundabout</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wfs.html">get_wfs</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">penmarch_borders</span>,</span>
+<span>  layer <span class="op">=</span> <span class="st">"BDCARTO_V5:rond_point"</span>,</span>
+<span>  predicate <span class="op">=</span> <span class="fu"><a href="../reference/spatial_predicates.html">within</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plotting result</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"polygons"</span>, position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"top"</span><span class="op">)</span>,</span>
-<span>                 labels <span class="op">=</span> <span class="st">"Penmarch borders from `get_wfs`"</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">hedges</span><span class="op">)</span> <span class="op">+</span> <span class="co"># Point use to retrieve data</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_lines.html" class="external-link">tm_lines</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"forestgreen"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"lines"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"forestgreen"</span>,</span>
-<span>                 position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"top"</span><span class="op">)</span>, labels <span class="op">=</span> <span class="st">"Hedges"</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html" class="external-link">tm_title</a></span><span class="op">(</span><span class="st">"Hedges recorded by the IGN in Penmarch"</span>, position <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_pos.html" class="external-link">tm_pos_out</a></span><span class="op">(</span><span class="st">"center"</span>, <span class="st">"top"</span>, pos.h <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<p><img src="get_wfs2-1.jpeg" alt="plot of chunk get_wfs2"></p>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span></span>
+<span>    type <span class="op">=</span> <span class="st">"polygons"</span>,</span>
+<span>    position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"top"</span><span class="op">)</span>,</span>
+<span>    labels <span class="op">=</span> <span class="st">"Penmarc’h borders from `get_wfs()`"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">roundabout</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html" class="external-link">tm_symbols</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"firebrick"</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_add_legend.html" class="external-link">tm_add_legend</a></span><span class="op">(</span></span>
+<span>    type <span class="op">=</span> <span class="st">"symbols"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"firebrick"</span>,</span>
+<span>    position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"top"</span><span class="op">)</span>,</span>
+<span>    labels <span class="op">=</span> <span class="st">"Roundabout"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html" class="external-link">tm_title</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Roundabout recorded by IGN in Penmarc’h"</span>,</span>
+<span>    position <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_pos.html" class="external-link">tm_pos_out</a></span><span class="op">(</span><span class="st">"center"</span>, <span class="st">"top"</span>, pos.h <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<p><img src="get_wfs_roundabout-1.png" alt="plot of chunk get_wfs_roundabout" width="100%"></p>
 </div>
 </div>
 <div class="section level4">
 <h4 id="wms-raster">WMS raster<a class="anchor" aria-label="anchor" href="#wms-raster"></a>
 </h4>
-<p>For raster, the process is the same, but with the function
-<code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code>. However, you also need to specify the
-resolution (note that it must be in the same coordinate system as the
-crs parameter). There’s plenty of elevation resources inside <a href="https://geoservices.ign.fr/services-web-experts-altimetrie" class="external-link">“altimetrie”
-category</a>. A basic one is the Digital Elevation Model (DEM or MNT in
-French). Borders of Penmarch are used to download the DEM. Note that for
-DEM, we don’t want an RGB image but values of each pixels. That why
-<code>rgb=FALSE</code> is used below.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p>For raster data, the workflow is very similar, but relies on the
+<code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> function. In addition to the layer name,
+you must specify a spatial resolution. Note that the resolution must be
+expressed in the same coordinate reference system as the
+<code>crs</code> parameter.</p>
+<p>The <a href="https://geoservices.ign.fr/services-web-experts-altimetrie" class="external-link"><em>Altimétrie</em>
+category</a> provides several elevation-related datasets. A common
+example is the <strong>Digital Elevation Model (DEM)</strong>, also
+known in French as <em>Modèle Numérique de Terrain (MNT)</em>.</p>
+<p>In the example below, the administrative boundaries of Penmarc’h are
+used to download a DEM. For elevation data, we are interested in numeric
+pixel values rather than RGB colors, which is why
+<code>rgb = FALSE</code> is used.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">layers_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="st">"wms-r"</span>, <span class="st">"altimetrie"</span><span class="op">)</span></span>
-<span><span class="va">dem_layer</span> <span class="op">&lt;-</span> <span class="va">layers_metadata</span><span class="op">[</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">]</span> <span class="co">#ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES</span></span>
+<span><span class="va">dem_layer</span> <span class="op">&lt;-</span> <span class="va">layers_metadata</span><span class="op">[</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">]</span> <span class="co"># ELEVATION.ELEVATIONGRIDCOVERAGE.HIGHRES</span></span>
 <span></span>
-<span><span class="va">mnt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wms_raster.html">get_wms_raster</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_buffer</a></span><span class="op">(</span><span class="va">penmarch_borders</span>, <span class="fl">800</span><span class="op">)</span>,</span>
-<span>                      layer <span class="op">=</span> <span class="va">dem_layer</span>,</span>
-<span>                      res <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>                      crs <span class="op">=</span> <span class="fl">2154</span>,</span>
-<span>                      rgb <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## 0...10...20...30...40...50...60...70...80...90...100 - done.</span></span></code></pre>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mnt</span><span class="op">[</span><span class="va">mnt</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co"># remove negative values in case of singularity</span></span>
+<span><span class="va">mnt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wms_raster.html">get_wms_raster</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html" class="external-link">st_buffer</a></span><span class="op">(</span><span class="va">penmarch_borders</span>, <span class="fl">800</span><span class="op">)</span>,</span>
+<span>  layer <span class="op">=</span> <span class="va">dem_layer</span>,</span>
+<span>  res <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  crs <span class="op">=</span> <span class="fl">2154</span>,</span>
+<span>  rgb <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; 0...10...20...30...40...50...60...70...80...90...100 - done.</span></span>
+<span><span class="co">#&gt; Warp executed successfully.</span></span>
+<span></span>
+<span><span class="co"># Remove negative values (possible edge artefacts)</span></span>
+<span><span class="va">mnt</span><span class="op">[</span><span class="va">mnt</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span></span>
 <span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">mnt</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span></span>
-<span>      col.scale <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scale_continuous.html" class="external-link">tm_scale_continuous</a></span><span class="op">(</span>values <span class="op">=</span> <span class="st">"terrain"</span>, value.na <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>,</span>
-<span>      col.legend <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_legend.html" class="external-link">tm_legend</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Height"</span>, orientation <span class="op">=</span> <span class="st">"landscape"</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span>, is.main <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html" class="external-link">tm_title</a></span><span class="op">(</span><span class="st">"Digital Elevation Model of Penmarch"</span>, position <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_pos.html" class="external-link">tm_pos_out</a></span><span class="op">(</span><span class="st">"center"</span>, <span class="st">"top"</span>, pos.h <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<p><img src="get_wms_raster-1.jpeg" alt="plot of chunk get_wms_raster"></p>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html" class="external-link">tm_raster</a></span><span class="op">(</span></span>
+<span>    col.scale  <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scale_continuous.html" class="external-link">tm_scale_continuous</a></span><span class="op">(</span>values <span class="op">=</span> <span class="st">"terrain"</span>, value.na <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>,</span>
+<span>    col.legend <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_legend.html" class="external-link">tm_legend</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Elevation (m)"</span>, orientation <span class="op">=</span> <span class="st">"landscape"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span>, is.main <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html" class="external-link">tm_title</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Digital Elevation Model of Penmarc’h"</span>,</span>
+<span>    position <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_pos.html" class="external-link">tm_pos_out</a></span><span class="op">(</span><span class="st">"center"</span>, <span class="st">"top"</span>, pos.h <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<p><img src="get_wms_raster-1.png" alt="plot of chunk get_wms_raster" width="100%"></p>
 </div>
-<p><strong><em>Rq :</em></strong></p>
-<ul>
-<li><em>Raster from <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> are
-<code>SpatRaster</code> object from the <code>terra</code> package. To
-learn more about conversion between other raster type in R go <a href="https://geocompx.org/post/2021/spatial-classes-conversion/" class="external-link">check
-this out</a>.</em></li>
-</ul>
+<p><strong><em>Note:</em></strong></p>
+<p>Rasters returned by <code><a href="../reference/get_wms_raster.html">get_wms_raster()</a></code> are
+<code>SpatRaster</code> objects from the <a href="https://rspatial.org/" class="external-link">terra</a> package.
+For an overview of raster class conversions in R, see: <a href="https://geocompx.org/post/2021/spatial-classes-conversion/" class="external-link uri">https://geocompx.org/post/2021/spatial-classes-conversion/</a></p>
 </div>
 <div class="section level4">
 <h4 id="wmts">WMTS<a class="anchor" aria-label="anchor" href="#wmts"></a>
 </h4>
-<p>For WMTS, no resolution is needed because images are precalculated
-but a zoom level is needed. The higher the zoom level is, the more
-precis image is. If you only need visualisation, i recommend to use WMTS
-instead of WMS.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<p>For WMTS services, no spatial resolution needs to be specified
+because the images are pre-generated. Instead, a <strong>zoom
+level</strong> must be provided. Higher zoom levels correspond to finer
+spatial detail and higher visual quality.</p>
+<p>When the goal is visualization rather than quantitative analysis,
+<strong>WMTS is generally preferable to WMS</strong>, as it is faster
+and better suited for map display.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">layers_metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_layers_metadata.html">get_layers_metadata</a></span><span class="op">(</span><span class="st">"wmts"</span>, <span class="st">"ortho"</span><span class="op">)</span></span>
-<span><span class="va">ortho_layer</span> <span class="op">&lt;-</span> <span class="va">layers_metadata</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">]</span> <span class="co">#HR.ORTHOIMAGERY.ORTHOPHOTOS</span></span>
+<span><span class="va">ortho_layer</span> <span class="op">&lt;-</span> <span class="va">layers_metadata</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">]</span> <span class="co"># HR.ORTHOIMAGERY.ORTHOPHOTOS</span></span>
 <span></span>
-<span><span class="va">hr_ortho</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wmts.html">get_wmts</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch_borders</span>,</span>
-<span>                     layer <span class="op">=</span> <span class="va">ortho_layer</span>,</span>
-<span>                     zoom <span class="op">=</span> <span class="fl">9</span><span class="op">)</span></span>
+<span><span class="va">hr_ortho</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_wmts.html">get_wmts</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">penmarch_borders</span>,</span>
+<span>  layer <span class="op">=</span> <span class="va">ortho_layer</span>,</span>
+<span>  zoom  <span class="op">=</span> <span class="fl">9</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">hr_ortho</span><span class="op">)</span> <span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_rgb.html" class="external-link">tm_rgb</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span><span class="op">+</span></span>
-<span>   <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html" class="external-link">tm_title</a></span><span class="op">(</span><span class="st">"Orthophoto Hight Resolution"</span>, position <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_pos.html" class="external-link">tm_pos_out</a></span><span class="op">(</span><span class="st">"center"</span>, <span class="st">"top"</span>, pos.h <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span><span class="op">+</span></span>
-<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<p><img src="get_wmts-1.jpeg" alt="plot of chunk get_wmts"></p>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_rgb.html" class="external-link">tm_rgb</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">penmarch_borders</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html" class="external-link">tm_title</a></span><span class="op">(</span></span>
+<span>    <span class="st">"High-resolution orthophoto"</span>,</span>
+<span>    position <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_pos.html" class="external-link">tm_pos_out</a></span><span class="op">(</span><span class="st">"center"</span>, <span class="st">"top"</span>, pos.h <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html" class="external-link">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"arrow"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html" class="external-link">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<p><img src="get_wmts-1.png" alt="plot of chunk get_wmts" width="100%"></p>
 </div>
+<p>WMTS layers are ideal for background maps, orthophotography, and any
+use case where visual clarity and performance are more important than
+direct access to raw pixel values.</p>
 </div>
 </div>
 </div>
@@ -331,7 +373,7 @@ instead of WMS.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
