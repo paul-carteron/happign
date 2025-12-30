@@ -103,26 +103,38 @@ tm_shape(camors) +
 More calculations can be done to get a better understanding of forest type. Below, areas per species are calculated :
 
 ```{r bd_foret_calculation, warning=FALSE}
-forest_type_v2 <- bd_foret_v2 |>
-  mutate(area = as.numeric(st_area(geometry))) |>
-  st_drop_geometry() |>
-  group_by(essence) |>
-  summarise(sum_area = sum(area)/10000) |>
-  arrange(desc(sum_area)) |>
-  mutate(essence = as.factor(essence))
+bd_foret_v2$area <- as.numeric(st_area(bd_foret_v2) / 10000)
 
-ggplot()+
-  geom_col(data = forest_type_v2,
-           aes(x = rev(reorder(essence, sum_area)),
-               y = sum_area,
-               fill = as.factor(essence)))+
-  theme_bw()+
-  labs(title = "Surface couverte par essences [ha]",
-       y = "Surface [ha]",
-       x = "",
-       fill = "Essence :")+
+# Aggregate by essence
+species <- aggregate(
+  area ~ essence,
+  data = bd_foret_v2,
+  sum
+)
+
+# Reorder factor levels by decreasing area
+species$essence <- factor(
+  species$essence,
+  levels = species$essence[order(species$area, decreasing = TRUE)]
+)
+
+ggplot() +
+  geom_col(
+    data = species,
+    aes(
+      x = essence, 
+      y = area,
+      fill = essence
+    )
+  ) +
+  theme_bw() +
+  labs(
+    title = "Surface couverte par essences [ha]",
+    y = "Surface [ha]",
+    x = "",
+    fill = "Essence :"
+  ) +
   theme(axis.text.x = element_blank())
-
 
 ```
 
@@ -136,7 +148,10 @@ Again, you can click on map, point and shape for more informations.
 wfs <- get_layers_metadata("wfs")
 znieff_layers <- wfs$Name[grepl("ZNIEFF", wfs$Name, ignore.case = TRUE)]
 
-znieff <- lapply(znieff_layers, function(layer){get_wfs(camors, layer)})
+znieff <- lapply(
+   znieff_layers, 
+   function(layer){get_wfs(camors, layer)}
+)
 names(znieff) <- znieff_layers
 
 # remove empty layers
