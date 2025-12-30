@@ -12,7 +12,20 @@ Breaking changes: \* Removing old dataset `cog_2023` and `com_2024`; \*
 Changing arg in
 [`get_wfs()`](https://paul-carteron.github.io/happign/reference/get_wfs.md):
 \* `spatial_filter` -\> `predicate` : now use structured predicate (see
-?`spatial_predicates`) \* `ecql_filter` -\> `query`
+?`spatial_predicates`) \* `ecql_filter` -\> `query`  
+\* Removing arg in
+[`get_wfs()`](https://paul-carteron.github.io/happign/reference/get_wfs.md):
+\* `filename` :
+[`sf::st_read()`](https://r-spatial.github.io/sf/reference/st_read.html)
+should be used to write to local ; \* `interactive` : Funny but not
+really useful,
+[`get_wfs()`](https://paul-carteron.github.io/happign/reference/get_wfs.md)
+should focus on downloading data only
+
+Tests : \* Implementation of scheduled test for real interaction for
+[`get_wfs()`](https://paul-carteron.github.io/happign/reference/get_wfs.md)
+
+Other : \* Remove [dplyr](https://dplyr.tidyverse.org) dependency
 
 ## happign 0.3.6
 
