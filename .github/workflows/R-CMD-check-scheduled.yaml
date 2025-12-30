@@ -19,12 +19,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest, r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest, r: 'release'}
-          - {os: ubuntu-latest, r: 'oldrel-1'}
-          - {os: ubuntu-22.04, r: 'release'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -41,20 +38,14 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install macOS system dependencies
-        if: runner.os == 'macOS'
-        run: brew install gdal
-
       - uses: r-lib/actions/setup-r-dependencies@6f6e5bc62fba3a704f74e7ad7ef7676c5c6a2590 # v2.11.4
         with:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: Replace testthat with real-tests
+      - name: Folder with real tests
         run: |
-            Rscript -e 'unlink("tests/testthat", recursive = TRUE, force = TRUE)'
-            Rscript -e 'dir.create("tests/testthat", recursive = TRUE)'
-            Rscript -e 'file.copy(list.files("real-tests", full.names = TRUE), "tests/testthat")'
+          rm -rf tests/testthat && cp -r real-tests tests/testthat
 
       - uses: r-lib/actions/check-r-package@6f6e5bc62fba3a704f74e7ad7ef7676c5c6a2590 # v2.11.4
         with:

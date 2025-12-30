@@ -9,7 +9,16 @@ Breaking changes:
    * Changing arg in `get_wfs()`:
       * `spatial_filter` -> `predicate` : now use structured predicate (see ?`spatial_predicates`)
       * `ecql_filter` -> `query`  
-
+   * Removing arg in `get_wfs()`:
+      * `filename` : `sf::st_read()` should be used to write to local ;
+      * `interactive` : Funny but not really useful, `get_wfs()` should focus on downloading data only
+      
+Tests :
+   * Implementation of scheduled test for real interaction for `get_wfs()`
+   
+Other :
+   * Remove `{dplyr}` dependency
+   
 # happign 0.3.6
 Function:
    * Refactor `get_apicarto_cadastre` :
