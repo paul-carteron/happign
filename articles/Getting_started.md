@@ -6,16 +6,6 @@ We can load the `happign` package, and some additional packages we will
 need (`sf` to manipulate spatial data and `tmap` to create maps)
 
 ``` r
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  out.width = "100%",
-  dpi = 300,
-  fig.width = 7.2916667,
-  comment = "#>"
-)
-```
-
-``` r
 library(happign)
 library(sf)
 library(tmap)
@@ -26,44 +16,43 @@ library(tmap)
 `happign` provides access to three web services published by **IGN**
 (Institut national de l’information géographique et forestière):
 
-- **WFS (Web Feature Service)** Vector data (points, lines, polygons),
-  comparable to formats such as Shapefile or GeoPackage.
+- **WFS (Web Feature Service)**: Vector data (points, lines, polygons)
 
-- **WMS (Web Map Service)** Raster map images generated on the fly
-  (e.g. PNG, JPEG, GeoTIFF).
+- **WMS (Web Map Service)**: Raster images generated on the fly
 
-- **WMTS (Web Map Tile Service)** Raster map images served as
+- **WMTS (Web Map Tile Service)**: Raster map images served as
   pre-generated tiles, optimized for fast display.
 
-The official OGC specifications for these services are available
-online: - WFS: <https://www.ogc.org/standards/wfs/> - WMS:
-<https://www.ogc.org/standards/wms/> - WMTS:
-<https://www.ogc.org/standards/wmts/>
+The official OGC specifications for these services are available online:
 
-### What you need to download data with `happign`
+- WFS: <https://www.ogc.org/standards/wfs/>
+
+- WMS: <https://www.ogc.org/standards/wms/>
+
+- WMTS: <https://www.ogc.org/standards/wmts/>
+
+### How to download data with `happign`
 
 To retrieve data using `happign`, two pieces of information are
 required:
 
-1.  **What to download** The name of the layer exposed by the IGN
-    service.
+1.  **What to download**: The name of the layer exposed by the IGN
+    service (acces with
+    [`get_layers_metadata()`](https://paul-carteron.github.io/happign/reference/get_layers_metadata.md))
 
-2.  **Where to download it** An *area of interest*, provided as an
-    [sf](https://r-spatial.github.io/sf/) geometry (from the
-    [`sf`](https://CRAN.R-project.org/package=sf) package).
+2.  **Where to download it**: An *area of interest*, provided as an `sf`
+    geometry (from the [`{sf}`](https://CRAN.R-project.org/package=sf)
+    package).
 
-`happign` takes care of building the web service requests and returns
-data that are immediately usable in R.
+`happign` then takes care of building the web service requests and
+returns data usable in R.
 
 ### Layer names
 
 Layer names can be obtained directly from the IGN website. For example,
-in the **WFS** service, the first layer listed in the *Administratif*
-category is:
-
-*`ADMINEXPRESS-COG-CARTO.LATEST:arrondissement`*
-
-(see <https://geoservices.ign.fr/services-web-experts-administratif>).
+in the **WFS** service, the first layer listed in the [*Administratif*
+category](https://geoservices.ign.fr/services-web-experts-administratif)
+is: `"ADMINEXPRESS-COG-CARTO.LATEST:arrondissement"`
 
 To avoid copying layer names manually, `happign` provides the
 [`get_layers_metadata()`](https://paul-carteron.github.io/happign/reference/get_layers_metadata.md)
@@ -76,54 +65,29 @@ This function can be used with **WFS**, **WMS**, and **WMTS** services:
 wfs_layers <- get_layers_metadata(data_type = "wfs")
 wms_layers <- get_layers_metadata(data_type = "wms-r")
 wmts_layers <- get_layers_metadata(data_type = "wmts")
-
-head(wfs_layers)
-#>                                                              Name
-#> 1                     OCS-GERS_BDD_LAMB93_2016:oscge_gers_32_2016
-#> 2                     OCS-GERS_BDD_LAMB93_2019:oscge_gers_32_2019
-#> 3                                          IGNF_GEODESIE:site-rbf
-#> 4                                          IGNF_GEODESIE:site-rdf
-#> 5           LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement
-#> 6 LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:arrondissement_municipal
-#>                                                              Title
-#> 1                                                  OCSGE Gers 2016
-#> 2                                                 OCSGE Gers 2019 
-#> 3                                              (obsolete) Site RBF
-#> 4                                              (obsolete) Site RDF
-#> 5           ADMIN EXPRESS mises a jour en continu - arrondissement
-#> 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal
-#>                                                           Abstract
-#> 1                                                  OCSGE Gers 2016
-#> 2                                                 OCSGE Gers 2019 
-#> 3                                                              RBF
-#> 4                                                              RDF
-#> 5           ADMIN EXPRESS mises a jour en continu - arrondissement
-#> 6 ADMIN EXPRESS mises a jour en continu - arrondissement municipal
 ```
 
 The returned object contains metadata for each available layer,
-including its name, title, and service-specific information.
+including name, title, and service-specific information.
 
 ### Downloading data
 
-Now that we know how to identify a layer name, downloading data with
-`happign` only requires a few lines of code.
+After selecting layer name, downloading data with `happign` only
+requires a few lines of code.
 
 In the following example, we focus on the town of **Penmarc’h**
 (France). A polygon representing part of this municipality is included
 in `happign` and will be used as the area of interest.
 
 ``` r
-penmarch <- sf::read_sf(
-  system.file("extdata/penmarch.shp", package = "happign")
-)
+penmarch <- sf::read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 ```
 
-#### WFS
+#### WFS ; vector data
 
 The
 [`get_wfs()`](https://paul-carteron.github.io/happign/reference/get_wfs.md)
-function can be used to download vector data from IGN WFS services.
+function is used to download vector data from IGN WFS services.
 
 In this first example, we retrieve the administrative boundaries of
 Penmarc’h.
@@ -133,7 +97,9 @@ penmarch_borders <- get_wfs(
   x = penmarch,
   layer = "LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:commune"
 )
+```
 
+``` r
 # Plotting result
 tm_shape(penmarch_borders) +
   tm_polygons() +
@@ -158,25 +124,39 @@ tm_shape(penmarch_borders) +
   tm_scalebar()
 ```
 
-![plot of chunk get_wfs](get_wfs-1.png)
+![plot of chunk plot_wfs](plot_wfs-1.png)
 
-That is all it takes to retrieve vector data using WFS.
+That is all it takes to retrieve vector data using WFS !
 
 From there, you can explore the wide range of datasets provided by IGN.
 For instance, you may wonder how many roundabout are recorded in
-Penmarc’h.
+Penmarc’h (*Spoiler: there are 8 of them!*)
 
-*Spoiler: there are 8 of them!*
+### WFS & predicate:
 
-Note that the spatial relationship between the area of interest and the
-queried features can be refined using a spatial predicate.
+In the example below, spatial predicate is used to refined the query
+using the argument `predicate`. The goal is to download only roundabout
+*entirely contained* within the Penmarc’h so
+[`within()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md)
+predicate is used.
 
-In the example below, the `predicate` argument is set to
+Default predicate is
+[`bbox()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md)
+(generally fastest). All available are documented in
+[`?spatial_predicates`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md)
+:
+[`intersects()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md),
 [`within()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md),
-meaning that only roundabout *entirely contained* within the Penmarc’h
-administrative boundaries are returned. Available predicates follow the
-OGC spatial predicates and are documented in
-[`?spatial_predicates`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md).
+[`disjoint()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md),
+[`contains()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md),
+[`touches()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md),
+[`crosses()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md),
+[`overlaps()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md),
+[`equals()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md),
+[`bbox()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md),
+[`dwithin()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md),
+[`beyond()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md),
+[`relate()`](https://paul-carteron.github.io/happign/reference/spatial_predicates.md).
 
 ``` r
 roundabout <- get_wfs(
@@ -184,7 +164,9 @@ roundabout <- get_wfs(
   layer = "BDCARTO_V5:rond_point",
   predicate = within()
 )
+```
 
+``` r
 # Plotting result
 tm_shape(penmarch_borders) +
   tm_polygons() +
@@ -209,21 +191,22 @@ tm_shape(roundabout) +
   tm_scalebar()
 ```
 
-![plot of chunk get_wfs_roundabout](get_wfs_roundabout-1.png)
+![plot of chunk plot_roundabout](plot_roundabout-1.png)
 
 #### WMS raster
 
 For raster data, the workflow is very similar, but relies on the
 [`get_wms_raster()`](https://paul-carteron.github.io/happign/reference/get_wms_raster.md)
 function. In addition to the layer name, you must specify a spatial
-resolution. Note that the resolution must be expressed in the same
-coordinate reference system as the `crs` parameter.
+resolution.
+
+*Note that the resolution must be expressed in the same coordinate
+reference system as the `crs` parameter.*
 
 The [*Altimétrie*
 category](https://geoservices.ign.fr/services-web-experts-altimetrie)
 provides several elevation-related datasets. A common example is the
-**Digital Elevation Model (DEM)**, also known in French as *Modèle
-Numérique de Terrain (MNT)*.
+**Digital Elevation Model (DEM)**.
 
 In the example below, the administrative boundaries of Penmarc’h are
 used to download a DEM. For elevation data, we are interested in numeric
@@ -245,7 +228,9 @@ mnt <- get_wms_raster(
 
 # Remove negative values (possible edge artefacts)
 mnt[mnt < 0] <- NA
+```
 
+``` r
 tm_shape(mnt) +
   tm_raster(
     col.scale  = tm_scale_continuous(values = "terrain", value.na = "grey"),
@@ -261,11 +246,9 @@ tm_shape(mnt) +
   tm_scalebar()
 ```
 
-![plot of chunk get_wms_raster](get_wms_raster-1.png)
+![plot of chunk plot_dem](plot_dem-1.png)
 
-***Note:***
-
-Rasters returned by
+*Note:* Rasters returned by
 [`get_wms_raster()`](https://paul-carteron.github.io/happign/reference/get_wms_raster.md)
 are `SpatRaster` objects from the [terra](https://rspatial.org/)
 package. For an overview of raster class conversions in R, see:
@@ -291,7 +274,9 @@ hr_ortho <- get_wmts(
   layer = ortho_layer,
   zoom  = 9
 )
+```
 
+``` r
 tm_shape(hr_ortho) +
   tm_rgb() +
   tm_shape(penmarch_borders) +
@@ -304,7 +289,7 @@ tm_shape(hr_ortho) +
   tm_scalebar()
 ```
 
-![plot of chunk get_wmts](get_wmts-1.png)
+![plot of chunk plot_ortho](plot_ortho-1.png)
 
 WMTS layers are ideal for background maps, orthophotography, and any use
 case where visual clarity and performance are more important than direct
