@@ -20,3 +20,4 @@ visual_test
 ^vignettes/articles$
 ^CRAN-SUBMISSION$
 ^docs$
+^real-tests$
