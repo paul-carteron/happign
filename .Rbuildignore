@@ -1,52 +1,22 @@
-# ---- RStudio ----
+^pkgdown$
+^CRAN-RELEASE$
+visual_test
 ^.*\.Rproj$
 ^\.Rproj\.user$
-
-# ---- CI / automation (CRAN expects ignored) ----
-^\.github$
-^\.travis\.yml$
-^appveyor\.yml$
-^codecov\.yml$
-
-# ---- pkgdown (must not be in tarball) ----
-^_pkgdown\.yml$
-^pkgdown$
-^docs$
-
-# ---- README sources ----
-^README\.Rmd$
-^README-.*\.png$
-
-# ---- CRAN submission files ----
-^cran-comments\.md$
-^CRAN-RELEASE$
-^CRAN-SUBMISSION$
-
-# ---- License / conduct (metadata-only on CRAN) ----
-^LICENSE\.md$
-^CODE_OF_CONDUCT\.md$
-
-# ---- Development-only ----
-^data-raw$
-^revdep$
-
-# ---- Non-standard vignettes ----
-^vignettes/articles$
-
-# ---- R CMD check artifacts ----
-^doc$
-^Meta$
-\.orig$
-
-# ---- httptest2 / API real tests ----
-^tests/real-tests$
-
-# ---- Test assets not shipped ----
-^tests/testthat/assets/site-citation$
-^tests/testthat/assets/site-dot-github$
-
-# ---- Misc (non-package content) ----
+^/\.gitattributes$
 ^inst/web$
-^fake-index\.html$
-^[.]?air[.]toml$
-^\.vscode$
+^notes$
+^cran-comments.md$
+^data-raw$
+^CONTRIBUTING\.md$
+^CODE_OF_CONDUCT\.md$
+^NEWS$
+^codecov\.yml$
+^_pkgdown\.yml$
+^README\.Rmd$
+^\.github$
+^cran-comments\.md$
+^LICENSE\.md$
+^vignettes/articles$
+^CRAN-SUBMISSION$
+^docs$

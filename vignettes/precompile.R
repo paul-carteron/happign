@@ -7,7 +7,7 @@ library(knitr)
 
 opts_knit$set(base.dir = "vignettes", base.url = "")
 
-input <- "vignettes/getting_started_orig.Rmd.orig"
+input <- "vignettes/getting_started_orig.Rmd/orig"
 output <- "vignettes/getting_started.Rmd"
 knit(input, output)
 

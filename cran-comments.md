@@ -1,10 +1,8 @@
 ## R CMD check results
 
-I sucessfully pass R-CMD-Check test from rhun::rhub_chek().
+I sucessfully pass R-CMD-Check test from rhub::rhub_check().
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/17428471751)
-
-ubuntu-release failed because of package out of my control
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/20638815131/job/59267625137)
 
 ## R CMD check results
 
@@ -17,15 +15,15 @@ I sucessfully pass R-CMD-Check test for 7 OS :
    - {os: ubuntu-latest,  r: 'oldrel-1'}
    - {os: ubuntu-22.04,   r: 'release'}
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/17428457231)
+Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/20614561431)
 
 ## devtools::check_win_devel() results
 Status: OK
 
-Result can be found [here](https://win-builder.r-project.org/cNRSWOIfHo46/00check.log)
+Result can be found [here](https://win-builder.r-project.org/eM3QMd8095wg/)
 
 ## local devtools::check() results
-── R CMD check results ────────────────────────── happign 0.3.6 ────
-Duration: 2m 41.3s
+── R CMD check results ───────── happign 0.3.7 ────
+Duration: 2m 54s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔

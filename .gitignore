@@ -1,12 +1,4 @@
+docs
+.RData
 .Rproj.user
 .Rhistory
-.RData
-inst/doc
-.env
-*.tex
-docs
-/doc/
-/Meta/
-revdep/
-.Rproj
-happign.Rproj
