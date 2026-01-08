@@ -119,9 +119,7 @@ tm_shape(penmarch_borders) +
   tm_title(
     "Penmarc’h administrative boundaries (IGN)",
     position = tm_pos_out("center", "top", pos.h = "center")
-  ) +
-  tm_compass(type = "arrow") +
-  tm_scalebar()
+  )
 ```
 
 ![plot of chunk plot_wfs](plot_wfs-1.png)
@@ -186,9 +184,7 @@ tm_shape(roundabout) +
   tm_title(
     "Roundabout recorded by IGN in Penmarc’h",
     position = tm_pos_out("center", "top", pos.h = "center")
-  ) +
-  tm_compass(type = "arrow") +
-  tm_scalebar()
+  )
 ```
 
 ![plot of chunk plot_roundabout](plot_roundabout-1.png)
@@ -236,14 +232,12 @@ tm_shape(mnt) +
     col.scale  = tm_scale_continuous(values = "terrain", value.na = "grey"),
     col.legend = tm_legend(title = "Elevation (m)", orientation = "landscape")
   ) +
-   tm_shape(penmarch_borders, is.main = TRUE) +
+tm_shape(penmarch_borders, is.main = TRUE) +
   tm_borders(lwd = 2) +
   tm_title(
     "Digital Elevation Model of Penmarc’h",
     position = tm_pos_out("center", "top", pos.h = "center")
-  ) +
-  tm_compass(type = "arrow") +
-  tm_scalebar()
+  )
 ```
 
 ![plot of chunk plot_dem](plot_dem-1.png)
@@ -267,12 +261,13 @@ map display.
 
 ``` r
 layers_metadata <- get_layers_metadata("wmts", "ortho")
-ortho_layer <- layers_metadata[1, 3] # HR.ORTHOIMAGERY.ORTHOPHOTOS
+ortho_layer <- layers_metadata[1, 3] # ORTHOIMAGERY.ORTHOPHOTOS
+tiny_penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 
 hr_ortho <- get_wmts(
-  x = penmarch_borders,
+  x = tiny_penmarch,
   layer = ortho_layer,
-  zoom  = 9
+  zoom = 9
 )
 ```
 
@@ -282,11 +277,9 @@ tm_shape(hr_ortho) +
   tm_shape(penmarch_borders) +
   tm_borders(lwd = 2, col = "white") +
   tm_title(
-    "High-resolution orthophoto",
+    "Orthophoto",
     position = tm_pos_out("center", "top", pos.h = "center")
-  ) +
-  tm_compass(type = "arrow") +
-  tm_scalebar()
+  )
 ```
 
 ![plot of chunk plot_ortho](plot_ortho-1.png)
