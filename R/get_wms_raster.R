@@ -183,8 +183,8 @@ generate_desc_xml <- function(sd){
    doc <- xml2::read_xml(tmp_xml)
    root <- xml2::xml_find_first(doc, "//GDAL_WMS")
 
-   xml2::xml_set_text(xml2::xml_find_first(root, "//BlockSizeX"), "256")
-   xml2::xml_set_text(xml2::xml_find_first(root, "//BlockSizeY"), "256")
+   xml2::xml_set_text(xml2::xml_find_first(root, "//BlockSizeX"), "1024")
+   xml2::xml_set_text(xml2::xml_find_first(root, "//BlockSizeY"), "1024")
 
    xml2::xml_add_child(root, "ZeroBlockHttpCodes", "502")
    xml2::xml_add_child(root, "ZeroBlockOnServerException", "true")
@@ -395,6 +395,7 @@ warp_options <- function(x, crs, res, rgb, overwrite){
          "-tr", res, res,
          "-wm", "512",
          "-wo", "SOURCE_EXTRA=50",
+         "-wo", "NUM_THREADS=1",
          "-r", if (rgb) "cubic" else "bilinear",
          if (overwrite) "-overwrite" else NULL
       )
