@@ -45,7 +45,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.7" id="happign-037">happign 0.3.7<a class="anchor" aria-label="anchor" href="#happign-037"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.7" id="happign-037">happign 0.3.7<a class="anchor" aria-label="anchor" href="#happign-037"></a></h2><p class="text-muted">CRAN release: 2026-01-08</p>
 <p>Function: * Refactor <code><a href="../reference/get_wfs.html">get_wfs()</a></code> : * Better iterative request using <code><a href="https://httr2.r-lib.org/reference/req_perform_iterative.html" class="external-link">httr2::req_perform_iterative()</a></code>; * Better cql_filter construction with new predicate implementation ;</p>
 <p>Breaking changes: * Removing old dataset <code>cog_2023</code> and <code>com_2024</code>; * Changing arg in <code><a href="../reference/get_wfs.html">get_wfs()</a></code>: * <code>spatial_filter</code> -&gt; <code>predicate</code> : now use structured predicate (see ?<code>spatial_predicates</code>) * <code>ecql_filter</code> -&gt; <code>query</code><br>
 * Removing arg in <code><a href="../reference/get_wfs.html">get_wfs()</a></code>: * <code>filename</code> : <code><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">sf::st_read()</a></code> should be used to write to local ; * <code>interactive</code> : Funny but not really useful, <code><a href="../reference/get_wfs.html">get_wfs()</a></code> should focus on downloading data only</p>

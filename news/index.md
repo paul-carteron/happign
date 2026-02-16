@@ -2,6 +2,8 @@
 
 ## happign 0.3.7
 
+CRAN release: 2026-01-08
+
 Function: \* Refactor
 [`get_wfs()`](https://paul-carteron.github.io/happign/reference/get_wfs.md)
 : \* Better iterative request using
