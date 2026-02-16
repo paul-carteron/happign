@@ -118,11 +118,11 @@ get_wms_raster <- function(x,
    desc_xml_path <- generate_desc_xml(sd)
 
    if (!rgb){
-      modify_xml_for_float(desc_xml_path)
+      desc_xml_path <- modify_xml_for_float(desc_xml_path)
    }
 
    # Perform the warp safely; the warp function always writes to the dest_file.
-   outfile <- safe_gdal_warp(x, desc_xml_path, res, crs, filename, overwrite, verbose)
+   outfile <- safe_gdal_warp(x, desc_xml_path, res, crs, filename, rgb, overwrite, verbose)
    rast <- rast(outfile)
 
    if (sum(minmax(allNA(rast), compute = T)) == 2){
@@ -165,47 +165,6 @@ get_sd <- function(layer){
    return(sd)
 }
 
-#' @title modify_xml_for_float
-#' @description get full subdataset name of a layer
-#'
-#' @param path_to_xml `character`; path where WMS description xml
-#' is store
-#'
-#' @importFrom xml2 read_xml xml_find_first xml_text<- xml_add_sibling write_xml
-#'
-#' @noRd
-modify_xml_for_float <- function(path_to_xml){
-   doc <- read_xml(path_to_xml)
-
-   image_format_node <- xml_find_first(doc, "//ImageFormat")
-   xml_text(image_format_node) <- 'image/geotiff'
-
-   bands_count_node <- xml_find_first(doc, "//BandsCount")
-   xml_text(bands_count_node) <- "1"
-
-   data_type_node <- read_xml("<DataType>Float32</DataType>")
-   xml_add_sibling(bands_count_node, data_type_node)
-
-   write_xml(doc, path_to_xml, options = "no_declaration")
-
-   return(NULL)
-}
-
-#' @title modify_xml_for_png
-#' @description Switch the WMS <ImageFormat> to image/png
-#'
-#' @param path_to_xml `character`; path to the WMS description XML
-#'
-#' @importFrom xml2 read_xml xml_find_first xml_text<- write_xml
-#'
-#' @noRd
-modify_xml_for_png <- function(path_to_xml){
-   doc <- read_xml(path_to_xml)
-   image_format_node <- xml_find_first(doc, "//ImageFormat")
-   xml_text(image_format_node) <- 'image/png'
-   write_xml(doc, path_to_xml, options = "no_declaration")
-   return(NULL)
-}
 
 #' @title generate_desc_xml
 #' @description generate WMS description xml
@@ -219,9 +178,62 @@ modify_xml_for_png <- function(path_to_xml){
 generate_desc_xml <- function(sd){
 
    tmp_xml <- tempfile(fileext = ".xml")
-   gdal_utils("translate", sd, tmp_xml, options = c("-of", "WMS"))
+   sf::gdal_utils("translate", sd, tmp_xml, options = c("-of", "WMS"))
+
+   doc <- xml2::read_xml(tmp_xml)
+   root <- xml2::xml_find_first(doc, "//GDAL_WMS")
+
+   xml2::xml_set_text(xml2::xml_find_first(root, "//BlockSizeX"), "256")
+   xml2::xml_set_text(xml2::xml_find_first(root, "//BlockSizeY"), "256")
+
+   xml2::xml_add_child(root, "ZeroBlockHttpCodes", "502")
+   xml2::xml_add_child(root, "ZeroBlockOnServerException", "true")
+
+   xml2::write_xml(doc, tmp_xml, options = "no_declaration")
 
    return(tmp_xml)
+}
+
+#' @title modify_xml_for_float
+#' @description get full subdataset name of a layer
+#'
+#' @param path_to_xml `character`; path where WMS description xml
+#' is store
+#'
+#' @importFrom xml2 read_xml xml_find_first xml_text<- xml_add_sibling write_xml
+#'
+#' @noRd
+modify_xml_for_float <- function(path_to_xml){
+   doc <- read_xml(path_to_xml)
+   root <- xml2::xml_find_first(doc, "//GDAL_WMS")
+
+   xml2::xml_set_text(xml2::xml_find_first(root, "//ImageFormat"), "image/geotiff")
+   xml2::xml_set_text(xml2::xml_find_first(root, "//BandsCount"), "1")
+
+   xml2::xml_add_child(root, "DataType", "Float32")
+
+   xml2::write_xml(doc, path_to_xml, options = "no_declaration")
+
+   return(path_to_xml)
+}
+
+#' @title modify_xml_for_png
+#' @description Switch the WMS <ImageFormat> to image/png
+#'
+#' @param path_to_xml `character`; path to the WMS description XML
+#'
+#' @importFrom xml2 read_xml xml_find_first xml_text<- write_xml
+#'
+#' @noRd
+modify_xml_for_png <- function(path_to_xml){
+   doc <- read_xml(path_to_xml)
+   root <- xml2::xml_find_first(doc, "//GDAL_WMS")
+
+   xml2::xml_set_text(xml2::xml_find_first(root, "//ImageFormat"), "image/png")
+
+   write_xml(doc, path_to_xml, options = "no_declaration")
+
+   return(path_to_xml)
 }
 
 #' @title safe_warp
@@ -229,7 +241,7 @@ generate_desc_xml <- function(sd){
 #' warning/error occurs, retry with rgb = FALSE.
 #'
 #' @noRd
-safe_gdal_warp <- function(x, desc_xml_path, res, crs, filename, overwrite, verbose){
+safe_gdal_warp <- function(x, desc_xml_path, res, crs, filename, rgb, overwrite, verbose){
    is_float32_jpeg_mismatch <- function(msg) {
       grepl("FLOAT32", msg) && grepl("image/jpeg", msg)
    }
@@ -238,7 +250,7 @@ safe_gdal_warp <- function(x, desc_xml_path, res, crs, filename, overwrite, verb
    }
 
    # Internal warp function: writes output directly to dest.
-   gdal_warp <- function(x, desc_xml_path, res, crs, filename, overwrite, verbose) {
+   gdal_warp <- function(x, desc_xml_path, res, crs, filename, rgb, overwrite, verbose) {
 
       # If caching is enabled (filename provided) and file exists, load and return it.
       caching_is_enable <- !is.null(filename) && file.exists(filename) && !overwrite
@@ -249,18 +261,21 @@ safe_gdal_warp <- function(x, desc_xml_path, res, crs, filename, overwrite, verb
 
       outfile <- if (is.null(filename)) tempfile(fileext = ".tif") else filename
 
-      sf::gdal_utils("warp",
-                     source = desc_xml_path,
-                     destination = outfile ,
-                     quiet = !verbose,
-                     options = c(warp_options(x, crs, res, overwrite), create_options()),
-                     config_options = config_options())
+      sf::gdal_utils(
+         "warp",
+         source = desc_xml_path,
+         destination = outfile,
+         quiet = !verbose,
+         options = c(warp_options(x, crs, res, rgb, overwrite), create_options(rgb)),
+         config_options = config_options()
+      )
+
       return(outfile)
    }
 
    tryCatch(
       withCallingHandlers({
-         outfile <- gdal_warp(x, desc_xml_path, res, crs, filename, overwrite, verbose)
+         outfile <- gdal_warp(x, desc_xml_path, res, crs, filename, rgb, overwrite, verbose)
          caching_is_enable <- !is.null(filename) && file.exists(filename) && !overwrite
          if (verbose && !caching_is_enable) message("Warp executed successfully.")
          outfile
@@ -281,11 +296,12 @@ safe_gdal_warp <- function(x, desc_xml_path, res, crs, filename, overwrite, verb
          if (is_jpeg_not_supported(err_msg)){
             message("\nLayer likely doesn't support 'image/jpeg'. Switching to 'image/png' and retrying...")
             modify_xml_for_png(desc_xml_path)
-            return(safe_gdal_warp(x, desc_xml_path, res, crs, filename, overwrite, verbose))
+            return(safe_gdal_warp(x, desc_xml_path, res, crs, filename, rgb, overwrite, verbose))
          } else if (is_float32_jpeg_mismatch(err_msg)) {
             message("\nDetected FLOAT32/jpeg mismatch. Retrying with rgb = FALSE...")
             modify_xml_for_float(desc_xml_path)
-            return(safe_gdal_warp(x, desc_xml_path, res, crs, filename, overwrite, verbose))
+            rgb <- FALSE
+            return(safe_gdal_warp(x, desc_xml_path, res, crs, filename, rgb, overwrite, verbose))
          } else {
             stop("GDAL warp failed: ", err_msg)
          }
@@ -297,13 +313,31 @@ safe_gdal_warp <- function(x, desc_xml_path, res, crs, filename, overwrite, verb
 #' @description storage of create options for gdal_warp
 #'
 #' @noRd
-create_options <- function(){
-   c(
-      "-co", "COMPRESS=DEFLATE",
-      "-co", "PREDICTOR=2",
+create_options <- function(rgb){
+
+   base <- c(
+      "-co", "BLOCKSIZE=512",
       "-co", "NUM_THREADS=ALL_CPUS",
-      "-co", "BIGTIFF=IF_NEEDED"
+      "-co", "BIGTIFF=IF_NEEDED",
+      "-co", "TILED=YES"
    )
+
+
+   if (rgb) {
+      c(
+         base,
+         "-co","COMPRESS=JPEG",
+         "-co","JPEG_QUALITY=95",
+         "-co","PHOTOMETRIC=RGB"
+      )
+   } else {
+      c(
+         base,
+         "-co", "COMPRESS=DEFLATE",
+         "-co", "PREDICTOR=3"
+      )
+   }
+
 }
 
 #' @title config_options
@@ -318,17 +352,27 @@ config_options <- function(){
    # See https://github.com/rspatial/terra/issues/828 for more
 
    c(
+      # Required for compatibility
       GDAL_SKIP = "DODS",
       GDAL_HTTP_UNSAFESSL = "YES",
-      VSI_CACHE = "TRUE",
-      GDAL_CACHEMAX = "30%",
-      VSI_CACHE_SIZE = "10000000",
-      GDAL_HTTP_MULTIPLEX = "YES",
-      GDAL_INGESTED_BYTES_AT_OPEN = "32000",
-      GDAL_DISABLE_READDIR_ON_OPEN = "EMPTY_DIR",
+
+      # Critical for WMS stability and performance
       GDAL_HTTP_VERSION = "2",
-      GDAL_HTTP_MERGE_CONSECUTIVE_RANGES = "YES",
-      GDAL_HTTP_USERAGENT = "happign (https://github.com/paul-carteron/happign)"
+      GDAL_HTTP_MAX_RETRY = "5",
+      GDAL_HTTP_RETRY_DELAY = "2",
+      GDAL_HTTP_TIMEOUT = "120",
+
+      # Very important for WMS efficiency
+      GDAL_DISABLE_READDIR_ON_OPEN = "EMPTY_DIR",
+
+      # Improves GDAL internal memory usage
+      GDAL_CACHEMAX = "512",
+
+      # Good but optional
+      GDAL_HTTP_USERAGENT = "happign (https://github.com/paul-carteron/happign)",
+
+      # Recommended: disable multiplex for WMS
+      GDAL_HTTP_MULTIPLEX = "NO"
    )
 }
 
@@ -338,7 +382,7 @@ config_options <- function(){
 #' @importFrom sf st_bbox st_crs
 #'
 #' @noRd
-warp_options <- function(x, crs, res, overwrite){
+warp_options <- function(x, crs, res, rgb, overwrite){
 
    bb <- st_bbox(x)
 
@@ -349,7 +393,9 @@ warp_options <- function(x, crs, res, overwrite){
          "-te_srs", st_crs(x)$srid,
          "-t_srs", st_crs(crs)$srid,
          "-tr", res, res,
-         "-r", "bilinear",
+         "-wm", "512",
+         "-wo", "SOURCE_EXTRA=50",
+         "-r", if (rgb) "cubic" else "bilinear",
          if (overwrite) "-overwrite" else NULL
       )
    )
