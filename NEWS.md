@@ -1,3 +1,10 @@
+# happign 0.3.8
+Function:
+   * `get_wms_raster()` : More robust gdal options for downloading, warping and creating raster 
+   
+Breaking changes:
+   * Removing arg `interactive` in `get_wms_raster()`: Funny but not really useful, `get_wms_raster()` should focus on downloading data only
+      
 # happign 0.3.7
 Function:
    * Refactor `get_wfs()` :

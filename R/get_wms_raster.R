@@ -37,8 +37,6 @@
 #' will directly load the raster from that file instead of re-downloading it.
 #' @param verbose `boolean`; if TRUE, message are added.
 #' @param overwrite `boolean`; if TRUE, the existing raster will be overwritten.
-#' @param interactive `logical`; if TRUE, an interactive menu prompts for
-#' `apikey` and `layer` argument.
 #'
 #' @return
 #' `SpatRaster` object from `terra` package.
@@ -69,9 +67,6 @@
 #' # Shape from the best town in France
 #' penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
 #'
-#' # For quick testing use interactive = TRUE
-#' raster <- get_wms_raster(x = penmarch, res = 25, interactive = TRUE)
-#'
 #' # For specific data, choose apikey with get_apikey() and layer with get_layers_metadata()
 #' apikey <- get_apikeys()[4]  # altimetrie
 #' metadata_table <- get_layers_metadata("wms-r", apikey) # all layers for altimetrie wms
@@ -90,15 +85,15 @@
 #'    tm_borders(col = "blue", lwd  = 3)
 #'}
 #'
-get_wms_raster <- function(x,
-                           layer = "ORTHOIMAGERY.ORTHOPHOTOS",
-                           res = 10,
-                           crs = 2154,
-                           rgb = TRUE,
-                           filename = NULL,
-                           overwrite = FALSE,
-                           verbose = TRUE,
-                           interactive = FALSE){
+get_wms_raster <- function(
+      x,
+      layer = "ORTHOIMAGERY.ORTHOPHOTOS",
+      res = 10,
+      crs = 2154,
+      rgb = TRUE,
+      filename = NULL,
+      overwrite = FALSE,
+      verbose = TRUE){
 
    # Validate inputs
    if (!inherits(x, c("sf", "sfc"))){
@@ -107,11 +102,6 @@ get_wms_raster <- function(x,
 
    if (!is.character(layer)){
       stop("`layer` must be a character string.", call. = FALSE)
-   }
-
-   if (interactive) {
-      choice <- interactive_mode("wms-r")  # assume interactive_mode() is defined elsewhere.
-      layer <- choice$layer
    }
 
    sd <- get_sd(layer)
