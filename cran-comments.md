@@ -2,7 +2,7 @@
 
 I sucessfully pass R-CMD-Check test from rhub::rhub_check().
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/20814846453)
+Result can be found [here]()
 
 ## R CMD check results
 
@@ -15,15 +15,18 @@ I sucessfully pass R-CMD-Check test for 7 OS :
    - {os: ubuntu-latest,  r: 'oldrel-1'}
    - {os: ubuntu-22.04,   r: 'release'}
    
-Result can be found [here](https://github.com/paul-carteron/happign/actions/runs/20814693643)
+Result can be found [here]()
 
 ## devtools::check_win_devel() results
 Status: OK
 
-Result can be found [here](https://win-builder.r-project.org/8WTil9Hykh34/)
+Result can be found [here]()
 
 ## local devtools::check() results
-── R CMD check results ───────── happign 0.3.7 ────
-Duration: 2m 8.2s
+── R CMD check results ──────────────────────────────────── happign 0.3.8 ────
+Duration: 3m 21.4s
 
-0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+❯ checking for future file timestamps ... NOTE
+  unable to verify current time
+
+0 errors ✔ | 0 warnings ✔ | 1 note ✔

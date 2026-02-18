@@ -42,10 +42,7 @@ the use of APIs and Web services remains complex to set up in R. The
 
 Data from [IGN geoservice
 website](https://geoservices.ign.fr/presentation) are free and available
-in open license according to the principle of the [Etalab 2.0
-license](https://alliance.numerique.gouv.fr/licence-ouverte-open-licence/) since
-January 1, 2021. Other data complete the IGN’s open data policy since
-June 1st, 2021. SCAN 25®, SCAN 100® and SCAN OACI data are free to
+in open license. SCAN 25®, SCAN 100® and SCAN OACI data are free to
 download or stream, but any professional or individual wishing to
 develop a commercial paper or digital offer for the general public will
 have to pay a fee according to the [General Conditions of
@@ -71,8 +68,8 @@ devtools::install_github("paul-carteron/happign")
 
 Package vignettes :
 
-- [Getting started with
-  happign](https://paul-carteron.github.io/happign/articles/Getting_started.html)
+- [Getting
+  started](https://paul-carteron.github.io/happign/articles/Getting_started.html)
   : A brief intro to happign world ;
 - [happign for
   foresters](https://paul-carteron.github.io/happign/articles/web_only/happign_for_foresters.html)
