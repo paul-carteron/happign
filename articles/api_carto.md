@@ -58,8 +58,6 @@ We’ll start with a simple example : retrieve borders of a town.
 ``` r
 
 penmarch <- get_apicarto_cadastre("29158", type = "commune")
-#> ⠙ iterating 1 done (0.36/s) | 2.8s
-#> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 
 # result
 tm_shape(penmarch)+
@@ -77,11 +75,7 @@ data("com_2025", package = "happign")
 # all town starting with "KER", yes I'm coming from "La Bretagne"
 ker_insee_code <- com_2025[startsWith(com_2025$NCC_COM, "KER"), "COM"]
 ker_borders <- get_apicarto_cadastre(ker_insee_code, type = "commune")
-#> ⠙ iterating 1 done (0.41/s) | 2.4s
-#> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 #> Warning: No data found for : 29092
-#> ⠙ iterating 1 done (0.47/s) | 2.1s
-#> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 
 # result
 tm_shape(ker_borders)+

@@ -9,7 +9,7 @@ Specify a location using a shape and provide the layer name."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">happign</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,8 +61,7 @@ Specify a location using a shape and provide the layer name.</p>
 <span>               rgb <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>               filename <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>               overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>               verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>               interactive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span>               verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -114,11 +113,6 @@ will directly load the raster from that file instead of re-downloading it.</p></
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p><code>boolean</code>; if TRUE, message are added.</p></dd>
 
-
-<dt id="arg-interactive">interactive<a class="anchor" aria-label="anchor" href="#arg-interactive"></a></dt>
-<dd><p><code>logical</code>; if TRUE, an interactive menu prompts for
-<code>apikey</code> and <code>layer</code> argument.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -148,9 +142,6 @@ examples below.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Shape from the best town in France</span></span></span>
 <span class="r-in"><span><span class="va">penmarch</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/penmarch.shp"</span>, package <span class="op">=</span> <span class="st">"happign"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># For quick testing use interactive = TRUE</span></span></span>
-<span class="r-in"><span><span class="va">raster</span> <span class="op">&lt;-</span> <span class="fu">get_wms_raster</span><span class="op">(</span>x <span class="op">=</span> <span class="va">penmarch</span>, res <span class="op">=</span> <span class="fl">25</span>, interactive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># For specific data, choose apikey with get_apikey() and layer with get_layers_metadata()</span></span></span>
 <span class="r-in"><span><span class="va">apikey</span> <span class="op">&lt;-</span> <span class="fu"><a href="get_apikeys.html">get_apikeys</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>  <span class="co"># altimetrie</span></span></span>

@@ -60,8 +60,6 @@ download it with `get_apicarto_cadastre`. We will work only on section
 
 ``` r
 camors_parcels <- get_apicarto_cadastre(insee_code, type = "parcelle", section = "H")
-#> ⠙ iterating 1 done (0.22/s) | 4.5s
-#> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 
 tm_shape(camors_parcels)+
    tm_polygons(fill_alpha = 0, lwd = 0.5)+
@@ -87,12 +85,12 @@ top left of interactive map below.
 ``` r
 layer_v1 <- "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape"
 bd_foret_v1 <- get_wfs(camors, layer_v1, predicate = intersects())
-#> ⠙ iterating 1 done (0.47/s) | 2.1s
+#> ⠙ iterating 1 done (0.45/s) | 2.2s
 #> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 
 layer_v2 <- "LANDCOVER.FORESTINVENTORY.V2:formation_vegetale"
 bd_foret_v2 <- get_wfs(camors, layer_v2, predicate = intersects())
-#> ⠙ iterating 1 done (0.19/s) | 5.3s
+#> ⠙ iterating 1 done (0.47/s) | 2.1s
 #> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 
 tm_shape(bd_foret_v1) +

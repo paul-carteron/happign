@@ -13,8 +13,7 @@ get_wms_raster(x,
                rgb = TRUE,
                filename = NULL,
                overwrite = FALSE,
-               verbose = TRUE,
-               interactive = FALSE)
+               verbose = TRUE)
 ```
 
 ## Arguments
@@ -66,11 +65,6 @@ get_wms_raster(x,
 
   `boolean`; if TRUE, message are added.
 
-- interactive:
-
-  `logical`; if TRUE, an interactive menu prompts for `apikey` and
-  `layer` argument.
-
 ## Value
 
 `SpatRaster` object from `terra` package.
@@ -99,9 +93,6 @@ library(tmap)
 
 # Shape from the best town in France
 penmarch <- read_sf(system.file("extdata/penmarch.shp", package = "happign"))
-
-# For quick testing use interactive = TRUE
-raster <- get_wms_raster(x = penmarch, res = 25, interactive = TRUE)
 
 # For specific data, choose apikey with get_apikey() and layer with get_layers_metadata()
 apikey <- get_apikeys()[4]  # altimetrie
