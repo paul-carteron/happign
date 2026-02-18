@@ -321,6 +321,8 @@ For the example below I choose to download all water-related data :
 
 ``` r
 cour_eau <- get_wfs(camors, "BDTOPO_V3:cours_d_eau", intersects())
+#> ⠙ iterating 1 done (0.4/s) | 2.5s
+#> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 detail_hydro <- get_wfs(camors, "BDTOPO_V3:detail_hydrographique", intersects())
 surf_hydro <- get_wfs(camors, "BDTOPO_V3:surface_hydrographique", intersects()) # water detected by satellite
 

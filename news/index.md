@@ -1,5 +1,17 @@
 # Changelog
 
+## happign 0.3.8
+
+Function: \*
+[`get_wms_raster()`](https://paul-carteron.github.io/happign/reference/get_wms_raster.md)
+: More robust gdal options for downloading, warping and creating raster
+
+Breaking changes: \* Removing arg `interactive` in
+[`get_wms_raster()`](https://paul-carteron.github.io/happign/reference/get_wms_raster.md):
+Funny but not really useful,
+[`get_wms_raster()`](https://paul-carteron.github.io/happign/reference/get_wms_raster.md)
+should focus on downloading data only
+
 ## happign 0.3.7
 
 CRAN release: 2026-01-08
