@@ -60,6 +60,8 @@ download it with `get_apicarto_cadastre`. We will work only on section
 
 ``` r
 camors_parcels <- get_apicarto_cadastre(insee_code, type = "parcelle", section = "H")
+#> ⠙ iterating 1 done (0.22/s) | 4.5s
+#> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 
 tm_shape(camors_parcels)+
    tm_polygons(fill_alpha = 0, lwd = 0.5)+
@@ -85,9 +87,13 @@ top left of interactive map below.
 ``` r
 layer_v1 <- "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape"
 bd_foret_v1 <- get_wfs(camors, layer_v1, predicate = intersects())
+#> ⠙ iterating 1 done (0.47/s) | 2.1s
+#> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 
 layer_v2 <- "LANDCOVER.FORESTINVENTORY.V2:formation_vegetale"
 bd_foret_v2 <- get_wfs(camors, layer_v2, predicate = intersects())
+#> ⠙ iterating 1 done (0.19/s) | 5.3s
+#> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 
 tm_shape(bd_foret_v1) +
    tm_polygons(fill = "libelle",
@@ -321,8 +327,6 @@ For the example below I choose to download all water-related data :
 
 ``` r
 cour_eau <- get_wfs(camors, "BDTOPO_V3:cours_d_eau", intersects())
-#> ⠙ iterating 1 done (0.4/s) | 2.5s
-#> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 detail_hydro <- get_wfs(camors, "BDTOPO_V3:detail_hydrographique", intersects())
 surf_hydro <- get_wfs(camors, "BDTOPO_V3:surface_hydrographique", intersects()) # water detected by satellite
 
