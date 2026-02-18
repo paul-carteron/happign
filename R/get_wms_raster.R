@@ -12,8 +12,7 @@
 #'                rgb = TRUE,
 #'                filename = NULL,
 #'                overwrite = FALSE,
-#'                verbose = TRUE,
-#'                interactive = FALSE)
+#'                verbose = TRUE)
 #'
 #' @param x Object of class `sf` or `sfc`, located in France.
 #' @param layer `character`; layer name obtained from

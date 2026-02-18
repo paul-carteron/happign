@@ -11,8 +11,7 @@ get_wms_raster(x,
                rgb = TRUE,
                filename = NULL,
                overwrite = FALSE,
-               verbose = TRUE,
-               interactive = FALSE)
+               verbose = TRUE)
 }
 \arguments{
 \item{x}{Object of class \code{sf} or \code{sfc}, located in France.}
