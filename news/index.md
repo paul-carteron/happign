@@ -1,6 +1,10 @@
 # Changelog
 
+## happign (development version)
+
 ## happign 0.3.8
+
+CRAN release: 2026-02-19
 
 Function: \*
 [`get_wms_raster()`](https://paul-carteron.github.io/happign/reference/get_wms_raster.md)

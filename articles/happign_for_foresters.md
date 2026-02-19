@@ -85,6 +85,8 @@ top left of interactive map below.
 ``` r
 layer_v1 <- "LANDCOVER.FORESTINVENTORY.V1:resu_bdv1_shape"
 bd_foret_v1 <- get_wfs(camors, layer_v1, predicate = intersects())
+#> ⠙ iterating 1 done (0.46/s) | 2.2s
+#> iterating ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  100% | ETA:  0s
 
 layer_v2 <- "LANDCOVER.FORESTINVENTORY.V2:formation_vegetale"
 bd_foret_v2 <- get_wfs(camors, layer_v2, predicate = intersects())
