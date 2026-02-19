@@ -1,3 +1,5 @@
+# happign (development version)
+
 # happign 0.3.8
 Function:
    * `get_wms_raster()` : More robust gdal options for downloading, warping and creating raster 
