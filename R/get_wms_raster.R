@@ -175,7 +175,7 @@ generate_desc_xml <- function(sd){
    xml2::xml_set_text(xml2::xml_find_first(root, "//BlockSizeX"), "1024")
    xml2::xml_set_text(xml2::xml_find_first(root, "//BlockSizeY"), "1024")
 
-   xml2::xml_add_child(root, "ZeroBlockHttpCodes", "502")
+   xml2::xml_add_child(root, "ZeroBlockHttpCodes", "502, 400")
    xml2::xml_add_child(root, "ZeroBlockOnServerException", "true")
 
    xml2::write_xml(doc, tmp_xml, options = "no_declaration")
